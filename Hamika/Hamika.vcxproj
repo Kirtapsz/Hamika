@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Laptop|Win32">
+      <Configuration>Laptop</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Laptop|x64">
+      <Configuration>Laptop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{967C196D-41FE-44E4-9777-3C509325C422}</ProjectGuid>
+    <RootNamespace>Hamika</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\KIR\KIR5\include;$(IncludePath)</IncludePath>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonPhysfs>true</Allegro_AddonPhysfs>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonMemfile>true</Allegro_AddonMemfile>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonColor>true</Allegro_AddonColor>
+    <Allegro_AddonVideo>true</Allegro_AddonVideo>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\KIR\KIR5\include;$(IncludePath)</IncludePath>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonPhysfs>true</Allegro_AddonPhysfs>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonMemfile>true</Allegro_AddonMemfile>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonColor>true</Allegro_AddonColor>
+    <Allegro_AddonVideo>true</Allegro_AddonVideo>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|Win32'">
+    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;..\..\..\..\KIR\KIR4\ALinclude;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|x64'">
+    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>NotSet</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>NotSet</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Laptop|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_console.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_time.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_base.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap_target.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_button.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_clipping_rectangle.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_color.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_display.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event_engine.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_font.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_label.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_list_panel.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_main.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_control.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_tools.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_scroll_bar.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_text_box.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_md5.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_sha512.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\KIR5_string_conditional.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_files.cpp" />
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_system.cpp" />
+    <ClCompile Include="ActiveMap.cpp" />
+    <ClCompile Include="Array2D.cpp" />
+    <ClCompile Include="BaseFunctions.cpp" />
+    <ClCompile Include="Bedrock.cpp" />
+    <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="BitmapPool.cpp" />
+    <ClCompile Include="BluePrintIO.cpp" />
+    <ClCompile Include="BlueprintPanel.cpp" />
+    <ClCompile Include="EditorActiveMap.cpp" />
+    <ClCompile Include="EditorControlPanel.cpp" />
+    <ClCompile Include="EditorMainEvent.cpp" />
+    <ClCompile Include="ActiveBlock.hpp" />
+    <ClCompile Include="EditorMapList.cpp" />
+    <ClCompile Include="EditorMiniMap.cpp" />
+    <ClCompile Include="EditorObjects.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="Global.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainEvent.cpp" />
+    <ClCompile Include="BluePrint.cpp" />
+    <ClCompile Include="BluePrints.cpp" />
+    <ClCompile Include="MapDrawer.hpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Objects.cpp" />
+    <ClCompile Include="OriginalObjects.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Space.cpp" />
+    <ClCompile Include="StatusBar.cpp" />
+    <ClCompile Include="Types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ActiveMap.h" />
+    <ClInclude Include="Array2D.h" />
+    <ClInclude Include="BaseFunctions.h" />
+    <ClInclude Include="Bedrock.h" />
+    <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="BitmapPool.h" />
+    <ClInclude Include="BluePrintIO.h" />
+    <ClInclude Include="BlueprintPanel.h" />
+    <ClInclude Include="EditorActiveBlock.h" />
+    <ClInclude Include="EditorActiveBlock.hpp" />
+    <ClInclude Include="EditorActiveMap.h" />
+    <ClInclude Include="EditorControlPanel.h" />
+    <ClInclude Include="EditorMainEvent.h" />
+    <ClInclude Include="ActiveBlock.h" />
+    <ClInclude Include="EditorMapList.h" />
+    <ClInclude Include="EditorMiniMap.h" />
+    <ClInclude Include="EditorObjects.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="IDreg.h" />
+    <ClInclude Include="MainEvent.h" />
+    <ClInclude Include="BluePrint.h" />
+    <ClInclude Include="BluePrints.h" />
+    <ClInclude Include="MapDrawer.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Objects.h" />
+    <ClInclude Include="OriginalObjects.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Space.h" />
+    <ClInclude Include="StatusBar.h" />
+    <ClInclude Include="Types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\AllegroDeps.1.12.1\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.12.1\build\native\AllegroDeps.targets')" />
+    <Import Project="..\packages\Allegro.5.2.7.1\build\native\Allegro.targets" Condition="Exists('..\packages\Allegro.5.2.7.1\build\native\Allegro.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\AllegroDeps.1.12.1\build\native\AllegroDeps.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AllegroDeps.1.12.1\build\native\AllegroDeps.targets'))" />
+    <Error Condition="!Exists('..\packages\Allegro.5.2.7.1\build\native\Allegro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Allegro.5.2.7.1\build\native\Allegro.targets'))" />
+  </Target>
+</Project>

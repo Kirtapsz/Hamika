@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="KIR">
+      <UniqueIdentifier>{efade2a2-d0d2-4404-b9b1-c35debe809c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika">
+      <UniqueIdentifier>{9cd9c993-2ea5-4b5e-84cf-14afb4415ed2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika\ActiveMap">
+      <UniqueIdentifier>{eba58788-6e07-4b82-bc5e-975a9a053925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika\Tool">
+      <UniqueIdentifier>{a37f369d-646c-4be7-8718-5bcf9e291451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika\World">
+      <UniqueIdentifier>{888cc204-f3aa-4fd6-84f2-be6a8c72f12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika\World\Map">
+      <UniqueIdentifier>{3c2efebf-b8a0-4f23-8b8b-69eb273162e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika\World\Map\Block">
+      <UniqueIdentifier>{7027bea0-ad12-4da4-85f5-da9937d2e494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hamika\World\Map\Block\Objects">
+      <UniqueIdentifier>{0d116c3f-2883-4b16-bf4e-86f117a69e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KIR\AL">
+      <UniqueIdentifier>{7c0798f7-9ac5-4bff-baf7-660557cc0f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KIR\hash">
+      <UniqueIdentifier>{5a8fff51-73ca-48a1-95eb-3af14024b428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{2f61702d-874c-460a-a916-0f69859f09a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KIR\sys">
+      <UniqueIdentifier>{ccee2d79-7bf1-475e-b111-bcaafb10d5c9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MapDrawer.hpp">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusBar.cpp">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseFunctions.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="OriginalObjects.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Bedrock.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Space.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Types.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Array2D.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="MainEvent.cpp">
+      <Filter>Hamika</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorMainEvent.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorActiveMap.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveMap.cpp">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveBlock.hpp">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorMapList.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_time.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_console.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="BlueprintPanel.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_md5.cpp">
+      <Filter>KIR\hash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_sha512.cpp">
+      <Filter>KIR\hash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap_target.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_button.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_clipping_rectangle.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_color.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_display.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event_engine.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_font.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_label.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_list_panel.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_main.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_control.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_tools.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_scroll_bar.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_text_box.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_base.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorMiniMap.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorControlPanel.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorObjects.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="BluePrint.cpp">
+      <Filter>Hamika\World\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="BluePrints.cpp">
+      <Filter>Hamika\World</Filter>
+    </ClCompile>
+    <ClCompile Include="BluePrintIO.cpp">
+      <Filter>Hamika\World\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_files.cpp">
+      <Filter>KIR\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_system.cpp">
+      <Filter>KIR\sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR5\source\KIR5_string_conditional.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapPool.cpp">
+      <Filter>Hamika\Tool</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bedrock.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Space.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusBar.h">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MapDrawer.h">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Bitmap.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseFunctions.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="OriginalObjects.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Array2D.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="MainEvent.h">
+      <Filter>Hamika</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorMainEvent.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorActiveMap.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveMap.h">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClInclude>
+    <ClInclude Include="IDreg.h">
+      <Filter>Hamika\World\Map\Block\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveBlock.h">
+      <Filter>Hamika\ActiveMap</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorMapList.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueprintPanel.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorMiniMap.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorControlPanel.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorObjects.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorActiveBlock.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorActiveBlock.hpp">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="BluePrint.h">
+      <Filter>Hamika\World\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="BluePrints.h">
+      <Filter>Hamika\World</Filter>
+    </ClInclude>
+    <ClInclude Include="BluePrintIO.h">
+      <Filter>Hamika\World\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapPool.h">
+      <Filter>Hamika\Tool</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

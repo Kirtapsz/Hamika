@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="KIR">
+      <UniqueIdentifier>{a981f80a-f4b6-429b-a0b3-cccab4483490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{b307bfa7-9eda-4039-a171-0a16c827a4d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Map">
+      <UniqueIdentifier>{c92fc2a7-c7e9-4163-b462-8dd6c2fe5648}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Map\Block">
+      <UniqueIdentifier>{a870c971-0229-47ad-9faf-8bd54a4e8b88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Map\Block\Objects">
+      <UniqueIdentifier>{bb7328bb-b3c5-4137-97e2-154d0e8d5e99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tool">
+      <UniqueIdentifier>{646fc5c7-c031-4f67-aeba-be88bf36b7aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_memory_c.c">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_basic_string.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_types.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_memory_cpp.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_time.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_system.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_algorithm.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_console.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_color.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_display.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_event.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_event_handle.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_font.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_main.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_panel.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_base.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_bitmap.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\KIR\KIR4\ALsource\KIR4_button.cpp">
+      <Filter>KIR</Filter>
+    </ClCompile>
+    <ClCompile Include="EditGridPoint.cpp">
+      <Filter>World\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="EditMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EditGridPoint.h">
+      <Filter>World\Map</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
