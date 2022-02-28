@@ -4,6 +4,8 @@
 #include "MapDrawer.h"
 
 #include <KIR\AL\KIR5_event_engine.h>
+#include <KIR/AL/KIR5_text_box.h>
+#include <KIR/AL/KIR5_button.h>
 
 #include "Font.h"
 #include "Bitmap.h"
@@ -79,6 +81,7 @@ class MainEvent:public KIR5::Display
 {
 	private: KIR5::EVENT<ActiveMap> activeMap;
 	private: KIR5::EVENT<MapList> originalMapList;
+	private: KIR5::EVENT<KIR5::RectangleButton<KIR5::Button<KIR5::TextBox<>>>> replayTextBox;
 	private: Slides cursorBmp;
 	private: int cursorID = -1;
 	private: float cursorIDf = 0;

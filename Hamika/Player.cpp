@@ -177,7 +177,7 @@ namespace Object
 			{
 				s->flag = F_Move;
 				Eat(stack->o, stack->o->GetObject(to));
-				stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), to, ObjectID::Space);
+				stack->o->ief.ObjectMove(stack->o->GetCoord(), to, ObjectID::Space);
 				stack->o->ief.playerMoved(stack->o);
 				regets(Specific, s);
 				stack->o->SetMove(rotation);
@@ -203,7 +203,7 @@ namespace Object
 					s->DrawNum = 9;
 					s->flag = F_Passage;
 					Eat(stack->o, stack->o->GetObject(to2));
-					stack->o->ief.ObjectMove(stack, source, to2, ObjectID::PlayerPlus);
+					stack->o->ief.ObjectMove(source, to2, ObjectID::PlayerPlus);
 					stack->o->ief.playerMoved(stack->o);
 					regets(Specific, s);
 					stack->o->SetRotation(rotation);
@@ -239,8 +239,8 @@ namespace Object
 							else
 								stack->o->EnebleLimitSpeed(stack->o->GetMoveSpeed().y / (Type::Move::Type)(1.5));
 
-							stack->o->ief.ObjectMove(NULL, to, to2, 0);
-							stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), to, stack->o->GetTranslationTo());
+							stack->o->ief.ObjectMove(to, to2, ObjectID::Space);
+							stack->o->ief.ObjectMove(stack->o->GetCoord(), to, stack->o->GetObjectIDremain());
 							stack->o->ief.playerMoved(stack->o);
 							regets(Specific, s);
 						}
@@ -488,7 +488,7 @@ namespace Object
 					{
 						s->flag = F_Move;
 						Eat(stack->o, stack->o->GetObject(stack->o->GetCoordDown()));
-						stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), stack->o->GetCoordDown(), ObjectID::Space);
+						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), ObjectID::Space);
 						stack->o->ief.playerMoved(stack->o);
 						regets(Specific, s);
 						stack->o->SetMove({stack->o->GetMove().x,-1});
@@ -567,6 +567,7 @@ namespace Object
 			stack->o->events.timer = true;
 
 			stack->o->SetTranslationID(ObjectID::Infotron);
+			stack->o->SetObjectIDremain(ObjectID::Space);
 
 			s->Spell = false;
 			s->MoveUp = false;
@@ -581,6 +582,8 @@ namespace Object
 		void CreatePassage(OBJECT_CREATER_PARAM)
 		{
 			Create(OBJECT_CREATER_CALL);
+
+			stack->o->SetTranslationID(ObjectID::Space);
 
 			gets(Specific, s);
 

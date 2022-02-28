@@ -30,7 +30,7 @@ class Slides
 	public: void initialize(KIR5::SubBitmap &bitmap, KIR5::SubBitmap &errorBitmap);
 	public: int getCount() const;
 	public: int getDrawNumber(float i) const;
-	public: KIR5::SubBitmap &operator[](int i);
+	public: KIR5::SubBitmap &operator[](size_t i);
 };
 
 void drawMissingObject(int x, int y, int w, int h, KIR5::Color color);

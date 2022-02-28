@@ -361,7 +361,7 @@ std::shared_ptr<MainEvent> mainEvent;
 int maxBitmapSize;
 
 MainEvent::MainEvent():
-	KIR5::Display("Hamika", 720 + 240, 480 + 240, ALLEGRO_RESIZABLE| ALLEGRO_OPENGL)
+	KIR5::Display("Hamika", 720 + 240, 480 + 240, ALLEGRO_RESIZABLE | ALLEGRO_OPENGL)
 {
 	maxBitmapSize = al_get_display_option(*this, ALLEGRO_MAX_BITMAP_SIZE);
 	Objects::RunInitializer();
@@ -373,6 +373,17 @@ MainEvent::MainEvent():
 		io.Read("Hamika\\LEVELS.DAT");
 		originalMapList->SetMaps(io.levels);
 		originalMapList->SetFocus(0);
+	}
+
+	{
+		*this << replayTextBox;
+		replayTextBox->setTextFont(Font::TimesNewRoman[16]);
+		replayTextBox->setText("");
+		replayTextBox->setTextColor(KIR5::Color(255, 100, 100));
+		replayTextBox->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
+		replayTextBox->move(0, 0, 200, replayTextBox->getTextHeight() + 5);
+		replayTextBox->setColor(KIR5::Color(50, 50, 50));
+		replayTextBox->show();
 	}
 
 	{
@@ -393,7 +404,15 @@ MainEvent::MainEvent():
 		if (key_ == 's')
 		{
 			originalMapList->hide();
-			activeMap->startMap(*originalMapList->bluePrints[originalMapList->GetFocus()]);
+			activeMap->startMap(*originalMapList->bluePrints[originalMapList->GetFocus()], std::shared_ptr<ActiveMapBot>());
+			activeMap->show();
+		}
+		if (key_ == 'r')
+		{
+			originalMapList->hide();
+			std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
+			replayBot->load(replayTextBox->getText());
+			activeMap->startMap(*originalMapList->bluePrints[originalMapList->GetFocus()], replayBot);
 			activeMap->show();
 		}
 		return false;

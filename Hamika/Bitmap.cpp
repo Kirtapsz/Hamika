@@ -105,11 +105,11 @@ int Slides::getDrawNumber(float i) const
 {
 	return (std::max)(0, (std::min)((int)(bitmaps.size() - 1), (int)(i * bitmaps.size())));
 }
-KIR5::SubBitmap &Slides::operator[](int i)
+KIR5::SubBitmap &Slides::operator[](size_t i)
 {
-	if (i < 0 || i >= bitmaps.size())
+	if (i >= bitmaps.size())
 	{
-		clog << KIR4::LRED << "Bitmap error! try to get not exists bitmap! [ " << i << " ]" << KIR4::eol;
+		//clog << KIR4::LRED << "Bitmap error! try to get not exists bitmap! [ " << i << " ]" << KIR4::eol;
 		return errorBitmap;
 	}
 	else

@@ -3,10 +3,81 @@
 #include "Global.h"
 
 #include <random>
+#include <fstream>
+
+#include <KIR/sys/KIR5_files.h>
+#include <KIR/sys/KIR5_system.h>
 
 #define MAP (*map)
 
-//StatisticsTimer drawStatistics;
+#define ACTIVE_BOT_KEY_DOWN_UP 1
+#define ACTIVE_BOT_KEY_DOWN_DOWN 2
+#define ACTIVE_BOT_KEY_DOWN_LEFT 3
+#define ACTIVE_BOT_KEY_DOWN_RIGHT 4
+#define ACTIVE_BOT_KEY_DOWN_SPACE 5
+#define ACTIVE_BOT_KEY_DOWN_ESCAPE 6
+
+#define ACTIVE_BOT_KEY_UP_UP 11
+#define ACTIVE_BOT_KEY_UP_DOWN 12
+#define ACTIVE_BOT_KEY_UP_LEFT 13
+#define ACTIVE_BOT_KEY_UP_RIGHT 14
+#define ACTIVE_BOT_KEY_UP_SPACE 15
+
+#define ACTIVE_BOT_KEY_RAND_V1 200
+
+void ActiveMapBot::push(int key, unsigned long long counter)
+{
+	actions[key].push_back(counter);
+}
+
+bool ActiveMapBot::pop(int key, unsigned long long counter)
+{
+	auto &v = actions[key];
+	if (v.size() > 0)
+	{
+		if (v.front() == counter)
+		{
+			v.pop_front();
+			return true;
+		}
+	}
+	return false;
+}
+
+void ActiveMapBot::load(const std::string &filename)
+{
+	std::ifstream dataFile(KIR5::pathCombine<KIR5::AString>(KIR5::getModuleDirectory<KIR5::AString>(), "records", filename + ".log"));
+	std::string line;
+
+	while (std::getline(dataFile, line) && line.length())
+	{
+		toLower(line);
+		auto row = parse(line);
+
+		int key = std::stoi(row["key"]);
+		unsigned long long counter = std::stoull(row["counter"]);
+
+		actions[key].push_back(counter);
+	}
+}
+void ActiveMapBot::save(const std::string &filename)
+{
+	std::string recordsDir = KIR5::pathCombine<KIR5::AString>(KIR5::getModuleDirectory<KIR5::AString>(), "records");
+	_mkdir(recordsDir.c_str());
+	std::ofstream dataFile(KIR5::pathCombine<KIR5::AString>(recordsDir, filename + ".log"));
+	for (auto &p : actions)
+	{
+		for (auto &it : p.second)
+		{
+			std::ostringstream line;
+
+			line << "key" << ":" << p.first << '|' << "counter" << ":" << it << '|';
+
+			dataFile << line.str() << std::endl;
+		}
+	}
+}
+
 
 ActiveMap::ActiveMap()
 {
@@ -49,24 +120,56 @@ ActiveMap::ActiveMap()
 	{
 		if (player)
 		{
-			if (key_ == ALLEGRO_KEY_UP)
-				Object::Player::SetMoveUp(player, true);
-			else if (key_ == ALLEGRO_KEY_DOWN)
-				Object::Player::SetMoveDown(player, true);
-			else if (key_ == ALLEGRO_KEY_LEFT)
-				Object::Player::SetMoveLeft(player, true);
-			else if (key_ == ALLEGRO_KEY_RIGHT)
-				Object::Player::SetMoveRight(player, true);
-			else if (key_ == ALLEGRO_KEY_SPACE)
-				Object::Player::SetSpell(player, true);
-			else if (key_ == ALLEGRO_KEY_ESCAPE)
+			if (!replayBot)
 			{
-				if (player)
+				if (key_ == ALLEGRO_KEY_UP)
 				{
-					player->requests.blowUp = true;
-					player->hitCoord = player->GetCoord();
-					Blasting(player->GetCoord());
+					if (!player1ControllInterface.up)
+					{
+						player1ControllInterface.up = true;
+						player1ControllInterface.upChanged = true;
+					}
 				}
+				else if (key_ == ALLEGRO_KEY_DOWN)
+				{
+					if (!player1ControllInterface.down)
+					{
+						player1ControllInterface.down = true;
+						player1ControllInterface.downChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_LEFT)
+				{
+					if (!player1ControllInterface.left)
+					{
+						player1ControllInterface.left = true;
+						player1ControllInterface.leftChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_RIGHT)
+				{
+					if (!player1ControllInterface.right)
+					{
+						player1ControllInterface.right = true;
+						player1ControllInterface.rightChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_SPACE)
+				{
+					if (!player1ControllInterface.space)
+					{
+						player1ControllInterface.space = true;
+						player1ControllInterface.spaceChanged = true;
+					}
+				}
+			}
+
+			if (key_ == ALLEGRO_KEY_ESCAPE)
+			{
+				recordBot->push(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter);
+				player->requests.blowUp = true;
+				player->hitCoord = player->GetCoord();
+				Blasting(player->GetCoord());
 			}
 		}
 		return false;
@@ -76,16 +179,49 @@ ActiveMap::ActiveMap()
 	{
 		if (player)
 		{
-			if (key_ == ALLEGRO_KEY_UP)
-				Object::Player::SetMoveUp(player, false);
-			else if (key_ == ALLEGRO_KEY_DOWN)
-				Object::Player::SetMoveDown(player, false);
-			else if (key_ == ALLEGRO_KEY_LEFT)
-				Object::Player::SetMoveLeft(player, false);
-			else if (key_ == ALLEGRO_KEY_RIGHT)
-				Object::Player::SetMoveRight(player, false);
-			else if (key_ == ALLEGRO_KEY_SPACE)
-				Object::Player::SetSpell(player, false);
+			if (!replayBot)
+			{
+				if (key_ == ALLEGRO_KEY_UP)
+				{
+					if (player1ControllInterface.up)
+					{
+						player1ControllInterface.up = false;
+						player1ControllInterface.upChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_DOWN)
+				{
+					if (player1ControllInterface.down)
+					{
+						player1ControllInterface.down = false;
+						player1ControllInterface.downChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_LEFT)
+				{
+					if (player1ControllInterface.left)
+					{
+						player1ControllInterface.left = false;
+						player1ControllInterface.leftChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_RIGHT)
+				{
+					if (player1ControllInterface.right)
+					{
+						player1ControllInterface.right = false;
+						player1ControllInterface.rightChanged = true;
+					}
+				}
+				else if (key_ == ALLEGRO_KEY_SPACE)
+				{
+					if (player1ControllInterface.space)
+					{
+						player1ControllInterface.space = false;
+						player1ControllInterface.spaceChanged = true;
+					}
+				}
+			}
 		}
 		return false;
 	};
@@ -94,6 +230,138 @@ ActiveMap::ActiveMap()
 	{
 		if (startLoop == 0)
 		{
+			if (replayBot)
+			{
+				if (replayBot->pop(ACTIVE_BOT_KEY_UP_UP, loopCounter))
+				{
+					player1ControllInterface.upChanged = true;
+					player1ControllInterface.up = false;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_UP_DOWN, loopCounter))
+				{
+					player1ControllInterface.downChanged = true;
+					player1ControllInterface.down = false;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_UP_LEFT, loopCounter))
+				{
+					player1ControllInterface.leftChanged = true;
+					player1ControllInterface.left = false;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_UP_RIGHT, loopCounter))
+				{
+					player1ControllInterface.rightChanged = true;
+					player1ControllInterface.right = false;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_UP_SPACE, loopCounter))
+				{
+					player1ControllInterface.spaceChanged = true;
+					player1ControllInterface.space = false;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_UP, loopCounter))
+				{
+					player1ControllInterface.upChanged = true;
+					player1ControllInterface.up = true;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_DOWN, loopCounter))
+				{
+					player1ControllInterface.downChanged = true;
+					player1ControllInterface.down = true;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_LEFT, loopCounter))
+				{
+					player1ControllInterface.leftChanged = true;
+					player1ControllInterface.left = true;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_RIGHT, loopCounter))
+				{
+					player1ControllInterface.rightChanged = true;
+					player1ControllInterface.right = true;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_SPACE, loopCounter))
+				{
+					player1ControllInterface.spaceChanged = true;
+					player1ControllInterface.space = true;
+				}
+				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter))
+				{
+					player->requests.blowUp = true;
+					player->hitCoord = player->GetCoord();
+					Blasting(player->GetCoord());
+				}
+			}
+
+
+			if (player1ControllInterface.upChanged)
+			{
+				player1ControllInterface.upChanged = false;
+				if (player1ControllInterface.up)
+				{
+					recordBot->push(ACTIVE_BOT_KEY_DOWN_UP, loopCounter);
+					Object::Player::SetMoveUp(player, true);
+				}
+				else
+				{
+					recordBot->push(ACTIVE_BOT_KEY_UP_UP, loopCounter);
+					Object::Player::SetMoveUp(player, false);
+				}
+			}
+			else if (player1ControllInterface.downChanged)
+			{
+				player1ControllInterface.downChanged = false;
+				if (player1ControllInterface.down)
+				{
+					recordBot->push(ACTIVE_BOT_KEY_DOWN_DOWN, loopCounter);
+					Object::Player::SetMoveDown(player, true);
+				}
+				else
+				{
+					recordBot->push(ACTIVE_BOT_KEY_UP_DOWN, loopCounter);
+					Object::Player::SetMoveDown(player, false);
+				}
+			}
+			else if (player1ControllInterface.rightChanged)
+			{
+				player1ControllInterface.rightChanged = false;
+				if (player1ControllInterface.right)
+				{
+					recordBot->push(ACTIVE_BOT_KEY_DOWN_RIGHT, loopCounter);
+					Object::Player::SetMoveRight(player, true);
+				}
+				else
+				{
+					recordBot->push(ACTIVE_BOT_KEY_UP_RIGHT, loopCounter);
+					Object::Player::SetMoveRight(player, false);
+				}
+			}
+			else if (player1ControllInterface.leftChanged)
+			{
+				player1ControllInterface.leftChanged = false;
+				if (player1ControllInterface.left)
+				{
+					recordBot->push(ACTIVE_BOT_KEY_DOWN_LEFT, loopCounter);
+					Object::Player::SetMoveLeft(player, true);
+				}
+				else
+				{
+					recordBot->push(ACTIVE_BOT_KEY_UP_LEFT, loopCounter);
+					Object::Player::SetMoveLeft(player, false);
+				}
+			}
+			else if (player1ControllInterface.spaceChanged)
+			{
+				player1ControllInterface.spaceChanged = false;
+				if (player1ControllInterface.space)
+				{
+					recordBot->push(ACTIVE_BOT_KEY_DOWN_SPACE, loopCounter);
+					Object::Player::SetSpell(player, true);
+				}
+				else
+				{
+					recordBot->push(ACTIVE_BOT_KEY_UP_SPACE, loopCounter);
+					Object::Player::SetSpell(player, false);
+				}
+			}
+
 			if (player)
 			{
 				ObjectBase::Stack stack;
@@ -142,6 +410,10 @@ ActiveMap::ActiveMap()
 				if (stopLoop == 0)
 				{
 					mainEvent->mapFinished(victory, loopCounter);
+					if (!replayBot)
+					{
+						recordBot->save(KIR4::time().str("%d_%m_%Y__%H_%M_%S"));
+					}
 				}
 				else
 				{
@@ -222,8 +494,13 @@ void ActiveMap::buildObjectsHolder()
 		++i;
 	});
 }
-void ActiveMap::startMap(const BluePrint &disp_map)
+void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot> &bot)
 {
+	player1ControllInterface.init();
+
+	recordBot = std::shared_ptr<ActiveMapBot>(new ActiveMapBot());
+	replayBot = bot;
+
 	victory = false;
 
 	loopCounter = 0;
@@ -638,19 +915,13 @@ Type::Flags ActiveMap::GetSectionFlags(Type::Coord coord)
 	return bedrock.GetFlags();
 }
 
-void ActiveMap::ObjectMove(ObjectBase::Stack *stack, Type::Coord from, Type::Coord to, Type::ID remain)
+void ActiveMap::ObjectMove(Type::Coord from, Type::Coord to, Type::ID remain)
 {
 	if (from != to && TestObject(from) && MAP.Test(to))
 	{
 		StepDisappear(to);
 
 		CopyObject(to, from);
-		//(*MAP[to].object) = MAP[from].object;
-		if (stack)
-		{
-			stack->o = MAP[to].object;
-			stack->specific = stack->o->specific;
-		}
 		ObjectCreate(MAP[from].object, remain, from);
 
 		MAP[to].ComeFrom = from;
@@ -798,6 +1069,21 @@ std::default_random_engine generator(rd());
 
 bool ActiveMap::rollTrigger(ObjectBase *obj_, float chancePerSec)
 {
-	std::uniform_int_distribution<unsigned> distribution(0, (int)(CPS * 100000));
-	return distribution(generator) <= (unsigned)(chancePerSec * 100000);
+	if (replayBot)
+	{
+		return replayBot->pop(ACTIVE_BOT_KEY_RAND_V1, loopCounter);
+	}
+	else
+	{
+		std::uniform_int_distribution<unsigned> distribution(0, (int)(CPS * 100000));
+		if (distribution(generator) <= (unsigned)(chancePerSec * 100000))
+		{
+			recordBot->push(ACTIVE_BOT_KEY_RAND_V1, loopCounter);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

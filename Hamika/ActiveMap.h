@@ -17,14 +17,57 @@
 #include <KIR\AL\KIR5_event_engine.h>
 
 #include <memory>
+#include <limits>
 
 #include "StatusBar.h"
 #include "MapDrawer.h"
 #include "Object.h"
 #include "ActiveBlock.h"
 
+
+class ActiveMapBot
+{
+	private: std::map<int, std::list<unsigned long long>> actions;
+
+	public: void push(int key, unsigned long long counter);
+	public: bool pop(int key, unsigned long long counter);
+	public: void load(const std::string &filename);
+	public: void save(const std::string &filename);
+};
+
+struct ControllInterface
+{
+	bool left = false;
+	bool leftChanged = true;
+	bool up = false;
+	bool upChanged = true;
+	bool down = false;
+	bool downChanged = true;
+	bool right = false;
+	bool rightChanged = true;
+	bool space = false;
+	bool spaceChanged = true;
+
+	inline void init()
+	{
+		left = false;
+		leftChanged = true;
+		up = false;
+		upChanged = true;
+		down = false;
+		downChanged = true;
+		right = false;
+		rightChanged = true;
+		space = false;
+		spaceChanged = true;
+	}
+};
+
 class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 {
+	private: ControllInterface player1ControllInterface;
+	private: std::shared_ptr<ActiveMapBot> recordBot;
+	private: std::shared_ptr<ActiveMapBot> replayBot;
 	private: std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>> map = std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>>(new Array2D<ActiveBlock<ObjectBase>>());
 
 	private: std::vector<ObjectBase *> objects;
@@ -57,7 +100,7 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: void CopyObjectToRemain(Type::Coord coordDst, Type::Coord coordSrc);
 	public: void CopyRemainToObject(Type::Coord coordDst, Type::Coord coordSrc);
 
-	public: void startMap(const BluePrint &disp_map);
+	public: void startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot> &bot);
 	public: virtual void Redrawn(Type::Coord coord);
 
 	public: void UpdateRun();
@@ -87,7 +130,7 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: virtual ObjectBase *GetRemain(Type::Coord);
 	public: virtual Type::Flags GetUnionFlags(Type::Coord);
 	public: virtual Type::Flags GetSectionFlags(Type::Coord);
-	public: virtual void ObjectMove(ObjectBase::Stack *stack, Type::Coord, Type::Coord, Type::ID);
+	public: virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID);
 	public: virtual void ObjectPut(Type::Coord, Type::ID);
 	public: virtual void RemainPut(Type::Coord, Type::ID);
 	public: virtual void ObjectArrived(Type::Coord);

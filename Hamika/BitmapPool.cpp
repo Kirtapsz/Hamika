@@ -111,7 +111,6 @@ void BitmapPool::addBitmap(const KIR5::Bitmap &bmp, const char *name)
 void BitmapPool::finalise(KIR5::Bitmap &errorBitmap_)
 {
 	addBitmap(errorBitmap_, "Error");
-	poolBitmap.save("TESZT_POOL_BITMAP.png");
 	for (auto &x : layout)
 	{
 		for (auto &y : x)

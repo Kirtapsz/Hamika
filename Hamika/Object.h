@@ -67,6 +67,7 @@ struct ObjectEventsModule
 	{
 		bool timer;
 		bool tick;
+		bool update;
 		bool topDraw;
 	} events = {0};
 
@@ -74,6 +75,7 @@ struct ObjectEventsModule
 	{
 		events.timer = false;
 		events.tick = false;
+		events.update = false;
 		events.topDraw = false;
 	}
 };
@@ -705,8 +707,15 @@ struct ObjectBase:
 		ObjectCoordModule<ObjectBase>::__init__(id, coord);
 		ObjectFlagsModule<ObjectBase>::__init__(id, coord);
 		ObjectDrawModule<ObjectBase>::__init__(id, coord);
-	}
 
+		MoveSpeed = {1,1};
+		RotationSpeed = 1;
+		TranslationTo = ObjectID::Space;
+		ObjectIDremain = ObjectID::Space;
+		currentspeed = 0;
+		hitactive = false;
+	}
+	
 	static BitmapPool bitmapPool;
 	static KIR5::SubBitmap unknownBmp;
 
@@ -730,7 +739,7 @@ struct ObjectBase:
 		virtual ObjectBase *GetRemain(Type::Coord) = 0;
 		virtual Type::Flags GetUnionFlags(Type::Coord) = 0;
 		virtual Type::Flags GetSectionFlags(Type::Coord) = 0;
-		virtual void ObjectMove(Stack *stack, Type::Coord, Type::Coord, Type::ID) = 0;
+		virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
 		virtual void ObjectPut(Type::Coord, Type::ID) = 0;
 		virtual void RemainPut(Type::Coord, Type::ID) = 0;
 		virtual void ObjectArrived(Type::Coord) = 0;
@@ -751,9 +760,9 @@ struct ObjectBase:
 		virtual bool rollTrigger(ObjectBase *obj_, float chancePerSec) = 0;
 	};
 	//ief easy
-	inline auto ObjectBase::Move(Stack *stack, Type::Coord from, Type::Coord to, Type::ID remain)
+	inline auto ObjectBase::Move(Type::Coord from, Type::Coord to, Type::ID remain)
 	{
-		return ief.ObjectMove(stack, from, to, remain);
+		return ief.ObjectMove(from, to, remain);
 	}
 	inline auto ObjectBase::Arrived()
 	{
@@ -775,6 +784,8 @@ struct ObjectBase:
 	{
 		return ief.GetRemain(coord);
 	}
+
+
 	public:
 	Type::Move MoveSpeed = {1,1};
 	Type::Speed RotationSpeed = 1;

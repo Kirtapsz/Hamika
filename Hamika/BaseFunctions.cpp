@@ -111,7 +111,7 @@ namespace Object
 					if (stack->o->ief.GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), stack->o->GetCoordDown(), 0);
+						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), 0);
 						regets(Specific, s);
 						stack->o->SetMove({stack->o->GetMove().x,-1});
 					}
@@ -288,7 +288,7 @@ namespace Object
 					else if (CanMoveForward(to, stack->o))
 					{
 						s->active = F_Step;
-						stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), to, 0);
+						stack->o->ief.ObjectMove(stack->o->GetCoord(), to, 0);
 						regets(Specific, s);
 						stack->o->SetMove(stack->o->GetRotation());
 						s->PriorityStep = false;
@@ -324,7 +324,7 @@ namespace Object
 						else if (CanMoveForward(to, stack->o))
 						{
 							s->active = F_Step;
-							stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), to, 0);
+							stack->o->ief.ObjectMove(stack->o->GetCoord(), to, 0);
 							regets(Specific, s);
 							stack->o->SetMove(stack->o->GetRotation());
 							s->PriorityStep = false;
@@ -450,7 +450,7 @@ namespace Object
 					if (s->rollCounter <= 0 && left && CanRollAffect(stack->o, stack->o->GetCoordLeft()))
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
+						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
 						stack->o->SetMove({1,stack->o->GetMove().y});
 						if (s->rollCounter >= 0)
 						{
@@ -464,7 +464,7 @@ namespace Object
 					else if (s->rollCounter >= 0 && CanRoll(stack->o, stack->o->GetCoordRight(), {stack->o->GetCoord().x + 1,stack->o->GetCoord().y + 1}) && CanRollAffect(stack->o, stack->o->GetCoordRight()))
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), stack->o->GetCoordRight(), 0);
+						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordRight(), 0);
 						stack->o->SetMove({-1,stack->o->GetMove().y});
 						if (s->rollCounter <= 0)
 						{
@@ -482,7 +482,7 @@ namespace Object
 					else if (s->rollCounter <= 0 && left)
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack, stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
+						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
 						stack->o->SetMove({1,stack->o->GetMove().y});
 						if (s->rollCounter >= 0)
 						{

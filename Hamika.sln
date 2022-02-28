@@ -1,30 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30309.148
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hamika", "Hamika\Hamika.vcxproj", "{967C196D-41FE-44E4-9777-3C509325C422}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
+		Debug Editor|x86 = Debug Editor|x86
 		Debug|x86 = Debug|x86
-		Laptop|x64 = Laptop|x64
-		Laptop|x86 = Laptop|x86
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{967C196D-41FE-44E4-9777-3C509325C422}.Debug|x64.ActiveCfg = Debug|x64
-		{967C196D-41FE-44E4-9777-3C509325C422}.Debug|x64.Build.0 = Debug|x64
+		{967C196D-41FE-44E4-9777-3C509325C422}.Debug Editor|x86.ActiveCfg = Debug Editor|Win32
+		{967C196D-41FE-44E4-9777-3C509325C422}.Debug Editor|x86.Build.0 = Debug Editor|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.Debug|x86.ActiveCfg = Debug|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.Debug|x86.Build.0 = Debug|Win32
-		{967C196D-41FE-44E4-9777-3C509325C422}.Laptop|x64.ActiveCfg = Laptop|x64
-		{967C196D-41FE-44E4-9777-3C509325C422}.Laptop|x64.Build.0 = Laptop|x64
-		{967C196D-41FE-44E4-9777-3C509325C422}.Laptop|x86.ActiveCfg = Laptop|Win32
-		{967C196D-41FE-44E4-9777-3C509325C422}.Laptop|x86.Build.0 = Laptop|Win32
-		{967C196D-41FE-44E4-9777-3C509325C422}.Release|x64.ActiveCfg = Release|x64
-		{967C196D-41FE-44E4-9777-3C509325C422}.Release|x64.Build.0 = Release|x64
 		{967C196D-41FE-44E4-9777-3C509325C422}.Release|x86.ActiveCfg = Release|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
