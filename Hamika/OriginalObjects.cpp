@@ -104,7 +104,7 @@ namespace Object
 				if (s->drawNumber != 0)
 				{
 					s->drawNumber = 0;
-					stack->o->requests_.draw = true;
+					stack->o->requests.draw = true;
 				}
 			}
 		}
@@ -161,7 +161,7 @@ namespace Object
 
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::GiveGravityDelay);
 
-			stack->o->events_.update = true;
+			stack->o->events.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -184,9 +184,9 @@ namespace Object
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
-				stack->o->events_.timer = true;
-				stack->o->events_.update = false;
-				stack->o->requests_.remove = false;
+				stack->o->events.timer = true;
+				stack->o->events.update = false;
+				stack->o->requests.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -199,8 +199,8 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->events_.clear();
-				stack->o->requests_.remove = true;
+				stack->o->events.clear();
+				stack->o->requests.remove = true;
 				return true;
 			}))
 			{
@@ -215,7 +215,7 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests_.remove)
+			if (stack->o->requests.remove)
 			{
 				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
@@ -684,10 +684,10 @@ namespace Object
 			s->drawNumber = 0;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::GiveGravityDelay | ObjectBase::PlayerDies);
 
-			stack->o->events_.timer = true;
-			stack->o->events_.update = true;
+			stack->o->events.timer = true;
+			stack->o->events.update = true;
 
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -711,9 +711,9 @@ namespace Object
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
-				stack->o->events_.timer = true;
-				stack->o->events_.update = false;
-				stack->o->requests_.remove = false;
+				stack->o->events.timer = true;
+				stack->o->events.update = false;
+				stack->o->requests.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -726,8 +726,8 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->events_.clear();
-				stack->o->requests_.remove = true;
+				stack->o->events.clear();
+				stack->o->requests.remove = true;
 				return true;
 			}))
 			{
@@ -770,7 +770,7 @@ namespace Object
 				s->drawNumber = 0;
 
 				stack->o->AddFlags(ObjectBase::Flags::PlayerDies);
-				stack->o->requests_.draw = true;
+				stack->o->requests.draw = true;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -785,7 +785,7 @@ namespace Object
 			{
 				s->electricDelayTimer = ACTION_TIMER_START;
 				stack->o->RemoveFlags(ObjectBase::Flags::PlayerDies);
-				stack->o->requests_.draw = true;
+				stack->o->requests.draw = true;
 				return true;
 			}))
 			{
@@ -800,7 +800,7 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests_.remove)
+			if (stack->o->requests.remove)
 			{
 				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
@@ -863,7 +863,7 @@ namespace Object
 			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
 			RollDown::Create(OBJECT_CREATER_CALL);
 
-			stack->o->events_.update = true;
+			stack->o->events.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -887,9 +887,9 @@ namespace Object
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
-				stack->o->events_.timer = true;
-				stack->o->events_.update = false;
-				stack->o->requests_.remove = false;
+				stack->o->events.timer = true;
+				stack->o->events.update = false;
+				stack->o->requests.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -902,8 +902,8 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->events_.clear();
-				stack->o->requests_.remove = true;
+				stack->o->events.clear();
+				stack->o->requests.remove = true;
 				return true;
 			}))
 			{
@@ -925,7 +925,7 @@ namespace Object
 				if (s->drawNumber != 0)
 				{
 					s->drawNumber = 0;
-					stack->o->requests_.draw = true;
+					stack->o->requests.draw = true;
 				}
 			}
 		}
@@ -939,7 +939,7 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests_.remove)
+			if (stack->o->requests.remove)
 			{
 				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
@@ -1413,7 +1413,7 @@ namespace Object
 			{
 				gets(Animator::Specific, s);
 				Animator::Create(OBJECT_CREATER_CALL);
-				s->SetFramesNumber(Electrons.getCount());
+				s->SetNumberOfFrames(Electrons.getCount());
 				s->SetAnimationTime(0.4f);
 			}
 
@@ -1443,7 +1443,7 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
 			gets(Animator::Specific, s);
-			Electrons[s->GetCurrentFrame()].drawScaled(x, y, w, h);
+			Electrons[s->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1460,8 +1460,8 @@ namespace Object
 		Slides SnikSnakMoveHorizontal;
 		Slides SnikSnakRotate;
 
-		const float moveSpeed = 4.401544;
-		const float rotateSpeed = 492.156863;
+		const float moveSpeed = 4.401544f;
+		const float rotateSpeed = 492.156863f;
 
 		struct Specific
 		{
@@ -1574,7 +1574,7 @@ namespace Object
 		{
 			gets(Animator::Specific, s);
 			Animator::Create(OBJECT_CREATER_CALL);
-			s->SetFramesNumber(Terminal.getCount());
+			s->SetNumberOfFrames(Terminal.getCount());
 			s->SetAnimationTime(animateTime);
 
 			stack->o->SetFlags(ObjectBase::ButtonPush);
@@ -1598,7 +1598,7 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
 			gets(Animator::Specific, s);
-			Terminal[s->GetCurrentFrame()].drawScaled(x, y, w, h);
+			Terminal[s->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1616,7 +1616,7 @@ namespace Object
 		{
 			maks(o);
 			gets(Animator::Specific, s);
-			if (s->AnimationTime != activatedAnimateTime)
+			if (s->time != activatedAnimateTime)
 			{
 				Type::Coord coord;
 				for (coord.x = 0; coord.x < o->ief.MapSize().width; coord.x++)
@@ -1647,7 +1647,7 @@ namespace Object
 
 		KIR5::SubBitmap Utility1;
 
-		const float moveSpeed = 4.401544;
+		const float moveSpeed = 4.401544f;
 
 		struct Specific
 		{
@@ -1721,7 +1721,7 @@ namespace Object
 		KIR5::SubBitmap Utility2Activated;
 
 		const float activateTime = 1.8f;
-		const float disappearTime = 0.23;
+		const float disappearTime = 0.23f;
 
 		struct Specific
 		{
@@ -1743,7 +1743,7 @@ namespace Object
 			s->drawNumber = 0;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerCanSniff | ObjectBase::Give1Unity | ObjectBase::PlayerStepOn);
 
-			stack->o->events_.update = true;
+			stack->o->events.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1768,9 +1768,9 @@ namespace Object
 			{
 				s->drawNumber = 0;
 				stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
-				stack->o->events_.timer = true;
-				stack->o->events_.update = false;
-				stack->o->requests_.remove = false;
+				stack->o->events.timer = true;
+				stack->o->events.update = false;
+				stack->o->requests.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -1779,13 +1779,13 @@ namespace Object
 				if (s->drawNumber != drawNumber)
 				{
 					s->drawNumber = drawNumber;
-					stack->o->requests_.draw = true;
+					stack->o->requests.draw = true;
 				}
 				return true;
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->events_.clear();
+				stack->o->events.clear();
 				stack->o->blowUp(stack->o->GetCoord());
 				return true;
 			}))
@@ -1801,7 +1801,7 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests_.remove)
+			if (stack->o->requests.remove)
 			{
 				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
@@ -1897,10 +1897,10 @@ namespace Object
 			s->explosionTimer = explosionTime;
 			s->drawNumber = 0;
 
-			stack->o->events_.timer = true;
-			stack->o->events_.topDraw = true;
+			stack->o->events.timer = true;
+			stack->o->events.topDraw = true;
 
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1932,7 +1932,7 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests_.remove = true;
+				stack->o->requests.remove = true;
 				return true;
 			}))
 			{
@@ -1985,13 +1985,13 @@ namespace Object
 
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 
-			stack->o->events_.timer = true;
-			stack->o->events_.topDraw = true;
+			stack->o->events.timer = true;
+			stack->o->events.topDraw = true;
 
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 
-			stack->o->ief.GetObject(stack->o->GetCoord())->events_.clear();
-			stack->o->ief.GetObject(stack->o->GetCoord())->requests_.clear();
+			stack->o->ief.GetObject(stack->o->GetCoord())->events.clear();
+			stack->o->ief.GetObject(stack->o->GetCoord())->requests.clear();
 			stack->o->ief.GetObject(stack->o->GetCoord())->RemoveFlags(ObjectBase::Flags::CanBeKilled);
 		}
 		void Print(OBJECT_PRINTER_PARAM)
@@ -2035,7 +2035,7 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests_.remove = true;
+				stack->o->requests.remove = true;
 				return true;
 			}))
 			{
@@ -2083,13 +2083,13 @@ namespace Object
 			if (stack->o->ief.IsObjectOut(stack->o->GetCoord()) && stack->o->ief.GetObjectOut(stack->o->GetCoord())->GetAbsMove() >= 0.5)
 				stack->o->ief.RemainPut(stack->o->ief.GetGoto(stack->o->GetCoord()), 33);
 
-			stack->o->events_.timer = true;
-			stack->o->events_.topDraw = true;
+			stack->o->events.timer = true;
+			stack->o->events.topDraw = true;
 
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 
-			stack->o->ief.GetObject(stack->o->GetCoord())->events_.clear();
-			stack->o->ief.GetObject(stack->o->GetCoord())->requests_.clear();
+			stack->o->ief.GetObject(stack->o->GetCoord())->events.clear();
+			stack->o->ief.GetObject(stack->o->GetCoord())->requests.clear();
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{

@@ -6,53 +6,58 @@ namespace Object
 {
 	namespace Animator
 	{
-		void Specific::SetAnimationTime(float AnimationTime)
+		void Specific::SetAnimationTime(float time)
 		{
-			this->AnimationTime = AnimationTime;
+			this->time = time;
+			this->timer = 0.f;
 		}
-		void Specific::SetFramesNumber(int FramesNumber)
+		void Specific::SetNumberOfFrames(int numberOfFrames)
 		{
-			this->FramesNumber = FramesNumber - 0.000001f;
+			this->numberOfFrames = numberOfFrames;
 		}
-		int Specific::GetCurrentFrame()
+		int Specific::GetDrawNumber()
 		{
-			return DrawNumber;
+			return drawNumber;
 		}
 
 
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			pops(Specific, s);
-			s->AnimationTimer = 0.f;
-			s->AnimationTime = 1.f;
-			s->FramesNumber = 10.f;
-			s->DrawNumber = 0;
+			s->timer = 0.f;
+			s->time = 0.f;
+			s->numberOfFrames = 0;
+			s->drawNumber = 0;
 
-			stack->o->events_.timer = true;
+			stack->o->events.timer = true;
 
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "AnimationTimer: " << s->AnimationTimer << "\n";
-			clog << "AnimationTime: " << s->AnimationTime << "\n";
-			clog << "FramesNumber: " << s->FramesNumber << "\n";
-			clog << "DrawNumber: " << s->DrawNumber << "\n";
+			clog << "Animator::timer: " << s->timer << "\n";
+			clog << "Animator::time: " << s->time << "\n";
+			clog << "Animator::numberOfFrames: " << s->numberOfFrames << "\n";
+			clog << "Animator::drawNumber: " << s->drawNumber << "\n";
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			pops(Specific, s);
-			s->AnimationTimer += CA;
-			if (s->AnimationTimer > s->AnimationTime)
-				s->AnimationTimer -= s->AnimationTime;
-			int DrawNumber = s->FramesNumber * (s->AnimationTimer / s->AnimationTime);
-			if (s->DrawNumber != DrawNumber)
+			s->timer += CA;
+			if (s->timer > s->time)
 			{
-				stack->o->requests_.draw = true;
-				s->DrawNumber = DrawNumber;
+				s->timer -= s->time;
 			}
-			stack->o->requests_.timer = true;
+
+			int drawNumber_ = (std::max)(0, (std::min)((int)(s->numberOfFrames - 1), (int)((1 - (s->timer / s->time)) * s->numberOfFrames)));
+			if (s->drawNumber != drawNumber_)
+			{
+				stack->o->requests.draw = true;
+				s->drawNumber = drawNumber_;
+			}
+
+			stack->o->requests.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -73,11 +78,11 @@ namespace Object
 			s->active = 0;
 			stack->o->EnablePhysics();
 
-			stack->o->events_.timer = true;
-			stack->o->events_.update = true;
+			stack->o->events.timer = true;
+			stack->o->events.update = true;
 
-			stack->o->requests_.timer = true;
-			stack->o->requests_.update = true;
+			stack->o->requests.timer = true;
+			stack->o->requests.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -103,7 +108,7 @@ namespace Object
 						stack->o->StopStep();
 				}
 			}
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -127,7 +132,7 @@ namespace Object
 					}
 					else if (!stack->o->ief.EnableUpdateSkip())
 					{
-						stack->o->requests_.update = true;
+						stack->o->requests.update = true;
 						return;
 					}
 				}
@@ -241,11 +246,11 @@ namespace Object
 			s->PriorityStep = true;
 			stack->o->DisablePhysics();
 
-			stack->o->events_.timer = true;
-			stack->o->events_.update = true;
+			stack->o->events.timer = true;
+			stack->o->events.update = true;
 
-			stack->o->requests_.timer = true;
-			stack->o->requests_.update = true;
+			stack->o->requests.timer = true;
+			stack->o->requests.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -281,7 +286,7 @@ namespace Object
 					stack->o->ief.ObjectArrived(stack->o->GetCoord());
 				}
 			}
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -311,7 +316,7 @@ namespace Object
 					}
 					else if (stack->o->ief.EnableUpdateSkip())
 					{
-						stack->o->requests_.update = true;
+						stack->o->requests.update = true;
 						return;
 					}
 					else
@@ -347,7 +352,7 @@ namespace Object
 						}
 						else if (stack->o->ief.EnableUpdateSkip())
 						{
-							stack->o->requests_.update = true;
+							stack->o->requests.update = true;
 							return;
 						}
 						else
@@ -425,11 +430,11 @@ namespace Object
 			s->active = 0;
 			s->rollCounter = 0;
 
-			stack->o->events_.timer = true;
-			stack->o->events_.update = true;
+			stack->o->events.timer = true;
+			stack->o->events.update = true;
 
-			stack->o->requests_.timer = true;
-			stack->o->requests_.update = true;
+			stack->o->requests.timer = true;
+			stack->o->requests.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -453,7 +458,7 @@ namespace Object
 				if (!stack->o->IsMoving())
 					stack->o->StopStep();
 			}
-			stack->o->requests_.timer = true;
+			stack->o->requests.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -498,7 +503,7 @@ namespace Object
 					}
 					else if (stack->o->ief.EnableUpdateSkip())
 					{
-						stack->o->requests_.update = true;
+						stack->o->requests.update = true;
 					}
 					else if (s->rollCounter <= 0 && left)
 					{

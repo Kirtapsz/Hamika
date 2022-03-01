@@ -78,12 +78,12 @@ struct ObjectEventsModule
 			update = false;
 		}
 
-	} events_ = {0};
+	} events = {0};
 
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
-		events_.clear();
-		events_.topDraw = false;
+		events.clear();
+		events.topDraw = false;
 	}
 };
 
@@ -150,16 +150,16 @@ struct ObjectRequestsModule:
 			blowUp = false;
 		}
 
-	} requests_ = {0};
+	} requests = {0};
 
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
-		requests_.clear();
+		requests.clear();
 	}
 
 	inline void blowUp(Type::Coord coord)
 	{
-		requests_.blowUp = true;
+		requests.blowUp = true;
 		hitCoord = coord;
 	}
 };
@@ -279,7 +279,7 @@ struct ObjectEventModule:
 
 	void RunUpdate()
 	{
-		requests_.update = false;
+		requests.update = false;
 		updateNumber = totalUpdateNumber++;
 		if (updaterFnc)
 		{
@@ -298,7 +298,7 @@ struct ObjectEventModule:
 	TIMER timerFnc;
 	void RunTimer()
 	{
-		requests_.timer = false;
+		requests.timer = false;
 		if (timerFnc)
 		{
 			Stack stack;
@@ -315,7 +315,7 @@ struct ObjectEventModule:
 	TICK tickerFnc;
 	void RunTick()
 	{
-		requests_.tick = false;
+		requests.tick = false;
 		if (tickerFnc)
 		{
 			Stack stack;
@@ -605,7 +605,7 @@ struct ObjectDrawModule:
 		if (NewDrawCoord != DrawCoord)
 		{
 			DrawCoord = NewDrawCoord;
-			requests_.draw = true;
+			requests.draw = true;
 			//ief.Redrawn(coord);
 		}
 	}

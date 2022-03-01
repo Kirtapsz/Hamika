@@ -67,7 +67,7 @@ bool ObjectBase::Roll(double PpM)
 
 void ObjectBase::Update()
 {
-	requests_.update = false;
+	requests.update = false;
 	UpdateNumber = SUpdateNumber++;
 	RunUpdate();
 }
@@ -225,7 +225,7 @@ bool ObjectBase::IsRotating()
 Type::Coord ObjectBase::GetForwardCoord()
 {
 	Type::Rotation
-		rotation = this->rotation + 0.01/*hibat�r�s*/;
+		rotation = this->rotation + 0.01f/*hibat�r�s*/;
 
 	if (rotation >= Type::Rotations::_315)
 		return GetCoordUp();
@@ -240,7 +240,7 @@ Type::Coord ObjectBase::GetForwardCoord()
 }
 Type::Coord ObjectBase::GetForwardCoord(Type::Rotation rotation)
 {
-	rotation += 0.01/*hibat�r�s*/;
+	rotation += 0.01f/*hibat�r�s*/;
 
 	if (rotation >= Type::Rotations::_315)
 		return GetCoordUp();
@@ -255,7 +255,7 @@ Type::Coord ObjectBase::GetForwardCoord(Type::Rotation rotation)
 }
 Type::Rotation ObjectBase::GetRoundRotation(Type::Rotation rotation)
 {
-	rotation += 0.01/*hibat�r�s*/;
+	rotation += 0.01f/*hibat�r�s*/;
 
 	if (rotation >= Type::Rotations::_315)
 		return Type::Rotations::Up;
@@ -316,22 +316,22 @@ void ObjectBase::Print()
 	clog << "			IsMoveDown: " << IsMoveDown() << "\n";
 	clog << "			IsMoveUp: " << IsMoveUp() << "\n";
 	clog << "		Events: ";
-	if (events_.timer) clog << "timer, ";
-	if (events_.tick) clog << "tick, ";
-	if (events_.update) clog << "update, ";
-	if (events_.topDraw) clog << "topDraw, ";
+	if (events.timer) clog << "timer, ";
+	if (events.tick) clog << "tick, ";
+	if (events.update) clog << "update, ";
+	if (events.topDraw) clog << "topDraw, ";
 	clog << "\n";
 	clog << "		Actions: ";
 	if (actions.move) clog << "move, ";
 	if (actions.rotate) clog << "rotate, ";
 	clog << "\n";
 	clog << "		Requests: ";
-	if (requests_.remove) clog << "timer, ";
-	if (requests_.remove) clog << "tick, ";
-	if (requests_.remove) clog << "update, ";
-	if (requests_.remove) clog << "draw, ";
-	if (requests_.remove) clog << "remove, ";
-	if (requests_.remove) clog << "blowUp, ";
+	if (requests.remove) clog << "timer, ";
+	if (requests.remove) clog << "tick, ";
+	if (requests.remove) clog << "update, ";
+	if (requests.remove) clog << "draw, ";
+	if (requests.remove) clog << "remove, ";
+	if (requests.remove) clog << "blowUp, ";
 	clog << "\n";
 	clog << "		MoveSpeed: " << GetMoveSpeed() << "\n";
 	clog << "		RotationSpeed: " << GetRotationSpeed() << "\n";
@@ -500,7 +500,7 @@ void ObjectBase::IncreaseSpeed(Type::Move::Type max)
 
 	if (GetFlags() & PhysicsSpeed)
 	{
-		currentspeed += 0.1;
+		currentspeed += 0.1f;
 		if (currentspeed >= max)
 			currentspeed = max;
 	}

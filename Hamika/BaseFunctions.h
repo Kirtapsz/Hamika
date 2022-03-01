@@ -25,7 +25,7 @@ namespace Object
 			}
 			else
 			{
-				obj->requests_.timer = true;
+				obj->requests.timer = true;
 				return timerRunning();
 			}
 		}
@@ -34,7 +34,7 @@ namespace Object
 			if (triggerEvent())
 			{
 				timer = duration;
-				obj->requests_.timer = true;
+				obj->requests.timer = true;
 				return timerStarted();
 			}
 		}
@@ -46,7 +46,7 @@ namespace Object
 		int drawNumber_ = bmp.getDrawNumber(1 - (timer / duration));
 		if (drawNumber != drawNumber_)
 		{
-			obj->requests_.draw=true;
+			obj->requests.draw=true;
 			drawNumber = drawNumber_;
 		}
 	}
@@ -56,7 +56,7 @@ namespace Object
 		int drawNumber_ = bmp.getDrawNumber(timer / duration);
 		if (drawNumber != drawNumber_)
 		{
-			obj->requests_.draw=true;
+			obj->requests.draw=true;
 			drawNumber = drawNumber_;
 		}
 	}
@@ -65,14 +65,14 @@ namespace Object
 	{
 		struct Specific
 		{
-			float AnimationTimer;
-			float AnimationTime;
-			float FramesNumber;
-			int DrawNumber;
+			float time;
+			float timer;
+			int numberOfFrames;
+			int drawNumber;
 
 			void SetAnimationTime(float AnimationTime);
-			void SetFramesNumber(int FramesNumber);
-			int GetCurrentFrame();
+			void SetNumberOfFrames(int FramesNumber);
+			int GetDrawNumber();
 		};
 
 
