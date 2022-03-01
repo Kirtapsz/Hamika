@@ -190,7 +190,7 @@ namespace Object
 				s->PassageTimer = PassageTime;
 				stack->o->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
 				s->flag = F_PassageDisappear;
-				stack->o->requests.draw = true;
+				stack->o->requests_.draw = true;
 				stack->o->ief.playerVictory();
 			}
 			else
@@ -218,7 +218,7 @@ namespace Object
 					{
 						s->flag = F_PushTry;
 						s->EffectTimer = PushEffectWaitTime;
-						stack->o->requests.draw = true;
+						stack->o->requests_.draw = true;
 						stack->o->SetRotation(rotation);
 					}
 					else if (s->flag == F_PushTry)
@@ -296,7 +296,7 @@ namespace Object
 					if (s->EffectTimer <= 0)
 					{
 						s->flag = F_None;
-						stack->o->requests.draw = true;
+						stack->o->requests_.draw = true;
 					}
 				}
 				else if (s->flag == F_PushRest)
@@ -305,7 +305,7 @@ namespace Object
 					if (s->EffectTimer <= 0)
 					{
 						s->flag = F_None;
-						stack->o->requests.draw = true;
+						stack->o->requests_.draw = true;
 					}
 				}
 
@@ -325,7 +325,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Up);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 						}
 						else if (s->MoveDown && CanSniff(stack->o, stack->o->GetCoordDown()))
 						{
@@ -334,7 +334,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Down);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 						}
 						else if (s->MoveLeft && CanSniff(stack->o, stack->o->GetCoordLeft()))
 						{
@@ -343,7 +343,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Left);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 						}
 						else if (s->MoveRight && CanSniff(stack->o, stack->o->GetCoordRight()))
 						{
@@ -352,7 +352,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Right);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 						}
 						else if (stack->o->ief.GetUnityCount() > 0)
 						{
@@ -376,7 +376,7 @@ namespace Object
 										stack->o->SetRotation(Type::Rotations::Up);
 										s->EffectTimer = SniffEffectTime;
 										s->flag = F_Sniff;
-										stack->o->requests.draw = true;
+										stack->o->requests_.draw = true;
 									}
 								}
 							}
@@ -400,7 +400,7 @@ namespace Object
 										stack->o->SetRotation(Type::Rotations::Down);
 										s->EffectTimer = SniffEffectTime;
 										s->flag = F_Sniff;
-										stack->o->requests.draw = true;
+										stack->o->requests_.draw = true;
 									}
 								}
 							}
@@ -424,7 +424,7 @@ namespace Object
 										stack->o->SetRotation(Type::Rotations::Left);
 										s->EffectTimer = SniffEffectTime;
 										s->flag = F_Sniff;
-										stack->o->requests.draw = true;
+										stack->o->requests_.draw = true;
 									}
 								}
 							}
@@ -448,7 +448,7 @@ namespace Object
 										stack->o->SetRotation(Type::Rotations::Right);
 										s->EffectTimer = SniffEffectTime;
 										s->flag = F_Sniff;
-										stack->o->requests.draw = true;
+										stack->o->requests_.draw = true;
 									}
 								}
 							}
@@ -505,7 +505,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Up);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 							return;
 						}
 						if (s->MoveDown && stack->o->GetObject(stack->o->GetCoordDown())->GetFlags() & ObjectBase::ButtonPush)
@@ -515,7 +515,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Down);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 							return;
 						}
 						if (s->MoveLeft && stack->o->GetObject(stack->o->GetCoordLeft())->GetFlags() & ObjectBase::ButtonPush)
@@ -525,7 +525,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Left);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 							return;
 						}
 						if (s->MoveRight && stack->o->GetObject(stack->o->GetCoordRight())->GetFlags() & ObjectBase::ButtonPush)
@@ -535,7 +535,7 @@ namespace Object
 							stack->o->SetRotation(Type::Rotations::Right);
 							s->EffectTimer = SniffEffectTime;
 							s->flag = F_Sniff;
-							stack->o->requests.draw = true;
+							stack->o->requests_.draw = true;
 							return;
 						}
 					}
@@ -564,7 +564,8 @@ namespace Object
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::CanBeKilled | ObjectBase::ExplosionType3);
 			stack->o->DisablePhysics();
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-			stack->o->events.timer = true;
+
+			stack->o->events_.timer = true;
 
 			stack->o->SetTranslationID(ObjectID::Infotron);
 			stack->o->SetObjectIDremain(ObjectID::Space);
@@ -589,8 +590,8 @@ namespace Object
 
 			s->PassageTimer = PassageTime;
 			s->flag = F_PassageDisappear;
-			stack->o->requests.draw = true;
-			stack->o->events.topDraw = true;
+
+			stack->o->events_.topDraw = true;
 		}
 
 		void Print(OBJECT_PRINTER_PARAM)
@@ -629,7 +630,7 @@ namespace Object
 					int DrawNum = 9.999999 * (1 - s->PassageTimer);
 					if (s->DrawNum != DrawNum)
 					{
-						stack->o->requests.draw = true;
+						stack->o->requests_.draw = true;
 						s->DrawNum = DrawNum;
 					}
 				}

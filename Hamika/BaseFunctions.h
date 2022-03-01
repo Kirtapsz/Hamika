@@ -6,8 +6,10 @@
 
 namespace Object
 {
+	constexpr float ACTION_TIMER_START = -1.0f;
 	inline bool ACTION_TIMER(float &timer,
 							 const float &duration,
+							 ObjectBase *obj,
 							 std::function<bool()> triggerEvent,
 							 std::function<bool()> timerStarted,
 							 std::function<bool()> timerRunning,
@@ -23,6 +25,7 @@ namespace Object
 			}
 			else
 			{
+				obj->requests_.timer = true;
 				return timerRunning();
 			}
 		}
@@ -31,6 +34,7 @@ namespace Object
 			if (triggerEvent())
 			{
 				timer = duration;
+				obj->requests_.timer = true;
 				return timerStarted();
 			}
 		}
@@ -42,7 +46,7 @@ namespace Object
 		int drawNumber_ = bmp.getDrawNumber(1 - (timer / duration));
 		if (drawNumber != drawNumber_)
 		{
-			obj->requests.draw=true;
+			obj->requests_.draw=true;
 			drawNumber = drawNumber_;
 		}
 	}
@@ -52,7 +56,7 @@ namespace Object
 		int drawNumber_ = bmp.getDrawNumber(timer / duration);
 		if (drawNumber != drawNumber_)
 		{
-			obj->requests.draw=true;
+			obj->requests_.draw=true;
 			drawNumber = drawNumber_;
 		}
 	}

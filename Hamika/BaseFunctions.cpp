@@ -27,7 +27,10 @@ namespace Object
 			s->AnimationTime = 1.f;
 			s->FramesNumber = 10.f;
 			s->DrawNumber = 0;
-			stack->o->events.timer = true;
+
+			stack->o->events_.timer = true;
+
+			stack->o->requests_.timer = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -46,9 +49,10 @@ namespace Object
 			int DrawNumber = s->FramesNumber * (s->AnimationTimer / s->AnimationTime);
 			if (s->DrawNumber != DrawNumber)
 			{
-				stack->o->requests.draw = true;
+				stack->o->requests_.draw = true;
 				s->DrawNumber = DrawNumber;
 			}
+			stack->o->requests_.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -67,8 +71,13 @@ namespace Object
 		{
 			pops(Specific, s);
 			s->active = 0;
-			stack->o->events.timer = true; stack->o->requests.update = true;
 			stack->o->EnablePhysics();
+
+			stack->o->events_.timer = true;
+			stack->o->events_.update = true;
+
+			stack->o->requests_.timer = true;
+			stack->o->requests_.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -94,6 +103,7 @@ namespace Object
 						stack->o->StopStep();
 				}
 			}
+			stack->o->requests_.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -117,7 +127,7 @@ namespace Object
 					}
 					else if (!stack->o->ief.EnableUpdateSkip())
 					{
-						stack->o->requests.update = true;
+						stack->o->requests_.update = true;
 						return;
 					}
 				}
@@ -229,8 +239,13 @@ namespace Object
 			pops(Specific, s);
 			s->active = 0;
 			s->PriorityStep = true;
-			stack->o->events.timer = true; stack->o->requests.update = true;
 			stack->o->DisablePhysics();
+
+			stack->o->events_.timer = true;
+			stack->o->events_.update = true;
+
+			stack->o->requests_.timer = true;
+			stack->o->requests_.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -266,6 +281,7 @@ namespace Object
 					stack->o->ief.ObjectArrived(stack->o->GetCoord());
 				}
 			}
+			stack->o->requests_.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -295,7 +311,7 @@ namespace Object
 					}
 					else if (stack->o->ief.EnableUpdateSkip())
 					{
-						stack->o->requests.update = true;
+						stack->o->requests_.update = true;
 						return;
 					}
 					else
@@ -331,7 +347,7 @@ namespace Object
 						}
 						else if (stack->o->ief.EnableUpdateSkip())
 						{
-							stack->o->requests.update = true;
+							stack->o->requests_.update = true;
 							return;
 						}
 						else
@@ -408,8 +424,12 @@ namespace Object
 			pops(Specific, s);
 			s->active = 0;
 			s->rollCounter = 0;
-			stack->o->events.timer = true;
-			stack->o->requests.update = true;
+
+			stack->o->events_.timer = true;
+			stack->o->events_.update = true;
+
+			stack->o->requests_.timer = true;
+			stack->o->requests_.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -433,6 +453,7 @@ namespace Object
 				if (!stack->o->IsMoving())
 					stack->o->StopStep();
 			}
+			stack->o->requests_.timer = true;
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -477,7 +498,7 @@ namespace Object
 					}
 					else if (stack->o->ief.EnableUpdateSkip())
 					{
-						stack->o->requests.update = true;
+						stack->o->requests_.update = true;
 					}
 					else if (s->rollCounter <= 0 && left)
 					{

@@ -452,10 +452,10 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
-			if (block.object->requests.draw || (block.remain->isExists && block.remain->requests.draw))
+			if (block.object->requests_.draw || (block.remain->isExists && block.remain->requests_.draw))
 			{
-				block.object->requests.draw = false;
-				block.remain->requests.draw = false;
+				block.object->requests_.draw = false;
+				block.remain->requests_.draw = false;
 				Redrawn(coord);
 			}
 		});
@@ -520,9 +520,9 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		{
 			if (block.Redrawn
 				&&
-				((/*block.object->isExists && */block.ComeFrom == coord && !block.object->events.topDraw)
+				((/*block.object->isExists && */block.ComeFrom == coord && !block.object->events_.topDraw)
 				 ||
-				 (block.remain->isExists && !block.remain->events.topDraw)))
+				 (block.remain->isExists && !block.remain->events_.topDraw)))
 			{
 				//x1 = coord.x * DrawSize.width;
 				//y1 = coord.y * DrawSize.height;
@@ -559,13 +559,13 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				{
 					//al_set_clipping_rectangle(x1 - DrawOffset.width, y1 - DrawOffset.height, x2 - x1, y2 - y1);
 
-					if (block.ComeFrom == coord && !block.object->events.topDraw)
+					if (block.ComeFrom == coord && !block.object->events_.topDraw)
 					{
 						block.object->SDraw();
 						block.object->DrawNumber = TotalObjectDrawCount++;
 						block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsNotMovingObjectDrawned;
 					}
-					if (block.remain->isExists && !block.remain->events.topDraw)
+					if (block.remain->isExists && !block.remain->events_.topDraw)
 					{
 						block.remain->SDraw();
 						block.remain->DrawNumber = TotalObjectDrawCount++;
@@ -581,7 +581,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
 		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
-			if (block.Redrawn && (block.ComeFrom != coord || block.object->events.topDraw))
+			if (block.Redrawn && (block.ComeFrom != coord || block.object->events_.topDraw))
 			{
 				//if (block.object->isExists && block.object->IsMoving())
 				{
@@ -593,7 +593,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		});
 		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
-			if (block.Redrawn && block.remain->isExists && block.remain->events.topDraw)
+			if (block.Redrawn && block.remain->isExists && block.remain->events_.topDraw)
 			{
 				block.remain->SDraw();
 				block.remain->DrawNumber = TotalObjectDrawCount++;

@@ -67,7 +67,7 @@ bool ObjectBase::Roll(double PpM)
 
 void ObjectBase::Update()
 {
-	requests.update = false;
+	requests_.update = false;
 	UpdateNumber = SUpdateNumber++;
 	RunUpdate();
 }
@@ -316,19 +316,22 @@ void ObjectBase::Print()
 	clog << "			IsMoveDown: " << IsMoveDown() << "\n";
 	clog << "			IsMoveUp: " << IsMoveUp() << "\n";
 	clog << "		Events: ";
-	if (events.timer) clog << "timer, ";
-	if (events.tick) clog << "tick, ";
-	if (events.topDraw) clog << "topDraw, ";
+	if (events_.timer) clog << "timer, ";
+	if (events_.tick) clog << "tick, ";
+	if (events_.update) clog << "update, ";
+	if (events_.topDraw) clog << "topDraw, ";
 	clog << "\n";
 	clog << "		Actions: ";
 	if (actions.move) clog << "move, ";
 	if (actions.rotate) clog << "rotate, ";
 	clog << "\n";
 	clog << "		Requests: ";
-	if (requests.remove) clog << "remove, ";
-	if (requests.blowUp) clog << "blowUp, ";
-	if (requests.update) clog << "update, ";
-	if (requests.draw) clog << "draw, ";
+	if (requests_.remove) clog << "timer, ";
+	if (requests_.remove) clog << "tick, ";
+	if (requests_.remove) clog << "update, ";
+	if (requests_.remove) clog << "draw, ";
+	if (requests_.remove) clog << "remove, ";
+	if (requests_.remove) clog << "blowUp, ";
 	clog << "\n";
 	clog << "		MoveSpeed: " << GetMoveSpeed() << "\n";
 	clog << "		RotationSpeed: " << GetRotationSpeed() << "\n";

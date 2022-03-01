@@ -104,7 +104,7 @@ namespace Object
 				if (s->drawNumber != 0)
 				{
 					s->drawNumber = 0;
-					stack->o->requests.draw = true;
+					stack->o->requests_.draw = true;
 				}
 			}
 		}
@@ -159,8 +159,9 @@ namespace Object
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
 
-			stack->o->requests.update = true;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::GiveGravityDelay);
+
+			stack->o->events_.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -175,16 +176,17 @@ namespace Object
 
 			if (ACTION_TIMER(s->disappearTimer,
 							 disappearTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return s->disappearTimer == -1;
+				return s->disappearTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
-				stack->o->requests.draw = true;
-				stack->o->events.timer = true;
-				stack->o->requests.remove = false;
+				stack->o->events_.timer = true;
+				stack->o->events_.update = false;
+				stack->o->requests_.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -197,7 +199,8 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests.remove = true;
+				stack->o->events_.clear();
+				stack->o->requests_.remove = true;
 				return true;
 			}))
 			{
@@ -212,9 +215,9 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests.remove)
+			if (stack->o->requests_.remove)
 			{
-				s->disappearTimer = -1;
+				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 		}
@@ -676,11 +679,15 @@ namespace Object
 		{
 			pops(Specific, s);
 			s->electricDelayTimer = 0;
-			s->electricTimer = -1;
+			s->electricTimer = ACTION_TIMER_START;
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::GiveGravityDelay | ObjectBase::PlayerDies);
-			stack->o->events.timer = true; stack->o->requests.update = true;
+
+			stack->o->events_.timer = true;
+			stack->o->events_.update = true;
+
+			stack->o->requests_.timer = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -696,16 +703,17 @@ namespace Object
 
 			if (ACTION_TIMER(s->disappearTimer,
 							 disappearTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return s->disappearTimer == -1;
+				return s->disappearTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
-				stack->o->requests.draw = true;
-				stack->o->events.timer = true;
-				stack->o->requests.remove = false;
+				stack->o->events_.timer = true;
+				stack->o->events_.update = false;
+				stack->o->requests_.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -718,7 +726,8 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests.remove = true;
+				stack->o->events_.clear();
+				stack->o->requests_.remove = true;
 				return true;
 			}))
 			{
@@ -728,9 +737,10 @@ namespace Object
 
 			if (ACTION_TIMER(s->electricDelayTimer,
 							 electricDelayTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return s->electricDelayTimer == -1;
+				return s->electricDelayTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
@@ -750,16 +760,17 @@ namespace Object
 
 			if (ACTION_TIMER(s->electricTimer,
 							 electricTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return stack->o->ief.rollTrigger(stack->o, triggerChance) || s->electricTimer == -1;
+				return stack->o->ief.rollTrigger(stack->o, triggerChance) || s->electricTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
 
 				stack->o->AddFlags(ObjectBase::Flags::PlayerDies);
-				stack->o->requests.draw = true;
+				stack->o->requests_.draw = true;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -772,9 +783,9 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				s->electricDelayTimer = -1;
+				s->electricDelayTimer = ACTION_TIMER_START;
 				stack->o->RemoveFlags(ObjectBase::Flags::PlayerDies);
-				stack->o->requests.draw = true;
+				stack->o->requests_.draw = true;
 				return true;
 			}))
 			{
@@ -789,9 +800,9 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests.remove)
+			if (stack->o->requests_.remove)
 			{
-				s->disappearTimer = -1;
+				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 		}
@@ -847,11 +858,12 @@ namespace Object
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->requests.update = true;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::Give1Aim);
 
 			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
 			RollDown::Create(OBJECT_CREATER_CALL);
+
+			stack->o->events_.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -867,16 +879,17 @@ namespace Object
 
 			if (ACTION_TIMER(s->disappearTimer,
 							 disappearTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return s->disappearTimer == -1;
+				return s->disappearTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
-				stack->o->requests.draw = true;
-				stack->o->events.timer = true;
-				stack->o->requests.remove = false;
+				stack->o->events_.timer = true;
+				stack->o->events_.update = false;
+				stack->o->requests_.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -889,7 +902,8 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests.remove = true;
+				stack->o->events_.clear();
+				stack->o->requests_.remove = true;
 				return true;
 			}))
 			{
@@ -911,7 +925,7 @@ namespace Object
 				if (s->drawNumber != 0)
 				{
 					s->drawNumber = 0;
-					stack->o->requests.draw = true;
+					stack->o->requests_.draw = true;
 				}
 			}
 		}
@@ -925,9 +939,9 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests.remove)
+			if (stack->o->requests_.remove)
 			{
-				s->disappearTimer = -1;
+				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 
@@ -1395,7 +1409,6 @@ namespace Object
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Infotron);
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
-			stack->o->events.timer = true;
 
 			{
 				gets(Animator::Specific, s);
@@ -1468,7 +1481,6 @@ namespace Object
 
 			stack->o->SetRotationSpeed(rotateSpeed);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-			stack->o->events.timer = true;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
 			stack->o->SetTranslationID(ObjectID::Space);
 
@@ -1570,7 +1582,6 @@ namespace Object
 		void Print(OBJECT_PRINTER_PARAM)
 		{
 			Animator::Print(OBJECT_PRINTER_CALL);
-
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -1654,7 +1665,6 @@ namespace Object
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Space);
-			stack->o->requests.update = true;
 
 			MoveDown::Create(OBJECT_CREATER_CALL);
 		}
@@ -1711,7 +1721,7 @@ namespace Object
 		KIR5::SubBitmap Utility2Activated;
 
 		const float activateTime = 1.8f;
-		const float disappearTime = 0.23;;
+		const float disappearTime = 0.23;
 
 		struct Specific
 		{
@@ -1731,8 +1741,9 @@ namespace Object
 			s->activateTimer = 0.f;
 			s->disappearTimer = 0.f;
 			s->drawNumber = 0;
-			stack->o->requests.update = true;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerCanSniff | ObjectBase::Give1Unity | ObjectBase::PlayerStepOn);
+
+			stack->o->events_.update = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1746,20 +1757,20 @@ namespace Object
 		{
 			pops(Specific, s);
 
-			if (ACTION_TIMER(s->activateTimer,
-							 activateTime,
+			if (ACTION_TIMER(s->disappearTimer,
+							 disappearTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return s->activateTimer == -1;
+				return s->disappearTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
-				s->drawNumber = (int(s->activateTimer * 10)) % 2;
-				stack->o->requests.draw = true;
-				stack->o->events.timer = true;
-				stack->o->requests.remove = false;
+				s->drawNumber = 0;
 				stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
-
+				stack->o->events_.timer = true;
+				stack->o->events_.update = false;
+				stack->o->requests_.remove = false;
 				return true;
 			},
 				[&stack, &s]()->bool
@@ -1768,44 +1779,14 @@ namespace Object
 				if (s->drawNumber != drawNumber)
 				{
 					s->drawNumber = drawNumber;
-					stack->o->requests.draw = true;
+					stack->o->requests_.draw = true;
 				}
 				return true;
 			},
 				[&stack, &s]()->bool
 			{
+				stack->o->events_.clear();
 				stack->o->blowUp(stack->o->GetCoord());
-				return true;
-			}))
-			{
-				return;
-			}
-
-			if (ACTION_TIMER(s->disappearTimer,
-							 disappearTime,
-							 [&stack, &s]()->bool
-			{
-				return s->disappearTimer == -1;
-			},
-							 [&stack, &s]()->bool
-			{
-				s->drawNumber = 0;
-				stack->o->requests.draw = true;
-				stack->o->events.timer = true;
-				stack->o->requests.remove = false;
-				return true;
-			},
-				[&stack, &s]()->bool
-			{
-				DRAW_NUMBER(s->disappearTimer,
-							disappearTime,
-							s->drawNumber,
-							stack->o, Utility2);
-				return true;
-			},
-				[&stack, &s]()->bool
-			{
-				stack->o->requests.remove = true;
 				return true;
 			}))
 			{
@@ -1820,9 +1801,9 @@ namespace Object
 		{
 			gets(Specific, s);
 
-			if (stack->o->requests.remove)
+			if (stack->o->requests_.remove)
 			{
-				s->disappearTimer = -1;
+				s->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 		}
@@ -1849,7 +1830,7 @@ namespace Object
 			maks(o);
 			gets(Specific, s);
 
-			s->activateTimer = -1;
+			s->activateTimer = ACTION_TIMER_START;
 			Timer(stack);
 		}
 	}
@@ -1916,8 +1897,10 @@ namespace Object
 			s->explosionTimer = explosionTime;
 			s->drawNumber = 0;
 
-			stack->o->events.timer = true;
-			stack->o->events.topDraw = true;
+			stack->o->events_.timer = true;
+			stack->o->events_.topDraw = true;
+
+			stack->o->requests_.timer = true;
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1930,6 +1913,7 @@ namespace Object
 			pops(Specific, s);
 			if (ACTION_TIMER(s->explosionTimer,
 							 explosionTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
 				return false;
@@ -1948,7 +1932,7 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests.remove = true;
+				stack->o->requests_.remove = true;
 				return true;
 			}))
 			{
@@ -1999,15 +1983,15 @@ namespace Object
 			s->drawNumber = 0;
 			s->rmobj = false;
 
-			stack->o->events.timer = true;
-			stack->o->events.topDraw = true;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 
-			//ief.ObjectVirtualArrived(GetCoord());
+			stack->o->events_.timer = true;
+			stack->o->events_.topDraw = true;
 
-			stack->o->ief.GetObject(stack->o->GetCoord())->events.tick = false;
-			stack->o->ief.GetObject(stack->o->GetCoord())->events.timer = false;
-			stack->o->ief.GetObject(stack->o->GetCoord())->requests.update = false;
+			stack->o->requests_.timer = true;
+
+			stack->o->ief.GetObject(stack->o->GetCoord())->events_.clear();
+			stack->o->ief.GetObject(stack->o->GetCoord())->requests_.clear();
 			stack->o->ief.GetObject(stack->o->GetCoord())->RemoveFlags(ObjectBase::Flags::CanBeKilled);
 		}
 		void Print(OBJECT_PRINTER_PARAM)
@@ -2020,6 +2004,7 @@ namespace Object
 
 			if (ACTION_TIMER(s->explosionTimer,
 							 explosionTime,
+							 stack->o,
 							 [&stack, &s]()->bool
 			{
 				return false;
@@ -2050,7 +2035,7 @@ namespace Object
 			},
 				[&stack, &s]()->bool
 			{
-				stack->o->requests.remove = true;
+				stack->o->requests_.remove = true;
 				return true;
 			}))
 			{
@@ -2087,8 +2072,6 @@ namespace Object
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			Explosion_033::Create(OBJECT_CREATER_CALL);
-			stack->o->events.timer = true;
-			stack->o->events.topDraw = true;
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 
 			if (stack->o->ief.GetComefrom(stack->o->GetCoord()) != stack->o->GetCoord() && stack->o->ief.GetRemain(stack->o->ief.GetComefrom(stack->o->GetCoord()))->id != ObjectID::Explosion)
@@ -2100,9 +2083,13 @@ namespace Object
 			if (stack->o->ief.IsObjectOut(stack->o->GetCoord()) && stack->o->ief.GetObjectOut(stack->o->GetCoord())->GetAbsMove() >= 0.5)
 				stack->o->ief.RemainPut(stack->o->ief.GetGoto(stack->o->GetCoord()), 33);
 
-			stack->o->ief.GetObject(stack->o->GetCoord())->events.tick = false;
-			stack->o->ief.GetObject(stack->o->GetCoord())->events.timer = false;
-			stack->o->ief.GetObject(stack->o->GetCoord())->requests.update = false;
+			stack->o->events_.timer = true;
+			stack->o->events_.topDraw = true;
+
+			stack->o->requests_.timer = true;
+
+			stack->o->ief.GetObject(stack->o->GetCoord())->events_.clear();
+			stack->o->ief.GetObject(stack->o->GetCoord())->requests_.clear();
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{

@@ -68,15 +68,22 @@ struct ObjectEventsModule
 		bool timer;
 		bool tick;
 		bool update;
+
 		bool topDraw;
-	} events = {0};
+
+		inline void clear()
+		{
+			timer = false;
+			tick = false;
+			update = false;
+		}
+
+	} events_ = {0};
 
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
-		events.timer = false;
-		events.tick = false;
-		events.update = false;
-		events.topDraw = false;
+		events_.clear();
+		events_.topDraw = false;
 	}
 };
 
@@ -124,23 +131,35 @@ struct ObjectRequestsModule:
 {
 	struct RequestsType
 	{
-		bool remove;
-		bool blowUp;
+		bool timer;
+		bool tick;
 		bool update;
 		bool draw;
-	} requests = {0};
+
+		bool remove;
+		bool blowUp;
+
+		inline void clear()
+		{
+			timer = false;
+			tick = false;
+			update = false;
+			draw = false;
+
+			remove = false;
+			blowUp = false;
+		}
+
+	} requests_ = {0};
 
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
-		requests.remove = false;
-		requests.blowUp = false;
-		requests.update = false;
-		requests.draw = false;
+		requests_.clear();
 	}
 
 	inline void blowUp(Type::Coord coord)
 	{
-		requests.blowUp = true;
+		requests_.blowUp = true;
 		hitCoord = coord;
 	}
 };
@@ -149,17 +168,6 @@ template<typename OBJECT_HANDLER>
 struct ObjectStackModule:
 	virtual ObjectBase_<OBJECT_HANDLER>
 {
-	//	Specific *s=(Specific*)(stack->specific); stack->specific+=sizeof(Specific);
-	//#define pops(Specific) Specific *s=(Specific*)(specific); specific+=sizeof(Specific);
-	////#define popsn(Specific,name) Specific *name=(Specific*)(stack->specific); stack->specific+=sizeof(Specific);
-	//
-	//#define getss(Specific) Specific *s=(Specific*)(stack->specific);
-	//#define gets(Specific) Specific *s=(Specific*)(specific);
-	//
-	////#define getsn(Specific,name) Specific *name=(Specific*)(stack->specific);
-	//#define maks(object) unsigned char *specific_=(unsigned char*)object->specific; unsigned char **specific=&specific_;
-
-
 	struct Stack
 	{
 		OBJECT_HANDLER *o = nullptr;
@@ -271,7 +279,7 @@ struct ObjectEventModule:
 
 	void RunUpdate()
 	{
-		requests.update = false;
+		requests_.update = false;
 		updateNumber = totalUpdateNumber++;
 		if (updaterFnc)
 		{
@@ -290,6 +298,7 @@ struct ObjectEventModule:
 	TIMER timerFnc;
 	void RunTimer()
 	{
+		requests_.timer = false;
 		if (timerFnc)
 		{
 			Stack stack;
@@ -306,6 +315,7 @@ struct ObjectEventModule:
 	TICK tickerFnc;
 	void RunTick()
 	{
+		requests_.tick = false;
 		if (tickerFnc)
 		{
 			Stack stack;
@@ -595,7 +605,7 @@ struct ObjectDrawModule:
 		if (NewDrawCoord != DrawCoord)
 		{
 			DrawCoord = NewDrawCoord;
-			requests.draw = true;
+			requests_.draw = true;
 			//ief.Redrawn(coord);
 		}
 	}
@@ -715,7 +725,7 @@ struct ObjectBase:
 		currentspeed = 0;
 		hitactive = false;
 	}
-	
+
 	static BitmapPool bitmapPool;
 	static KIR5::SubBitmap unknownBmp;
 

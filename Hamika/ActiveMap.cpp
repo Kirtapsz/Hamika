@@ -167,7 +167,7 @@ ActiveMap::ActiveMap()
 			if (key_ == ALLEGRO_KEY_ESCAPE)
 			{
 				recordBot->push(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter);
-				player->requests.blowUp = true;
+				player->requests_.blowUp = true;
 				player->hitCoord = player->GetCoord();
 				Blasting(player->GetCoord());
 			}
@@ -284,7 +284,7 @@ ActiveMap::ActiveMap()
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter))
 				{
-					player->requests.blowUp = true;
+					player->requests_.blowUp = true;
 					player->hitCoord = player->GetCoord();
 					Blasting(player->GetCoord());
 				}
@@ -374,14 +374,14 @@ ActiveMap::ActiveMap()
 
 			for (auto &o : objects)
 			{
-				if (o->isExists && o->events.timer)
+				if (o->isExists && o->events_.timer && o->requests_.timer)
 				{
 					o->RunTimer();
 				}
 			}
 			for (auto &o : remains)
 			{
-				if (o->isExists && o->events.timer)
+				if (o->isExists && o->events_.timer && o->requests_.timer)
 				{
 					o->RunTimer();
 				}
@@ -391,15 +391,15 @@ ActiveMap::ActiveMap()
 
 			map->foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
 			{
-				if (block.remain->isExists && block.remain->requests.remove)
+				if (block.remain->isExists && block.remain->requests_.remove)
 					DeleteRemain(coord);
 				if (block.object->isExists)
 				{
-					if (block.object->requests.remove)
+					if (block.object->requests_.remove)
 						DeleteObject(coord);
-					else if (block.object->requests.blowUp && block.object->GetFlags() & ObjectBase::Flags::ExplosionType1)
+					else if (block.object->requests_.blowUp && block.object->GetFlags() & ObjectBase::Flags::ExplosionType1)
 					{
-						block.object->requests.blowUp = false;
+						block.object->requests_.blowUp = false;
 						Blasting(coord);
 					}
 				}
@@ -439,14 +439,14 @@ ActiveMap::ActiveMap()
 
 			for (auto &o : objects)
 			{
-				if (o->isExists && o->events.tick)
+				if (o->isExists && o->events_.tick && o->requests_.tick)
 				{
 					o->RunTick();
 				}
 			}
 			for (auto &o : remains)
 			{
-				if (o->isExists && o->events.tick)
+				if (o->isExists && o->events_.tick && o->requests_.tick)
 				{
 					o->RunTick();
 				}
@@ -516,7 +516,6 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 		block.object = new ObjectBase(*this);
 		ObjectCreate(block.object, disp_map[coord].id, coord);
 		block.object->rotation = disp_map[coord].rotation;
-		block.object->requests.update;
 		block.remain = new ObjectBase(*this);
 		block.remain->isExists = false;
 
@@ -603,7 +602,7 @@ void ActiveMap::CopyRemainToObject(Type::Coord coordDst, Type::Coord coordSrc)
 
 void ActiveMap::ExplosionPut(Type::Coord coord, Type::ID IDto)
 {
-	if (MAP.Test(coord) && MAP[coord].object->requests.blowUp == false)
+	if (MAP.Test(coord) && MAP[coord].object->requests_.blowUp == false)
 	{
 		if (player == MAP[coord].object)
 		{
@@ -754,7 +753,7 @@ void ActiveMap::UpdateRun()
 	enableupdateskip = true;
 	map->foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
 	{
-		if (block.object->isExists && GetObject(coord)->requests.update && !block.object->IsMoving())
+		if (block.object->isExists && GetObject(coord)->events_.update && GetObject(coord)->requests_.update && !block.object->IsMoving())
 		{
 			GetObject(coord)->Update();
 		}
@@ -763,11 +762,11 @@ void ActiveMap::UpdateRun()
 	enableupdateskip = false;
 	map->reverse_foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
 	{
-		if (block.object->isExists && block.object->requests.update && !block.object->IsMoving())
+		if (block.object->isExists && block.object->events_.update && block.object->requests_.update && !block.object->IsMoving())
 		{
 			block.object->Update();
 		}
-		if (block.remain->isExists && block.remain->requests.update && !block.remain->IsMoving())
+		if (block.remain->isExists && block.remain->events_.update && block.remain->requests_.update && !block.remain->IsMoving())
 		{
 			block.remain->Update();
 		}
@@ -780,11 +779,11 @@ void ActiveMap::UpdateBlock(Type::Coord coord)
 	{
 		if (MAP[coord].object->isExists)
 		{
-			MAP[coord].object->requests.update = true;
+			MAP[coord].object->requests_.update = true;
 		}
 		if (MAP[coord].remain->isExists)
 		{
-			MAP[coord].remain->requests.update = true;
+			MAP[coord].remain->requests_.update = true;
 		}
 	}
 }
@@ -984,7 +983,7 @@ void ActiveMap::ObjectDisappear(Type::Coord coord)
 	{
 		CopyObjectToRemain(coord, coord);
 		//(*MAP[coord].remain) = MAP[coord].object;
-		MAP[coord].remain->requests.remove = true;
+		MAP[coord].remain->requests_.remove = true;
 
 		ObjectCreate(MAP[coord].object, MAP[coord].object->GetTranslationTo(), coord);
 
