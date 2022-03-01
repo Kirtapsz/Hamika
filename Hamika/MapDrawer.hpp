@@ -515,7 +515,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 		al_reset_clipping_rectangle();
 
-		al_hold_bitmap_drawing(true);
+		//al_hold_bitmap_drawing(true);
 		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn
@@ -524,40 +524,40 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				 ||
 				 (block.remain->isExists && !block.remain->events_.topDraw)))
 			{
-				//x1 = coord.x * DrawSize.width;
-				//y1 = coord.y * DrawSize.height;
-				//x2 = x1 + DrawSize.width;
-				//y2 = y1 + DrawSize.height;
+				x1 = coord.x * DrawSize.width;
+				y1 = coord.y * DrawSize.height;
+				x2 = x1 + DrawSize.width;
+				y2 = y1 + DrawSize.height;
 
-				//if (block.ComeFrom != coord && block.object->isExists)
-				//{
-				//	if (block.object->IsMoveRight())
-				//		x1 += DrawSize.width * (block.object->GetMove().x + 1);
-				//	else if (block.object->IsMoveLeft())
-				//		x2 += DrawSize.width * (block.object->GetMove().x - 1);
-
-				//	if (block.object->IsMoveDown())
-				//		y1 += DrawSize.height * (block.object->GetMove().y + 1);
-				//	else if (block.object->IsMoveUp())
-				//		y2 += DrawSize.height * (block.object->GetMove().y - 1);
-				//}
-
-				//if (block.GoTo != coord && MAP[block.GoTo].object->isExists)
-				//{
-				//	if (MAP[block.GoTo].object->IsMoveRight())
-				//		x2 += DrawSize.width * MAP[block.GoTo].object->GetMove().x;
-				//	else if (MAP[block.GoTo].object->IsMoveLeft())
-				//		x1 += DrawSize.width * MAP[block.GoTo].object->GetMove().x;
-
-				//	if (MAP[block.GoTo].object->IsMoveDown())
-				//		y2 += DrawSize.height * MAP[block.GoTo].object->GetMove().y;
-				//	else if (MAP[block.GoTo].object->IsMoveUp())
-				//		y1 += DrawSize.height * MAP[block.GoTo].object->GetMove().y;
-				//}
-
-				//if (x2 - x1 > 0 && y2 - y1 > 0)
+				if (block.ComeFrom != coord && block.object->isExists)
 				{
-					//al_set_clipping_rectangle(x1 - DrawOffset.width, y1 - DrawOffset.height, x2 - x1, y2 - y1);
+					if (block.object->IsMoveRight())
+						x1 += DrawSize.width * (block.object->GetMove().x + 1);
+					else if (block.object->IsMoveLeft())
+						x2 += DrawSize.width * (block.object->GetMove().x - 1);
+
+					if (block.object->IsMoveDown())
+						y1 += DrawSize.height * (block.object->GetMove().y + 1);
+					else if (block.object->IsMoveUp())
+						y2 += DrawSize.height * (block.object->GetMove().y - 1);
+				}
+
+				if (block.GoTo != coord && MAP[block.GoTo].object->isExists)
+				{
+					if (MAP[block.GoTo].object->IsMoveRight())
+						x2 += DrawSize.width * MAP[block.GoTo].object->GetMove().x;
+					else if (MAP[block.GoTo].object->IsMoveLeft())
+						x1 += DrawSize.width * MAP[block.GoTo].object->GetMove().x;
+
+					if (MAP[block.GoTo].object->IsMoveDown())
+						y2 += DrawSize.height * MAP[block.GoTo].object->GetMove().y;
+					else if (MAP[block.GoTo].object->IsMoveUp())
+						y1 += DrawSize.height * MAP[block.GoTo].object->GetMove().y;
+				}
+
+				if (x2 - x1 > 0 && y2 - y1 > 0)
+				{
+					al_set_clipping_rectangle(x1 - DrawOffset.width, y1 - DrawOffset.height, x2 - x1, y2 - y1);
 
 					if (block.ComeFrom == coord && !block.object->events_.topDraw)
 					{
@@ -574,11 +574,11 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				}
 			}
 		});
-		al_hold_bitmap_drawing(false);
+		//al_hold_bitmap_drawing(false);
 
-		//al_reset_clipping_rectangle();
+		al_reset_clipping_rectangle();
 
-		al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+		//al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
 		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn && (block.ComeFrom != coord || block.object->events_.topDraw))
@@ -600,7 +600,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsMovingObjectDrawned;
 			}
 		});
-		al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+		//al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
 
 		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
