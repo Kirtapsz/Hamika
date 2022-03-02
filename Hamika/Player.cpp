@@ -24,9 +24,9 @@ namespace Object
 		const float PushEffectWaitTime = 0.15f;
 		const float PushEffectRestTime = 0.15f;
 		const float SniffEffectTime = 0.15f;
-		const float PassageTime = 1.f;
 		const float moveSpeed = 4.401544f;
-		const float PassageSpeed = 4.375f;
+
+		constexpr float passageTime = 1.f / 4.401544f;
 
 
 		enum Flag:Type::Flags
@@ -54,12 +54,13 @@ namespace Object
 			bool MoveRight;
 
 			float PutUnityWaitTimer;
-			float PassageTimer;
 			float EffectTimer;
 
 			int DrawNum;
 
 			Type::Flags flag;
+
+			float passageTimer;
 		};
 
 
@@ -191,7 +192,7 @@ namespace Object
 			else if (stack->o->GetObject(to)->id == ObjectID::Exit && stack->o->ief.GetAimRemaining() == 0)
 			{
 				s->DrawNum = 0;
-				s->PassageTimer = PassageTime;
+				s->passageTimer = passageTime;
 				stack->o->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
 				s->flag = F_PassageDisappear;
 				stack->o->requests.draw = true;
@@ -213,7 +214,7 @@ namespace Object
 					stack->o->SetRotation(rotation);
 					stack->o->SetMoveUnsafe(rotation, {2,2});
 					stack->o->ief.GetObject(source)->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
-					s->PassageTimer = PassageTime;
+					s->passageTimer = passageTime;
 					return true;
 				}
 				else if (!toObject->IsMoving() && toObject->GetFlags() & push && toObject->CanMovePos(to2, rotation))
@@ -265,8 +266,8 @@ namespace Object
 			}
 			else if (s->flag == F_Passage)
 			{
-				s->PassageTimer -= PassageSpeed / CPS;
-				if (s->PassageTimer <= 0)
+				s->passageTimer -= CA;
+				if (s->passageTimer <= 0)
 				{
 					stack->o->SetMoveUnsafe({0,0});
 					stack->o->ief.ObjectArrived(stack->o->GetCoord());
@@ -274,12 +275,23 @@ namespace Object
 				}
 				else
 				{
-					Type::Move::Type
-						move = s->PassageTimer / (float)PassageTime * 2;
+					Type::Move::Type move = s->passageTimer / passageTime * 2;
 					stack->o->SetMoveUnsafe(stack->o->GetRotation(), {move,move});
-					int DrawNum = 9.999999 * s->PassageTimer;
+
+					int DrawNum = 0;
+
+					if (stack->o->GetRotation() == Type::Rotations::Up || stack->o->GetRotation() == Type::Rotations::Down)
+					{
+						DrawNum = PassageVertical.getDrawNumber((s->passageTimer / passageTime));
+					}
+					else
+					{
+						DrawNum = PassageHorizontal.getDrawNumber((s->passageTimer / passageTime));
+					}
+
 					if (s->DrawNum != DrawNum)
 					{
+						stack->o->requests.draw = true;
 						s->DrawNum = DrawNum;
 					}
 				}
@@ -592,10 +604,11 @@ namespace Object
 
 			gets(Specific, s);
 
-			s->PassageTimer = PassageTime;
+			s->passageTimer = passageTime;
 			s->flag = F_PassageDisappear;
 
 			stack->o->events.topDraw = true;
+			stack->o->requests.timer = true;
 		}
 
 		void Print(OBJECT_PRINTER_PARAM)
@@ -608,7 +621,7 @@ namespace Object
 			clog << "(KEY)MoveRight Is Active: " << s->MoveRight << "\n";
 			clog << "Flag: " << s->flag << "\n";
 			clog << "s->EffectTimer: " << s->EffectTimer << "\n";
-			clog << "PassageTimer: " << s->PassageTimer << "\n";
+			clog << "passageTimer: " << s->passageTimer << "\n";
 			clog << "PutUnityWaitTimer: " << s->PutUnityWaitTimer << "\n";
 			clog << "(BITMAP)Base Is Loaded: " << Base.getCount() << "\n";
 			clog << "(BITMAP)MovingVertical Is Loaded: " << MovingVertical.getCount() << "\n";
@@ -623,20 +636,31 @@ namespace Object
 			gets(Specific, s);
 			if (s->flag == F_PassageDisappear)
 			{
-				s->PassageTimer -= (PassageSpeed + 0.08) / CPS;
-				if (s->PassageTimer <= 0)
+				s->passageTimer -= CA;
+				if (s->passageTimer <= 0)
 				{
 					stack->o->ief.ObjectDisappear(stack->o->GetCoord());
-					s->DrawNum = 9;
+					stack->o->events.timer = true;
 				}
 				else
 				{
-					int DrawNum = 9.999999 * (1 - s->PassageTimer);
-					if (s->DrawNum != DrawNum)
-					{
-						stack->o->requests.draw = true;
-						s->DrawNum = DrawNum;
-					}
+					stack->o->requests.timer = true;
+				}
+				int DrawNum = 0;
+
+				if (stack->o->GetRotation() == Type::Rotations::Up || stack->o->GetRotation() == Type::Rotations::Down)
+				{
+					DrawNum = PassageVertical.getDrawNumber(1 - (s->passageTimer / passageTime));
+				}
+				else
+				{
+					DrawNum = PassageHorizontal.getDrawNumber(1 - (s->passageTimer / passageTime));
+				}
+
+				if (s->DrawNum != DrawNum)
+				{
+					stack->o->requests.draw = true;
+					s->DrawNum = DrawNum;
 				}
 			}
 		}

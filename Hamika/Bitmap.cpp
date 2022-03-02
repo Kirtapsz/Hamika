@@ -109,7 +109,7 @@ KIR5::SubBitmap &Slides::operator[](size_t i)
 {
 	if (i >= bitmaps.size())
 	{
-		//clog << KIR4::LRED << "Bitmap error! try to get not exists bitmap! [ " << i << " ]" << KIR4::eol;
+		clog << KIR4::LRED << "Bitmap error! try to get not exists bitmap! [ " << i << " ]" << KIR4::eol;
 		return errorBitmap;
 	}
 	else
