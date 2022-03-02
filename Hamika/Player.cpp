@@ -109,6 +109,10 @@ namespace Object
 			if (object->GetFlags() & ObjectBase::Give1Aim)
 			{
 				o->ief.AddAim(1);
+				if (o->ief.GetAimRemaining() == 0)
+				{
+					Exit_015::Open(o);
+				}
 			}
 			if (object->GetFlags() & ObjectBase::Give1Unity)
 			{

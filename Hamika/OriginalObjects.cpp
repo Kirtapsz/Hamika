@@ -976,19 +976,26 @@ namespace Object
 	{
 		const char *name = "015 - Exit";
 
-		KIR5::SubBitmap Exit;
+		Slides Exit;
+
+		constexpr float animateTime = 0.5f;
 
 		struct Specific
 		{
+			int drawNumber;
+			float animateTimer;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Exit = ObjectBase::bitmapPool.get("015-Exit");
+			Exit.initialize(ObjectBase::bitmapPool.get("015-Exit"), ObjectBase::bitmapPool.get("Error"));
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			pops(Specific, s);
+
+			s->drawNumber = 0;
+			s->animateTimer = 0.f;
 
 			stack->o->SetFlags(ObjectBase::CanBeExplosion);
 		}
@@ -999,6 +1006,37 @@ namespace Object
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			pops(Specific, s);
+
+			if (ACTION_TIMER(s->animateTimer,
+							 animateTime,
+							 stack->o,
+							 [&stack, &s]()->bool
+			{
+				return s->animateTimer == ACTION_TIMER_START;
+			},
+							 [&stack, &s]()->bool
+			{
+				s->drawNumber = 0;
+				stack->o->events.timer = true;
+				return true;
+			},
+				[&stack, &s]()->bool
+			{
+				DRAW_NUMBER(s->animateTimer,
+							animateTime,
+							s->drawNumber,
+							stack->o, Exit);
+				return true;
+			},
+				[&stack, &s]()->bool
+			{
+				stack->o->events.clear();
+				stack->o->requests.clear();
+				return true;
+			}))
+			{
+				return;
+			}
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
@@ -1011,11 +1049,30 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
 			pops(Specific, s);
-			Exit.drawScaled(x, y, w, h);
+			Exit[s->drawNumber].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
-			Exit.drawScaled(x, y, w, h);
+			Exit[Exit.getCount() - 1].drawScaled(x, y, w, h);
+		}
+
+		void Open(ObjectBase *o)
+		{
+			Type::Coord coord;
+			for (coord.x = 0; coord.x < o->ief.MapSize().width; coord.x++)
+			{
+				for (coord.y = 0; coord.y < o->ief.MapSize().height; coord.y++)
+				{
+					ObjectBase *oe = o->ief.GetObjectU(coord);
+					if (oe->id == ObjectID::Exit)
+					{
+						maks(oe);
+						gets(Specific, s);
+						s->animateTimer = ACTION_TIMER_START;
+						Timer(stack);
+					}
+				}
+			}
 		}
 	}
 

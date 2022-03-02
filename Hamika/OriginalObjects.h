@@ -269,6 +269,8 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+
+		void Open(ObjectBase *o);
 	}
 
 	//CrossPort 016
