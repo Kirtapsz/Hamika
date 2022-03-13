@@ -95,7 +95,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\KIR\KIR5\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -109,7 +109,7 @@
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
-    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\KIR\KIR5\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -123,7 +123,7 @@
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\KIR\KIR5\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -138,15 +138,15 @@
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(KIRLIB)\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|x64'">
-    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(KIRLIB)\KIR4\include;..\..\..\..\Allegro 5\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\..\..\KIR\KIR4\include;..\..\..\..\Allegro 5\include;..\..\..\..\KIR\KIR4\ALinclude;$(IncludePath)</IncludePath>
+    <IncludePath>$(KIRLIB)\KIR4\include;..\..\..\..\Allegro 5\include;$(KIRLIB)\KIR4\ALinclude;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\..\..\Allegro 5\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -209,31 +209,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_console.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_time.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_base.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap_target.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_button.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_clipping_rectangle.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_color.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_display.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event_engine.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_font.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_label.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_list_panel.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_main.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_control.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_tools.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_scroll_bar.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_text_box.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_md5.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_sha512.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\KIR5_string_conditional.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_files.cpp" />
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_system.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_console.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_time.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_base.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap_target.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_button.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_clipping_rectangle.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_color.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_display.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_event.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_event_engine.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_font.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_label.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_list_panel.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_main.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel_control.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel_tools.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_scroll_bar.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_text_box.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_md5.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_sha512.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_string_conditional.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp" />
     <ClCompile Include="ActiveMap.cpp" />
     <ClCompile Include="Array2D.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />

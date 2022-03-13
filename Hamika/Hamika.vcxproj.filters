@@ -107,10 +107,10 @@
     <ClCompile Include="Font.cpp">
       <Filter>Hamika\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_time.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_time.cpp">
       <Filter>KIR</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR4\source\KIR4_console.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_console.cpp">
       <Filter>KIR</Filter>
     </ClCompile>
     <ClCompile Include="Global.cpp">
@@ -119,64 +119,64 @@
     <ClCompile Include="BlueprintPanel.cpp">
       <Filter>Hamika\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_md5.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_md5.cpp">
       <Filter>KIR\hash</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\hash\KIR5_sha512.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_sha512.cpp">
       <Filter>KIR\hash</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_bitmap_target.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap_target.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_button.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_button.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_clipping_rectangle.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_clipping_rectangle.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_color.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_color.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_display.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_display.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_event.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_event_engine.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_event_engine.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_font.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_font.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_label.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_label.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_list_panel.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_list_panel.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_main.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_main.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_control.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel_control.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_panel_tools.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel_tools.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_scroll_bar.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_scroll_bar.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_text_box.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_text_box.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\AL\KIR5_base.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_base.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
     <ClCompile Include="EditorMiniMap.cpp">
@@ -197,13 +197,13 @@
     <ClCompile Include="BluePrintIO.cpp">
       <Filter>Hamika\World\Map</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_files.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp">
       <Filter>KIR\sys</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\sys\KIR5_system.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp">
       <Filter>KIR\sys</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\KIR\KIR5\source\KIR5_string_conditional.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_string_conditional.cpp">
       <Filter>KIR</Filter>
     </ClCompile>
     <ClCompile Include="BitmapPool.cpp">
