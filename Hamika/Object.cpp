@@ -431,13 +431,14 @@ void ObjectBase::Initialize()
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\022-OneWayPortUp.png"), "022-OneWayPortUp");
 
 	// 023
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\023-RAMChipsMini.png"), "023-RAMChipsMini");
+	KIR5::Bitmap RAMchip("Hamika\\Texture\\Block\\Original\\RAMchip.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 1, (RAMchip.height() / 2) * 1, (RAMchip.width() / 3), (RAMchip.height() / 2))), "023-RAMChipsMini");
 
 	// 024
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\024-RAMChipsLeft.png"), "024-RAMChipsLeft");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 0, (RAMchip.height() / 2) * 0, (RAMchip.width() / 3), (RAMchip.height() / 2))), "024-RAMChipsLeft");
 
 	// 025
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\025-RAMChipsRight.png"), "025-RAMChipsRight");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 1, (RAMchip.height() / 2) * 0, (RAMchip.width() / 3), (RAMchip.height() / 2))), "025-RAMChipsRight");
 
 	// 026
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\026-Electrons.png"), "026-Electrons");
@@ -468,10 +469,10 @@ void ObjectBase::Initialize()
 	// 034
 
 	// 035
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\035-RAMChipsTop.png"), "035-RAMChipsTop");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 2, (RAMchip.height() / 2) * 0, (RAMchip.width() / 3), (RAMchip.height() / 2))), "035-RAMChipsTop");
 
 	// 036
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\036-RAMChipsBottom.png"), "036-RAMChipsBottom");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 2, (RAMchip.height() / 2) * 1, (RAMchip.width() / 3), (RAMchip.height() / 2))), "036-RAMChipsBottom");
 
 	// 037
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\037-HardwareSwitch.png"), "037-HardwareSwitch");
