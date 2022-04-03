@@ -431,22 +431,25 @@ void ObjectBase::Initialize()
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\022-OneWayPortUp.png"), "022-OneWayPortUp");
 
 	// 023
-	KIR5::Bitmap RAMchip("Hamika\\Texture\\Block\\Original\\RAMchip.png");
-	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 1, (RAMchip.height() / 2) * 1, (RAMchip.width() / 3), (RAMchip.height() / 2))), "023-RAMChipsMini");
+	KIR5::Bitmap RAMchipBmp("Hamika\\Texture\\Block\\Original\\RAMchip.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchipBmp, (RAMchipBmp.width() / 3) * 1, (RAMchipBmp.height() / 2) * 1, (RAMchipBmp.width() / 3), (RAMchipBmp.height() / 2))), "023-RAMChipsMini");
 
 	// 024
-	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 0, (RAMchip.height() / 2) * 0, (RAMchip.width() / 3), (RAMchip.height() / 2))), "024-RAMChipsLeft");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchipBmp, (RAMchipBmp.width() / 3) * 0, (RAMchipBmp.height() / 2) * 0, (RAMchipBmp.width() / 3), (RAMchipBmp.height() / 2))), "024-RAMChipsLeft");
 
 	// 025
-	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 1, (RAMchip.height() / 2) * 0, (RAMchip.width() / 3), (RAMchip.height() / 2))), "025-RAMChipsRight");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchipBmp, (RAMchipBmp.width() / 3) * 1, (RAMchipBmp.height() / 2) * 0, (RAMchipBmp.width() / 3), (RAMchipBmp.height() / 2))), "025-RAMChipsRight");
 
 	// 026
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\026-Electrons.png"), "026-Electrons");
 
 	// 027
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\027-SnikSnakMoveVertical.png"), "027-SnikSnakMoveVertical");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\027-SnikSnakMoveHorizontal.png"), "027-SnikSnakMoveHorizontal");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\027-SnikSnakRotate.png"), "027-SnikSnakRotate");
+	KIR5::Bitmap SnikSnakBmp("Hamika\\Texture\\Block\\Original\\027-SnikSnak.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(SnikSnakBmp, (SnikSnakBmp.width() / 5) * 0, 0, (SnikSnakBmp.width() / 5), SnikSnakBmp.height())), "027-SnikSnakMoveUp");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(SnikSnakBmp, (SnikSnakBmp.width() / 5) * 1, 0, (SnikSnakBmp.width() / 5), SnikSnakBmp.height())), "027-SnikSnakMoveRight");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(SnikSnakBmp, (SnikSnakBmp.width() / 5) * 2, 0, (SnikSnakBmp.width() / 5), SnikSnakBmp.height())), "027-SnikSnakMoveDown");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(SnikSnakBmp, (SnikSnakBmp.width() / 5) * 3, 0, (SnikSnakBmp.width() / 5), SnikSnakBmp.height())), "027-SnikSnakMoveLeft");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(SnikSnakBmp, (SnikSnakBmp.width() / 5) * 4, 0, (SnikSnakBmp.width() / 5), SnikSnakBmp.height())), "027-SnikSnakRotate");
 
 	// 028
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\028-Terminal.png"), "028-Terminal");
@@ -469,10 +472,10 @@ void ObjectBase::Initialize()
 	// 034
 
 	// 035
-	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 2, (RAMchip.height() / 2) * 0, (RAMchip.width() / 3), (RAMchip.height() / 2))), "035-RAMChipsTop");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchipBmp, (RAMchipBmp.width() / 3) * 2, (RAMchipBmp.height() / 2) * 0, (RAMchipBmp.width() / 3), (RAMchipBmp.height() / 2))), "035-RAMChipsTop");
 
 	// 036
-	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchip, (RAMchip.width() / 3) * 2, (RAMchip.height() / 2) * 1, (RAMchip.width() / 3), (RAMchip.height() / 2))), "036-RAMChipsBottom");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(RAMchipBmp, (RAMchipBmp.width() / 3) * 2, (RAMchipBmp.height() / 2) * 1, (RAMchipBmp.width() / 3), (RAMchipBmp.height() / 2))), "036-RAMChipsBottom");
 
 	// 037
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\037-HardwareSwitch.png"), "037-HardwareSwitch");

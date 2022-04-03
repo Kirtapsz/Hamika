@@ -1513,8 +1513,10 @@ namespace Object
 	{
 		const char *name = "027 - SnikSnakMove";
 
-		Slides SnikSnakMoveVertical;
-		Slides SnikSnakMoveHorizontal;
+		Slides SnikSnakMoveUp;
+		Slides SnikSnakMoveRight;
+		Slides SnikSnakMoveDown;
+		Slides SnikSnakMoveLeft;
 		Slides SnikSnakRotate;
 
 		const float moveSpeed = 4.401544f;
@@ -1527,8 +1529,10 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			SnikSnakMoveVertical.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveVertical"), ObjectBase::bitmapPool.get("Error"));
-			SnikSnakMoveHorizontal.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveHorizontal"), ObjectBase::bitmapPool.get("Error"));
+			SnikSnakMoveUp.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveUp"), ObjectBase::bitmapPool.get("Error"));
+			SnikSnakMoveRight.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveRight"), ObjectBase::bitmapPool.get("Error"));
+			SnikSnakMoveDown.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveDown"), ObjectBase::bitmapPool.get("Error"));
+			SnikSnakMoveLeft.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveLeft"), ObjectBase::bitmapPool.get("Error"));
 			SnikSnakRotate.initialize(ObjectBase::bitmapPool.get("027-SnikSnakRotate"), ObjectBase::bitmapPool.get("Error"));
 		}
 		void Create(OBJECT_CREATER_PARAM)
@@ -1556,17 +1560,28 @@ namespace Object
 
 			MoveLeftWay::Timer(OBJECT_TIMER_CALL);
 
-			if (stack->o->IsMoveHorizontal())
+			if (stack->o->IsMoveUp())
 			{
-				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveHorizontal);
+				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveUp);
 			}
-			else if (stack->o->IsMoveVertical())
+			else if (stack->o->IsMoveRight())
 			{
-				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveVertical);
+				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveRight);
+			}
+			else if (stack->o->IsMoveDown())
+			{
+				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveDown);
+			}
+			else if (stack->o->IsMoveLeft())
+			{
+				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveLeft);
 			}
 			else
 			{
-				DRAW_NUMBER_R(stack->o->rotation, Type::Rotations::_360, s->drawNumber, stack->o, SnikSnakRotate);
+				DRAW_NUMBER_R(
+					ObjectRotationModule<float>::GetRealRotation(
+					stack->o->rotation+ (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
+					Type::Rotations::_360, s->drawNumber, stack->o, SnikSnakRotate);
 			}
 		}
 		void Tick(OBJECT_TICK_PARAM)
@@ -1587,19 +1602,19 @@ namespace Object
 			{
 				if (stack->o->IsMoveUp())
 				{
-					SnikSnakMoveVertical[s->drawNumber].drawScaled(x, y, w, h);
+					SnikSnakMoveUp[s->drawNumber].drawScaled(x, y, w, h);
 				}
 				else if (stack->o->IsMoveRight())
 				{
-					SnikSnakMoveHorizontal[s->drawNumber].drawScaled(x, y, w, h);
+					SnikSnakMoveRight[s->drawNumber].drawScaled(x, y, w, h);
 				}
 				else if (stack->o->IsMoveDown())
 				{
-					SnikSnakMoveVertical[s->drawNumber].drawScaled(x, y, w, h, ALLEGRO_FLIP_HORIZONTAL);
+					SnikSnakMoveDown[s->drawNumber].drawScaled(x, y, w, h);
 				}
 				else
 				{
-					SnikSnakMoveHorizontal[s->drawNumber].drawScaled(x, y, w, h, ALLEGRO_FLIP_HORIZONTAL);
+					SnikSnakMoveLeft[s->drawNumber].drawScaled(x, y, w, h);
 				}
 			}
 			else
