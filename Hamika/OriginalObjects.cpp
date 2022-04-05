@@ -1580,7 +1580,7 @@ namespace Object
 			{
 				DRAW_NUMBER_R(
 					ObjectRotationModule<float>::GetRealRotation(
-					stack->o->rotation+ (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
+						stack->o->rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
 					Type::Rotations::_360, s->drawNumber, stack->o, SnikSnakRotate);
 			}
 		}
