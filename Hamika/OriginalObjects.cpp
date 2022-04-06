@@ -1471,7 +1471,7 @@ namespace Object
 				gets(Animator::Specific, s);
 				Animator::Create(OBJECT_CREATER_CALL);
 				s->SetNumberOfFrames(Electrons.getCount());
-				s->SetAnimationTime(0.4f);
+				s->SetAnimationTime(0.3f);
 			}
 
 			MoveLeftWay::Create(OBJECT_CREATER_CALL);

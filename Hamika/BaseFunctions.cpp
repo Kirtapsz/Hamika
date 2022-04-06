@@ -8,8 +8,10 @@ namespace Object
 	{
 		void Specific::SetAnimationTime(float time)
 		{
+			std::uniform_real_distribution<float> distribution(0.f, time);
+
 			this->time = time;
-			this->timer = 0.f;
+			this->timer = distribution(generator);
 		}
 		void Specific::SetNumberOfFrames(int numberOfFrames)
 		{

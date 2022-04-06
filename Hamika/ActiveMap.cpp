@@ -2,7 +2,6 @@
 #include "MainEvent.h"
 #include "Global.h"
 
-#include <random>
 #include <fstream>
 
 #include <KIR/sys/KIR5_files.h>
@@ -1062,9 +1061,6 @@ bool ActiveMap::IamRemain(ObjectBase *o)
 	}
 	return true;
 }
-
-std::random_device rd;
-std::default_random_engine generator(rd());
 
 bool ActiveMap::rollTrigger(ObjectBase *obj_, float chancePerSec)
 {

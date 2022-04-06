@@ -6,8 +6,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <random>
 
 extern std::shared_ptr<KIR5::EventEngine> eventEngine;
+
+extern std::random_device rd;
+extern std::default_random_engine generator;
 
 constexpr float CPS = KIR5_60_CPS;
 constexpr float CA = 1 / CPS;
