@@ -410,25 +410,26 @@ void ObjectBase::Initialize()
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\015-Exit.png"), "015-Exit");
 
 	// 016
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\016-CrossPort.png"), "016-CrossPort");
+	KIR5::Bitmap PortsBmp("Hamika\\Texture\\Block\\Original\\Ports.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 6, PortsBmp.width(), PortsBmp.width())), "016-CrossPort");
 
 	// 017
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\017-DualPortHorizontal.png"), "017-DualPortHorizontal");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 2, PortsBmp.width(), PortsBmp.width())), "017-DualPortHorizontal");
 
 	// 018
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\018-DualPortVertical.png"), "018-DualPortVertical");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 5, PortsBmp.width(), PortsBmp.width())), "018-DualPortVertical");
 
 	// 019
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\019-OneWayPortDown.png"), "019-OneWayPortDown");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 3, PortsBmp.width(), PortsBmp.width())), "019-OneWayPortDown");
 
 	// 020
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\020-OneWayPortLeft.png"), "020-OneWayPortLeft");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 1, PortsBmp.width(), PortsBmp.width())), "020-OneWayPortLeft");
 
 	// 021
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\021-OneWayPortRight.png"), "021-OneWayPortRight");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 0, PortsBmp.width(), PortsBmp.width())), "021-OneWayPortRight");
 
 	// 022
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\022-OneWayPortUp.png"), "022-OneWayPortUp");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 4, PortsBmp.width(), PortsBmp.width())), "022-OneWayPortUp");
 
 	// 023
 	KIR5::Bitmap RAMchipBmp("Hamika\\Texture\\Block\\Original\\RAMchip.png");
