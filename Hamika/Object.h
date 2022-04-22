@@ -743,6 +743,7 @@ struct ObjectBase:
 		virtual void playerDead(ObjectBase *) = 0;
 		virtual void playerVictory() = 0;
 
+		virtual void BlowUpBlock(Type::Coord coord) = 0;
 		virtual Type::Flags GetBlockFlags(Type::Coord) = 0;
 		virtual ObjectBase *GetObject(Type::Coord) = 0;
 		virtual ObjectBase *GetObjectOut(Type::Coord) = 0;

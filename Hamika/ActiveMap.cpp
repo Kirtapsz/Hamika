@@ -168,7 +168,8 @@ ActiveMap::ActiveMap()
 				recordBot->push(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter);
 				player->requests.blowUp = true;
 				player->hitCoord = player->GetCoord();
-				Blasting(player->GetCoord());
+				player->blowUp(player->GetCoord());
+				player = nullptr;
 			}
 		}
 		return false;
@@ -545,8 +546,6 @@ void ActiveMap::Redrawn(Type::Coord coord)
 	drawer.Redrawn(coord);
 }
 
-
-
 void ActiveMap::CopyObject(Type::Coord coordDst, Type::Coord coordSrc)
 {
 	if (MAP.Test(coordDst) && MAP.Test(coordSrc))
@@ -608,28 +607,53 @@ void ActiveMap::ExplosionPut(Type::Coord coord, Type::ID IDto)
 			playerDead(player);
 		}
 
-		Type::ID Expid = ObjectID::Space;
-		if (MAP[coord].remain->isExists)
-		{
-			Expid = MAP[coord].remain->id;
-		}
-
 		DeleteRemain(coord);
 		if (MAP[coord].object->GetFlags() & ObjectBase::Flags::CanBeExplosion)
 		{
 			ObjectCreate(MAP[coord].remain, ObjectID::ExplosionExpansive, coord);
-			if (/*!(MAP[coord].object->GetFlags()&Object::Flags::ExplosionType1) && */IDto != 0 && (MAP[coord].object->GetTranslationTo() == 0 || rand() % 2))
-			{
-				MAP[coord].object->SetObjectIDremain(IDto);
-			}
+			MAP[coord].remain->SetObjectIDremain(IDto);
 		}
-		else if (Expid == ObjectID::Explosion || Expid == ObjectID::ExplosionEffect || Expid == ObjectID::ExplosionExpansive)
+		else
 		{
-			ObjectCreate(MAP[coord].remain, ObjectID::ExplosionEffect, coord);
+			Type::ID Expid = MAP[coord].remain->isExists ? Expid = MAP[coord].remain->id : ObjectID::Space;
+			if (Expid == ObjectID::Explosion || Expid == ObjectID::ExplosionEffect || Expid == ObjectID::ExplosionExpansive)
+			{
+				ObjectCreate(MAP[coord].remain, ObjectID::ExplosionEffect, coord);
+			}
 		}
 		Redrawn(coord);
 	}
 }
+
+void ActiveMap::BlowUpBlock(Type::Coord coord)
+{
+	auto object = GetObject(coord);
+	if (object->GetFlags() & ObjectBase::Flags::ExplosionType1)
+	{
+		if (object->GetAbsMove() > 0.5f)
+		{
+			object->blowUp(GetComefrom(coord));
+		}
+		else
+		{
+			object->blowUp(coord);
+		}
+	}
+
+	object = GetObjectOut(coord);
+	if (object->GetFlags() & ObjectBase::Flags::ExplosionType1)
+	{
+		if (object->GetAbsMove() < 0.5f)
+		{
+			object->blowUp(GetGoto(coord));
+		}
+		else
+		{
+			object->blowUp(coord);
+		}
+	}
+}
+
 void ActiveMap::Blasting(Type::Coord coord)
 {
 	if (MAP.Test(coord) && MAP[coord].object->isExists)
@@ -649,6 +673,7 @@ void ActiveMap::Blasting(Type::Coord coord)
 		//if (exploseNow)
 		//{
 		//	Type::ID
+		// 
 		//		remainID = MAP[coord].object->GetTranslationTo();
 		//	ObjectPut(coord, ObjectSpace::Create);
 		//	MAP[coord].object->SetTranslationID(remainID);
@@ -672,6 +697,22 @@ void ActiveMap::Blasting(Type::Coord coord)
 		{
 			MAP[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType5);
 		}
+
+		if (MAP[coord].remain->id != ObjectID::Explosion &&
+			MAP[coord].remain->id != ObjectID::ExplosionEffect &&
+			MAP[coord].remain->id != ObjectID::ExplosionExpansive)
+		{
+			if (player == MAP[coord].object)
+			{
+				playerDead(player);
+			}
+
+			DeleteRemain(coord);
+			ObjectCreate(MAP[coord].remain, ObjectID::Explosion, coord);
+			MAP[coord].object->SetObjectIDremain(ObjectID::Space);
+			Redrawn(coord);
+		}
+
 		UpdateSquare33({center.x + 1,center.y + 1});
 		UpdateSquare33({center.x - 1,center.y + 1});
 		UpdateSquare33({center.x + 1,center.y - 1});

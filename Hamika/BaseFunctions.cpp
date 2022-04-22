@@ -146,15 +146,7 @@ namespace Object
 	{
 		void Blasting(ObjectBase *o)
 		{
-			ObjectBase *object;
-
-			object = o->ief.GetObject(o->GetCoordDown());
-			if (object->GetFlags() & ObjectBase::Flags::ExplosionType1)
-				object->blowUp(o->GetCoordDown());
-
-			object = o->ief.GetObjectOut(o->GetCoordDown());
-			if (object->GetFlags() & ObjectBase::Flags::ExplosionType1 && object->GetAbsMove() > 0.5f)
-				object->blowUp(o->GetCoordDown());
+			o->ief.BlowUpBlock(o->GetCoordDown());
 		}
 
 		void Create(OBJECT_CREATER_PARAM)
@@ -201,15 +193,7 @@ namespace Object
 	{
 		void Blasting(Type::Coord coord, ObjectBase *o)
 		{
-			ObjectBase *object;
-
-			object = o->ief.GetObject(coord);
-			if (object->GetFlags() & ObjectBase::Flags::CanBeKilled)
-				object->blowUp(coord);
-
-			object = o->ief.GetObjectOut(coord);
-			if (object->GetFlags() & ObjectBase::Flags::CanBeKilled && object->GetAbsMove() > 0.25f)
-				object->blowUp(coord);
+			o->ief.BlowUpBlock(coord);
 		}
 		bool CanMoveForward(Type::Coord to, ObjectBase *o)
 		{

@@ -1734,7 +1734,7 @@ namespace Object
 		{
 			pops(Specific, s);
 			s->active = false;
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
+			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3 | ObjectBase::CanPushLeft | ObjectBase::CanPushRight);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Space);
 
@@ -1951,7 +1951,7 @@ namespace Object
 
 		Slides Blasting;
 
-		const float explosionTime = 1.f;
+		const float explosionTime = 0.6f;
 
 		struct Specific
 		{
@@ -2035,8 +2035,7 @@ namespace Object
 	{
 		const char *name = "033 - Explosion";
 
-		const float explosionTime = 0.6f;
-		const float blastingTime = 0.3f;
+		const float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
 
 		struct Specific
 		{
@@ -2051,7 +2050,7 @@ namespace Object
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			pops(Specific, s);
-			s->explosionTimer = explosionTime;
+			s->explosionTimer = ExplosionEffect_032::explosionTime;
 			s->drawNumber = 0;
 			s->rmobj = false;
 
@@ -2075,7 +2074,7 @@ namespace Object
 			pops(Specific, s);
 
 			if (ACTION_TIMER(s->explosionTimer,
-							 explosionTime,
+							 ExplosionEffect_032::explosionTime,
 							 stack->o,
 							 [&stack, &s]()->bool
 			{
@@ -2090,17 +2089,19 @@ namespace Object
 				if (!s->rmobj && s->explosionTimer <= blastingTime)
 				{
 					if (stack->o->ief.GetObject(stack->o->GetCoord())->GetFlags() & ObjectBase::ExplosionType1)
-						stack->o->ief.GetObject(stack->o->GetCoord())->blowUp(stack->o->GetCoord());
+					{
+						stack->o->ief.BlowUpBlock(stack->o->GetCoord());
+					}
 					else
 					{
 						stack->o->ief.ObjectVirtualArrived(stack->o->GetCoord());
-						stack->o->ief.ObjectPut(stack->o->GetCoord(), stack->o->ief.GetObject(stack->o->GetCoord())->GetObjectIDremain());
+						stack->o->ief.ObjectPut(stack->o->GetCoord(), stack->o->GetObjectIDremain());
 					}
 					s->rmobj = true;
 				}
 
 				DRAW_NUMBER(s->explosionTimer,
-							explosionTime,
+							ExplosionEffect_032::explosionTime,
 							s->drawNumber,
 							stack->o, ExplosionEffect_032::Blasting);
 				return true;
@@ -2145,15 +2146,6 @@ namespace Object
 		{
 			Explosion_033::Create(OBJECT_CREATER_CALL);
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
-
-			if (stack->o->ief.GetComefrom(stack->o->GetCoord()) != stack->o->GetCoord() && stack->o->ief.GetRemain(stack->o->ief.GetComefrom(stack->o->GetCoord()))->id != ObjectID::Explosion)
-			{
-				stack->o->ief.RemainPut(stack->o->ief.GetComefrom(stack->o->GetCoord()), 32);
-
-				//ief.ObjectVirtualArrived(GetCoord());
-			}
-			if (stack->o->ief.IsObjectOut(stack->o->GetCoord()) && stack->o->ief.GetObjectOut(stack->o->GetCoord())->GetAbsMove() >= 0.5)
-				stack->o->ief.RemainPut(stack->o->ief.GetGoto(stack->o->GetCoord()), 33);
 
 			stack->o->events.timer = true;
 			stack->o->events.topDraw = true;

@@ -94,7 +94,6 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: ActiveMap();
 	public: ~ActiveMap();
 
-
 	public: void CopyObject(Type::Coord coordDst, Type::Coord coordSrc);
 	public: void CopyRemain(Type::Coord coordDst, Type::Coord coordSrc);
 	public: void CopyObjectToRemain(Type::Coord coordDst, Type::Coord coordSrc);
@@ -114,6 +113,7 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 
 	public: void DeleteRemain(Type::Coord coord);
 	public: void DeleteObject(Type::Coord coord);
+	public: void BlowUpBlock(Type::Coord coord);
 	public: void Blasting(Type::Coord coord);
 	public: void StepDisappear(Type::Coord coord);
 		  //public: void SetObject(Type::Coord coord, ObjectBase *object);
