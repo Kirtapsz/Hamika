@@ -222,14 +222,14 @@ namespace Object
 		{
 			Type::Coord
 				CoordLeft = o->GetForwardCoord(o->GetRealRotation(o->GetRotation() - Type::Rotations::_90));
-			return o->CanMovePos(CoordLeft, o->GetRotation()) || CanExlosive(CoordLeft, o);
+			return o->CanMovePos(CoordLeft, o->GetRealRotation(o->GetRotation() - Type::Rotations::_90)) || CanExlosive(CoordLeft, o);
 		}
 
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			pops(Specific, s);
 			s->active = 0;
-			s->PriorityStep = true;
+			s->PriorityStep = false;
 			stack->o->DisablePhysics();
 
 			stack->o->events.timer = true;
