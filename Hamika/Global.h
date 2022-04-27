@@ -40,3 +40,15 @@ inline std::string toLower(const std::string &in_)
 
 std::vector<std::string> split(const std::string &s, char separator);
 std::map<std::string, std::string> parse(const std::string &s);
+
+template <typename T>
+inline T &reach(std::shared_ptr<T> &map)
+{
+	return *map;
+}
+
+template <typename T>
+inline const T &reach(const std::shared_ptr<T> &map)
+{
+	return *map;
+}

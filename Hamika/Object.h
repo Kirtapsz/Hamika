@@ -247,7 +247,7 @@ struct ObjectEventModule:
 #define OBJECT_PRINTER_PARAM ObjectBase::Stack *stack
 #define OBJECT_PRINTER_CALL stack
 	typedef void(*PRINT)(Stack *);
-	PRINT printFnc;
+	PRINT printFnc = nullptr;
 	void RunPrinter()
 	{
 		if (printFnc)
@@ -263,7 +263,7 @@ struct ObjectEventModule:
 #define OBJECT_CREATER_PARAM ObjectBase::Stack *stack
 #define OBJECT_CREATER_CALL stack
 	typedef void(*CREATER)(Stack *);
-	void RunCreate(CREATER creater = NULL);
+	void RunCreate(CREATER creater = nullptr);
 
 	//INICIALIZÁLÓ
 #define OBJECT_INITIALIZER_PARAM
@@ -273,9 +273,9 @@ struct ObjectEventModule:
 #define OBJECT_UPDATE_PARAM ObjectBase::Stack *stack
 #define OBJECT_UPDATE_CALL stack
 	typedef void(*UPDATE)(Stack *);
-	UPDATE updaterFnc;
-	unsigned long long updateNumber;
-	unsigned long long totalUpdateNumber;
+	UPDATE updaterFnc = nullptr;
+	unsigned long long updateNumber = 0;
+	unsigned long long totalUpdateNumber = 0;
 
 	void RunUpdate()
 	{
@@ -295,7 +295,7 @@ struct ObjectEventModule:
 #define OBJECT_TIMER_PARAM ObjectBase::Stack *stack
 #define OBJECT_TIMER_CALL stack
 	typedef void(*TIMER)(Stack *);
-	TIMER timerFnc;
+	TIMER timerFnc = nullptr;
 	void RunTimer()
 	{
 		requests.timer = false;
@@ -312,7 +312,7 @@ struct ObjectEventModule:
 #define OBJECT_TICK_PARAM ObjectBase::Stack *stack
 #define OBJECT_TICK_CALL stack
 	typedef void(*TICK)(Stack *);
-	TICK tickerFnc;
+	TICK tickerFnc = nullptr;
 	void RunTick()
 	{
 		requests.tick = false;
@@ -448,7 +448,7 @@ struct ObjectCoordModule:
 		this->coord = coord;
 	}
 
-	Type::Coord coord;
+	Type::Coord coord = Type::Coord::Invalid;
 
 	Type::Coord GetCoord() const
 	{
@@ -637,7 +637,7 @@ struct ObjectDrawModule:
 	unsigned long long int drawAtOnceCounter = 0;//ez az objektum hányszor lett újrarajzolva egy ciklus alatt
 	unsigned long long int drawCounterID = 0;//az objektum hányadikként lett rajzolva az összesbõl
 	static unsigned long long int totalDrawCounter;//az összes objektum eddigi újrarajzolása
-	DRAWNER drawnerFnc;
+	DRAWNER drawnerFnc = nullptr;
 	void RunSDraw()//teszteés céljából hogy a conter mûködjön
 	{
 		drawCounter++;

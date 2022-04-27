@@ -133,7 +133,7 @@ void ObjectCreate(ObjectBase *object, Type::ID id, Type::Coord coord, ObjectBase
 	}
 	else
 	{
-		clog << "creater was NULL at ID: " << id << KIR4::eol;
+		clog << "creater was nullptr at ID: " << id << KIR4::eol;
 	}
 }
 

@@ -1,5 +1,5 @@
-#ifndef __MAP_DRAWNER_HPP__
-#define __MAP_DRAWNER_HPP__
+#ifndef MAP_DRAWNER_HPP__
+#define MAP_DRAWNER_HPP__
 
 // https://www.allegro.cc/manual/5/al_hold_bitmap_drawing
 
@@ -9,9 +9,6 @@
 #include <KIR\AL\KIR5_color.h>
 #include <KIR\AL\KIR5_bitmap_target.h>
 #include <KIR\KIR4_console.h>
-
-#define MAP (*map)
-
 
 //struct StatisticsTimer
 //{
@@ -60,41 +57,41 @@ void MapDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
 	if (map->Test(coord))
 	{
 		clog << "====== (" << coord.x << ";" << coord.y << ")" << KIR4::eol;
-		clog << "ComeFrom: (" << MAP[coord].ComeFrom.x << ";" << MAP[coord].ComeFrom.y << ")" << KIR4::eol;
-		clog << "GoTo: (" << MAP[coord].GoTo.x << ";" << MAP[coord].GoTo.y << ")" << KIR4::eol;
+		clog << "ComeFrom: (" << reach(map)[coord].ComeFrom.x << ";" << reach(map)[coord].ComeFrom.y << ")" << KIR4::eol;
+		clog << "GoTo: (" << reach(map)[coord].GoTo.x << ";" << reach(map)[coord].GoTo.y << ")" << KIR4::eol;
 
-		clog << "DrawOptions ( " << MAP[coord].DrawType << " ) : ";
-		if (MAP[coord].DrawType & ActiveBlock::DrawType::Cleared)
+		clog << "DrawOptions ( " << reach(map)[coord].DrawType << " ) : ";
+		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::Cleared)
 			clog << "Cleared, ";
-		if (MAP[coord].DrawType & ActiveBlock::DrawType::IsMovingObjectDrawned)
+		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::IsMovingObjectDrawned)
 			clog << "MovObjDraw, ";
-		if (MAP[coord].DrawType & ActiveBlock::DrawType::IsNotMovingObjectDrawned)
+		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::IsNotMovingObjectDrawned)
 			clog << "NotMovObjDraw, ";
-		if (MAP[coord].DrawType & ActiveBlock::DrawType::IsNotMovingRemainDrawned)
+		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::IsNotMovingRemainDrawned)
 			clog << "NotMovRemDraw, ";
-		if (MAP[coord].DrawType & ActiveBlock::DrawType::LastDrawned)
+		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::LastDrawned)
 			clog << "LastDraw, ";
 		clog << KIR4::eol;
 
-		clog << "PointDrawNumber: " << MAP[coord].DrawNumber << KIR4::eol;
+		clog << "PointDrawNumber: " << reach(map)[coord].DrawNumber << KIR4::eol;
 		clog << "UnionFlags: ";
 		//Object::PrintFlags(GetUnionFlags(coord));
 		clog << "\n";
 		clog << "SectionFlags: ";
 		//Object::PrintFlags(GetSectionFlags(coord));
 		clog << "\n";
-		if (MAP[coord].object->isExists)
+		if (reach(map)[coord].object->isExists)
 		{
 			clog << "Object: " << KIR4::eol;
-			MAP[coord].object->Print();
+			reach(map)[coord].object->Print();
 			clog.color();
 		}
 		else
 			clog << "Object: nil" << KIR4::eol;
-		if (MAP[coord].remain->isExists)
+		if (reach(map)[coord].remain->isExists)
 		{
 			clog << "Remain: " << KIR4::eol;
-			MAP[coord].remain->Print();
+			reach(map)[coord].remain->Print();
 			clog.color();
 		}
 		else
@@ -171,8 +168,8 @@ Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
 	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height + BlocksBitmapDrawOffset.height)) / (float)DrawSize.height;
 
 	return {
-		(std::min)(((Type::Size)MAP).width - 1,(std::max)(0,(Type::Coord::Type)(CameraBegin.x + x_))),
-		(std::min)(((Type::Size)MAP).height - 1,(std::max)(0,(Type::Coord::Type)(CameraBegin.y + y_)))
+		(std::min)(((Type::Size)reach(map)).width - 1,(std::max)(0,(Type::Coord::Type)(CameraBegin.x + x_))),
+		(std::min)(((Type::Size)reach(map)).height - 1,(std::max)(0,(Type::Coord::Type)(CameraBegin.y + y_)))
 	};
 }
 
@@ -210,8 +207,8 @@ void MapDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 
 					if (DrawBegin.x < 0)
 						DrawBegin.x = 0;
-					if (DrawEnd.x > ((Type::Size)MAP).width)
-						DrawEnd.x = ((Type::Size)MAP).width;
+					if (DrawEnd.x > ((Type::Size)reach(map)).width)
+						DrawEnd.x = ((Type::Size)reach(map)).width;
 				}
 			}
 
@@ -247,8 +244,8 @@ void MapDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 
 					if (DrawBegin.y < 0)
 						DrawBegin.y = 0;
-					if (DrawEnd.y > ((Type::Size)MAP).height)
-						DrawEnd.y = ((Type::Size)MAP).height;
+					if (DrawEnd.y > ((Type::Size)reach(map)).height)
+						DrawEnd.y = ((Type::Size)reach(map)).height;
 				}
 			}
 
@@ -292,24 +289,24 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 
 	CameraX1 = (width / (float)DrawSize.width) / 2.f - 0.5f;
 	CameraY1 = (height / (float)DrawSize.height) / 2.f - 0.5f;
-	CameraX2 = ((Type::Size)MAP).width - CameraX1 - 1;
-	CameraY2 = ((Type::Size)MAP).height - CameraY1 - 1;
+	CameraX2 = ((Type::Size)reach(map)).width - CameraX1 - 1;
+	CameraY2 = ((Type::Size)reach(map)).height - CameraY1 - 1;
 
 	DrawBegin = Type::Coord::Invalid;
 	DrawEnd = Type::Coord::Invalid;
 	CameraLast = Type::Move::Invalid;
 
-	if (((Type::Size)MAP).width <= BlocksBitmapSize.width)
+	if (((Type::Size)reach(map)).width <= BlocksBitmapSize.width)
 	{
-		BlocksBitmapSize.width = ((Type::Size)MAP).width;
+		BlocksBitmapSize.width = ((Type::Size)reach(map)).width;
 		DrawBegin.x = 0;
-		DrawEnd.x = ((Type::Size)MAP).width;
+		DrawEnd.x = ((Type::Size)reach(map)).width;
 		DrawOffset.width = 0;
 		DrawBeginSource.x = 0;
 		BlocksBitmapHcenter = false;
-		if (((Type::Size)MAP).width <= CameraSize.x)
+		if (((Type::Size)reach(map)).width <= CameraSize.x)
 		{
-			BlocksBitmapDrawOffset.width = -(width - ((Type::Size)MAP).width * DrawSize.width) / 2 - BlocksBitmapBufferSize * DrawSize.width;
+			BlocksBitmapDrawOffset.width = -(width - ((Type::Size)reach(map)).width * DrawSize.width) / 2 - BlocksBitmapBufferSize * DrawSize.width;
 			CameraHcenter = false;
 		}
 		else
@@ -321,17 +318,17 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 		CameraHcenter = true;
 	}
 
-	if (((Type::Size)MAP).height <= BlocksBitmapSize.height)
+	if (((Type::Size)reach(map)).height <= BlocksBitmapSize.height)
 	{
-		BlocksBitmapSize.height = ((Type::Size)MAP).height;
+		BlocksBitmapSize.height = ((Type::Size)reach(map)).height;
 		DrawBegin.y = 0;
-		DrawEnd.y = ((Type::Size)MAP).height;
+		DrawEnd.y = ((Type::Size)reach(map)).height;
 		DrawOffset.height = 0;
 		DrawBeginSource.y = 0;
 		BlocksBitmapVcenter = false;
-		if (((Type::Size)MAP).height <= CameraSize.y)
+		if (((Type::Size)reach(map)).height <= CameraSize.y)
 		{
-			BlocksBitmapDrawOffset.height = -(height - ((Type::Size)MAP).height * DrawSize.height) / 2 - BlocksBitmapBufferSize * DrawSize.height;
+			BlocksBitmapDrawOffset.height = -(height - ((Type::Size)reach(map)).height * DrawSize.height) / 2 - BlocksBitmapBufferSize * DrawSize.height;
 			CameraVcenter = false;
 		}
 		else
@@ -357,8 +354,8 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 	DrawEndLast = {0,0};
 
 	Type::Coord coord;
-	for (coord.x = 0; coord.x < ((Type::Size)MAP).width; coord.x++)
-		for (coord.y = 0; coord.y < ((Type::Size)MAP).height; coord.y++)
+	for (coord.x = 0; coord.x < ((Type::Size)reach(map)).width; coord.x++)
+		for (coord.y = 0; coord.y < ((Type::Size)reach(map)).height; coord.y++)
 			Redrawn(coord);
 
 	//drawStatistics.clear();
@@ -450,7 +447,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			target.lock(BlocksBitmap);
 		}
 
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.object->requests.draw || (block.remain->isExists && block.remain->requests.draw))
 			{
@@ -460,7 +457,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			}
 		});
 
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn)
 				block.DrawType = ACTIVE_BLOCK_T::DrawType::LastDrawned;
@@ -477,7 +474,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			al_draw_filled_rectangle(0, 0, RedrawnedBitmap.width(), RedrawnedBitmap.height(), KIR5::Color(10, 10, 10, 10));
 			al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
 			int PurpleDraw = 0;
-			MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 			{
 				if (block.Redrawn)
 				{
@@ -501,7 +498,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 		target.lock(BlocksBitmap);
 
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn)
 			{
@@ -516,7 +513,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		al_reset_clipping_rectangle();
 
 		//al_hold_bitmap_drawing(true);
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn
 				&&
@@ -542,17 +539,17 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 						y2 += DrawSize.height * (block.object->GetMove().y - 1);
 				}
 
-				if (block.GoTo != coord && MAP[block.GoTo].object->isExists)
+				if (block.GoTo != coord && reach(map)[block.GoTo].object->isExists)
 				{
-					if (MAP[block.GoTo].object->IsMoveRight())
-						x2 += DrawSize.width * MAP[block.GoTo].object->GetMove().x;
-					else if (MAP[block.GoTo].object->IsMoveLeft())
-						x1 += DrawSize.width * MAP[block.GoTo].object->GetMove().x;
+					if (reach(map)[block.GoTo].object->IsMoveRight())
+						x2 += DrawSize.width * reach(map)[block.GoTo].object->GetMove().x;
+					else if (reach(map)[block.GoTo].object->IsMoveLeft())
+						x1 += DrawSize.width * reach(map)[block.GoTo].object->GetMove().x;
 
-					if (MAP[block.GoTo].object->IsMoveDown())
-						y2 += DrawSize.height * MAP[block.GoTo].object->GetMove().y;
-					else if (MAP[block.GoTo].object->IsMoveUp())
-						y1 += DrawSize.height * MAP[block.GoTo].object->GetMove().y;
+					if (reach(map)[block.GoTo].object->IsMoveDown())
+						y2 += DrawSize.height * reach(map)[block.GoTo].object->GetMove().y;
+					else if (reach(map)[block.GoTo].object->IsMoveUp())
+						y1 += DrawSize.height * reach(map)[block.GoTo].object->GetMove().y;
 				}
 
 				if (x2 - x1 > 0 && y2 - y1 > 0)
@@ -579,7 +576,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		al_reset_clipping_rectangle();
 
 		//al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn && (block.ComeFrom != coord || block.object->events.topDraw))
 			{
@@ -591,7 +588,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				}
 			}
 		});
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn && block.remain->isExists && block.remain->events.topDraw)
 			{
@@ -602,7 +599,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		});
 		//al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
 
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			if (block.Redrawn)
 			{
@@ -610,7 +607,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			}
 		});
 
-		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
 			{
 				block.object->DrawnedCount = 0;
@@ -629,7 +626,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		//		target.lock(LayerBitmap);
 
 		//		al_clear_to_color(KIR5::Color(0, 0, 0, 0));
-		//		MAP.forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+		//		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		//		{
 		//			if (block.grid & GridFlags::Gravity)
 		//				Bitmap::gravity[Bitmap::gravityTimer.Get()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
@@ -668,27 +665,25 @@ void MapDrawer<ACTIVE_BLOCK_T>::SetMap(std::shared_ptr<Array2D<ACTIVE_BLOCK_T>> 
 template <typename ACTIVE_BLOCK_T>
 void MapDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 {
-	if (!MAP[coord].Redrawn)
+	if (!reach(map)[coord].Redrawn)
 	{
-		MAP[coord].Redrawn = true;
-		if (MAP[coord].ComeFrom != coord)
-			Redrawn(MAP[coord].ComeFrom);
-		else if (/*MAP[coord].object->isExists &&*/ MAP[coord].object->IsMoving())
+		reach(map)[coord].Redrawn = true;
+		if (reach(map)[coord].ComeFrom != coord)
+			Redrawn(reach(map)[coord].ComeFrom);
+		else if (/*reach(map)[coord].object->isExists &&*/ reach(map)[coord].object->IsMoving())
 		{
-			if (MAP[coord].object->IsMoveLeft())
+			if (reach(map)[coord].object->IsMoveLeft())
 				Redrawn({coord.x + 1,coord.y});
-			else if (MAP[coord].object->IsMoveRight())
+			else if (reach(map)[coord].object->IsMoveRight())
 				Redrawn({coord.x - 1,coord.y});
-			else if (MAP[coord].object->IsMoveUp())
+			else if (reach(map)[coord].object->IsMoveUp())
 				Redrawn({coord.x,coord.y + 1});
-			else if (MAP[coord].object->IsMoveDown())
+			else if (reach(map)[coord].object->IsMoveDown())
 				Redrawn({coord.x,coord.y - 1});
 		}
-		if (MAP[coord].GoTo != coord)
-			Redrawn(MAP[coord].GoTo);
+		if (reach(map)[coord].GoTo != coord)
+			Redrawn(reach(map)[coord].GoTo);
 	}
 }
-
-#undef MAP
 
 #endif

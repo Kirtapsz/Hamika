@@ -1,8 +1,5 @@
 #include "BluePrint.h"
 
-#undef THIS
-#define THIS (*this)
-
 #define MapCodeNONE 0
 #define MapCodeRANDOM 'R'
 #define MapCodeMANUAL 'M'

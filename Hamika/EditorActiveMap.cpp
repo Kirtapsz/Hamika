@@ -3,8 +3,6 @@
 #include "EditorMainEvent.h"
 #include "EditorObjects.h"
 
-#define MAP (*map)
-
 namespace Editor
 {
 	ActiveMap::ActiveMap()
@@ -18,7 +16,7 @@ namespace Editor
 			{
 				if (this->onPanel(x_, y_))
 				{
-					mainEvent->controlPanel->pickID(MAP[drawer.GetFromCursor(x_ - x(), y_ - y())].object->id);
+					mainEvent->controlPanel->pickID(reach(map)[drawer.GetFromCursor(x_ - x(), y_ - y())].object->id);
 					
 					return true;
 				}
@@ -30,26 +28,26 @@ namespace Editor
 		{
 			if (key_ == ALLEGRO_KEY_LEFT)
 			{
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
 				if (targetCoord.x == 0)
 				{
-					targetCoord.x = ((Type::Size)MAP).width - 1;
+					targetCoord.x = ((Type::Size)reach(map)).width - 1;
 				}
 				else
 				{
 					targetCoord.x -= 1;
 				}
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
 				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_RIGHT)
 			{
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.x == ((Type::Size)MAP).width - 1)
+				if (targetCoord.x == ((Type::Size)reach(map)).width - 1)
 				{
 					targetCoord.x = 0;
 				}
@@ -57,33 +55,33 @@ namespace Editor
 				{
 					targetCoord.x += 1;
 				}
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
 				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_UP)
 			{
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
 				if (targetCoord.y == 0)
 				{
-					targetCoord.y = ((Type::Size)MAP).height - 1;
+					targetCoord.y = ((Type::Size)reach(map)).height - 1;
 				}
 				else
 				{
 					targetCoord.y -= 1;
 				}
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
 				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_DOWN)
 			{
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.y == ((Type::Size)MAP).height - 1)
+				if (targetCoord.y == ((Type::Size)reach(map)).height - 1)
 				{
 					targetCoord.y = 0;
 				}
@@ -91,7 +89,7 @@ namespace Editor
 				{
 					targetCoord.y += 1;
 				}
-				MAP[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].Redrawn = true;
 
 				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
 				return true;
@@ -103,7 +101,7 @@ namespace Editor
 				mainEvent->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -122,7 +120,7 @@ namespace Editor
 				isRCtrl = true;
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -146,7 +144,7 @@ namespace Editor
 				mainEvent->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -165,7 +163,7 @@ namespace Editor
 				isRCtrl = false;
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -213,14 +211,14 @@ namespace Editor
 					Type::Coord lu = {(std::min)(holdCoordBegin.x,holdCoordEnd.x),(std::min)(holdCoordBegin.y,holdCoordEnd.y)};
 					Type::Coord rd = {(std::max)(holdCoordBegin.x,holdCoordEnd.x) + 1,(std::max)(holdCoordBegin.y,holdCoordEnd.y) + 1};
 
-					MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						block.selectTmp2 = block.selectTmp1 || block.deselectTmp1;
 						block.selectTmp1 = false;
 						block.deselectTmp1 = false;
 					});
 
-					MAP.forrange(lu, rd, [&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->forrange(lu, rd, [&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (isRShift)
 						{
@@ -232,7 +230,7 @@ namespace Editor
 						}
 					});
 
-					MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (isRShift)
 						{
@@ -270,7 +268,7 @@ namespace Editor
 			if (mouseSelectHold)
 			{
 				mouseSelectHold = false;
-				MAP.foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -296,9 +294,9 @@ namespace Editor
 				}
 				else
 				{
-					MAP[targetCoord].Redrawn = true;
+					reach(map)[targetCoord].Redrawn = true;
 					targetCoord = drawer.GetFromCursor(x_ - x(), y_ - y());
-					MAP[targetCoord].Redrawn = true;
+					reach(map)[targetCoord].Redrawn = true;
 				}
 			}
 		};

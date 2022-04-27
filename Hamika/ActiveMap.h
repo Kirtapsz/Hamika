@@ -1,12 +1,5 @@
 #pragma once
 
-//#define KEY_DRAW
-//#define KEY_TIMER
-//#define KEY_TICK
-//#define SHOW_TIMER
-//#define SHOW_COORDS
-//#define SHOW_LINES
-
 #include "Types.h"
 #include "BluePrints.h"
 #include "Objects.h"

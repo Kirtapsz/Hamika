@@ -71,8 +71,8 @@ class MapList:public KIR5::Panel
 	inline void SetFocus(int Focus);
 	MapList();
 	~MapList();
-#define MoveToRetZero 0x00000000
-#define MoveToRetLast 0xFFFFFFFF
+	static constexpr unsigned __int32 MoveToRetZero = 0x00000000;
+	static constexpr unsigned __int32 MoveToRetLast = 0xFFFFFFFF;
 	float MoveTo(float dest, float source, float current, float cps);
 	inline int GetFocus() const;
 };

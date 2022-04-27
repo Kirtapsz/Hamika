@@ -7,22 +7,23 @@
 #include <KIR/sys/KIR5_files.h>
 #include <KIR/sys/KIR5_system.h>
 
-#define MAP (*map)
+enum
+{
+	ACTIVE_BOT_KEY_DOWN_UP = 1,
+	ACTIVE_BOT_KEY_DOWN_DOWN = 2,
+	ACTIVE_BOT_KEY_DOWN_LEFT = 3,
+	ACTIVE_BOT_KEY_DOWN_RIGHT = 4,
+	ACTIVE_BOT_KEY_DOWN_SPACE = 5,
+	ACTIVE_BOT_KEY_DOWN_ESCAPE = 6,
 
-#define ACTIVE_BOT_KEY_DOWN_UP 1
-#define ACTIVE_BOT_KEY_DOWN_DOWN 2
-#define ACTIVE_BOT_KEY_DOWN_LEFT 3
-#define ACTIVE_BOT_KEY_DOWN_RIGHT 4
-#define ACTIVE_BOT_KEY_DOWN_SPACE 5
-#define ACTIVE_BOT_KEY_DOWN_ESCAPE 6
+	ACTIVE_BOT_KEY_UP_UP = 11,
+	ACTIVE_BOT_KEY_UP_DOWN = 12,
+	ACTIVE_BOT_KEY_UP_LEFT = 13,
+	ACTIVE_BOT_KEY_UP_RIGHT = 14,
+	ACTIVE_BOT_KEY_UP_SPACE = 15,
 
-#define ACTIVE_BOT_KEY_UP_UP 11
-#define ACTIVE_BOT_KEY_UP_DOWN 12
-#define ACTIVE_BOT_KEY_UP_LEFT 13
-#define ACTIVE_BOT_KEY_UP_RIGHT 14
-#define ACTIVE_BOT_KEY_UP_SPACE 15
-
-#define ACTIVE_BOT_KEY_RAND_V1 200
+	ACTIVE_BOT_KEY_RAND_V1 = 200,
+};
 
 void ActiveMapBot::push(int key, unsigned long long counter)
 {
@@ -98,10 +99,10 @@ ActiveMap::ActiveMap()
 		if (map->Test(coord))
 		{
 			clog << "BLOCK POINT = " << coord << KIR4::eol;
-			if (MAP[coord].object->isExists)
-				MAP[coord].object->Print();
-			if (MAP[coord].remain->isExists)
-				MAP[coord].remain->Print();
+			if (reach(map)[coord].object->isExists)
+				reach(map)[coord].object->Print();
+			if (reach(map)[coord].remain->isExists)
+				reach(map)[coord].remain->Print();
 			clog << "- - - - - - - - - - - - - - -" << KIR4::eol;
 		}
 
@@ -531,8 +532,8 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 	});
 
 	Type::Coord spawn = spawns[rand() % spawns.size()];
-	ObjectCreate(MAP[spawn].object, ObjectID::Player, spawn);
-	player = MAP[spawn].object;
+	ObjectCreate(reach(map)[spawn].object, ObjectID::Player, spawn);
+	player = reach(map)[spawn].object;
 
 	//SetPlayer(player);
 	statusbar->SetMap(disp_map);
@@ -548,50 +549,50 @@ void ActiveMap::Redrawn(Type::Coord coord)
 
 void ActiveMap::CopyObject(Type::Coord coordDst, Type::Coord coordSrc)
 {
-	if (MAP.Test(coordDst) && MAP.Test(coordSrc))
+	if (map->Test(coordDst) && map->Test(coordSrc))
 	{
-		ObjectBase *objTmp = MAP[coordDst].object;
-		MAP[coordDst].object = MAP[coordSrc].object;
-		MAP[coordSrc].object = objTmp;
+		ObjectBase *objTmp = reach(map)[coordDst].object;
+		reach(map)[coordDst].object = reach(map)[coordSrc].object;
+		reach(map)[coordSrc].object = objTmp;
 
-		MAP[coordDst].object->coord = coordDst;
-		MAP[coordSrc].object->coord = coordSrc;
+		reach(map)[coordDst].object->coord = coordDst;
+		reach(map)[coordSrc].object->coord = coordSrc;
 	}
 }
 void ActiveMap::CopyRemain(Type::Coord coordDst, Type::Coord coordSrc)
 {
-	if (MAP.Test(coordDst) && MAP.Test(coordSrc))
+	if (map->Test(coordDst) && map->Test(coordSrc))
 	{
-		ObjectBase *objTmp = MAP[coordDst].remain;
-		MAP[coordDst].remain = MAP[coordSrc].remain;
-		MAP[coordSrc].remain = objTmp;
+		ObjectBase *objTmp = reach(map)[coordDst].remain;
+		reach(map)[coordDst].remain = reach(map)[coordSrc].remain;
+		reach(map)[coordSrc].remain = objTmp;
 
-		MAP[coordDst].remain->coord = coordDst;
-		MAP[coordSrc].remain->coord = coordSrc;
+		reach(map)[coordDst].remain->coord = coordDst;
+		reach(map)[coordSrc].remain->coord = coordSrc;
 	}
 }
 void ActiveMap::CopyObjectToRemain(Type::Coord coordDst, Type::Coord coordSrc)
 {
-	if (MAP.Test(coordDst) && MAP.Test(coordSrc))
+	if (map->Test(coordDst) && map->Test(coordSrc))
 	{
-		ObjectBase *objTmp = MAP[coordDst].remain;
-		MAP[coordDst].remain = MAP[coordSrc].object;
-		MAP[coordSrc].object = objTmp;
+		ObjectBase *objTmp = reach(map)[coordDst].remain;
+		reach(map)[coordDst].remain = reach(map)[coordSrc].object;
+		reach(map)[coordSrc].object = objTmp;
 
-		MAP[coordDst].remain->coord = coordDst;
-		MAP[coordSrc].object->coord = coordSrc;
+		reach(map)[coordDst].remain->coord = coordDst;
+		reach(map)[coordSrc].object->coord = coordSrc;
 	}
 }
 void ActiveMap::CopyRemainToObject(Type::Coord coordDst, Type::Coord coordSrc)
 {
-	if (MAP.Test(coordDst) && MAP.Test(coordSrc))
+	if (map->Test(coordDst) && map->Test(coordSrc))
 	{
-		ObjectBase *objTmp = MAP[coordDst].object;
-		MAP[coordDst].object = MAP[coordSrc].remain;
-		MAP[coordSrc].remain = objTmp;
+		ObjectBase *objTmp = reach(map)[coordDst].object;
+		reach(map)[coordDst].object = reach(map)[coordSrc].remain;
+		reach(map)[coordSrc].remain = objTmp;
 
-		MAP[coordDst].object->coord = coordDst;
-		MAP[coordSrc].remain->coord = coordSrc;
+		reach(map)[coordDst].object->coord = coordDst;
+		reach(map)[coordSrc].remain->coord = coordSrc;
 	}
 }
 
@@ -600,25 +601,25 @@ void ActiveMap::CopyRemainToObject(Type::Coord coordDst, Type::Coord coordSrc)
 
 void ActiveMap::ExplosionPut(Type::Coord coord, Type::ID IDto)
 {
-	if (MAP.Test(coord) && MAP[coord].object->requests.blowUp == false)
+	if (map->Test(coord) && reach(map)[coord].object->requests.blowUp == false)
 	{
-		if (player == MAP[coord].object)
+		if (player == reach(map)[coord].object)
 		{
 			playerDead(player);
 		}
 
 		DeleteRemain(coord);
-		if (MAP[coord].object->GetFlags() & ObjectBase::Flags::CanBeExplosion)
+		if (reach(map)[coord].object->GetFlags() & ObjectBase::Flags::CanBeExplosion)
 		{
-			ObjectCreate(MAP[coord].remain, ObjectID::ExplosionExpansive, coord);
-			MAP[coord].remain->SetObjectIDremain(IDto);
+			ObjectCreate(reach(map)[coord].remain, ObjectID::ExplosionExpansive, coord);
+			reach(map)[coord].remain->SetObjectIDremain(IDto);
 		}
 		else
 		{
-			Type::ID Expid = MAP[coord].remain->isExists ? Expid = MAP[coord].remain->id : ObjectID::Space;
+			Type::ID Expid = reach(map)[coord].remain->isExists ? Expid = reach(map)[coord].remain->id : ObjectID::Space;
 			if (Expid == ObjectID::Explosion || Expid == ObjectID::ExplosionEffect || Expid == ObjectID::ExplosionExpansive)
 			{
-				ObjectCreate(MAP[coord].remain, ObjectID::ExplosionEffect, coord);
+				ObjectCreate(reach(map)[coord].remain, ObjectID::ExplosionEffect, coord);
 			}
 		}
 		Redrawn(coord);
@@ -656,17 +657,17 @@ void ActiveMap::BlowUpBlock(Type::Coord coord)
 
 void ActiveMap::Blasting(Type::Coord coord)
 {
-	if (MAP.Test(coord) && MAP[coord].object->isExists)
+	if (map->Test(coord) && reach(map)[coord].object->isExists)
 	{
-		Type::Flags flag = MAP[coord].object->GetFlags();
-		Type::ID IDto = MAP[coord].object->GetTranslationTo();
-		Type::Coord center = MAP[coord].object->GetHitCoord();
+		Type::Flags flag = reach(map)[coord].object->GetFlags();
+		Type::ID IDto = reach(map)[coord].object->GetTranslationTo();
+		Type::Coord center = reach(map)[coord].object->GetHitCoord();
 
-		MAP[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType1);
-		MAP[coord].object->SetTranslationID(ObjectID::Space);
+		reach(map)[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType1);
+		reach(map)[coord].object->SetTranslationID(ObjectID::Space);
 
 		//bool
-		//	exploseNow = MAP[coord].remain && (MAP[coord].remain->ID() == ObjectID::Explosion || MAP[coord].remain->ID() == ObjectID::ExplosionExpansive);
+		//	exploseNow = reach(map)[coord].remain && (reach(map)[coord].remain->ID() == ObjectID::Explosion || reach(map)[coord].remain->ID() == ObjectID::ExplosionExpansive);
 
 		ExplosionPut(center, IDto);
 
@@ -674,14 +675,14 @@ void ActiveMap::Blasting(Type::Coord coord)
 		//{
 		//	Type::ID
 		// 
-		//		remainID = MAP[coord].object->GetTranslationTo();
+		//		remainID = reach(map)[coord].object->GetTranslationTo();
 		//	ObjectPut(coord, ObjectSpace::Create);
-		//	MAP[coord].object->SetTranslationID(remainID);
+		//	reach(map)[coord].object->SetTranslationID(remainID);
 		//}
 
 		if (flag & ObjectBase::ExplosionType3)
 		{
-			MAP[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType3);
+			reach(map)[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType3);
 			ExplosionPut({center.x + 1,center.y + 1}, IDto);
 			ExplosionPut({center.x,center.y + 1}, IDto);
 			ExplosionPut({center.x - 1,center.y + 1}, IDto);
@@ -695,21 +696,21 @@ void ActiveMap::Blasting(Type::Coord coord)
 		}
 		if (flag & ObjectBase::ExplosionType5)
 		{
-			MAP[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType5);
+			reach(map)[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType5);
 		}
 
-		if (MAP[coord].remain->id != ObjectID::Explosion &&
-			MAP[coord].remain->id != ObjectID::ExplosionEffect &&
-			MAP[coord].remain->id != ObjectID::ExplosionExpansive)
+		if (reach(map)[coord].remain->id != ObjectID::Explosion &&
+			reach(map)[coord].remain->id != ObjectID::ExplosionEffect &&
+			reach(map)[coord].remain->id != ObjectID::ExplosionExpansive)
 		{
-			if (player == MAP[coord].object)
+			if (player == reach(map)[coord].object)
 			{
 				playerDead(player);
 			}
 
 			DeleteRemain(coord);
-			ObjectCreate(MAP[coord].remain, ObjectID::Explosion, coord);
-			MAP[coord].object->SetObjectIDremain(ObjectID::Space);
+			ObjectCreate(reach(map)[coord].remain, ObjectID::Explosion, coord);
+			reach(map)[coord].object->SetObjectIDremain(ObjectID::Space);
 			Redrawn(coord);
 		}
 
@@ -721,14 +722,14 @@ void ActiveMap::Blasting(Type::Coord coord)
 }
 void ActiveMap::ObjectVirtualArrived(Type::Coord coord)
 {
-	if (MAP.Test(coord) && MAP[coord].ComeFrom != coord)
+	if (map->Test(coord) && reach(map)[coord].ComeFrom != coord)
 	{
 		Redrawn(coord);
 
-		MAP[MAP[coord].ComeFrom].GoTo = MAP[coord].ComeFrom;
-		MAP[coord].ComeFrom = coord;
+		reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
+		reach(map)[coord].ComeFrom = coord;
 
-		MAP[coord].object->actions.move = false;
+		reach(map)[coord].object->actions.move = false;
 
 		UpdateSquare33(coord);
 	}
@@ -737,39 +738,39 @@ void ActiveMap::StepDisappear(Type::Coord coord)
 {
 	if (TestObject(coord))
 	{
-		if (MAP[coord].object->id == 0)
+		if (reach(map)[coord].object->id == 0)
 		{
-			if (MAP[coord].ComeFrom != coord)
+			if (reach(map)[coord].ComeFrom != coord)
 			{
-				MAP[MAP[coord].ComeFrom].GoTo = MAP[coord].ComeFrom;
-				MAP[coord].ComeFrom = coord;
+				reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
+				reach(map)[coord].ComeFrom = coord;
 			}
 		}
 		else
 		{
 			DeleteRemain(coord);
 			CopyObjectToRemain(coord, coord);
-			//(*MAP[coord].remain) = MAP[coord].object;
+			//(*reach(map)[coord].remain) = reach(map)[coord].object;
 		}
-		MAP[coord].object->isExists = false;
+		reach(map)[coord].object->isExists = false;
 	}
 }
 //void ActiveMap::SetObject(Type::Coord coord, ObjectBase *object)
 //{
-//	//MAP[coord].object->isExists=false;
+//	//reach(map)[coord].object->isExists=false;
 //	CopyObject
-//	//(*MAP[coord].object) = object;
+//	//(*reach(map)[coord].object) = object;
 //	Redrawn(coord);
 //}
 void ActiveMap::DeleteObject(Type::Coord coord)
 {
 	if (TestObject(coord))
 	{
-		ObjectCreate(MAP[coord].object, MAP[coord].object->GetTranslationTo(), coord);
-		if (MAP[coord].ComeFrom != coord)
+		ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetTranslationTo(), coord);
+		if (reach(map)[coord].ComeFrom != coord)
 		{
-			MAP[MAP[coord].ComeFrom].GoTo = MAP[coord].ComeFrom;
-			MAP[coord].ComeFrom = coord;
+			reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
+			reach(map)[coord].ComeFrom = coord;
 		}
 		Redrawn(coord);
 		UpdateSquare33(coord);
@@ -779,8 +780,8 @@ void ActiveMap::DeleteRemain(Type::Coord coord)
 {
 	if (TestRemain(coord))
 	{
-		MAP[coord].remain->isExists = false;
-		//Delete(MAP[coord].remain);
+		reach(map)[coord].remain->isExists = false;
+		//Delete(reach(map)[coord].remain);
 		Redrawn(coord);
 		UpdateSquare33(coord);
 	}
@@ -815,15 +816,15 @@ void ActiveMap::UpdateRun()
 
 void ActiveMap::UpdateBlock(Type::Coord coord)
 {
-	if (MAP.Test(coord))
+	if (map->Test(coord))
 	{
-		if (MAP[coord].object->isExists)
+		if (reach(map)[coord].object->isExists)
 		{
-			MAP[coord].object->requests.update = true;
+			reach(map)[coord].object->requests.update = true;
 		}
-		if (MAP[coord].remain->isExists)
+		if (reach(map)[coord].remain->isExists)
 		{
-			MAP[coord].remain->requests.update = true;
+			reach(map)[coord].remain->requests.update = true;
 		}
 	}
 }
@@ -855,11 +856,11 @@ void ActiveMap::UpdateHorizontal3(Type::Coord coord)
 }
 bool ActiveMap::TestObject(Type::Coord coord) const
 {
-	return MAP.Test(coord) && MAP[coord].object->isExists;
+	return map->Test(coord) && reach(map)[coord].object->isExists;
 }
 bool ActiveMap::TestRemain(Type::Coord coord) const
 {
-	return MAP.Test(coord) && MAP[coord].remain->isExists;
+	return map->Test(coord) && reach(map)[coord].remain->isExists;
 }
 
 
@@ -894,17 +895,17 @@ void ActiveMap::playerVictory()
 
 Type::Flags ActiveMap::GetBlockFlags(Type::Coord coord)
 {
-	if (MAP.Test(coord))
-		return MAP[coord].grid;
+	if (map->Test(coord))
+		return reach(map)[coord].grid;
 	return 0;
 }
 
 ObjectBase *ActiveMap::GetObject(Type::Coord coord)
 {
-	if (MAP.Test(coord))
+	if (map->Test(coord))
 	{
-		if (MAP[coord].object->isExists)
-			return MAP[coord].object;
+		if (reach(map)[coord].object->isExists)
+			return reach(map)[coord].object;
 		else
 			return &space;
 	}
@@ -913,10 +914,10 @@ ObjectBase *ActiveMap::GetObject(Type::Coord coord)
 
 ObjectBase *ActiveMap::GetObjectOut(Type::Coord coord)
 {
-	if (MAP.Test(coord))
+	if (map->Test(coord))
 	{
-		if (MAP[coord].GoTo != coord && MAP[MAP[coord].GoTo].object->isExists)
-			return MAP[MAP[coord].GoTo].object;
+		if (reach(map)[coord].GoTo != coord && reach(map)[reach(map)[coord].GoTo].object->isExists)
+			return reach(map)[reach(map)[coord].GoTo].object;
 		return &space;
 	}
 	return &bedrock;
@@ -924,10 +925,10 @@ ObjectBase *ActiveMap::GetObjectOut(Type::Coord coord)
 
 ObjectBase *ActiveMap::GetRemain(Type::Coord coord)
 {
-	if (MAP.Test(coord))
+	if (map->Test(coord))
 	{
-		if (MAP[coord].remain->isExists)
-			return MAP[coord].remain;
+		if (reach(map)[coord].remain->isExists)
+			return reach(map)[coord].remain;
 		else
 			return &space;
 	}
@@ -941,14 +942,14 @@ Type::Flags ActiveMap::GetUnionFlags(Type::Coord coord)
 
 Type::Flags ActiveMap::GetSectionFlags(Type::Coord coord)
 {
-	if (MAP.Test(coord))
+	if (map->Test(coord))
 	{
 		Type::Flags
-			flags = MAP[coord].object->GetFlags();
-		if (MAP[coord].remain->isExists)
-			flags &= MAP[coord].remain->GetFlags();
-		if (MAP[coord].GoTo != coord)
-			flags &= MAP[MAP[coord].GoTo].object->GetFlags();
+			flags = reach(map)[coord].object->GetFlags();
+		if (reach(map)[coord].remain->isExists)
+			flags &= reach(map)[coord].remain->GetFlags();
+		if (reach(map)[coord].GoTo != coord)
+			flags &= reach(map)[reach(map)[coord].GoTo].object->GetFlags();
 		return flags;
 	}
 	return bedrock.GetFlags();
@@ -956,18 +957,18 @@ Type::Flags ActiveMap::GetSectionFlags(Type::Coord coord)
 
 void ActiveMap::ObjectMove(Type::Coord from, Type::Coord to, Type::ID remain)
 {
-	if (from != to && TestObject(from) && MAP.Test(to))
+	if (from != to && TestObject(from) && map->Test(to))
 	{
 		StepDisappear(to);
 
 		CopyObject(to, from);
-		ObjectCreate(MAP[from].object, remain, from);
+		ObjectCreate(reach(map)[from].object, remain, from);
 
-		MAP[to].ComeFrom = from;
-		MAP[from].GoTo = to;
+		reach(map)[to].ComeFrom = from;
+		reach(map)[from].GoTo = to;
 
-		MAP[to].object->SetCoord(to);
-		MAP[to].object->actions.move = true;
+		reach(map)[to].object->SetCoord(to);
+		reach(map)[to].object->actions.move = true;
 
 		UpdateSquare33(from);
 		UpdateSquare33(to);
@@ -978,7 +979,7 @@ void ActiveMap::ObjectPut(Type::Coord coord, Type::ID create)
 {
 	if (TestObject(coord))
 	{
-		ObjectCreate(MAP[coord].object, create, coord);
+		ObjectCreate(reach(map)[coord].object, create, coord);
 
 		UpdateSquare33(coord);
 		Redrawn(coord);
@@ -987,10 +988,10 @@ void ActiveMap::ObjectPut(Type::Coord coord, Type::ID create)
 
 void ActiveMap::RemainPut(Type::Coord coord, Type::ID create)
 {
-	if (MAP.Test(coord))
+	if (map->Test(coord))
 	{
 		DeleteRemain(coord);
-		ObjectCreate(MAP[coord].remain, create, coord);
+		ObjectCreate(reach(map)[coord].remain, create, coord);
 
 		UpdateSquare33(coord);
 		Redrawn(coord);
@@ -999,18 +1000,18 @@ void ActiveMap::RemainPut(Type::Coord coord, Type::ID create)
 
 void ActiveMap::ObjectArrived(Type::Coord coord)
 {
-	if (MAP.Test(coord) && MAP[coord].ComeFrom != coord)
+	if (map->Test(coord) && reach(map)[coord].ComeFrom != coord)
 	{
 		Redrawn(coord);
 		Type::Coord
-			ComeFrom = MAP[coord].ComeFrom;
+			ComeFrom = reach(map)[coord].ComeFrom;
 
-		MAP[MAP[coord].ComeFrom].GoTo = MAP[coord].ComeFrom;
-		MAP[coord].ComeFrom = coord;
+		reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
+		reach(map)[coord].ComeFrom = coord;
 
 		DeleteRemain(coord);
 
-		MAP[coord].object->actions.move = false;
+		reach(map)[coord].object->actions.move = false;
 
 		UpdateSquare33(ComeFrom);
 	}
@@ -1019,13 +1020,13 @@ void ActiveMap::ObjectArrived(Type::Coord coord)
 
 void ActiveMap::ObjectDisappear(Type::Coord coord)
 {
-	if (TestObject(coord) && !MAP[coord].object->IsMoving())
+	if (TestObject(coord) && !reach(map)[coord].object->IsMoving())
 	{
 		CopyObjectToRemain(coord, coord);
-		//(*MAP[coord].remain) = MAP[coord].object;
-		MAP[coord].remain->requests.remove = true;
+		//(*reach(map)[coord].remain) = reach(map)[coord].object;
+		reach(map)[coord].remain->requests.remove = true;
 
-		ObjectCreate(MAP[coord].object, MAP[coord].object->GetTranslationTo(), coord);
+		ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetTranslationTo(), coord);
 
 		UpdateSquare33(coord);
 	}
@@ -1042,31 +1043,31 @@ bool ActiveMap::EnableUpdateSkip()
 
 bool ActiveMap::IsObjectOut(Type::Coord coord)
 {
-	return (MAP.Test(coord) && coord != MAP[coord].GoTo);
+	return (map->Test(coord) && coord != reach(map)[coord].GoTo);
 }
 
 Type::Coord ActiveMap::GetGoto(Type::Coord coord)
 {
-	if (MAP.Test(coord))
-		return MAP[coord].GoTo;
+	if (map->Test(coord))
+		return reach(map)[coord].GoTo;
 	return coord;
 }
 
 Type::Coord ActiveMap::GetComefrom(Type::Coord coord)
 {
-	if (MAP.Test(coord))
-		return MAP[coord].ComeFrom;
+	if (map->Test(coord))
+		return reach(map)[coord].ComeFrom;
 	return coord;
 }
 
 Type::Size ActiveMap::MapSize()
 {
-	return (Type::Size)(MAP);
+	return (Type::Size)(reach(map));
 }
 
 ObjectBase *ActiveMap::GetObjectU(Type::Coord coord)
 {
-	return MAP[coord].object;
+	return reach(map)[coord].object;
 }
 
 Type::Size ActiveMap::GetDrawOffSet() const
@@ -1093,11 +1094,11 @@ int ActiveMap::GetAimRemaining() const
 }
 bool ActiveMap::IamRemain(ObjectBase *o)
 {
-	if (MAP.Test(o->GetCoord()))
+	if (map->Test(o->GetCoord()))
 	{
-		if (MAP[o->GetCoord()].object == o)
+		if (reach(map)[o->GetCoord()].object == o)
 			return false;
-		if (MAP[o->GetCoord()].remain == o)
+		if (reach(map)[o->GetCoord()].remain == o)
 			return true;
 	}
 	return true;

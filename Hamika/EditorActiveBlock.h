@@ -9,14 +9,14 @@ namespace Editor
 	template <typename OBJECT_T>
 	struct ActiveBlock
 	{
-		OBJECT_T *object = NULL;//jön be, vagy már bent van
-		OBJECT_T *remain = NULL;//épp eltûnik, kimegy
+		OBJECT_T *object = nullptr;//jön be, vagy már bent van
+		OBJECT_T *remain = nullptr;//épp eltûnik, kimegy
 		bool selected = false;
 		bool deselectTmp1 = false;
 		bool selectTmp1 = false;
 		bool selectTmp2 = false;
-		Type::Coord ComeFrom;
-		Type::Coord GoTo;
+		Type::Coord ComeFrom = Type::Coord::Invalid;
+		Type::Coord GoTo = Type::Coord::Invalid;
 		bool Redrawn = false;
 		Type::Flags grid = 0;//GridFlags::Gravity,
 		Type::Flags DrawType = 0;

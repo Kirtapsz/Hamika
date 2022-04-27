@@ -4,8 +4,6 @@
 #include "EditorMainEvent.h"
 #include <KIR/AL/KIR5_panel_control.h>
 
-#define MAP (*map)
-
 namespace Editor
 {
 	ControlPanel::BlockIDPanel::BlockIDPanel()
@@ -154,7 +152,7 @@ namespace Editor
 
 					if (mainEvent->activeMap->isOperationModeAll())
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -165,8 +163,8 @@ namespace Editor
 					}
 					else
 					{
-						MAP[mainEvent->activeMap->getTarget()].object->rotation = r;
-						MAP[mainEvent->activeMap->getTarget()].Redrawn = true;
+						reach(map)[mainEvent->activeMap->getTarget()].object->rotation = r;
+						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 					}
 					mainEvent->activeMap->blocksUpdated();
 				};
@@ -659,7 +657,7 @@ namespace Editor
 				{
 					if (mainEvent->activeMap->isOperationModeAll())
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -670,8 +668,8 @@ namespace Editor
 					}
 					else
 					{
-						ObjectCreate(MAP[mainEvent->activeMap->getTarget()].object, objectPanel->id, mainEvent->activeMap->getTarget());
-						MAP[mainEvent->activeMap->getTarget()].Redrawn = true;
+						ObjectCreate(reach(map)[mainEvent->activeMap->getTarget()].object, objectPanel->id, mainEvent->activeMap->getTarget());
+						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 					}
 					mainEvent->activeMap->blocksUpdated();
 
@@ -711,7 +709,7 @@ namespace Editor
 				{
 					float chancef = std::atof(randomFillTextBox->getText().c_str());
 					int chance = (int)(chancef * 10);
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected && rand() % 1000 < chance)
 						{
@@ -753,9 +751,9 @@ namespace Editor
 				blockPickerContainer->pushBack(fillFrameButton);
 				fillFrameButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
-						if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)MAP).width - 1 || coord.y == ((Type::Size)MAP).height - 1)
+						if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)reach(map)).width - 1 || coord.y == ((Type::Size)reach(map)).height - 1)
 						{
 							ObjectCreate(block.object, objectPanel->id, coord);
 							block.Redrawn = true;
@@ -775,9 +773,9 @@ namespace Editor
 				blockPickerContainer->pushBack(fillContentButton);
 				fillContentButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
-						if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)MAP).width - 1 && coord.y != ((Type::Size)MAP).height - 1)
+						if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)reach(map)).width - 1 && coord.y != ((Type::Size)reach(map)).height - 1)
 						{
 							ObjectCreate(block.object, objectPanel->id, coord);
 							block.Redrawn = true;
@@ -797,7 +795,7 @@ namespace Editor
 				blockPickerContainer->pushBack(fillSelectAllButton);
 				fillSelectAllButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.object->id == objectPanel->id)
 						{
@@ -847,7 +845,7 @@ namespace Editor
 			   ObjectID::Infotron,
 			   ObjectID::Electrons,
 			};
-#define numberOfinfotronIDs (sizeof(infotronIds)/sizeof(Type::ID))
+			constexpr int numberOfinfotronIDs = (sizeof(infotronIds) / sizeof(Type::ID));
 
 			infotronContainer->show();
 			infotronContainer->setGap(3);
@@ -941,7 +939,7 @@ namespace Editor
 			selectAllButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				bool isNonSelected = false;
-				MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (!block.selected)
 					{
@@ -951,7 +949,7 @@ namespace Editor
 
 				if (isNonSelected)
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (!block.selected)
 						{
@@ -962,7 +960,7 @@ namespace Editor
 				}
 				else
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -985,20 +983,20 @@ namespace Editor
 			{
 				if (!mainEvent->activeMap->isOperationModeAll())
 				{
-					if (MAP[mainEvent->activeMap->getTarget()].grid & GridFlags::Gravity)
+					if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::Gravity)
 					{
-						MAP[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Gravity;
+						reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Gravity;
 					}
 					else
 					{
-						MAP[mainEvent->activeMap->getTarget()].grid |= GridFlags::Gravity;
+						reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::Gravity;
 					}
-					MAP[mainEvent->activeMap->getTarget()].Redrawn = true;
+					reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 				}
 				else
 				{
 					bool isNew = false;
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -1011,7 +1009,7 @@ namespace Editor
 
 					if (isNew)
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -1025,7 +1023,7 @@ namespace Editor
 					}
 					else
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -1053,20 +1051,20 @@ namespace Editor
 			{
 				if (!mainEvent->activeMap->isOperationModeAll())
 				{
-					if (MAP[mainEvent->activeMap->getTarget()].grid & GridFlags::Detonate)
+					if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::Detonate)
 					{
-						MAP[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Detonate;
+						reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Detonate;
 					}
 					else
 					{
-						MAP[mainEvent->activeMap->getTarget()].grid |= GridFlags::Detonate;
+						reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::Detonate;
 					}
-					MAP[mainEvent->activeMap->getTarget()].Redrawn = true;
+					reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 				}
 				else
 				{
 					bool isNew = false;
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -1079,7 +1077,7 @@ namespace Editor
 
 					if (isNew)
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -1093,7 +1091,7 @@ namespace Editor
 					}
 					else
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -1119,7 +1117,7 @@ namespace Editor
 			column->pushBack(selectFriendlyButton);
 			selectFriendlyButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 				{
 					if (block.selected)
 					{
@@ -1128,27 +1126,27 @@ namespace Editor
 					}
 				});
 
-				MAP[mainEvent->activeMap->getTarget()].selected = true;
-				Type::ID id = MAP[mainEvent->activeMap->getTarget()].object->id;
+				reach(map)[mainEvent->activeMap->getTarget()].selected = true;
+				Type::ID id = reach(map)[mainEvent->activeMap->getTarget()].object->id;
 
 				bool isNewSelected;
 				do
 				{
 					isNewSelected = false;
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (!block.selected && block.object->id == id &&
 							(
-								(MAP.Test({coord.x - 1, coord.y - 1}) && MAP[{coord.x - 1, coord.y - 1}].selected) ||
-								(MAP.Test({coord.x - 0, coord.y - 1}) && MAP[{coord.x - 0, coord.y - 1}].selected) ||
-								(MAP.Test({coord.x + 1, coord.y - 1}) && MAP[{coord.x + 1, coord.y - 1}].selected) ||
+								(map->Test({coord.x - 1, coord.y - 1}) && reach(map)[{coord.x - 1, coord.y - 1}].selected) ||
+								(map->Test({coord.x - 0, coord.y - 1}) && reach(map)[{coord.x - 0, coord.y - 1}].selected) ||
+								(map->Test({coord.x + 1, coord.y - 1}) && reach(map)[{coord.x + 1, coord.y - 1}].selected) ||
 
-								(MAP.Test({coord.x - 1, coord.y - 0}) && MAP[{coord.x - 1, coord.y - 0}].selected) ||
-								(MAP.Test({coord.x + 1, coord.y - 0}) && MAP[{coord.x + 1, coord.y - 0}].selected) ||
+								(map->Test({coord.x - 1, coord.y - 0}) && reach(map)[{coord.x - 1, coord.y - 0}].selected) ||
+								(map->Test({coord.x + 1, coord.y - 0}) && reach(map)[{coord.x + 1, coord.y - 0}].selected) ||
 
-								(MAP.Test({coord.x - 1, coord.y + 1}) && MAP[{coord.x - 1, coord.y + 1}].selected) ||
-								(MAP.Test({coord.x - 0, coord.y + 1}) && MAP[{coord.x - 0, coord.y + 1}].selected) ||
-								(MAP.Test({coord.x + 1, coord.y + 1}) && MAP[{coord.x + 1, coord.y + 1}].selected)
+								(map->Test({coord.x - 1, coord.y + 1}) && reach(map)[{coord.x - 1, coord.y + 1}].selected) ||
+								(map->Test({coord.x - 0, coord.y + 1}) && reach(map)[{coord.x - 0, coord.y + 1}].selected) ||
+								(map->Test({coord.x + 1, coord.y + 1}) && reach(map)[{coord.x + 1, coord.y + 1}].selected)
 								)
 							)
 						{
@@ -1170,7 +1168,7 @@ namespace Editor
 				ObjectID::RAMChipsTop ,
 				ObjectID::RAMChipsBottom ,
 			};
-#define NUMBER_OF_RAMS (sizeof(ramIDs)/sizeof(Type::ID))
+			static constexpr int NUMBER_OF_RAMS = (sizeof(ramIDs) / sizeof(Type::ID));
 
 			static std::function<bool(Type::ID id)> isRam = [](Type::ID id)->bool
 			{
@@ -1196,13 +1194,13 @@ namespace Editor
 			{
 				if (mainEvent->activeMap->isOperationModeAll())
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
 							if (block.object->id == ObjectID::RAMChipsRight)
 							{
-								if (MAP.Test({coord.x - 1,coord.y}) && MAP[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+								if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
 								{
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
@@ -1213,7 +1211,7 @@ namespace Editor
 							}
 							if (block.object->id == ObjectID::RAMChipsBottom)
 							{
-								if (MAP.Test({coord.x,coord.y - 1}) && MAP[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+								if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
 								{
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
@@ -1225,10 +1223,10 @@ namespace Editor
 
 							if (block.object->id == ObjectID::RAMChipsLeft)
 							{
-								if (MAP.Test({coord.x + 1,coord.y}) && MAP[{coord.x + 1, coord.y}].selected &&isRam(MAP[{coord.x + 1, coord.y}].object->id))
+								if (map->Test({coord.x + 1,coord.y}) && reach(map)[{coord.x + 1, coord.y}].selected &&isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
 								{
-									ObjectCreate(MAP[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-									MAP[{coord.x + 1, coord.y}].Redrawn = true;
+									ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
+									reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
 								}
 								else
 								{
@@ -1238,10 +1236,10 @@ namespace Editor
 							}
 							if (block.object->id == ObjectID::RAMChipsTop)
 							{
-								if (MAP.Test({coord.x,coord.y + 1}) && MAP[{coord.x, coord.y + 1}].selected &&isRam(MAP[{coord.x, coord.y + 1}].object->id))
+								if (map->Test({coord.x,coord.y + 1}) && reach(map)[{coord.x, coord.y + 1}].selected &&isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
 								{
-									ObjectCreate(MAP[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-									MAP[{coord.x, coord.y + 1}].Redrawn = true;
+									ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
+									reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
 								}
 								else
 								{
@@ -1254,11 +1252,11 @@ namespace Editor
 				}
 				else
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.object->id == ObjectID::RAMChipsRight)
 						{
-							if (MAP.Test({coord.x - 1,coord.y}) && MAP[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+							if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
 							{
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
@@ -1269,7 +1267,7 @@ namespace Editor
 						}
 						if (block.object->id == ObjectID::RAMChipsBottom)
 						{
-							if (MAP.Test({coord.x,coord.y - 1}) && MAP[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+							if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
 							{
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
@@ -1281,10 +1279,10 @@ namespace Editor
 
 						if (block.object->id == ObjectID::RAMChipsLeft)
 						{
-							if (MAP.Test({coord.x + 1,coord.y}) && isRam(MAP[{coord.x + 1, coord.y}].object->id))
+							if (map->Test({coord.x + 1,coord.y}) && isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
 							{
-								ObjectCreate(MAP[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-								MAP[{coord.x + 1, coord.y}].Redrawn = true;
+								ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
+								reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
 							}
 							else
 							{
@@ -1294,10 +1292,10 @@ namespace Editor
 						}
 						if (block.object->id == ObjectID::RAMChipsTop)
 						{
-							if (MAP.Test({coord.x,coord.y + 1}) && isRam(MAP[{coord.x, coord.y + 1}].object->id))
+							if (map->Test({coord.x,coord.y + 1}) && isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
 							{
-								ObjectCreate(MAP[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-								MAP[{coord.x, coord.y + 1}].Redrawn = true;
+								ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
+								reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
 							}
 							else
 							{
@@ -1322,7 +1320,7 @@ namespace Editor
 			{
 				if (mainEvent->activeMap->isOperationModeAll())
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected && isRam(block.object->id))
 						{
@@ -1333,7 +1331,7 @@ namespace Editor
 				}
 				else
 				{
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (isRam(block.object->id))
 						{
@@ -1357,20 +1355,20 @@ namespace Editor
 			{
 				if (!mainEvent->activeMap->isOperationModeAll())
 				{
-					if (MAP[mainEvent->activeMap->getTarget()].grid & GridFlags::SpawnPoint)
+					if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::SpawnPoint)
 					{
-						MAP[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::SpawnPoint;
+						reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::SpawnPoint;
 					}
 					else
 					{
-						MAP[mainEvent->activeMap->getTarget()].grid |= GridFlags::SpawnPoint;
+						reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::SpawnPoint;
 					}
-					MAP[mainEvent->activeMap->getTarget()].Redrawn = true;
+					reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 				}
 				else
 				{
 					bool isNew = false;
-					MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -1383,7 +1381,7 @@ namespace Editor
 
 					if (isNew)
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -1397,7 +1395,7 @@ namespace Editor
 					}
 					else
 					{
-						MAP.foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -1454,12 +1452,12 @@ namespace Editor
 		saveButton->setColor(KIR5::Color(30, 30, 30));
 		saveButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 		{
-			bluePrint->resize(MAP);
+			bluePrint->resize(reach(map));
 			bluePrint->foreach([&](Type::Coord coord, BluePrintBlock &block)
 			{
-				block.id = MAP[coord].object->id;
-				block.flags = MAP[coord].grid;
-				block.rotation = MAP[coord].object->rotation;
+				block.id = reach(map)[coord].object->id;
+				block.flags = reach(map)[coord].grid;
+				block.rotation = reach(map)[coord].object->rotation;
 			});
 			bluePrint->SetAim(std::atol(infotronToCollectTextBox->getText().c_str()));
 			bluePrint->SetName(nameOfTheMapTextBox->getText());
