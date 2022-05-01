@@ -1839,6 +1839,39 @@ namespace Object
 							 [&stack, &s]()->bool
 			{
 				s->drawNumber = 0;
+				stack->o->events.timer = true;
+				stack->o->events.update = false;
+				stack->o->requests.remove = false;
+				return true;
+			},
+				[&stack, &s]()->bool
+			{
+				DRAW_NUMBER(s->disappearTimer,
+							disappearTime,
+							s->drawNumber,
+							stack->o, Utility2);
+				return true;
+			},
+				[&stack, &s]()->bool
+			{
+				stack->o->events.clear();
+				stack->o->requests.remove = true;
+				return true;
+			}))
+			{
+				return;
+			}
+
+			if (ACTION_TIMER(s->activateTimer,
+							 activateTime,
+							 stack->o,
+							 [&stack, &s]()->bool
+			{
+				return s->activateTimer == ACTION_TIMER_START;
+			},
+							 [&stack, &s]()->bool
+			{
+				s->drawNumber = 0;
 				stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
