@@ -1636,7 +1636,7 @@ namespace Object
 		Slides Terminal;
 
 		const float activatedAnimateTime = 0.7f;
-		const float animateTime = 2.f;
+		const float animateTime = 3.f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{

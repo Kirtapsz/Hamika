@@ -52,7 +52,7 @@ namespace Object
 				s->timer -= s->time;
 			}
 
-			int drawNumber_ = (std::max)(0, (std::min)((int)(s->numberOfFrames - 1), (int)((1 - (s->timer / s->time)) * s->numberOfFrames)));
+			int drawNumber_ = (std::max)(0, (std::min)((int)(s->numberOfFrames - 1), (int)((s->timer / s->time) * s->numberOfFrames)));
 			if (s->drawNumber != drawNumber_)
 			{
 				stack->o->requests.draw = true;
