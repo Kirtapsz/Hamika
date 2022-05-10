@@ -498,6 +498,7 @@ void ActiveMap::buildObjectsHolder()
 void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot> &bot)
 {
 	player1ControllInterface.init();
+	statusbar->SetMap(disp_map);
 
 	recordBot = std::shared_ptr<ActiveMapBot>(new ActiveMapBot());
 	replayBot = bot;
@@ -534,9 +535,6 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 	Type::Coord spawn = spawns[rand() % spawns.size()];
 	ObjectCreate(reach(map)[spawn].object, ObjectID::Player, spawn);
 	player = reach(map)[spawn].object;
-
-	//SetPlayer(player);
-	statusbar->SetMap(disp_map);
 
 	drawer.SetMap(map);
 	drawer.InitializeDrawOptions(width(), height() - statusbar->Height(), CA);

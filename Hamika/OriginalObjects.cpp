@@ -992,12 +992,13 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
+			gets(Specific, s);
 
 			s->drawNumber = 0;
-			s->animateTimer = 0.f;
+			s->animateTimer = stack->o->ief.GetAimRemaining() > 0 ? 0.f : ACTION_TIMER_START;
 
 			stack->o->SetFlags(ObjectBase::CanBeExplosion);
+			Timer(stack);
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1032,6 +1033,7 @@ namespace Object
 			{
 				stack->o->events.clear();
 				stack->o->requests.clear();
+				stack->o->requests.draw = true;
 				return true;
 			}))
 			{
