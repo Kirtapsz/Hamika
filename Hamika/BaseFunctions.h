@@ -73,6 +73,7 @@ namespace Object
 			void SetAnimationTime(float AnimationTime);
 			void SetNumberOfFrames(int FramesNumber);
 			int GetDrawNumber();
+			bool UpdateDrawNumber();
 		};
 
 

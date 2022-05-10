@@ -12,6 +12,7 @@ namespace Object
 
 			this->time = time;
 			this->timer = distribution(generator);
+			UpdateDrawNumber();
 		}
 		void Specific::SetNumberOfFrames(int numberOfFrames)
 		{
@@ -20,6 +21,16 @@ namespace Object
 		int Specific::GetDrawNumber()
 		{
 			return drawNumber;
+		}
+		bool Specific::UpdateDrawNumber()
+		{
+			int drawNumber_ = (std::max)(0, (std::min)((int)(this->numberOfFrames - 1), (int)((this->timer / this->time) * this->numberOfFrames)));
+			if (this->drawNumber != drawNumber_)
+			{
+				this->drawNumber = drawNumber_;
+				return true;
+			}
+			return false;
 		}
 
 
@@ -52,11 +63,9 @@ namespace Object
 				s->timer -= s->time;
 			}
 
-			int drawNumber_ = (std::max)(0, (std::min)((int)(s->numberOfFrames - 1), (int)((s->timer / s->time) * s->numberOfFrames)));
-			if (s->drawNumber != drawNumber_)
+			if (s->UpdateDrawNumber())
 			{
 				stack->o->requests.draw = true;
-				s->drawNumber = drawNumber_;
 			}
 
 			stack->o->requests.timer = true;
