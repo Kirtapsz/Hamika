@@ -45,13 +45,13 @@ class OriginalLevelBluePrintIO
 		ObjectID::HardwareBlueLed,
 		ObjectID::HardwareRedLed,
 		ObjectID::HardwareStripLine,
+		ObjectID::RAMChipsTop,
+		ObjectID::RAMChipsBottom,
 		ObjectID::HardwareResource,
 		ObjectID::HardwareRedCapacitor,
 		ObjectID::HardwareResistance,
 		ObjectID::HardwareBlueResistance,
 		ObjectID::HardwareYellowResistance,
-		ObjectID::RAMChipsTop,
-		ObjectID::RAMChipsBottom,
 	};
 
 	private: unsigned __int8 getOriginalID(Type::ID id);
