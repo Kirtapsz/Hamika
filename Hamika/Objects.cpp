@@ -1,5 +1,5 @@
 #include "Objects.h"
-#include "Player.h"
+#include "Murphy.h"
 
 #include "OriginalObjects.h"
 #include "EditorObjects.h"
@@ -65,8 +65,8 @@ namespace Objects
 		{OneWayPortLeftGrav_039::name,OneWayPortLeftGrav_039::Print,OneWayPortLeftGrav_039::Initializer,OneWayPortLeftGrav_039::Drawner,OneWayPortLeft_020::Create,OneWayPortLeft_020::Timer,OneWayPortLeft_020::Tick,OneWayPortLeft_020::Update,OneWayPortLeftGrav_039::simpleDraw},
 		{OneWayPortRightGrav_040::name,OneWayPortRightGrav_040::Print,OneWayPortRightGrav_040::Initializer,OneWayPortRightGrav_040::Drawner,OneWayPortRight_021::Create,OneWayPortRight_021::Timer,OneWayPortRight_021::Tick,OneWayPortRight_021::Update,OneWayPortRightGrav_040::simpleDraw},
 		{OneWayPortUpGrav_041::name,OneWayPortUpGrav_041::Print,OneWayPortUpGrav_041::Initializer,OneWayPortUpGrav_041::Drawner,OneWayPortUp_022::Create,OneWayPortUp_022::Timer,OneWayPortUp_022::Tick,OneWayPortUp_022::Update,OneWayPortUpGrav_041::simpleDraw},
-		{Player::name,Player::Print,Player::Initializer,Player::Drawner,Player::Create,Player::Timer,Player::Tick,Player::Update,Player::simpleDraw},
-		{Player::name,Player::Print,Player::Initializer,Player::Drawner,Player::CreatePassage,Player::Timer,Player::Tick,Player::Update,Player::simpleDraw},
+		{Murphy::name,Murphy::Print,Murphy::Initializer,Murphy::Drawner,Murphy::Create,Murphy::Timer,Murphy::Tick,Murphy::Update,Murphy::simpleDraw},
+		{Murphy::name,Murphy::Print,Murphy::Initializer,Murphy::Drawner,Murphy::CreatePassage,Murphy::Timer,Murphy::Tick,Murphy::Update,Murphy::simpleDraw},
 	};
 
 

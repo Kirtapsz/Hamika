@@ -159,7 +159,7 @@ namespace Object
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
 
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::GiveGravityDelay);
+			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::GiveGravityDelay);
 
 			stack->o->events.update = true;
 		}
@@ -682,7 +682,7 @@ namespace Object
 			s->electricTimer = ACTION_TIMER_START;
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::GiveGravityDelay | ObjectBase::PlayerDies);
+			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::GiveGravityDelay | ObjectBase::MurphyDies);
 
 			stack->o->events.timer = true;
 			stack->o->events.update = true;
@@ -769,7 +769,7 @@ namespace Object
 			{
 				s->drawNumber = 0;
 
-				stack->o->AddFlags(ObjectBase::Flags::PlayerDies);
+				stack->o->AddFlags(ObjectBase::Flags::MurphyDies);
 				stack->o->requests.draw = true;
 				return true;
 			},
@@ -784,7 +784,7 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				s->electricDelayTimer = ACTION_TIMER_START;
-				stack->o->RemoveFlags(ObjectBase::Flags::PlayerDies);
+				stack->o->RemoveFlags(ObjectBase::Flags::MurphyDies);
 				stack->o->requests.draw = true;
 				return true;
 			}))
@@ -858,7 +858,7 @@ namespace Object
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::PlayerStepOn | ObjectBase::PlayerCanSniff | ObjectBase::Give1Aim);
+			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::Give1Aim);
 
 			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
 			RollDown::Create(OBJECT_CREATER_CALL);
@@ -1815,7 +1815,7 @@ namespace Object
 			s->activateTimer = 0.f;
 			s->disappearTimer = 0.f;
 			s->drawNumber = 0;
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PlayerCanSniff | ObjectBase::Give1Unity | ObjectBase::PlayerStepOn);
+			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::MurphyCanSniff | ObjectBase::Give1Unity | ObjectBase::MurphyStepOn);
 
 			stack->o->events.update = true;
 		}

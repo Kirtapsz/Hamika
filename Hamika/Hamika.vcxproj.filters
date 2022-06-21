@@ -74,7 +74,7 @@
     <ClCompile Include="Objects.cpp">
       <Filter>Hamika\World\Map\Block\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="Murphy.cpp">
       <Filter>Hamika\World\Map\Block\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Bitmap.cpp">
@@ -217,7 +217,7 @@
     <ClInclude Include="Space.h">
       <Filter>Hamika\World\Map\Block\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="Murphy.h">
       <Filter>Hamika\World\Map\Block\Objects</Filter>
     </ClInclude>
     <ClInclude Include="StatusBar.h">

@@ -23,6 +23,27 @@ namespace Type
 		constexpr Rotation Right = 90;
 		constexpr Rotation Down = 180;
 		constexpr Rotation Left = 270;
+
+		constexpr int getRotationIndex(const Rotation &rotation)
+		{
+			if (rotation == Up)
+			{
+				return 0;
+			}
+			if (rotation == Right)
+			{
+				return 1;
+			}
+			if (rotation == Down)
+			{
+				return 2;
+			}
+			if (rotation == Left)
+			{
+				return 3;
+			}
+			return 0;
+		}
 	}
 	typedef __int32 ID;
 	typedef float Speed;

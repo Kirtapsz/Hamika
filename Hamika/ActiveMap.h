@@ -58,7 +58,7 @@ struct ControllInterface
 
 class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 {
-	private: ControllInterface player1ControllInterface;
+	private: ControllInterface murphy1ControllInterface;
 	private: std::shared_ptr<ActiveMapBot> recordBot;
 	private: std::shared_ptr<ActiveMapBot> replayBot;
 	private: std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>> map = std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>>(new Array2D<ActiveBlock<ObjectBase>>());
@@ -71,7 +71,7 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	private: KIR5::EVENT<StatusBar> statusbar;
 	private: KIR5::EVENT<KIR5::Panel> drawnerPanel;
 
-	private: ObjectBase *player = nullptr;
+	private: ObjectBase *murphy = nullptr;
 	private: ObjectBase bedrock = ObjectBase(*this);
 	private: ObjectBase space = ObjectBase(*this);
 
@@ -113,9 +113,9 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: void ExplosionPut(Type::Coord coord, Type::ID IDto);
 
 		  /*Object interfaces*/
-	public: virtual void playerMoved(ObjectBase *object);
-	public: virtual void playerDead(ObjectBase *);
-	public: virtual void playerVictory();
+	public: virtual void murphyMoved(ObjectBase *object);
+	public: virtual void murphyDead(ObjectBase *);
+	public: virtual void murphyVictory();
 
 	public: virtual Type::Flags GetBlockFlags(Type::Coord);
 	public: virtual ObjectBase *GetObject(Type::Coord);

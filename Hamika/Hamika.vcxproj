@@ -259,7 +259,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="OriginalObjects.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Murphy.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="StatusBar.cpp" />
     <ClCompile Include="Types.cpp" />
@@ -292,7 +292,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="OriginalObjects.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Murphy.h" />
     <ClInclude Include="Space.h" />
     <ClInclude Include="StatusBar.h" />
     <ClInclude Include="Types.h" />

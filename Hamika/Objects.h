@@ -10,7 +10,7 @@
 #include "Bedrock.h"
 #include "Space.h"
 
-#include "Player.h"
+#include "Murphy.h"
 #include "Types.h"
 #include "BitmapPool.h"
 

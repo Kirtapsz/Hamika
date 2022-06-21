@@ -4,7 +4,7 @@
 
 namespace Object
 {
-	namespace Player
+	namespace Murphy
 	{
 		extern const char *name;
 
@@ -31,8 +31,8 @@ namespace Object
 
 
 
-//typedef Object BasePlayer;
-//class ObjectPlayer :public BasePlayer
+//typedef Object BaseMurphy;
+//class ObjectMurphy :public BaseMurphy
 //{
 //	static const char
 //		*name;
@@ -86,16 +86,16 @@ namespace Object
 //	Type::Flags
 //		flag = F_None;
 //public:
-//	using BasePlayer::BasePlayer;
+//	using BaseMurphy::BaseMurphy;
 //
-//	virtual ~ObjectPlayer()
+//	virtual ~ObjectMurphy()
 //	{
-//		stack->o->ief.PlayerdDead(this);
+//		stack->o->ief.MurphydDead(this);
 //	}
 //
 //	virtual void Created()
 //	{
-//		BasePlayer::Created();
+//		BaseMurphy::Created();
 //		DisablePhysics();
 //		SetMoveSpeed({ 4,4 });
 //		stack->o->AddEvent(ObjectEvent::Timer);
@@ -103,19 +103,19 @@ namespace Object
 //	}
 //	static void Initialize()
 //	{
-//		Base.load("Hamika\\Texture\\Block\\Player\\Base.png", name);
-//		MovingVertical.load("Hamika\\Texture\\Block\\Player\\MovingVertical.png", name);
-//		MovingHorizontal.load("Hamika\\Texture\\Block\\Player\\MovingHorizontal.png", name);
-//		PassageVertical.load("Hamika\\Texture\\Block\\Player\\PassageVertical.png", name);
-//		PassageHorizontal.load("Hamika\\Texture\\Block\\Player\\PassageHorizontal.png", name);
-//		Sniff.load("Hamika\\Texture\\Block\\Player\\Sniff.png", name);
-//		Push.load("Hamika\\Texture\\Block\\Player\\Push.png", name);
+//		Base.load("Hamika\\Texture\\Block\\Murphy\\Base.png", name);
+//		MovingVertical.load("Hamika\\Texture\\Block\\Murphy\\MovingVertical.png", name);
+//		MovingHorizontal.load("Hamika\\Texture\\Block\\Murphy\\MovingHorizontal.png", name);
+//		PassageVertical.load("Hamika\\Texture\\Block\\Murphy\\PassageVertical.png", name);
+//		PassageHorizontal.load("Hamika\\Texture\\Block\\Murphy\\PassageHorizontal.png", name);
+//		Sniff.load("Hamika\\Texture\\Block\\Murphy\\Sniff.png", name);
+//		Push.load("Hamika\\Texture\\Block\\Murphy\\Push.png", name);
 //	}
-//	static Object *Create(Type::Coord coord, Interface &ief) { return new ObjectPlayer(coord, ObjectID::Player, ief); }
+//	static Object *Create(Type::Coord coord, Interface &ief) { return new ObjectMurphy(coord, ObjectID::Murphy, ief); }
 //	static Object *CreatePassage(Type::Coord coord, Interface &ief)
 //	{
-//		ObjectPlayer
-//			*object = new ObjectPlayer(coord, ObjectID::Player, ief);
+//		ObjectMurphy
+//			*object = new ObjectMurphy(coord, ObjectID::Murphy, ief);
 //
 //		object->PassageTimer = PassageTime;
 //		object->flag = F_PassageDisappear;
@@ -182,7 +182,7 @@ namespace Object
 //				MovingVertical[s->DrawNum].drawScaled(x,y, w,h);
 //			}
 //			else
-//				clog << KIR4::LRED << "Player Draw ERROR because F_Move draw flag but options not valid" << KIR4::eol;
+//				clog << KIR4::LRED << "Murphy Draw ERROR because F_Move draw flag but options not valid" << KIR4::eol;
 //		}
 //		else if (flag & F_Passage)
 //		{
@@ -203,7 +203,7 @@ namespace Object
 //				PassageHorizontal[s->DrawNum].drawScaled(x,y, w,h);
 //			}
 //			else
-//				clog << KIR4::LRED << "Player Draw ERROR because F_Passage draw flag but options not valid" << KIR4::eol;
+//				clog << KIR4::LRED << "Murphy Draw ERROR because F_Passage draw flag but options not valid" << KIR4::eol;
 //		}
 //		else if (flag & F_Sniff)
 //		{
@@ -215,17 +215,17 @@ namespace Object
 //		}
 //		else
 //		{
-//			clog << KIR4::LRED << "Player Draw ERROR because flag not valid" << KIR4::eol;
+//			clog << KIR4::LRED << "Murphy Draw ERROR because flag not valid" << KIR4::eol;
 //		}
 //	}
-//	inline bool PlayerCanMovePos(Type::Coord to, Type::Rotation rotation)
+//	inline bool MurphyCanMovePos(Type::Coord to, Type::Rotation rotation)
 //	{
 //		return
 //			!o->GetObject(to)->IsMoving()
 //			&&
-//			stack->o->GetObject(to)->GetFlags() & (PlayerStepOn | StepOn)
+//			stack->o->GetObject(to)->GetFlags() & (MurphyStepOn | StepOn)
 //			&&
-//			GetRemain(to)->GetFlags() &(PlayerStepOn | StepOn)
+//			GetRemain(to)->GetFlags() &(MurphyStepOn | StepOn)
 //			&&
 //			(
 //				GetObjectOut(to)->GetFlags() & StepOn
@@ -243,7 +243,7 @@ namespace Object
 //	}
 //	bool Move(Type::Coord to, Type::Coord to2, Type::Coord to2i, Type::Rotation rotation, Type::Flags passage, Type::Flags push)
 //	{
-//		if (PlayerCanMovePos(to, rotation))
+//		if (MurphyCanMovePos(to, rotation))
 //		{
 //			flag = F_Move;
 //			Eat(stack->o->GetObject(to));
@@ -335,11 +335,11 @@ namespace Object
 //				}
 //			}
 //		}
-//		BasePlayer::Timer();
+//		BaseMurphy::Timer();
 //	}
 //	virtual void Controll()
 //	{
-//		BasePlayer::Timer();
+//		BaseMurphy::Timer();
 //		if (flag == F_Move)
 //		{
 //			Step();
@@ -659,7 +659,7 @@ namespace Object
 //		return
 //			!o->GetObject(coord)->IsMoving()
 //			&&
-//			stack->o->GetObject(coord)->GetFlags() & PlayerCanSniff
+//			stack->o->GetObject(coord)->GetFlags() & MurphyCanSniff
 //			&&
 //			GetRemain(coord)->GetFlags() & StepOn
 //			;
@@ -671,7 +671,7 @@ namespace Object
 //	}
 //	virtual void Print()
 //	{
-//		BasePlayer::Print();
+//		BaseMurphy::Print();
 //		clog << "(KEY)Spell Is Active: " << Spell << "\n";
 //		clog << "(KEY)MoveUp Is Active: " << MoveUp << "\n";
 //		clog << "(KEY)MoveDown Is Active: " << MoveDown << "\n";
@@ -691,18 +691,18 @@ namespace Object
 //	}
 //};
 //
-//Bitmap ObjectPlayer::Base;
-//Bitmap ObjectPlayer::MovingVertical;
-//Bitmap ObjectPlayer::MovingHorizontal;
-//Bitmap ObjectPlayer::PassageVertical;
-//Bitmap ObjectPlayer::PassageHorizontal;
-//Bitmap ObjectPlayer::Push;
-//Bitmap ObjectPlayer::Sniff;
-//const char *ObjectPlayer::name = "Player";
+//Bitmap ObjectMurphy::Base;
+//Bitmap ObjectMurphy::MovingVertical;
+//Bitmap ObjectMurphy::MovingHorizontal;
+//Bitmap ObjectMurphy::PassageVertical;
+//Bitmap ObjectMurphy::PassageHorizontal;
+//Bitmap ObjectMurphy::Push;
+//Bitmap ObjectMurphy::Sniff;
+//const char *ObjectMurphy::name = "Murphy";
 //
-//const float ObjectPlayer::PutUnityWaitTime = 1.2;
-//const float ObjectPlayer::SniffEffectTime = 0.2;
-//const float ObjectPlayer::PushEffectWaitTime = 0.2;
-//const float ObjectPlayer::PushEffectRestTime = 0.2;
-//const float ObjectPlayer::PassageTime = 1;
-//const Type::Move::Type ObjectPlayer::PassageSpeed = 0.5;
+//const float ObjectMurphy::PutUnityWaitTime = 1.2;
+//const float ObjectMurphy::SniffEffectTime = 0.2;
+//const float ObjectMurphy::PushEffectWaitTime = 0.2;
+//const float ObjectMurphy::PushEffectRestTime = 0.2;
+//const float ObjectMurphy::PassageTime = 1;
+//const Type::Move::Type ObjectMurphy::PassageSpeed = 0.5;

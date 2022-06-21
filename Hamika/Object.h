@@ -484,13 +484,13 @@ struct ObjectFlagsModule:
 	enum Flags:Type::Flags
 	{
 		StepOn = 1 << 0,//ráléphet, megeheti
-		PlayerDies = 1 << 1,//ha megeszi belehal
+		MurphyDies = 1 << 1,//ha megeszi belehal
 		CanPushUp = 1 << 2,//el lehet felfelé tolni
 		CanPushDown = 1 << 3,//el lehet lefelé tolni
 		CanPushRight = 1 << 4,//el lehet jobbra tolni
 		CanPushLeft = 1 << 5,//el lehet balra tolni
 		CanPush = CanPushUp | CanPushDown | CanPushRight | CanPushLeft,//bármely irányba el lehet tolni
-		PlayerStepOn = (1 << 6),//a player és más rá tud lépni
+		MurphyStepOn = (1 << 6),//a murphy és más rá tud lépni
 		RollOffTop = 1 << 7,//a tetejérõl legurul
 		RollOffBottom = 1 << 8,//az aljáról legurul
 		RollOff = RollOffTop | RollOffBottom,//tetejérõl és aljáról is le lehet gurulni
@@ -509,7 +509,7 @@ struct ObjectFlagsModule:
 		LimitSpeed = 1 << 23,//egy megadott sebességgel mozog
 		PhysicsSpeed = 1 << 24,//gyorsuló mozgás
 		InstantSpeed = 1 << 25,//azonnal a maximum sebességre ugrik
-		PlayerCanSniff = 1 << 26,//a játékos fel tudja szedni rálépés nélkül "szippantással"
+		MurphyCanSniff = 1 << 26,//a játékos fel tudja szedni rálépés nélkül "szippantással"
 		CanBeKilled = 1 << 27,//meg lehet ölni
 		GiveGravityDelay = 1 << 28,//nem esik vissza azonnal
 		ButtonPush = 1 << 29,//megnyomható, pl egy terminal, hozzá tartozó függvény: virtual void ButtonPushed()
@@ -739,9 +739,9 @@ struct ObjectBase:
 	struct Interface:
 		ObjectDrawModule<ObjectBase>::Interface
 	{
-		virtual void playerMoved(ObjectBase *object) = 0;
-		virtual void playerDead(ObjectBase *) = 0;
-		virtual void playerVictory() = 0;
+		virtual void murphyMoved(ObjectBase *object) = 0;
+		virtual void murphyDead(ObjectBase *) = 0;
+		virtual void murphyVictory() = 0;
 
 		virtual void BlowUpBlock(Type::Coord coord) = 0;
 		virtual Type::Flags GetBlockFlags(Type::Coord) = 0;

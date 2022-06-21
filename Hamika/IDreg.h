@@ -46,6 +46,6 @@ enum ObjectID
 	OneWayPortLeftGrav = 39,
 	OneWayPortRightGrav = 40,
 	OneWayPortUpGrav = 41,
-	Player=42,
-	PlayerPlus=43,
+	Murphy=42,
+	MurphyPlus=43,
 };

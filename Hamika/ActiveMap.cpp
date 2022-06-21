@@ -118,48 +118,48 @@ ActiveMap::ActiveMap()
 
 	fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 	{
-		if (player)
+		if (murphy)
 		{
 			if (!replayBot)
 			{
 				if (key_ == ALLEGRO_KEY_UP)
 				{
-					if (!player1ControllInterface.up)
+					if (!murphy1ControllInterface.up)
 					{
-						player1ControllInterface.up = true;
-						player1ControllInterface.upChanged = true;
+						murphy1ControllInterface.up = true;
+						murphy1ControllInterface.upChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_DOWN)
 				{
-					if (!player1ControllInterface.down)
+					if (!murphy1ControllInterface.down)
 					{
-						player1ControllInterface.down = true;
-						player1ControllInterface.downChanged = true;
+						murphy1ControllInterface.down = true;
+						murphy1ControllInterface.downChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_LEFT)
 				{
-					if (!player1ControllInterface.left)
+					if (!murphy1ControllInterface.left)
 					{
-						player1ControllInterface.left = true;
-						player1ControllInterface.leftChanged = true;
+						murphy1ControllInterface.left = true;
+						murphy1ControllInterface.leftChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_RIGHT)
 				{
-					if (!player1ControllInterface.right)
+					if (!murphy1ControllInterface.right)
 					{
-						player1ControllInterface.right = true;
-						player1ControllInterface.rightChanged = true;
+						murphy1ControllInterface.right = true;
+						murphy1ControllInterface.rightChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_SPACE)
 				{
-					if (!player1ControllInterface.space)
+					if (!murphy1ControllInterface.space)
 					{
-						player1ControllInterface.space = true;
-						player1ControllInterface.spaceChanged = true;
+						murphy1ControllInterface.space = true;
+						murphy1ControllInterface.spaceChanged = true;
 					}
 				}
 			}
@@ -167,10 +167,10 @@ ActiveMap::ActiveMap()
 			if (key_ == ALLEGRO_KEY_ESCAPE)
 			{
 				recordBot->push(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter);
-				player->requests.blowUp = true;
-				player->hitCoord = player->GetCoord();
-				player->blowUp(player->GetCoord());
-				player = nullptr;
+				murphy->requests.blowUp = true;
+				murphy->hitCoord = murphy->GetCoord();
+				murphy->blowUp(murphy->GetCoord());
+				murphy = nullptr;
 			}
 		}
 		return false;
@@ -178,48 +178,48 @@ ActiveMap::ActiveMap()
 
 	fncKeyUp = [&](FNC_KEY_UP_PARAMS)->FNC_KEY_UP_RET
 	{
-		if (player)
+		if (murphy)
 		{
 			if (!replayBot)
 			{
 				if (key_ == ALLEGRO_KEY_UP)
 				{
-					if (player1ControllInterface.up)
+					if (murphy1ControllInterface.up)
 					{
-						player1ControllInterface.up = false;
-						player1ControllInterface.upChanged = true;
+						murphy1ControllInterface.up = false;
+						murphy1ControllInterface.upChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_DOWN)
 				{
-					if (player1ControllInterface.down)
+					if (murphy1ControllInterface.down)
 					{
-						player1ControllInterface.down = false;
-						player1ControllInterface.downChanged = true;
+						murphy1ControllInterface.down = false;
+						murphy1ControllInterface.downChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_LEFT)
 				{
-					if (player1ControllInterface.left)
+					if (murphy1ControllInterface.left)
 					{
-						player1ControllInterface.left = false;
-						player1ControllInterface.leftChanged = true;
+						murphy1ControllInterface.left = false;
+						murphy1ControllInterface.leftChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_RIGHT)
 				{
-					if (player1ControllInterface.right)
+					if (murphy1ControllInterface.right)
 					{
-						player1ControllInterface.right = false;
-						player1ControllInterface.rightChanged = true;
+						murphy1ControllInterface.right = false;
+						murphy1ControllInterface.rightChanged = true;
 					}
 				}
 				else if (key_ == ALLEGRO_KEY_SPACE)
 				{
-					if (player1ControllInterface.space)
+					if (murphy1ControllInterface.space)
 					{
-						player1ControllInterface.space = false;
-						player1ControllInterface.spaceChanged = true;
+						murphy1ControllInterface.space = false;
+						murphy1ControllInterface.spaceChanged = true;
 					}
 				}
 			}
@@ -235,140 +235,140 @@ ActiveMap::ActiveMap()
 			{
 				if (replayBot->pop(ACTIVE_BOT_KEY_UP_UP, loopCounter))
 				{
-					player1ControllInterface.upChanged = true;
-					player1ControllInterface.up = false;
+					murphy1ControllInterface.upChanged = true;
+					murphy1ControllInterface.up = false;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_UP_DOWN, loopCounter))
 				{
-					player1ControllInterface.downChanged = true;
-					player1ControllInterface.down = false;
+					murphy1ControllInterface.downChanged = true;
+					murphy1ControllInterface.down = false;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_UP_LEFT, loopCounter))
 				{
-					player1ControllInterface.leftChanged = true;
-					player1ControllInterface.left = false;
+					murphy1ControllInterface.leftChanged = true;
+					murphy1ControllInterface.left = false;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_UP_RIGHT, loopCounter))
 				{
-					player1ControllInterface.rightChanged = true;
-					player1ControllInterface.right = false;
+					murphy1ControllInterface.rightChanged = true;
+					murphy1ControllInterface.right = false;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_UP_SPACE, loopCounter))
 				{
-					player1ControllInterface.spaceChanged = true;
-					player1ControllInterface.space = false;
+					murphy1ControllInterface.spaceChanged = true;
+					murphy1ControllInterface.space = false;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_UP, loopCounter))
 				{
-					player1ControllInterface.upChanged = true;
-					player1ControllInterface.up = true;
+					murphy1ControllInterface.upChanged = true;
+					murphy1ControllInterface.up = true;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_DOWN, loopCounter))
 				{
-					player1ControllInterface.downChanged = true;
-					player1ControllInterface.down = true;
+					murphy1ControllInterface.downChanged = true;
+					murphy1ControllInterface.down = true;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_LEFT, loopCounter))
 				{
-					player1ControllInterface.leftChanged = true;
-					player1ControllInterface.left = true;
+					murphy1ControllInterface.leftChanged = true;
+					murphy1ControllInterface.left = true;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_RIGHT, loopCounter))
 				{
-					player1ControllInterface.rightChanged = true;
-					player1ControllInterface.right = true;
+					murphy1ControllInterface.rightChanged = true;
+					murphy1ControllInterface.right = true;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_SPACE, loopCounter))
 				{
-					player1ControllInterface.spaceChanged = true;
-					player1ControllInterface.space = true;
+					murphy1ControllInterface.spaceChanged = true;
+					murphy1ControllInterface.space = true;
 				}
 				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter))
 				{
-					player->requests.blowUp = true;
-					player->hitCoord = player->GetCoord();
-					Blasting(player->GetCoord());
+					murphy->requests.blowUp = true;
+					murphy->hitCoord = murphy->GetCoord();
+					Blasting(murphy->GetCoord());
 				}
 			}
 
 
-			if (player1ControllInterface.upChanged)
+			if (murphy1ControllInterface.upChanged)
 			{
-				player1ControllInterface.upChanged = false;
-				if (player1ControllInterface.up)
+				murphy1ControllInterface.upChanged = false;
+				if (murphy1ControllInterface.up)
 				{
 					recordBot->push(ACTIVE_BOT_KEY_DOWN_UP, loopCounter);
-					Object::Player::SetMoveUp(player, true);
+					Object::Murphy::SetMoveUp(murphy, true);
 				}
 				else
 				{
 					recordBot->push(ACTIVE_BOT_KEY_UP_UP, loopCounter);
-					Object::Player::SetMoveUp(player, false);
+					Object::Murphy::SetMoveUp(murphy, false);
 				}
 			}
-			else if (player1ControllInterface.downChanged)
+			else if (murphy1ControllInterface.downChanged)
 			{
-				player1ControllInterface.downChanged = false;
-				if (player1ControllInterface.down)
+				murphy1ControllInterface.downChanged = false;
+				if (murphy1ControllInterface.down)
 				{
 					recordBot->push(ACTIVE_BOT_KEY_DOWN_DOWN, loopCounter);
-					Object::Player::SetMoveDown(player, true);
+					Object::Murphy::SetMoveDown(murphy, true);
 				}
 				else
 				{
 					recordBot->push(ACTIVE_BOT_KEY_UP_DOWN, loopCounter);
-					Object::Player::SetMoveDown(player, false);
+					Object::Murphy::SetMoveDown(murphy, false);
 				}
 			}
-			else if (player1ControllInterface.rightChanged)
+			else if (murphy1ControllInterface.rightChanged)
 			{
-				player1ControllInterface.rightChanged = false;
-				if (player1ControllInterface.right)
+				murphy1ControllInterface.rightChanged = false;
+				if (murphy1ControllInterface.right)
 				{
 					recordBot->push(ACTIVE_BOT_KEY_DOWN_RIGHT, loopCounter);
-					Object::Player::SetMoveRight(player, true);
+					Object::Murphy::SetMoveRight(murphy, true);
 				}
 				else
 				{
 					recordBot->push(ACTIVE_BOT_KEY_UP_RIGHT, loopCounter);
-					Object::Player::SetMoveRight(player, false);
+					Object::Murphy::SetMoveRight(murphy, false);
 				}
 			}
-			else if (player1ControllInterface.leftChanged)
+			else if (murphy1ControllInterface.leftChanged)
 			{
-				player1ControllInterface.leftChanged = false;
-				if (player1ControllInterface.left)
+				murphy1ControllInterface.leftChanged = false;
+				if (murphy1ControllInterface.left)
 				{
 					recordBot->push(ACTIVE_BOT_KEY_DOWN_LEFT, loopCounter);
-					Object::Player::SetMoveLeft(player, true);
+					Object::Murphy::SetMoveLeft(murphy, true);
 				}
 				else
 				{
 					recordBot->push(ACTIVE_BOT_KEY_UP_LEFT, loopCounter);
-					Object::Player::SetMoveLeft(player, false);
+					Object::Murphy::SetMoveLeft(murphy, false);
 				}
 			}
-			else if (player1ControllInterface.spaceChanged)
+			else if (murphy1ControllInterface.spaceChanged)
 			{
-				player1ControllInterface.spaceChanged = false;
-				if (player1ControllInterface.space)
+				murphy1ControllInterface.spaceChanged = false;
+				if (murphy1ControllInterface.space)
 				{
 					recordBot->push(ACTIVE_BOT_KEY_DOWN_SPACE, loopCounter);
-					Object::Player::SetSpell(player, true);
+					Object::Murphy::SetSpell(murphy, true);
 				}
 				else
 				{
 					recordBot->push(ACTIVE_BOT_KEY_UP_SPACE, loopCounter);
-					Object::Player::SetSpell(player, false);
+					Object::Murphy::SetSpell(murphy, false);
 				}
 			}
 
-			if (player)
+			if (murphy)
 			{
 				ObjectBase::Stack stack;
-				stack.o = player;
-				stack.specific = player->specific;
-				Object::Player::Controll(&stack);
+				stack.o = murphy;
+				stack.specific = murphy->specific;
+				Object::Murphy::Controll(&stack);
 			}
 
 			buildObjectsHolder();
@@ -406,7 +406,7 @@ ActiveMap::ActiveMap()
 				}
 			});
 
-			if (!player)
+			if (!murphy)
 			{
 				if (stopLoop == 0)
 				{
@@ -462,9 +462,9 @@ ActiveMap::ActiveMap()
 
 	drawnerPanel->fncDraw = [&](FNC_DRAW_PARAMS)
 	{
-		if (player)
+		if (murphy)
 		{
-			drawer.MoveCameraTo({player->GetCoord().x + player->GetMove().x, player->GetCoord().y + player->GetMove().y});
+			drawer.MoveCameraTo({murphy->GetCoord().x + murphy->GetMove().x, murphy->GetCoord().y + murphy->GetMove().y});
 		}
 		drawer.DrawBlocks(x_, y_);
 		if (startLoop > 0)
@@ -473,7 +473,7 @@ ActiveMap::ActiveMap()
 		}
 		else
 		{
-			if (!player)
+			if (!murphy)
 			{
 				al_draw_filled_rectangle(x_, y_, x_ + w_, y_ + h_, KIR5::Color(0, 0, 0, 255 - (255 * (stopLoop / (float)stopLoopInit))).getAlphaColored());
 			}
@@ -497,7 +497,7 @@ void ActiveMap::buildObjectsHolder()
 }
 void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot> &bot)
 {
-	player1ControllInterface.init();
+	murphy1ControllInterface.init();
 	statusbar->SetMap(disp_map);
 
 	recordBot = std::shared_ptr<ActiveMapBot>(new ActiveMapBot());
@@ -533,8 +533,8 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 	});
 
 	Type::Coord spawn = spawns[rand() % spawns.size()];
-	ObjectCreate(reach(map)[spawn].object, ObjectID::Player, spawn);
-	player = reach(map)[spawn].object;
+	ObjectCreate(reach(map)[spawn].object, ObjectID::Murphy, spawn);
+	murphy = reach(map)[spawn].object;
 
 	drawer.SetMap(map);
 	drawer.InitializeDrawOptions(width(), height() - statusbar->Height(), CA);
@@ -601,9 +601,9 @@ void ActiveMap::ExplosionPut(Type::Coord coord, Type::ID IDto)
 {
 	if (map->Test(coord) && reach(map)[coord].object->requests.blowUp == false)
 	{
-		if (player == reach(map)[coord].object)
+		if (murphy == reach(map)[coord].object)
 		{
-			playerDead(player);
+			murphyDead(murphy);
 		}
 
 		DeleteRemain(coord);
@@ -701,9 +701,9 @@ void ActiveMap::Blasting(Type::Coord coord)
 			reach(map)[coord].remain->id != ObjectID::ExplosionEffect &&
 			reach(map)[coord].remain->id != ObjectID::ExplosionExpansive)
 		{
-			if (player == reach(map)[coord].object)
+			if (murphy == reach(map)[coord].object)
 			{
-				playerDead(player);
+				murphyDead(murphy);
 			}
 
 			DeleteRemain(coord);
@@ -871,22 +871,22 @@ bool ActiveMap::TestRemain(Type::Coord coord) const
 
 /*Object Interfaces*/
 
-void ActiveMap::playerMoved(ObjectBase *object)
+void ActiveMap::murphyMoved(ObjectBase *object)
 {
-	player = object;
+	murphy = object;
 }
-void ActiveMap::playerDead(ObjectBase *oplayer)
+void ActiveMap::murphyDead(ObjectBase *omurphy)
 {
-	if (player == oplayer)
+	if (murphy == omurphy)
 	{
-		player = nullptr;
+		murphy = nullptr;
 	}
 }
-void ActiveMap::playerVictory()
+void ActiveMap::murphyVictory()
 {
-	if (player)
+	if (murphy)
 	{
-		player = nullptr;
+		murphy = nullptr;
 		victory = true;
 	}
 }

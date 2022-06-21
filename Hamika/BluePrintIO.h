@@ -15,7 +15,7 @@ class OriginalLevelBluePrintIO
 		ObjectID::Space,
 		ObjectID::Zonk,
 		ObjectID::BaseX,
-		ObjectID::Player,
+		ObjectID::Murphy,
 		ObjectID::Infotron,
 		ObjectID::RAMChipsMini,
 		ObjectID::HardwareBrick1,

@@ -41,7 +41,7 @@ void ObjectBase::PrintFlags(Type::Flags flags_)
 		Type::Flags f;
 		const char *n;
 	} flags[] = {
-		{StepOn,"StepOn"},{PlayerDies,"PlayerDies"},{CanPushUp,"CanPushUp"},{CanPushDown,"CanPushDown"},{CanPushRight,"CanPushRight"},{CanPushLeft,"CanPushLeft"},{CanPush,"CanPush"},{PlayerStepOn,"PlayerStepOn"},{RollOffTop,"RollOffTop"},{RollOffBottom,"RollOffBottom"},{RollOff,"RollOff"},{PassageFromRight,"PassageFromRight"},{PassageFromLeft,"PassageFromLeft"},{PassageFromTop,"PassageFromTop"},{PassageFromBottom,"PassageFromBottom"},{PassageVertical,"PassageVertical"},{PassageHorizontal,"PassageHorizontal"},{Passage,"Passage"},{FallOnExplosion,"FallOnExplosion"},{ExplosionType1,"ExplosionType1"},{ExplosionType3,"ExplosionType3"},{ExplosionType5,"ExplosionType5"},{CanBeExplosion,"CanBeExplosion"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},{InstantSpeed,"InstantSpeed"},{PlayerCanSniff,"PlayerCanSniff"},{CanBeKilled,"CanBeKilled"},{GiveGravityDelay,"GiveGravityDelay"},{ButtonPush,"ButtonPush"},{Give1Aim,"Give1Aim"},{Give1Unity,"Give1Unity"},
+		{StepOn,"StepOn"},{MurphyDies,"MurphyDies"},{CanPushUp,"CanPushUp"},{CanPushDown,"CanPushDown"},{CanPushRight,"CanPushRight"},{CanPushLeft,"CanPushLeft"},{CanPush,"CanPush"},{MurphyStepOn,"MurphyStepOn"},{RollOffTop,"RollOffTop"},{RollOffBottom,"RollOffBottom"},{RollOff,"RollOff"},{PassageFromRight,"PassageFromRight"},{PassageFromLeft,"PassageFromLeft"},{PassageFromTop,"PassageFromTop"},{PassageFromBottom,"PassageFromBottom"},{PassageVertical,"PassageVertical"},{PassageHorizontal,"PassageHorizontal"},{Passage,"Passage"},{FallOnExplosion,"FallOnExplosion"},{ExplosionType1,"ExplosionType1"},{ExplosionType3,"ExplosionType3"},{ExplosionType5,"ExplosionType5"},{CanBeExplosion,"CanBeExplosion"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},{InstantSpeed,"InstantSpeed"},{MurphyCanSniff,"MurphyCanSniff"},{CanBeKilled,"CanBeKilled"},{GiveGravityDelay,"GiveGravityDelay"},{ButtonPush,"ButtonPush"},{Give1Aim,"Give1Aim"},{Give1Unity,"Give1Unity"},
 	};
 	for (int i = 0; i < sizeof(F) / sizeof(flags[0]); i++)
 	{
@@ -352,14 +352,29 @@ void ObjectBase::Initialize()
 	// Unknown
 	bitmapPool.addBitmap(unknownBitmap(KIR5::Color(255, 0, 255)), "Unknown");
 
-	// Player
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\Base.png"), "Pleyer-Base");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\MovingVertical.png"), "Pleyer-MovingVertical");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\MovingHorizontal.png"), "Pleyer-MovingHorizontal");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\PassageVertical.png"), "Pleyer-PassageVertical");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\PassageHorizontal.png"), "Pleyer-PassageHorizontal");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\Sniff.png"), "Pleyer-Sniff");
-	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Player\\Push.png"), "Pleyer-Push");
+	// Murphy
+	tmp.load("Hamika\\Texture\\Block\\Murphy\\MurphyBase.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 0, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4))), "Pleyer-Base");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 1, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4) * 4)), "Pleyer-Sniff");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 2, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4) * 4)), "Pleyer-Push");
+
+	tmp.load("Hamika\\Texture\\Block\\Murphy\\MurphyMove.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 0, 0, tmp.width() / 4, tmp.height())), "Pleyer-MovingUp");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 1, 0, tmp.width() / 4, tmp.height())), "Pleyer-MovingRight");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 2, 0, tmp.width() / 4, tmp.height())), "Pleyer-MovingDown");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 3, 0, tmp.width() / 4, tmp.height())), "Pleyer-MovingLeft");
+
+	tmp.load("Hamika\\Texture\\Block\\Murphy\\MurphyPassIn.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 0, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassInDown");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 1, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassInLeft");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 2, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassInUp");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 3, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassInRight");
+
+	tmp.load("Hamika\\Texture\\Block\\Murphy\\MurphyPassOut.png");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 0, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassOutDown");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 1, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassOutLeft");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 2, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassOutUp");
+	bitmapPool.addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 4) * 3, 0, tmp.width() / 4, tmp.height())), "Pleyer-PassOutRight");
 
 	// 001
 	bitmapPool.addBitmap(KIR5::Bitmap("Hamika\\Texture\\Block\\Original\\001-ZonkMoveHorizontal.png"), "001-ZonkMoveHorizontal");

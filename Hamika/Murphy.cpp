@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Player.h"
+#include "Murphy.h"
 #include "Global.h"
 #include "OriginalObjects.h"
 
@@ -8,15 +8,14 @@
 
 namespace Object
 {
-	namespace Player
+	namespace Murphy
 	{
-		const char *name = "*** - Player";
+		const char *name = "*** - Murphy";
 
 		Slides Base;
-		Slides MovingVertical;
-		Slides MovingHorizontal;
-		Slides PassageVertical;
-		Slides PassageHorizontal;
+		Slides MovingSlides[4];
+		Slides PassInSlides[4];
+		Slides PassOutSlides[4];
 		Slides Push;
 		Slides Sniff;
 
@@ -26,8 +25,8 @@ namespace Object
 		const float SniffEffectTime = 0.15f;
 		const float moveSpeed = 4.401544f;
 
-		constexpr float passageTime = 1.f / 4.401544f;
-
+		constexpr float passageSpeed = 4.401544f;
+		constexpr float passageTime = 1.f / passageSpeed;
 
 		enum Flag:Type::Flags
 		{
@@ -95,7 +94,7 @@ namespace Object
 			return
 				!o->GetObject(coord)->IsMoving()
 				&&
-				o->GetObject(coord)->GetFlags() & ObjectBase::PlayerCanSniff
+				o->GetObject(coord)->GetFlags() & ObjectBase::MurphyCanSniff
 				&&
 				o->GetRemain(coord)->GetFlags() & ObjectBase::StepOn
 				;
@@ -103,7 +102,7 @@ namespace Object
 
 		void Eat(ObjectBase *o, ObjectBase *object)
 		{
-			if (object->GetFlags() & ObjectBase::PlayerDies)
+			if (object->GetFlags() & ObjectBase::MurphyDies)
 			{
 				o->blowUp(o->GetCoord());
 			}
@@ -152,14 +151,14 @@ namespace Object
 			s->MoveRight = MoveRight;
 		}
 
-		bool PlayerCanMovePos(ObjectBase *o, Type::Coord to, Type::Rotation rotation)
+		bool MurphyCanMovePos(ObjectBase *o, Type::Coord to, Type::Rotation rotation)
 		{
 			return
 				!o->GetObject(to)->IsMoving()
 				&&
-				o->GetObject(to)->GetFlags() & (ObjectBase::PlayerStepOn | ObjectBase::StepOn)
+				o->GetObject(to)->GetFlags() & (ObjectBase::MurphyStepOn | ObjectBase::StepOn)
 				&&
-				o->GetRemain(to)->GetFlags() & (ObjectBase::PlayerStepOn | ObjectBase::StepOn)
+				o->GetRemain(to)->GetFlags() & (ObjectBase::MurphyStepOn | ObjectBase::StepOn)
 				&&
 				(
 					o->GetObjectOut(to)->GetFlags() & ObjectBase::StepOn
@@ -178,12 +177,12 @@ namespace Object
 		bool Move(ObjectBase::Stack *stack, Type::Coord to, Type::Coord to2, Type::Coord to2i, Type::Rotation rotation, Type::Flags passage, Type::Flags push)
 		{
 			gets(Specific, s);
-			if (PlayerCanMovePos(stack->o, to, rotation))
+			if (MurphyCanMovePos(stack->o, to, rotation))
 			{
 				s->flag = F_Move;
 				Eat(stack->o, stack->o->GetObject(to));
 				stack->o->ief.ObjectMove(stack->o->GetCoord(), to, ObjectID::Space);
-				stack->o->ief.playerMoved(stack->o);
+				stack->o->ief.murphyMoved(stack->o);
 				regets(Specific, s);
 				stack->o->SetMove(rotation);
 				stack->o->SetRotation(rotation);
@@ -196,7 +195,7 @@ namespace Object
 				stack->o->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
 				s->flag = F_PassageDisappear;
 				stack->o->requests.draw = true;
-				stack->o->ief.playerVictory();
+				stack->o->ief.murphyVictory();
 			}
 			else
 			{
@@ -205,11 +204,11 @@ namespace Object
 				{
 					Type::Coord
 						source = stack->o->GetCoord();
-					s->DrawNum = 9;
+					s->DrawNum = PassOutSlides[Type::Rotations::getRotationIndex(rotation)].getCount() - 1;
 					s->flag = F_Passage;
 					Eat(stack->o, stack->o->GetObject(to2));
-					stack->o->ief.ObjectMove(source, to2, ObjectID::PlayerPlus);
-					stack->o->ief.playerMoved(stack->o);
+					stack->o->ief.ObjectMove(source, to2, ObjectID::MurphyPlus);
+					stack->o->ief.murphyMoved(stack->o);
 					regets(Specific, s);
 					stack->o->SetRotation(rotation);
 					stack->o->SetMoveUnsafe(rotation, {2,2});
@@ -246,7 +245,7 @@ namespace Object
 
 							stack->o->ief.ObjectMove(to, to2, ObjectID::Space);
 							stack->o->ief.ObjectMove(stack->o->GetCoord(), to, stack->o->GetObjectIDremain());
-							stack->o->ief.playerMoved(stack->o);
+							stack->o->ief.murphyMoved(stack->o);
 							regets(Specific, s);
 						}
 					}
@@ -263,6 +262,33 @@ namespace Object
 				stack->o->Step();
 				if (!stack->o->IsMove())
 					ObjectArrived(stack->o);
+
+				float position = 0.f;
+
+				if (stack->o->IsMoveLeft())
+				{
+					position = 1 - stack->o->GetMove().x;
+				}
+				else if (stack->o->IsMoveRight())
+				{
+					position = -stack->o->GetMove().x;
+				}
+				else if (stack->o->IsMoveUp())
+				{
+					position = 1 - stack->o->GetMove().y;
+				}
+				else if (stack->o->IsMoveDown())
+				{
+					position = -stack->o->GetMove().y;
+				}
+
+				int DrawNum = MovingSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())].getDrawNumber(position);
+
+				if (s->DrawNum != DrawNum)
+				{
+					stack->o->requests.draw = true;
+					s->DrawNum = DrawNum;
+				}
 			}
 			else if (s->flag == F_Passage)
 			{
@@ -278,16 +304,7 @@ namespace Object
 					Type::Move::Type move = s->passageTimer / passageTime * 2;
 					stack->o->SetMoveUnsafe(stack->o->GetRotation(), {move,move});
 
-					int DrawNum = 0;
-
-					if (stack->o->GetRotation() == Type::Rotations::Up || stack->o->GetRotation() == Type::Rotations::Down)
-					{
-						DrawNum = PassageVertical.getDrawNumber((s->passageTimer / passageTime));
-					}
-					else
-					{
-						DrawNum = PassageHorizontal.getDrawNumber((s->passageTimer / passageTime));
-					}
+					int DrawNum = PassOutSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())].getDrawNumber(s->passageTimer / passageTime);
 
 					if (s->DrawNum != DrawNum)
 					{
@@ -505,7 +522,7 @@ namespace Object
 						s->flag = F_Move;
 						Eat(stack->o, stack->o->GetObject(stack->o->GetCoordDown()));
 						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), ObjectID::Space);
-						stack->o->ief.playerMoved(stack->o);
+						stack->o->ief.murphyMoved(stack->o);
 						regets(Specific, s);
 						stack->o->SetMove({stack->o->GetMove().x,-1});
 						//o->SetRotation(rotation);
@@ -567,10 +584,22 @@ namespace Object
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
 			Base.initialize(ObjectBase::bitmapPool.get("Pleyer-Base"), ObjectBase::bitmapPool.get("Error"));
-			MovingVertical.initialize(ObjectBase::bitmapPool.get("Pleyer-MovingVertical"), ObjectBase::bitmapPool.get("Error"));
-			MovingHorizontal.initialize(ObjectBase::bitmapPool.get("Pleyer-MovingHorizontal"), ObjectBase::bitmapPool.get("Error"));
-			PassageVertical.initialize(ObjectBase::bitmapPool.get("Pleyer-PassageVertical"), ObjectBase::bitmapPool.get("Error"));
-			PassageHorizontal.initialize(ObjectBase::bitmapPool.get("Pleyer-PassageHorizontal"), ObjectBase::bitmapPool.get("Error"));
+
+			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingRight"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingUp"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingDown"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingLeft"), ObjectBase::bitmapPool.get("Error"));
+
+			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInRight"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInUp"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInDown"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInLeft"), ObjectBase::bitmapPool.get("Error"));
+
+			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutRight"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutUp"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutDown"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutLeft"), ObjectBase::bitmapPool.get("Error"));
+
 			Sniff.initialize(ObjectBase::bitmapPool.get("Pleyer-Sniff"), ObjectBase::bitmapPool.get("Error"));
 			Push.initialize(ObjectBase::bitmapPool.get("Pleyer-Push"), ObjectBase::bitmapPool.get("Error"));
 		}
@@ -624,10 +653,7 @@ namespace Object
 			clog << "passageTimer: " << s->passageTimer << "\n";
 			clog << "PutUnityWaitTimer: " << s->PutUnityWaitTimer << "\n";
 			clog << "(BITMAP)Base Is Loaded: " << Base.getCount() << "\n";
-			clog << "(BITMAP)MovingVertical Is Loaded: " << MovingVertical.getCount() << "\n";
-			clog << "(BITMAP)MovingHorizontal Is Loaded: " << MovingHorizontal.getCount() << "\n";
-			clog << "(BITMAP)PassageVertical Is Loaded: " << PassageVertical.getCount() << "\n";
-			clog << "(BITMAP)PassageHorizontal Is Loaded: " << PassageHorizontal.getCount() << "\n";
+
 			clog << "(BITMAP)Push Is Loaded: " << Push.getCount() << "\n";
 			clog << "(BITMAP)Sniff Is Loaded: " << Sniff.getCount() << "\n";
 		}
@@ -646,16 +672,7 @@ namespace Object
 				{
 					stack->o->requests.timer = true;
 				}
-				int DrawNum = 0;
-
-				if (stack->o->GetRotation() == Type::Rotations::Up || stack->o->GetRotation() == Type::Rotations::Down)
-				{
-					DrawNum = PassageVertical.getDrawNumber(1 - (s->passageTimer / passageTime));
-				}
-				else
-				{
-					DrawNum = PassageHorizontal.getDrawNumber(1 - (s->passageTimer / passageTime));
-				}
+				int DrawNum = PassInSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())].getDrawNumber(1 - (s->passageTimer / passageTime));
 
 				if (s->DrawNum != DrawNum)
 				{
@@ -679,45 +696,36 @@ namespace Object
 			}
 			else if (s->flag & F_Move)
 			{
-				if (stack->o->IsMoveLeft())
-				{
-					MovingHorizontal[MovingHorizontal.getDrawNumber(1 - stack->o->GetMove().x)].drawScaled(x, y, w, h);
-				}
-				else if (stack->o->IsMoveRight())
-				{
-					MovingHorizontal[MovingHorizontal.getDrawNumber(-stack->o->GetMove().x)].drawScaled(x, y, w, h, ALLEGRO_FLIP_HORIZONTAL);
-				}
-				else if (stack->o->IsMoveUp())
-				{
-					MovingVertical[MovingVertical.getDrawNumber(1 - stack->o->GetMove().y)].drawScaled(x, y, w, h, ALLEGRO_FLIP_VERTICAL);
-				}
-				else if (stack->o->IsMoveDown())
-				{
-					MovingVertical[MovingVertical.getDrawNumber(-stack->o->GetMove().y)].drawScaled(x, y, w, h);
-				}
-				else
-					clog << KIR4::LRED << "Player Draw ERROR because F_Move draw flag but options not valid" << KIR4::eol;
+				MovingSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
+
+				if (stack->o->GetRotation() != Type::Rotations::Up &&
+					stack->o->GetRotation() != Type::Rotations::Down &&
+					stack->o->GetRotation() != Type::Rotations::Right &&
+					stack->o->GetRotation() != Type::Rotations::Left)
+					clog << KIR4::LRED << "Murphy Draw ERROR because F_Move draw flag but options not valid" << KIR4::eol;
 			}
 			else if (s->flag & F_Passage)
 			{
-				if (stack->o->GetRotation() == Type::Rotations::Up)
+				if (s->flag == F_PassageDisappear)
 				{
-					PassageVertical[s->DrawNum].drawScaled(x, y, w, h, ALLEGRO_FLIP_VERTICAL);
-				}
-				else if (stack->o->GetRotation() == Type::Rotations::Down)
-				{
-					PassageVertical[s->DrawNum].drawScaled(x, y, w, h);
-				}
-				else if (stack->o->GetRotation() == Type::Rotations::Right)
-				{
-					PassageHorizontal[s->DrawNum].drawScaled(x, y, w, h, ALLEGRO_FLIP_HORIZONTAL);
-				}
-				else if (stack->o->GetRotation() == Type::Rotations::Left)
-				{
-					PassageHorizontal[s->DrawNum].drawScaled(x, y, w, h);
+					PassInSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
+
+					if (stack->o->GetRotation() != Type::Rotations::Up &&
+						stack->o->GetRotation() != Type::Rotations::Down &&
+						stack->o->GetRotation() != Type::Rotations::Right &&
+						stack->o->GetRotation() != Type::Rotations::Left)
+						clog << KIR4::LRED << "Murphy Draw ERROR because F_PassageDisappear draw flag but options not valid" << KIR4::eol;
 				}
 				else
-					clog << KIR4::LRED << "Player Draw ERROR because F_Passage draw flag but options not valid" << KIR4::eol;
+				{
+					PassOutSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
+
+					if (stack->o->GetRotation() != Type::Rotations::Up &&
+						stack->o->GetRotation() != Type::Rotations::Down &&
+						stack->o->GetRotation() != Type::Rotations::Right &&
+						stack->o->GetRotation() != Type::Rotations::Left)
+						clog << KIR4::LRED << "Murphy Draw ERROR because F_Passage draw flag but options not valid" << KIR4::eol;
+				}
 			}
 			else if (s->flag & F_Sniff)
 			{
@@ -729,7 +737,7 @@ namespace Object
 			}
 			else
 			{
-				clog << KIR4::LRED << "Player Draw ERROR because flag not valid" << KIR4::eol;
+				clog << KIR4::LRED << "Murphy Draw ERROR because flag not valid" << KIR4::eol;
 			}
 		}
 
