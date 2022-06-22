@@ -12,7 +12,7 @@ namespace Object
 	{
 		const char *name = "*** - Murphy";
 
-		Slides Base;
+		KIR5::SubBitmap Base;
 		Slides MovingSlides[4];
 		Slides PassInSlides[4];
 		Slides PassOutSlides[4];
@@ -583,7 +583,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Base.initialize(ObjectBase::bitmapPool.get("Pleyer-Base"), ObjectBase::bitmapPool.get("Error"));
+			Base = ObjectBase::bitmapPool.get("Pleyer-Base"), ObjectBase::bitmapPool.get("Error");
 
 			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingRight"), ObjectBase::bitmapPool.get("Error"));
 			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingUp"), ObjectBase::bitmapPool.get("Error"));
@@ -652,7 +652,7 @@ namespace Object
 			clog << "s->EffectTimer: " << s->EffectTimer << "\n";
 			clog << "passageTimer: " << s->passageTimer << "\n";
 			clog << "PutUnityWaitTimer: " << s->PutUnityWaitTimer << "\n";
-			clog << "(BITMAP)Base Is Loaded: " << Base.getCount() << "\n";
+			clog << "(BITMAP)Base Is Loaded: " << Base << "\n";
 
 			clog << "(BITMAP)Push Is Loaded: " << Push.getCount() << "\n";
 			clog << "(BITMAP)Sniff Is Loaded: " << Sniff.getCount() << "\n";
@@ -692,7 +692,7 @@ namespace Object
 			gets(Specific, s);
 			if (s->flag & F_None)
 			{
-				Base[0].drawScaled(x, y, w, h);
+				Base.drawScaled(x, y, w, h);
 			}
 			else if (s->flag & F_Move)
 			{
@@ -729,11 +729,11 @@ namespace Object
 			}
 			else if (s->flag & F_Sniff)
 			{
-				Sniff[int(stack->o->GetRotation()) / 90].drawScaled(x, y, w, h);
+				Sniff[Type::Rotations::getRotationIndex(stack->o->GetRotation())].drawScaled(x, y, w, h);
 			}
 			else if (s->flag & F_Push)
 			{
-				Push[int(stack->o->GetRotation()) / 90].drawScaled(x, y, w, h);
+				Push[Type::Rotations::getRotationIndex(stack->o->GetRotation())].drawScaled(x, y, w, h);
 			}
 			else
 			{
@@ -744,7 +744,7 @@ namespace Object
 
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
-			Base[0].drawScaled(x, y, w, h, 0, 0, 30, 30);
+			Base.drawScaled(x, y, w, h);
 		}
 	}
 }
