@@ -1470,7 +1470,7 @@ namespace Object
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
 
 			{
-				gets(Animator::Specific, s);
+				gets(StackTimer, s);
 				Animator::Create(OBJECT_CREATER_CALL);
 				s->SetNumberOfFrames(Electrons.getCount());
 				s->SetAnimationTime(0.8f);
@@ -1501,7 +1501,7 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			gets(Animator::Specific, s);
+			gets(StackTimer, s);
 			Electrons[s->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1646,7 +1646,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			gets(Animator::Specific, s);
+			gets(StackTimer, s);
 			Animator::Create(OBJECT_CREATER_CALL);
 			s->SetNumberOfFrames(Terminal.getCount());
 			s->SetAnimationTime(animateTime);
@@ -1671,7 +1671,7 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			gets(Animator::Specific, s);
+			gets(StackTimer, s);
 			Terminal[s->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1682,14 +1682,14 @@ namespace Object
 		void speedUpTerminalSpeed(ObjectBase *o)
 		{
 			maks(o);
-			gets(Animator::Specific, s);
+			gets(StackTimer, s);
 			s->SetAnimationTime(activatedAnimateTime);
 		}
 
 		void Pushed(ObjectBase *o)
 		{
 			maks(o);
-			gets(Animator::Specific, s);
+			gets(StackTimer, s);
 			if (s->time != activatedAnimateTime)
 			{
 				Type::Coord coord;

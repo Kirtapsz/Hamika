@@ -393,7 +393,9 @@ MainEvent::MainEvent():
 			cursor[i] =
 			al_create_mouse_cursor(cursorBmp[i],
 								   0, 0);
-		cursorTimer.Initialize(cursorBmp.getCount());
+		cursorAnimator.Initialize();
+		cursorAnimator.SetNumberOfFrames(cursorBmp.getCount());
+		cursorAnimator.SetAnimationTime(1.f);
 	}
 
 	activeMap->hide();
@@ -420,8 +422,9 @@ MainEvent::MainEvent():
 
 	fncTimer = [&](FNC_TIMER_PARAMS)
 	{
-		if (cursorTimer.Add(1 / cps_ * 12.f))
-			al_set_mouse_cursor(*this, cursor[cursorTimer.Get()]);
+		cursorAnimator.UpdateTimer();
+		if (cursorAnimator.UpdateDrawNumber())
+			al_set_mouse_cursor(*this, cursor[cursorAnimator.GetDrawNumber()]);
 	};
 
 	fncDraw = [&](FNC_DRAW_PARAMS)

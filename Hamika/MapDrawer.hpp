@@ -363,6 +363,10 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 template <typename ACTIVE_BLOCK_T>
 MapDrawer<ACTIVE_BLOCK_T>::MapDrawer()
 {
+	gravitySlides.initialize(KIR5::Bitmap("Hamika\\Texture\\Block\\gravitation.png"), KIR5::SubBitmap());
+	gravityAnimator.Initialize();
+	gravityAnimator.SetNumberOfFrames(gravitySlides.getCount());
+	gravityAnimator.SetAnimationTime(1.0f);
 }
 
 template <typename ACTIVE_BLOCK_T>
@@ -386,43 +390,25 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		if (offsetw != 0 || offseth != 0)
 		{
 			target.lock(TempBitmap);
-			al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+			al_clear_to_color(KIR5::Color::_transparent);
 			LayerBitmap.draw(0, 0);
 			target.lock(LayerBitmap);
-			al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+			al_clear_to_color(KIR5::Color::_transparent);
 			TempBitmap.draw(offsetw, offseth);
 
 			target.lock(TempBitmap);
-			al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+			al_clear_to_color(KIR5::Color::_transparent);
 			RedrawnedBitmap.draw(0, 0);
 			target.lock(RedrawnedBitmap);
-			al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+			al_clear_to_color(KIR5::Color::_transparent);
 			TempBitmap.draw(offsetw, offseth);
 
 			target.lock(TempBitmap);
-			al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+			al_clear_to_color(KIR5::Color::_transparent);
 			BlocksBitmap.draw(0, 0);
 			target.lock(BlocksBitmap);
-			al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+			al_clear_to_color(KIR5::Color::_transparent);
 			TempBitmap.draw(offsetw, offseth);
-
-			//KIR5::Bitmap
-			//	TmpBitmap;
-
-			////target.lock(BlocksBitmap);
-			//TmpBitmap = al_clone_bitmap(BlocksBitmap);
-			//al_clear_to_color(KIR5::Color::invisible);
-			//TmpBitmap.draw(offsetw, offseth);
-
-			//target.lock(LayerBitmap);
-			//TmpBitmap = al_clone_bitmap(LayerBitmap);
-			//al_clear_to_color(KIR5::Color::invisible);
-			//TmpBitmap.draw(offsetw, offseth);
-
-			//target.lock(RedrawnedBitmap);
-			//TmpBitmap = al_clone_bitmap(RedrawnedBitmap);
-			//al_clear_to_color(KIR5::Color::invisible);
-			//TmpBitmap.draw(offsetw, offseth);
 
 			if (DrawBegin.x < DrawBeginLast.x)
 				for (DrawBeginLast.x--; DrawBeginLast.x >= DrawBegin.x; DrawBeginLast.x--)
@@ -505,7 +491,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				block.DrawNumber = TotalPointDrawCount++;
 				block.DrawType |= ACTIVE_BLOCK_T::DrawType::Cleared;
 				al_set_clipping_rectangle(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
-				al_clear_to_color(KIR5::Color(0, 0, 0, 0));
+				al_clear_to_color(KIR5::Color::_transparent);
 				//al_draw_filled_rectangle(coord.x*DrawSize.width, coord.y*DrawSize.height, (coord.x + 1)*DrawSize.width, (coord.y + 1)*DrawSize.height, KIR5::Color::invisible());
 			}
 		});
@@ -619,21 +605,23 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 		//al_reset_clipping_rectangle();
 
-		//if (layerActive)
-		//{
-		//	if (Bitmap::gravityTimer.Add(CalculatePerSec * 12.f))
-		//	{
-		//		target.lock(LayerBitmap);
+		if (layerActive)
+		{
+			gravityAnimator.UpdateTimer();
+			if (gravityAnimator.UpdateDrawNumber())
+			{
+				target.lock(LayerBitmap);
 
-		//		al_clear_to_color(KIR5::Color(0, 0, 0, 0));
-		//		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		//		{
-		//			if (block.grid & GridFlags::Gravity)
-		//				Bitmap::gravity[Bitmap::gravityTimer.Get()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
-		//		});
-
-		//	}
-		//}
+				al_clear_to_color(KIR5::Color::_transparent);
+				al_hold_bitmap_drawing(true);
+				map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+				{
+					if (block.grid & GridFlags::Gravity)
+						gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
+				});
+				al_hold_bitmap_drawing(false);
+			}
+		}
 		target.unlock();
 	}
 
@@ -685,5 +673,12 @@ void MapDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 			Redrawn(reach(map)[coord].GoTo);
 	}
 }
+
+
+template <typename ACTIVE_BLOCK_T>
+StackTimer MapDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
+
+template <typename ACTIVE_BLOCK_T>
+Slides MapDrawer<ACTIVE_BLOCK_T>::gravitySlides;
 
 #endif

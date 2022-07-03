@@ -8,6 +8,8 @@
 #include "Array2D.h"
 #include "ActiveBlock.h"
 #include "Object.h"
+#include "BaseFunctions.h"
+#include "Bitmap.h"
 
 //#define SHOW_COORDS
 //#define SHOW_TIMER
@@ -18,6 +20,9 @@ class MapDrawer
 	public: void PrintBlock(Type::Coord coord);
 
 	private: std::shared_ptr<Array2D<ACTIVE_BLOCK_T>> map;
+
+	private: static StackTimer gravityAnimator;
+	private: static Slides gravitySlides;
 
 	private: unsigned long long TotalPointDrawCount;
 	private: unsigned long long TotalObjectDrawCount;
@@ -82,8 +87,8 @@ class MapDrawer
 		  //kamera középen van
 	public: void MoveCameraTo(Type::Move camera);
 	public: void InitializeDrawOptions(int width, int height, float CalculatePerSec);
-	public: MapDrawer();
 
+	public: MapDrawer();
 	public: void DrawBlocks(int x, int y);
 
 	public: void SetMap(std::shared_ptr<Array2D<ACTIVE_BLOCK_T>> &map);

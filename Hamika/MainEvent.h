@@ -86,7 +86,7 @@ class MainEvent:public KIR5::Display
 	private: int cursorID = -1;
 	private: float cursorIDf = 0;
 	private: std::vector<ALLEGRO_MOUSE_CURSOR *> cursor;
-	private: StackTimer cursorTimer;
+	private: StackTimer cursorAnimator;
 
 	public: MainEvent();
 	public: ~MainEvent();

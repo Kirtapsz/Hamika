@@ -6,41 +6,10 @@ namespace Object
 {
 	namespace Animator
 	{
-		void Specific::SetAnimationTime(float time)
-		{
-			std::uniform_real_distribution<float> distribution(0.f, time);
-
-			this->time = time;
-			this->timer = distribution(generator);
-			UpdateDrawNumber();
-		}
-		void Specific::SetNumberOfFrames(int numberOfFrames)
-		{
-			this->numberOfFrames = numberOfFrames;
-		}
-		int Specific::GetDrawNumber()
-		{
-			return drawNumber;
-		}
-		bool Specific::UpdateDrawNumber()
-		{
-			int drawNumber_ = (std::max)(0, (std::min)((int)(this->numberOfFrames - 1), (int)((this->timer / this->time) * this->numberOfFrames)));
-			if (this->drawNumber != drawNumber_)
-			{
-				this->drawNumber = drawNumber_;
-				return true;
-			}
-			return false;
-		}
-
-
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->timer = 0.f;
-			s->time = 0.f;
-			s->numberOfFrames = 0;
-			s->drawNumber = 0;
+			pops(StackTimer, s);
+			s->Initialize();
 
 			stack->o->events.timer = true;
 
@@ -48,7 +17,7 @@ namespace Object
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			pops(StackTimer, s);
 			clog << "Animator::timer: " << s->timer << "\n";
 			clog << "Animator::time: " << s->time << "\n";
 			clog << "Animator::numberOfFrames: " << s->numberOfFrames << "\n";
@@ -56,13 +25,9 @@ namespace Object
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
-			s->timer += CA;
-			if (s->timer > s->time)
-			{
-				s->timer -= s->time;
-			}
+			pops(StackTimer, s);
 
+			s->UpdateTimer();
 			if (s->UpdateDrawNumber())
 			{
 				stack->o->requests.draw = true;
@@ -72,11 +37,11 @@ namespace Object
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
-			pops(Specific, s);
+			pops(StackTimer, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			pops(StackTimer, s);
 		}
 	}
 

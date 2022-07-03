@@ -63,20 +63,6 @@ namespace Object
 
 	namespace Animator
 	{
-		struct Specific
-		{
-			float time;
-			float timer;
-			int numberOfFrames;
-			int drawNumber;
-
-			void SetAnimationTime(float AnimationTime);
-			void SetNumberOfFrames(int FramesNumber);
-			int GetDrawNumber();
-			bool UpdateDrawNumber();
-		};
-
-
 		void Create(OBJECT_CREATER_PARAM);
 		void Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);

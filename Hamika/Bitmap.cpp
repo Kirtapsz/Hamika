@@ -25,41 +25,47 @@ KIR5::Bitmap unknownBitmap(KIR5::Color color)
 
 
 
-StackTimer::StackTimer()
+void StackTimer::Initialize()
 {
+	timer = 0.f;
+	time = 0.f;
+	numberOfFrames = 0;
+	drawNumber = 0;
+}
+void StackTimer::SetAnimationTime(float time)
+{
+	std::uniform_real_distribution<float> distribution(0.f, time);
 
+	this->time = time;
+	this->timer = distribution(generator);
+	UpdateDrawNumber();
 }
-void StackTimer::Start()
+void StackTimer::SetNumberOfFrames(int numberOfFrames)
 {
-	timer = count;
-	current = count;
+	this->numberOfFrames = numberOfFrames;
 }
-void StackTimer::Initialize(int count)
+int StackTimer::GetDrawNumber()
 {
-	this->count = count;
-	Start();
+	return drawNumber;
 }
-bool StackTimer::Add(float time)
+bool StackTimer::UpdateDrawNumber()
 {
-	if (count <= 0)
-		return false;
-	timer += time;
-	if (timer >= count)
-		timer = timer - ((int)(timer) / count) * count;
-	if (current != (int)timer)
+	int drawNumber_ = (std::max)(0, (std::min)((int)(this->numberOfFrames - 1), (int)((this->timer / this->time) * this->numberOfFrames)));
+	if (this->drawNumber != drawNumber_)
 	{
-		current = (int)timer;
+		this->drawNumber = drawNumber_;
 		return true;
 	}
 	return false;
 }
-int StackTimer::Get() const
+void StackTimer::UpdateTimer()
 {
-	return current;
+	timer += CA;
+	if (timer > time)
+	{
+		timer -= time;
+	}
 }
-
-
-
 
 Slides::Slides()
 {
