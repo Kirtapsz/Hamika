@@ -50,7 +50,7 @@ int StackTimer::GetDrawNumber()
 }
 bool StackTimer::UpdateDrawNumber()
 {
-	int drawNumber_ = (std::max)(0, (std::min)((int)(this->numberOfFrames - 1), (int)((this->timer / this->time) * this->numberOfFrames)));
+	int drawNumber_ = limiter<int>(0, this->numberOfFrames - 1, (this->timer / this->time) * this->numberOfFrames);
 	if (this->drawNumber != drawNumber_)
 	{
 		this->drawNumber = drawNumber_;
@@ -109,7 +109,7 @@ int Slides::getCount() const
 }
 int Slides::getDrawNumber(float i) const
 {
-	return (std::max)(0, (std::min)((int)(bitmaps.size() - 1), (int)(i * bitmaps.size())));
+	return limiter<int>(0, bitmaps.size() - 1, i * bitmaps.size());
 }
 KIR5::SubBitmap &Slides::operator[](size_t i)
 {

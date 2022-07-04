@@ -5,6 +5,7 @@
 
 #include "MapDrawer.h"
 #include "Font.h"
+#include "Global.h"
 
 #include <KIR\AL\KIR5_color.h>
 #include <KIR\AL\KIR5_bitmap_target.h>
@@ -168,8 +169,8 @@ Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
 	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height + BlocksBitmapDrawOffset.height)) / (float)DrawSize.height;
 
 	return {
-		(std::min)(((Type::Size)reach(map)).width - 1,(std::max)(0,(Type::Coord::Type)(CameraBegin.x + x_))),
-		(std::min)(((Type::Size)reach(map)).height - 1,(std::max)(0,(Type::Coord::Type)(CameraBegin.y + y_)))
+		limiter<Type::Coord::Type>(0,((Type::Size)reach(map)).width - 1,CameraBegin.x + x_),
+		limiter<Type::Coord::Type>(0,((Type::Size)reach(map)).height - 1,CameraBegin.y + y_)
 	};
 }
 

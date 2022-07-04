@@ -1,6 +1,7 @@
 #include "EditorControlPanel.h"
 #include "Font.h"
 #include "IDreg.h"
+#include "Global.h"
 #include "EditorMainEvent.h"
 #include <KIR/AL/KIR5_panel_control.h>
 
@@ -638,7 +639,7 @@ namespace Editor
 					{
 						if (key_ == ALLEGRO_KEY_ENTER)
 						{
-							objectPanel->id = std::max(0, std::min(std::atoi(objectIDTextBox->getText().c_str()), GetObjectNumber() - 1));
+							objectPanel->id = limiter<int>(0, GetObjectNumber() - 1, std::atoi(objectIDTextBox->getText().c_str()));
 							eventEngine->eventDestroyed(objectIDTextBox.get());
 							return true;
 						}

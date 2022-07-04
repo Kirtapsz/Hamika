@@ -52,3 +52,10 @@ inline const T &reach(const std::shared_ptr<T> &map)
 {
 	return *map;
 }
+
+
+template <typename T>
+constexpr T limiter(const T &l, const T &h, const T &v)
+{
+	return (std::max)(l, (std::min)(h, v));
+}
