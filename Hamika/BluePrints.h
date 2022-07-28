@@ -11,16 +11,13 @@
 
 #include "BluePrint.h"
 
-struct WorldIO
-{
-	std::vector<std::shared_ptr<BluePrint>> levels;
+#include <KIR/hash/KIR5_sha512.h>
 
-	virtual void Read(const std::string filename) = 0;
-	virtual void Write(const std::string filename) const = 0;
-};
 
-struct OriginalLevelWorldIO: WorldIO
-{
-	virtual void Read(const std::string filename);
-	virtual void Write(const std::string filename) const;
-};
+/*
+
+* -> FileIO -> TypeSelector
+						-> BinaryEncoder -> HashChecker -> WorldSelector -> WouldIO -> BluePrintSelector -> HashChecker -> BluePrintIO -> *
+
+
+*/

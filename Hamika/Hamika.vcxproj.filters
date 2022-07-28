@@ -113,7 +113,7 @@
     <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_console.cpp">
       <Filter>KIR</Filter>
     </ClCompile>
-    <ClCompile Include="Global.cpp">
+    <ClCompile Include="Tools.cpp">
       <Filter>Hamika\Tool</Filter>
     </ClCompile>
     <ClCompile Include="BlueprintPanel.cpp">
@@ -194,9 +194,6 @@
     <ClCompile Include="BluePrints.cpp">
       <Filter>Hamika\World</Filter>
     </ClCompile>
-    <ClCompile Include="BluePrintIO.cpp">
-      <Filter>Hamika\World\Map</Filter>
-    </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp">
       <Filter>KIR\sys</Filter>
     </ClCompile>
@@ -271,7 +268,7 @@
     <ClInclude Include="Font.h">
       <Filter>Hamika\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="Global.h">
+    <ClInclude Include="Tools.h">
       <Filter>Hamika\Tool</Filter>
     </ClInclude>
     <ClInclude Include="BlueprintPanel.h">
@@ -297,9 +294,6 @@
     </ClInclude>
     <ClInclude Include="BluePrints.h">
       <Filter>Hamika\World</Filter>
-    </ClInclude>
-    <ClInclude Include="BluePrintIO.h">
-      <Filter>Hamika\World\Map</Filter>
     </ClInclude>
     <ClInclude Include="BitmapPool.h">
       <Filter>Hamika\Tool</Filter>

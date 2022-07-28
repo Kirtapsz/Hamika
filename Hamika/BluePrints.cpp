@@ -58,3 +58,132 @@ void OriginalLevelWorldIO::Write(const std::string filename) const
 
 	writeFileFromBuffer(filename, buffer);
 }
+
+
+
+namespace MapIO
+{
+	struct Stream
+	{
+		virtual void encode(const std::vector<unsigned char> &data) = 0;
+		virtual std::vector<unsigned char> decode() = 0;
+	};
+
+	FileIO::FileIO(const std::string &filename):
+		filename(filename)
+	{
+
+	}
+
+	void FileIO::encode(const std::vector<unsigned char> &data)
+	{
+		std::ifstream input(filename, std::ios::binary);
+		std::vector<unsigned char> data(std::istreambuf_iterator<char>(input), {});
+		std::unique_ptr<Stream> stream(new TypeSelector());
+		stream->encode(data);
+	}
+	std::vector<unsigned char> FileIO::decode()
+	{
+
+	}
+
+	TypeSelector::TypeSelector()
+	{
+
+	}
+
+	void TypeSelector::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> TypeSelector::decode()
+	{
+
+	}
+
+	BinaryEncoder::BinaryEncoder()
+	{
+
+	}
+
+	void BinaryEncoder::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> BinaryEncoder::decode()
+	{
+
+	}
+
+	HashChecker::HashChecker()
+	{
+
+	}
+
+	void HashChecker::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> HashChecker::decode()
+	{
+
+	}
+
+	WorldSelector::WorldSelector()
+	{
+
+	}
+
+	void WorldSelector::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> WorldSelector::decode()
+	{
+
+	}
+
+	WouldIO::WouldIO()
+	{
+
+	}
+
+	void WouldIO::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> WouldIO::decode()
+	{
+
+	}
+
+	BluePrintSelector::BluePrintSelector()
+	{
+
+	}
+
+	void BluePrintSelector::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> BluePrintSelector::decode()
+	{
+
+	}
+
+
+	BluePrintIO::BluePrintIO()
+	{
+
+	}
+
+	void BluePrintIO::encode(const std::vector<unsigned char> &data)
+	{
+
+	}
+	std::vector<unsigned char> BluePrintIO::decode()
+	{
+
+	}
+
+}

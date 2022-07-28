@@ -1,5 +1,5 @@
 #include "EditorActiveMap.h"
-#include "Global.h"
+#include "Tools.h"
 #include "EditorMainEvent.h"
 #include "EditorObjects.h"
 

@@ -10,7 +10,7 @@
 
 #include "Types.h"
 #include "IDreg.h"
-#include "Global.h"
+#include "Tools.h"
 #include "Bitmap.h"
 #include "BitmapPool.h"
 

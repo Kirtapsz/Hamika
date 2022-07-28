@@ -2,7 +2,7 @@
 #include "Space.h"
 #include "Bedrock.h"
 #include "BaseFunctions.h"
-#include "Global.h"
+#include "Tools.h"
 
 #include <KIR/KIR4_console.h>
 

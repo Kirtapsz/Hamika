@@ -1,6 +1,6 @@
 #include "ActiveMap.h"
 #include "MainEvent.h"
-#include "Global.h"
+#include "Tools.h"
 
 #include <fstream>
 

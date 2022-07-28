@@ -1,5 +1,5 @@
 #include "EditorMapList.h"
-#include "Global.h"
+#include "Tools.h"
 #include "EditorMainEvent.h"
 
 #include <KIR/sys/KIR5_files.h>

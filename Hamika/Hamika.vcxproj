@@ -240,7 +240,6 @@
     <ClCompile Include="Bedrock.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BitmapPool.cpp" />
-    <ClCompile Include="BluePrintIO.cpp" />
     <ClCompile Include="BlueprintPanel.cpp" />
     <ClCompile Include="EditorActiveMap.cpp" />
     <ClCompile Include="EditorControlPanel.cpp" />
@@ -250,7 +249,7 @@
     <ClCompile Include="EditorMiniMap.cpp" />
     <ClCompile Include="EditorObjects.cpp" />
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="Global.cpp" />
+    <ClCompile Include="Tools.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainEvent.cpp" />
     <ClCompile Include="BluePrint.cpp" />
@@ -271,7 +270,6 @@
     <ClInclude Include="Bedrock.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BitmapPool.h" />
-    <ClInclude Include="BluePrintIO.h" />
     <ClInclude Include="BlueprintPanel.h" />
     <ClInclude Include="EditorActiveBlock.h" />
     <ClInclude Include="EditorActiveBlock.hpp" />
@@ -283,7 +281,7 @@
     <ClInclude Include="EditorMiniMap.h" />
     <ClInclude Include="EditorObjects.h" />
     <ClInclude Include="Font.h" />
-    <ClInclude Include="Global.h" />
+    <ClInclude Include="Tools.h" />
     <ClInclude Include="IDreg.h" />
     <ClInclude Include="MainEvent.h" />
     <ClInclude Include="BluePrint.h" />

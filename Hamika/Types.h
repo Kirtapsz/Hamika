@@ -5,7 +5,12 @@
 
 namespace Type
 {
-	typedef __int64 Flags;
+	typedef unsigned __int8 Flags8;
+	typedef unsigned __int16 Flags16;
+	typedef unsigned __int32 Flags32;
+	typedef unsigned __int64 Flags64;
+	typedef Flags64 Flags;
+
 	typedef float Rotation;
 	namespace Rotations
 	{
@@ -24,7 +29,7 @@ namespace Type
 		constexpr Rotation Down = 180;
 		constexpr Rotation Left = 270;
 
-		constexpr int getRotationIndex(const Rotation &rotation)
+		constexpr int getIndexOfRotation(const Rotation &rotation)
 		{
 			if (rotation == Up)
 			{
@@ -44,8 +49,29 @@ namespace Type
 			}
 			return 0;
 		}
+
+		constexpr Rotation getRotationOfIndex(int index)
+		{
+			if (index == 0)
+			{
+				return Up;
+			}
+			if (index == 1)
+			{
+				return Right;
+			}
+			if (index == 2)
+			{
+				return Down;
+			}
+			if (index == 3)
+			{
+				return Left;
+			}
+			return Up;
+		}
 	}
-	typedef __int32 ID;
+	typedef __int16 ID;
 	typedef float Speed;
 	typedef __int8 Code;
 
@@ -115,7 +141,7 @@ namespace Type
 	};
 }
 
-enum GridFlags:Type::Flags
+enum GridFlags: Type::Flags8
 {
 	Gravity = 1 << 0,
 	Detonate = 1 << 1,

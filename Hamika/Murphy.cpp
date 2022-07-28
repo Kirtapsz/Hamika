@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Murphy.h"
-#include "Global.h"
+#include "Tools.h"
 #include "OriginalObjects.h"
 
 #include <KIR/KIR4_console.h>
