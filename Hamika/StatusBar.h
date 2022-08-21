@@ -4,7 +4,7 @@
 #include <KIR\AL\KIR5_Label.h>
 #include <KIR\AL\KIR5_bitmap.h>
 
-#include "BluePrints.h"
+#include "World.h"
 
 class StatusBar:public KIR5::Panel
 {

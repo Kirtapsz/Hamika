@@ -1,0 +1,433 @@
+#include "EditorWorld.h"
+#include "Tools.h"
+#include "EditorMainEvent.h"
+#include "World.h"
+
+#include <KIR/sys/KIR5_files.h>
+#include <KIR/sys/KIR5_system.h>
+#include <KIR/AL/KIR5_panel_control.h>
+
+namespace Editor
+{
+	Worldi::Item::Item(Worldi &mapList, int ID_, const std::shared_ptr<BluePrint> &bluePrint_):
+		bluePrint(bluePrint_)
+	{
+		*this << ID;
+		ID->setTextFont(Font::Consolas[18]);
+		ID->show();
+		ID->setTextAlignment(KIR5::CENTER);
+		ID->setTextColor(KIR5::Color(230, 120, 40));
+		ID->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		{
+			if (ID->isActiveBox())
+			{
+				if (key_ == ALLEGRO_KEY_ENTER)
+				{
+					eventEngine->sendEvent((void *)MOVE_ITEM_POSITION, (void *)(this), (void *)(std::atoi(ID->getText().c_str())), (void *)0);
+					return true;
+				}
+			}
+			return false;
+		};
+
+		*this << name;
+		name->show();
+		name->setTextAlignment(KIR5::CENTER);
+		name->setTextFont(ID->getTextFont());
+		name->setTextColor(KIR5::Color(180, 180, 180));
+		name->setText(bluePrint->title);
+
+		*this << moveUp;
+		moveUp->show();
+		moveUp->setBitmap(mapList.arrowUpImg);
+		moveUp->fncPress = [&](FNC_PRESS_PARAMS)
+		{
+			if (this->ID_ > 0)
+			{
+				eventEngine->sendEvent((void *)MOVE_ITEM_UP, (void *)(this), (void *)0, (void *)0);
+			}
+		};
+
+		*this << moveDown;
+		moveDown->show();
+		moveDown->setBitmap(mapList.arrowDownImg);
+		moveDown->fncPress = [&](FNC_PRESS_PARAMS)
+		{
+			eventEngine->sendEvent((void *)MOVE_ITEM_DOWN, (void *)(this), (void *)0, (void *)0);
+		};
+
+		*this << deleteMap;
+		deleteMap->show();
+		deleteMap->setBitmap(mapList.deleteImg);
+		deleteMap->fncPress = [&](FNC_PRESS_PARAMS)
+		{
+			eventEngine->sendEvent((void *)DELETE_ITEM, (void *)(this), (void *)0, (void *)0);
+		};
+
+		*this << editMap;
+		editMap->show();
+		editMap->setBitmap(mapList.editImg);
+		editMap->fncPress = [&](FNC_PRESS_PARAMS)
+		{
+			mainEvent->activeMap->SetMap(this->bluePrint);
+		};
+
+
+		*this << blueprintPanel;
+		blueprintPanel->show();
+		blueprintPanel->setBluePrint(bluePrint);
+
+		FncMoved.lock(this->fncMoved);
+		FncMoved.set([&](FNC_MOVED_PARAMS)
+		{
+			ID->move(0, 0, 40, 30);
+			name->move(ID->virtualx2(), 0, width() - ID->virtualx2(), 30);
+
+			moveUp->move(name->virtualx2() - 30, name->virtualy2(), 30, 15);
+			moveDown->move(name->virtualx2() - 30, moveUp->virtualy2(), 30, 15);
+
+			deleteMap->move(name->virtualx2() - 30, moveDown->virtualy2(), 30, 30);
+			editMap->move(name->virtualx2() - 30, deleteMap->virtualy2(), 30, 30);
+
+			blueprintPanel->move(0, ID->virtualy2(), width() - moveUp->width(), height() - ID->height());
+		});
+
+
+		FncDraw.lock(fncDraw);
+		FncDraw.set([&](FNC_DRAW_PARAMS)
+		{
+			al_clear_to_color(al_map_rgb(15, 15, 16));
+		});
+
+		FncDrawBlueprint.lock(blueprintPanel->fncDraw);
+		FncDrawBlueprint.set([&](FNC_DRAW_PARAMS)
+		{
+			al_clear_to_color(al_map_rgb(35, 35, 36));
+		});
+
+		fncMoved(this);
+		setID(ID_);
+	}
+	void Worldi::Item::setID(int ID_)
+	{
+		this->ID_ = ID_;
+		char buffer[32];
+		sprintf(buffer, "%03d", ID_);
+		ID->setText(buffer);
+	}
+	const std::shared_ptr<BluePrint> &Worldi::Item::getBluePrint() const
+	{
+		return bluePrint;
+	}
+
+
+	Worldi::Worldi()
+	{
+		arrowUpImg.load("Hamika\\texture\\editor\\StickUp.png");
+		arrowDownImg = arrowUpImg;
+		arrowDownImg.flipVertical();
+		editImg.load("Hamika\\texture\\editor\\Edit.png");
+		deleteImg.load("Hamika\\texture\\editor\\Delete.png");
+
+		*this << content;
+
+		content->show();
+		content->setGap(3);
+		(*content) += KIR5::Row<>::WrapHeight;
+		(*content) += KIR5::Row<>::ConsistentWidth;
+
+		{
+			KIR5::EVENT<KIR5::Row<>> row;
+			row->show();
+			row->setGap(3);
+			(*row) += KIR5::Row<>::WrapWidth;
+			(*row) += KIR5::Row<>::ConsistentHeight;
+
+			worltTitle_Label->setText("World title:");
+			worltTitle_Label->width(worltTitle_Label->getTextWidth() + 10);
+			row->pushBack(worltTitle_Label);
+
+			row->pushBack(worltTitle_TextBox);
+
+			FncNameRowMoved.lock(row->fncMoved);
+			FncNameRowMoved.set([&](FNC_MOVED_PARAMS)->FNC_MOVED_RET
+			{
+				dynamic_cast<KIR5::Row<> *>(obj_)->wrapItem(worltTitle_TextBox.get());
+			});
+
+			content->pushBack(row);
+		}
+
+		{
+			KIR5::EVENT<KIR5::ColoredPanel> line;
+			line->setBackgroundColor(KIR5::Color(160, 90, 30));
+			line->height(2);
+			content->pushBack(line);
+		}
+
+		{
+			listPanel->show();
+
+			list->show();
+			list->itemHeight(120);
+			*listPanel << list;
+
+			scrollBar->show();
+			scrollBar->setThumb(scrollBarThumb);
+			*listPanel << scrollBar;
+			scrollBar->fncDraw = [&](FNC_DRAW_PARAMS)
+			{
+				al_clear_to_color(KIR5::Color(62, 62, 62));
+			};
+
+			scrollBarThumb->setColor(KIR5::Color(104, 104, 104));
+
+			listPanel->fncMoved = [&](FNC_MOVED_PARAMS)
+			{
+				list->move(0, 0, listPanel->width() - 15, listPanel->height());
+				scrollBar->move(width() - 15, 0, 15, listPanel->height());
+				scrollBar->sizeOfPage(listPanel->height());
+			};
+
+			content->pushBack(listPanel);
+		}
+
+		{
+			KIR5::EVENT<KIR5::ColoredPanel> line;
+			line->setBackgroundColor(KIR5::Color(160, 90, 30));
+			line->height(2);
+			content->pushBack(line);
+		}
+
+		{
+			KIR5::EVENT<KIR5::Row<>> row;
+			row->setGap(3);
+			row->show();
+			(*row) += KIR5::Row<>::ConsistentHeight;
+
+			loadButton->setTextFont(Font::TimesNewRoman[12]);
+			loadButton->setTextColor(KIR5::Color(100, 100, 100));
+			loadButton->setTextAlignment(KIR5::CENTER);
+			loadButton->show();
+			loadButton->setColor(KIR5::Color(50, 50, 50));
+			loadButton->setText("Load");
+			loadButton->resize(loadButton->getTextWidth() + 20, 30);
+			row->pushBack(loadButton);
+			loadButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				std::string filename;
+				std::cout << KIR5::getCurrentDirectory<>() << std::endl;
+				{
+					KIR5::CurrentDirectoryGuard<> dirGuard;
+					filename = KIR5::browseForFile<>();
+				}
+				std::cout << KIR5::getCurrentDirectory<>() << std::endl;
+				if (filename.length() > 0)
+				{
+					std::shared_ptr<World> world(new World);
+					world->load(filename);
+					setWorld(world);
+				}
+			};
+
+			saveButton->setTextFont(Font::TimesNewRoman[12]);
+			saveButton->setTextColor(KIR5::Color(100, 100, 100));
+			saveButton->setTextAlignment(KIR5::CENTER);
+			saveButton->show();
+			saveButton->setColor(KIR5::Color(50, 50, 50));
+			saveButton->setText("Save");
+			saveButton->resize(saveButton->getTextWidth() + 20, 30);
+			row->pushBack(saveButton);
+			saveButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				mainEvent->saveWorldDialog->show();
+			};
+
+			newMapButton->setTextFont(Font::TimesNewRoman[12]);
+			newMapButton->setTextColor(KIR5::Color(100, 100, 100));
+			newMapButton->setTextAlignment(KIR5::CENTER);
+			newMapButton->show();
+			newMapButton->setColor(KIR5::Color(50, 50, 50));
+			newMapButton->setText("New map");
+			newMapButton->resize(newMapButton->getTextWidth() + 20, 30);
+			row->pushBack(newMapButton);
+			newMapButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				KIR5::EVENT<BluePrint> bluePrint;
+				bluePrint->blocks.resize({10,10});
+				bluePrint->blocks.foreach([](Type::Coord coord, BluePrint::Block &block)
+				{
+					block.id = 0;
+					block.flags = 0;
+					block.rotation = 0;
+				});
+
+				list->pushBack(KIR5::EVENT<Item>(new Item(*this, list->items().size() + 1, bluePrint)));
+
+				scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+				scrollBar->cursor(0xFFFFFFFF);
+			};
+
+			newWorldButton->setTextFont(Font::TimesNewRoman[12]);
+			newWorldButton->setTextColor(KIR5::Color(100, 100, 100));
+			newWorldButton->setTextAlignment(KIR5::CENTER);
+			newWorldButton->show();
+			newWorldButton->setColor(KIR5::Color(50, 50, 50));
+			newWorldButton->setText("New world");
+			newWorldButton->resize(newWorldButton->getTextWidth() + 20, 30);
+			row->pushBack(newWorldButton);
+			newWorldButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				list->clear();
+
+				KIR5::EVENT<BluePrint> bluePrint;
+				bluePrint->blocks.resize({10,10});
+				bluePrint->blocks.foreach([](Type::Coord coord, BluePrint::Block &block)
+				{
+					block.id = 0;
+					block.flags = 0;
+					block.rotation = 0;
+				});
+
+				list->pushBack(KIR5::EVENT<Item>(new Item(*this, list->items().size() + 1, bluePrint)));
+
+				scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+				scrollBar->cursor(0xFFFFFFFF);
+			};
+
+			content->pushBack(row);
+		}
+
+		FncMoved.lock(fncMoved);
+		FncMoved.set([&](FNC_MOVED_PARAMS)
+		{
+			content->move(0, 0, width(), height());
+			content->wrapItem(listPanel.get());
+		});
+
+		fncUpdate = [&](FNC_UPDATE_PARAMS)
+		{
+			if (ALLEGRO_EVENT_TYPE_IS_USER(ptr_->type))
+			{
+				switch (ptr_->user.data1)
+				{
+					case DELETE_ITEM:
+					{
+						void *ptr = (void *)ptr_->user.data2;
+						for (size_t i = 0; i < list->items().size(); ++i)
+						{
+							if (list->items()[i].get() == ptr)
+							{
+								list->erase(i);
+								scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+								break;
+							}
+						}
+
+						break;
+					}
+					case MOVE_ITEM_UP:
+					{
+						void *ptr = (void *)ptr_->user.data2;
+						for (size_t i = 0; i < list->items().size(); ++i)
+						{
+							if (list->items()[i].get() == ptr)
+							{
+								auto item = list->erase(i);
+								list->insert(item, (std::max)((int)i - 1, 0));
+								scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+								break;
+							}
+						}
+
+						break;
+					}
+					case MOVE_ITEM_DOWN:
+					{
+						void *ptr = (void *)ptr_->user.data2;
+						for (size_t i = 0; i < list->items().size(); ++i)
+						{
+							if (list->items()[i].get() == ptr)
+							{
+								auto item = list->erase(i);
+								list->insert(item, (std::min)(i + 1, list->items().size()));
+								scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+								break;
+							}
+						}
+
+						break;
+					}
+					case MOVE_ITEM_POSITION:
+					{
+						void *ptr = (void *)ptr_->user.data2;
+						size_t newID = (size_t)ptr_->user.data3;
+
+						for (size_t i = 0; i < list->items().size(); ++i)
+						{
+							if (list->items()[i].get() == ptr)
+							{
+								auto item = list->erase(i);
+								list->insert(item, (std::max)(size_t(0), (std::min)(newID - 1, list->items().size())));
+								scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+								break;
+							}
+						}
+
+						for (size_t i = 0; i < list->items().size(); ++i)
+						{
+							list->items()[i]->setID(i + 1);
+						}
+
+						break;
+					}
+					case REFRESH_ITEM:
+					{
+						void *ptr = (void *)ptr_->user.data2;
+						for (size_t i = 0; i < list->items().size(); ++i)
+						{
+							if (list->items()[i]->bluePrint.get() == ptr)
+							{
+								list->items()[i]->blueprintPanel->redrawn = true;
+								break;
+							}
+						}
+
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+		};
+	}
+	Worldi::~Worldi()
+	{
+
+	}
+	int Worldi::staticWidth()
+	{
+		return 190;
+	}
+	void Worldi::setWorld(std::shared_ptr<World> &world)
+	{
+		while (list->items().size() > 0)
+		{
+			list->erase(0);
+		}
+
+		int ID_ = 1;
+		for (auto &it : world->getBluePrints())
+		{
+			list->pushBack(KIR5::EVENT<Item>(new Item(*this, ID_++, it)));
+		}
+
+		scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
+		scrollBar->cursor(0);
+		list->cursor(0);
+
+		mainEvent->worldi->worltTitle_TextBox->setText(world->getTitle());
+	}
+}

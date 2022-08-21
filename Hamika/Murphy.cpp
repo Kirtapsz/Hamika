@@ -204,7 +204,7 @@ namespace Object
 				{
 					Type::Coord
 						source = stack->o->GetCoord();
-					s->DrawNum = PassOutSlides[Type::Rotations::getRotationIndex(rotation)].getCount() - 1;
+					s->DrawNum = PassOutSlides[Type::Rotations::getIndexOfRotation(rotation)].getCount() - 1;
 					s->flag = F_Passage;
 					Eat(stack->o, stack->o->GetObject(to2));
 					stack->o->ief.ObjectMove(source, to2, ObjectID::MurphyPlus);
@@ -282,7 +282,7 @@ namespace Object
 					position = -stack->o->GetMove().y;
 				}
 
-				int DrawNum = MovingSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())].getDrawNumber(position);
+				int DrawNum = MovingSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].getDrawNumber(position);
 
 				if (s->DrawNum != DrawNum)
 				{
@@ -304,7 +304,7 @@ namespace Object
 					Type::Move::Type move = s->passageTimer / passageTime * 2;
 					stack->o->SetMoveUnsafe(stack->o->GetRotation(), {move,move});
 
-					int DrawNum = PassOutSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())].getDrawNumber(s->passageTimer / passageTime);
+					int DrawNum = PassOutSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].getDrawNumber(s->passageTimer / passageTime);
 
 					if (s->DrawNum != DrawNum)
 					{
@@ -342,12 +342,15 @@ namespace Object
 					}
 				}
 
-				bool
-					FallDown = false;
-				if (stack->o->ief.GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity && stack->o->CanMoveDown() && stack->o->ief.GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
-					FallDown = true;
+				bool forceFallDown = false;
+				if (
+					(stack->o->ief.IsGlobalGravity() || stack->o->ief.GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity) &&
+					stack->o->CanMoveDown() && stack->o->ief.GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
+				{
+					forceFallDown = true;
+				}
 
-				if (s->Spell && !FallDown)
+				if (s->Spell && !forceFallDown)
 				{
 					if (s->flag != F_Sniff)
 					{
@@ -496,28 +499,28 @@ namespace Object
 				}
 				else
 				{
-					if (s->MoveUp && (!FallDown || stack->o->GetObject(stack->o->GetCoordUp())->GetFlags() & ObjectBase::GiveGravityDelay))
+					if (s->MoveUp && (!forceFallDown || stack->o->GetObject(stack->o->GetCoordUp())->GetFlags() & ObjectBase::GiveGravityDelay))
 					{
 						if (Move(stack, stack->o->GetCoordUp(), {stack->o->GetCoord().x,stack->o->GetCoord().y - 2}, {stack->o->GetCoord().x,stack->o->GetCoord().y + 2}, Type::Rotations::Up, ObjectBase::PassageFromBottom, ObjectBase::CanPushUp))
 							return;
 					}
-					if (s->MoveDown && (!FallDown || stack->o->GetObject(stack->o->GetCoordDown())->GetFlags() & ObjectBase::GiveGravityDelay))
+					if (s->MoveDown && (!forceFallDown || stack->o->GetObject(stack->o->GetCoordDown())->GetFlags() & ObjectBase::GiveGravityDelay))
 					{
 						if (Move(stack, stack->o->GetCoordDown(), {stack->o->GetCoord().x,stack->o->GetCoord().y + 2}, {stack->o->GetCoord().x,stack->o->GetCoord().y - 2}, Type::Rotations::Down, ObjectBase::PassageFromTop, ObjectBase::CanPushDown))
 							return;
 					}
-					if (s->MoveLeft && (!FallDown || stack->o->GetObject(stack->o->GetCoordLeft())->GetFlags() & ObjectBase::GiveGravityDelay))
+					if (s->MoveLeft && (!forceFallDown || stack->o->GetObject(stack->o->GetCoordLeft())->GetFlags() & ObjectBase::GiveGravityDelay))
 					{
 						if (Move(stack, stack->o->GetCoordLeft(), {stack->o->GetCoord().x - 2,stack->o->GetCoord().y}, {stack->o->GetCoord().x + 2,stack->o->GetCoord().y}, Type::Rotations::Left, ObjectBase::PassageFromRight, ObjectBase::CanPushLeft))
 							return;
 					}
-					if (s->MoveRight && (!FallDown || stack->o->GetObject(stack->o->GetCoordRight())->GetFlags() & ObjectBase::GiveGravityDelay))
+					if (s->MoveRight && (!forceFallDown || stack->o->GetObject(stack->o->GetCoordRight())->GetFlags() & ObjectBase::GiveGravityDelay))
 					{
 						if (Move(stack, stack->o->GetCoordRight(), {stack->o->GetCoord().x + 2,stack->o->GetCoord().y}, {stack->o->GetCoord().x - 2,stack->o->GetCoord().y}, Type::Rotations::Right, ObjectBase::PassageFromLeft, ObjectBase::CanPushRight))
 							return;
 					}
 
-					if (FallDown)
+					if (forceFallDown)
 					{
 						s->flag = F_Move;
 						Eat(stack->o, stack->o->GetObject(stack->o->GetCoordDown()));
@@ -585,20 +588,20 @@ namespace Object
 		{
 			Base = ObjectBase::bitmapPool.get("Pleyer-Base"), ObjectBase::bitmapPool.get("Error");
 
-			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingRight"), ObjectBase::bitmapPool.get("Error"));
-			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingUp"), ObjectBase::bitmapPool.get("Error"));
-			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingDown"), ObjectBase::bitmapPool.get("Error"));
-			MovingSlides[Type::Rotations::getRotationIndex(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingLeft"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingRight"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingUp"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingDown"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingLeft"), ObjectBase::bitmapPool.get("Error"));
 
-			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInRight"), ObjectBase::bitmapPool.get("Error"));
-			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInUp"), ObjectBase::bitmapPool.get("Error"));
-			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInDown"), ObjectBase::bitmapPool.get("Error"));
-			PassInSlides[Type::Rotations::getRotationIndex(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInLeft"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInRight"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInUp"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInDown"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInLeft"), ObjectBase::bitmapPool.get("Error"));
 
-			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutRight"), ObjectBase::bitmapPool.get("Error"));
-			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutUp"), ObjectBase::bitmapPool.get("Error"));
-			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutDown"), ObjectBase::bitmapPool.get("Error"));
-			PassOutSlides[Type::Rotations::getRotationIndex(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutLeft"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutRight"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutUp"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutDown"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutLeft"), ObjectBase::bitmapPool.get("Error"));
 
 			Sniff.initialize(ObjectBase::bitmapPool.get("Pleyer-Sniff"), ObjectBase::bitmapPool.get("Error"));
 			Push.initialize(ObjectBase::bitmapPool.get("Pleyer-Push"), ObjectBase::bitmapPool.get("Error"));
@@ -672,7 +675,7 @@ namespace Object
 				{
 					stack->o->requests.timer = true;
 				}
-				int DrawNum = PassInSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())].getDrawNumber(1 - (s->passageTimer / passageTime));
+				int DrawNum = PassInSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].getDrawNumber(1 - (s->passageTimer / passageTime));
 
 				if (s->DrawNum != DrawNum)
 				{
@@ -696,7 +699,7 @@ namespace Object
 			}
 			else if (s->flag & F_Move)
 			{
-				MovingSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
+				MovingSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
 
 				if (stack->o->GetRotation() != Type::Rotations::Up &&
 					stack->o->GetRotation() != Type::Rotations::Down &&
@@ -708,7 +711,7 @@ namespace Object
 			{
 				if (s->flag == F_PassageDisappear)
 				{
-					PassInSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
+					PassInSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
 
 					if (stack->o->GetRotation() != Type::Rotations::Up &&
 						stack->o->GetRotation() != Type::Rotations::Down &&
@@ -718,7 +721,7 @@ namespace Object
 				}
 				else
 				{
-					PassOutSlides[Type::Rotations::getRotationIndex(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
+					PassOutSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())][s->DrawNum].drawScaled(x, y, w, h);
 
 					if (stack->o->GetRotation() != Type::Rotations::Up &&
 						stack->o->GetRotation() != Type::Rotations::Down &&
@@ -729,11 +732,11 @@ namespace Object
 			}
 			else if (s->flag & F_Sniff)
 			{
-				Sniff[Type::Rotations::getRotationIndex(stack->o->GetRotation())].drawScaled(x, y, w, h);
+				Sniff[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].drawScaled(x, y, w, h);
 			}
 			else if (s->flag & F_Push)
 			{
-				Push[Type::Rotations::getRotationIndex(stack->o->GetRotation())].drawScaled(x, y, w, h);
+				Push[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].drawScaled(x, y, w, h);
 			}
 			else
 			{

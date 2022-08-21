@@ -1,6 +1,6 @@
 #include "BlueprintPanel.h"
 
-void BlueprintPanel::setBluePrint(std::shared_ptr<BluePrint> &bluePrint)
+void BlueprintPanel::setBluePrint(const std::shared_ptr<BluePrint> &bluePrint)
 {
 	this->bluePrint = bluePrint;
 	redrawn = true;
@@ -16,10 +16,10 @@ BlueprintPanel::BlueprintPanel()
 			redrawn = false;
 			printf("BlueprintPanel\n");
 
-			int smax = max(((Type::Size)(*bluePrint)).width, ((Type::Size)(*bluePrint)).height);
+			int smax = (std::max)(((Type::Size)(bluePrint->blocks)).width, ((Type::Size)(bluePrint->blocks)).height);
 			DrawSize = {400 / smax,400 / smax};
 
-			disp_bmp = al_create_bitmap(DrawSize.width * ((Type::Size)(*bluePrint)).width, DrawSize.height * ((Type::Size)(*bluePrint)).height);
+			disp_bmp = al_create_bitmap(DrawSize.width * ((Type::Size)(bluePrint->blocks)).width, DrawSize.height * ((Type::Size)(bluePrint->blocks)).height);
 
 			KIR5::BitmapTarget target;
 
@@ -27,7 +27,7 @@ BlueprintPanel::BlueprintPanel()
 
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 
-			bluePrint->foreach([&](const Type::Coord &coord, BluePrintBlock &object)
+			bluePrint->blocks.foreach([&](const Type::Coord &coord, BluePrint::Block &object)
 			{
 				DrawObject(object.id, coord.x * DrawSize.width, coord.y * DrawSize.height, DrawSize.width, DrawSize.height);
 			});

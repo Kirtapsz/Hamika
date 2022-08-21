@@ -30,6 +30,9 @@ class MapDrawer
 	public: bool layerActive = true;
 	public: bool blockRefreshActive = true;
 
+	private: bool globalGravity = false;
+	public: void setGlobalGravity(bool globalGravity);
+
 	private: KIR5::Bitmap RedrawnedBitmap;
 	private: KIR5::Bitmap LayerBitmap;
 	private: KIR5::Bitmap BlocksBitmap;
@@ -37,7 +40,7 @@ class MapDrawer
 
 	private: const int BlocksBitmapBufferSize = 2;
 
-	private: Type::Size DrawSize = {blockSizeInPixel,blockSizeInPixel};
+	private: Type::Size DrawSize;
 	private: Type::Size LastDrawOffset;
 	private: Type::Size BlocksBitmapDrawOffset;
 	private: Type::Size DrawOffset;//bal felsõ x,y
@@ -66,7 +69,6 @@ class MapDrawer
 	private: float CameraX2;
 	private: float CameraY1;
 	private: float CameraY2;
-	private: float CalculatePerSec;
 	private: void RedrawnRow(Type::Coord::Type row, Type::Coord::Type begin, Type::Coord::Type end);
 	private: void RedrawnCol(Type::Coord::Type col, Type::Coord::Type begin, Type::Coord::Type end);
 
@@ -86,7 +88,7 @@ class MapDrawer
 
 		  //kamera középen van
 	public: void MoveCameraTo(Type::Move camera);
-	public: void InitializeDrawOptions(int width, int height, float CalculatePerSec);
+	public: void InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust);
 
 	public: MapDrawer();
 	public: void DrawBlocks(int x, int y);

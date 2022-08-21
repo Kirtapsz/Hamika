@@ -553,10 +553,14 @@ struct ObjectDrawModule:
 {
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
+		drawnerFnc = nullptr;
+		configureDrawOptions();
+	}
+
+	inline void configureDrawOptions()
+	{
 		DrawCoord.x = coord.x * DrawSize().width;
 		DrawCoord.y = coord.y * DrawSize().height;
-
-		drawnerFnc = nullptr;
 	}
 
 	unsigned long long int DrawNumber = 0;
@@ -767,6 +771,8 @@ struct ObjectBase:
 		virtual int GetUnityCount() const = 0;
 		virtual int GetAimRemaining() const = 0;
 		virtual bool IamRemain(ObjectBase *) = 0;
+		virtual bool IsGlobalGravity() const = 0;
+		virtual void switchGravity() = 0;
 
 		virtual bool rollTrigger(ObjectBase *obj_, float chancePerSec) = 0;
 	};

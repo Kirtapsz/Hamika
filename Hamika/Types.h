@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <sstream>
+#include <limits>
 
 namespace Type
 {
@@ -75,20 +76,21 @@ namespace Type
 	typedef float Speed;
 	typedef __int8 Code;
 
-	struct Size
+	template<typename T>
+	struct _Dim
 	{
-		typedef __int32 Type;
+		typedef typename T Type;
 		Type width;
 		Type height;
-		inline bool operator==(const Size &size) const
+		inline bool operator==(const _Dim &size) const
 		{
 			return width == size.width && height == size.height;
 		}
-		inline bool operator!=(const Size &size) const
+		inline bool operator!=(const _Dim &size) const
 		{
 			return width != size.width || height != size.height;
 		}
-		static const Size Invalid;
+		static const _Dim<T> Invalid;
 		inline operator std::ostringstream() const
 		{
 			std::ostringstream os;
@@ -96,49 +98,39 @@ namespace Type
 			return os;
 		}
 	};
-	struct Coord
-	{
-		typedef __int32 Type;
-		Type x;
-		Type y;
-		inline bool operator==(const Coord &coord) const
-		{
-			return x == coord.x && y == coord.y;
-		}
-		inline bool operator!=(const Coord &coord) const
-		{
-			return x != coord.x || y != coord.y;
-		}
-		static const Coord Invalid;
-		inline operator std::ostringstream() const
-		{
-			std::ostringstream os;
-			os << "( " << x << " , " << y << " )";
-			return os;
-		}
-	};
+	template<typename T>
+	const _Dim<T> _Dim<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
 
-	struct Move
+	template<typename T>
+	struct _Pos
 	{
-		typedef float Type;
+		typedef typename T Type;
 		Type x;
 		Type y;
-		inline bool operator==(const Move &coord) const
+		inline bool operator==(const _Pos &pos) const
 		{
-			return x == coord.x && y == coord.y;
+			return x == pos.x && y == pos.y;
 		}
-		inline bool operator!=(const Move &coord) const
+		inline bool operator!=(const _Pos &pos) const
 		{
-			return x != coord.x || y != coord.y;
+			return x != pos.x || y != pos.y;
 		}
-		static const Move Invalid;
+		static const _Pos<T> Invalid;
 		inline operator std::ostringstream() const
 		{
 			std::ostringstream os;
-			os << "( " << x << " , " << y << " )";
+			os << "( " << x << " * " << y << " )";
 			return os;
 		}
 	};
+	template<typename T>
+	const _Pos<T> _Pos<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
+
+	typedef _Dim<__int32> Size;
+	typedef _Pos<__int32> Coord;
+	typedef _Pos<float> Move;
+	typedef _Pos<float> Camera;
+	typedef _Dim<float> CameraSize;
 }
 
 enum GridFlags: Type::Flags8

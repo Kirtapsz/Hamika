@@ -90,10 +90,10 @@ StatusBar::StatusBar()
 
 void StatusBar::SetMap(const BluePrint &disp_map)
 {
-	mapNameLabel->setText(disp_map.GetName().c_str());
+	mapNameLabel->setText(disp_map.title);
 	AimCollect = 0;
 	UnitiyCollect = 0;
-	Aim = disp_map.GetAim();
+	Aim = disp_map.scoreToUnlock;
 	SetAimStr();
 	SetUnityStr();
 	Restart();

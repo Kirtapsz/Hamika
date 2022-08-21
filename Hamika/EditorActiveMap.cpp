@@ -17,7 +17,7 @@ namespace Editor
 				if (this->onPanel(x_, y_))
 				{
 					mainEvent->controlPanel->pickID(reach(map)[drawer.GetFromCursor(x_ - x(), y_ - y())].object->id);
-					
+
 					return true;
 				}
 			}
@@ -314,7 +314,7 @@ namespace Editor
 			if (map->Exists())
 			{
 				Type::Move camera = drawer.GetCamera();
-				drawer.InitializeDrawOptions(width(), height(), CA);
+				drawer.InitializeDrawOptions({width(), height()}, Type::CameraSize::Invalid);
 				setTarget(camera);
 			}
 		};
@@ -378,14 +378,14 @@ namespace Editor
 			block.Redrawn = true;
 		});
 		drawer.SetMap(map);
-		drawer.InitializeDrawOptions(width(), height(), CA);
+		drawer.InitializeDrawOptions({width(), height()}, Type::CameraSize::Invalid);
 		drawer.MoveCameraTo({0,0});
 		mainEvent->miniMap->SetMap(map);
 		mainEvent->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
 	}
 	void ActiveMap::SetMap(std::shared_ptr<BluePrint> &bluePrint)
 	{
-		map.reset(new Array2D<ActiveBlock<EditorObjectBase>>(*bluePrint));
+		map.reset(new Array2D<ActiveBlock<EditorObjectBase>>(bluePrint->blocks));
 
 		map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 		{

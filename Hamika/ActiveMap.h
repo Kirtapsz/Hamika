@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "BluePrints.h"
+#include "World.h"
 #include "Objects.h"
 
 #include <KIR\AL\KIR5_panel.h>
@@ -77,6 +77,8 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 
 	private: bool enableupdateskip;
 	private: bool victory;
+	private: bool globalGravity;
+	private: Type::CameraSize cameraSize;
 
 	private: unsigned long long loopCounter;
 	private: static constexpr unsigned long long startLoopInit = CPS * 0.5f;
@@ -142,5 +144,7 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: virtual int GetUnityCount() const;
 	public: virtual int GetAimRemaining() const;
 	public: virtual bool IamRemain(ObjectBase *);
+	public: virtual bool IsGlobalGravity() const;
+	public: virtual void switchGravity();
 	public: virtual bool rollTrigger(ObjectBase *obj_, float chancePerSec);
 };

@@ -210,6 +210,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_console.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_algorithm.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_time.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_base.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap.cpp" />
@@ -245,15 +246,17 @@
     <ClCompile Include="EditorControlPanel.cpp" />
     <ClCompile Include="EditorMainEvent.cpp" />
     <ClCompile Include="ActiveBlock.hpp" />
-    <ClCompile Include="EditorMapList.cpp" />
+    <ClCompile Include="EditorWorld.cpp" />
     <ClCompile Include="EditorMiniMap.cpp" />
     <ClCompile Include="EditorObjects.cpp" />
+    <ClCompile Include="EditorSaveWorldDialog.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainEvent.cpp" />
     <ClCompile Include="BluePrint.cpp" />
-    <ClCompile Include="BluePrints.cpp" />
+    <ClCompile Include="UItools.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="MapDrawer.hpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Objects.cpp" />
@@ -277,15 +280,17 @@
     <ClInclude Include="EditorControlPanel.h" />
     <ClInclude Include="EditorMainEvent.h" />
     <ClInclude Include="ActiveBlock.h" />
-    <ClInclude Include="EditorMapList.h" />
+    <ClInclude Include="EditorWorld.h" />
     <ClInclude Include="EditorMiniMap.h" />
     <ClInclude Include="EditorObjects.h" />
+    <ClInclude Include="EditorSaveWorldDialog.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="IDreg.h" />
     <ClInclude Include="MainEvent.h" />
     <ClInclude Include="BluePrint.h" />
-    <ClInclude Include="BluePrints.h" />
+    <ClInclude Include="UItools.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="MapDrawer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Objects.h" />

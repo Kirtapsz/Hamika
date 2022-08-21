@@ -17,7 +17,7 @@ MapList::Panel::Panel()
 	});
 }
 
-void MapList::Panel::SetMapContainer(std::vector<std::shared_ptr<BluePrint>> *bluePrints)
+void MapList::Panel::SetMapContainer(const std::vector<std::shared_ptr<BluePrint>> *bluePrints)
 {
 	this->bluePrints = bluePrints;
 }
@@ -124,7 +124,7 @@ void MapList::MoveLeft()
 {
 	if (MoveCount > 0)
 	{
-		if (Focus < (int)bluePrints.size() - 1)
+		if (Focus < (int)world.getBluePrints().size() - 1)
 		{
 			Panel
 				*tmp = panelp[0];
@@ -146,13 +146,6 @@ void MapList::MoveLeft()
 			MoveCount = 0;
 	}
 }
-
-void MapList::SetMaps(std::vector<std::shared_ptr<BluePrint>> &bluePrints)
-{
-	this->bluePrints = bluePrints;
-	for (int i = 0; i < 5; i++)
-		panel[i]->SetMapContainer(&this->bluePrints);
-}
 void MapList::SetFocus(int Focus)
 {
 	this->Focus = Focus;
@@ -163,7 +156,10 @@ void MapList::SetFocus(int Focus)
 MapList::MapList()
 {
 	for (int i = 0; i < 5; i++)
+	{
 		panelp[i] = panel[i].get();
+		panel[i]->SetMapContainer(&world.getBluePrints());
+	}
 
 	fncMoved = [&](FNC_MOVED_PARAMS)
 	{
@@ -283,7 +279,7 @@ MapList::MapList()
 		if (MouseButtonDown)
 		{
 			int
-				MC = (x_ - mx) / (width() * 0.9f) * bluePrints.size();
+				MC = (x_ - mx) / (width() * 0.9f) * world.getBluePrints().size();
 			MoveCount += lastMC - MC;
 			lastMC = MC;
 			MouseAxes = true;
@@ -369,9 +365,7 @@ MainEvent::MainEvent():
 	{
 		*this << originalMapList;
 		originalMapList->show();
-		OriginalLevelWorldIO io;
-		io.Read("Hamika\\LEVELS.DAT");
-		originalMapList->SetMaps(io.levels);
+		originalMapList->world.load("Hamika\\worlds\\YEAR_1991.dat");
 		originalMapList->SetFocus(0);
 	}
 
@@ -406,7 +400,7 @@ MainEvent::MainEvent():
 		if (key_ == 's')
 		{
 			originalMapList->hide();
-			activeMap->startMap(*originalMapList->bluePrints[originalMapList->GetFocus()], std::shared_ptr<ActiveMapBot>());
+			activeMap->startMap(*originalMapList->world.getBluePrints()[originalMapList->GetFocus()], std::shared_ptr<ActiveMapBot>());
 			activeMap->show();
 		}
 		if (key_ == 'r')
@@ -414,7 +408,7 @@ MainEvent::MainEvent():
 			originalMapList->hide();
 			std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
 			replayBot->load(replayTextBox->getText());
-			activeMap->startMap(*originalMapList->bluePrints[originalMapList->GetFocus()], replayBot);
+			activeMap->startMap(*originalMapList->world.getBluePrints()[originalMapList->GetFocus()], replayBot);
 			activeMap->show();
 		}
 		return false;

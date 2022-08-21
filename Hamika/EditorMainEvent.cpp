@@ -8,20 +8,46 @@ namespace Editor
 	{
 		Objects::RunInitializer();
 
-		*this << activeMap;
+		*this << columnControl;
+		columnControl->show();
+		columnControl->setGap(3);
+		(*columnControl) += KIR5::Column<>::WrapContent;
+
 		activeMap->show();
-
-		*this << mapList;
-		mapList->show();
-
-		*this << miniMap;
+		worldi->show();
+		worldi->width(280);
 		miniMap->show();
+		miniMap->resize(280, 280);
 
-		*this << controlPanel;
 		controlPanel->show();
+		controlPanel->height(280);
+		saveWorldDialog->hide();
 
-		*this << mapList->savePanelBackground;
-		mapList->savePanelBackground->hide();
+		for (auto &it : rowsControl)
+		{
+			it->show();
+			it->setGap(3);
+			(*it) += KIR5::Row<>::WrapWidth;
+
+			columnControl->pushBack(it);
+		}
+
+		(*rowsControl[0]) += KIR5::Row<>::FixHeight;
+
+		rowsControl[0]->pushBack(worldi);
+		rowsControl[0]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+		rowsControl[0]->pushBack(activeMap);
+
+		rowsControl[1]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+		rowsControl[1]->pushBack(KIR5::EVENT<KIR5::Panel>());
+		rowsControl[1]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+
+		rowsControl[2]->pushBack(miniMap);
+		rowsControl[2]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+		rowsControl[2]->pushBack(controlPanel);
+
+		*this << saveWorldDialog;
+		saveWorldDialog->hide();
 
 		fncDraw = [&](FNC_DRAW_PARAMS)
 		{
@@ -30,13 +56,16 @@ namespace Editor
 
 		fncMoved = [&](FNC_MOVED_PARAMS)
 		{
-			mapList->savePanelBackground->move(0, 0, width(), height());
+			saveWorldDialog->move(0, 0, width(), height());
 
-			miniMap->move(0, height() - 280, 280, 280);
-			controlPanel->move(miniMap->virtualx2(), miniMap->virtualy1(), width() - miniMap->virtualx2(), miniMap->height());
+			for (auto &it : rowsControl)
+			{
+				it->items()[0]->width(280);
+				it->items()[2]->width(0);
+				it->wrapItem(it->items()[2].get());
+			}
 
-			mapList->move(0, 0, miniMap->width(), controlPanel->virtualy1());
-			activeMap->move(mapList->virtualx2(), 0, width() - mapList->virtualx2(), controlPanel->virtualy1());
+			columnControl->wrapItem(rowsControl[0].get());
 		};
 
 		fncMoved(this);

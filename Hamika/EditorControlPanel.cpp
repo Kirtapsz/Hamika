@@ -1,12 +1,16 @@
 #include "EditorControlPanel.h"
 #include "Font.h"
 #include "IDreg.h"
-#include "Global.h"
+#include "Tools.h"
 #include "EditorMainEvent.h"
 #include <KIR/AL/KIR5_panel_control.h>
 
 namespace Editor
 {
+	const std::string ControlPanel::GLOBAL_GRAVITY_ON = "Global gravity is ON";
+	const std::string ControlPanel::GLOBAL_GRAVITY_OFF = "Global gravity is OFF";
+
+
 	ControlPanel::BlockIDPanel::BlockIDPanel()
 	{
 		this->fncDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
@@ -21,35 +25,6 @@ namespace Editor
 	}
 	ControlPanel::ControlPanel()
 	{
-		constexpr int gap = 3;
-		constexpr int buttonSize = 32;
-		constexpr int textBoxSize = 32;
-		constexpr int labelSize = 16;
-
-
-		this->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
-		{
-			if (
-				eventEngine->getTergetPanel().get() == this ||
-				eventEngine->getTergetPanel().get() == mainEvent->activeMap.get()
-				)
-			{
-				if (key_ == ALLEGRO_KEY_ENTER)
-				{
-					fillButton->fncPress(fillButton.get(), 0, 0);
-					return true;
-				}
-			}
-			return false;
-		};
-
-		KIR5::EVENT<KIR5::Column<KIR5::Panel>> containerRows;
-		KIR5::EVENT<KIR5::Row<KIR5::Panel>> toolColumns;
-		toolColumns->setGap(gap);
-		KIR5::EVENT<KIR5::Row<KIR5::Panel>> prevBlockColumns;
-		prevBlockColumns->setGap(gap);
-
-		arrowTilted.resize(4);
 		arrowTilted[0].load("Hamika\\texture\\editor\\ArrowTilted.png");
 		arrowTilted[1] = arrowTilted[0];
 		arrowTilted[1].flipHorizontal();
@@ -58,7 +33,6 @@ namespace Editor
 		arrowTilted[3] = arrowTilted[0];
 		arrowTilted[3].flipVertical();
 
-		arrowNarrow.resize(4);
 		arrowNarrow[0].load("Hamika\\texture\\editor\\ArrowUp.png");
 		arrowNarrow[1] = arrowNarrow[0];
 		arrowNarrow[1].rotate(ALLEGRO_PI / 2.f);
@@ -67,7 +41,6 @@ namespace Editor
 		arrowNarrow[3] = arrowNarrow[1];
 		arrowNarrow[3].flipHorizontal();
 
-		stick.resize(4);
 		stick[0].load("Hamika\\texture\\editor\\StickUp.png");
 		stick[1] = stick[0];
 		stick[1].rotate(ALLEGRO_PI / 2.f);
@@ -77,78 +50,107 @@ namespace Editor
 		stick[3].flipHorizontal();
 
 		ball.load("Hamika\\texture\\editor\\Ball.png");
-
 		execute.load("Hamika\\texture\\editor\\Execute.png");
 
+		KIR5::EVENT<KIR5::Column<>> container;
+		container->show();
+		container->setGap(5);
+		// UI ============= ROW 1
 		{
-			rotationContainer->show();
-			rotationContainer->setGap(gap);
+			titleOfBluePrint_Label->setText("Title: ");
+			titleOfBluePrint_Label->alignWidthToText();
 
-			{
-				rotationLabel->setTextColor(KIR5::Color(50, 50, 50));
-				rotationLabel->setTextFont(Font::TimesNewRoman[12]);
-				rotationLabel->setText("Rotation");
-				rotationLabel->move(0, 0, rotationLabel->width(), labelSize);
-				rotationLabel->show();
-				rotationLabel->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-				rotationContainer->pushBack(rotationLabel);
-			}
+			titleOfBluePrint_TextBox->setText("This is the title of the map");
+			titleOfBluePrint_TextBox->alignWidthToText();
 
-			rotationButtons.resize(4);
-			for (int i = 0; i < 4; ++i)
+			sizeOfCamera_Label->setText("Camera: ");
+			sizeOfCamera_Label->alignWidthToText();
+
+			sizeOfCamera_TextBox->setText("10.000*10.000");
+			sizeOfCamera_TextBox->alignWidthToText();
+
+			murphySpeed_Label->setText("Murphy: ");
+			murphySpeed_Label->alignWidthToText();
+
+			murphySpeed_TextBox->setText("10.0000");
+			murphySpeed_TextBox->alignWidthToText();
+
+			saveBluePrint_Button->setText("save");
+			saveBluePrint_Button->width(saveBluePrint_Button->getTextWidth() + 10);
+			saveBluePrint_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				rotationButtons[i]->resize(buttonSize, buttonSize);
-				rotationButtons[i]->show();
-				rotationButtons[i]->setColor(KIR5::Color(30, 30, 30));
-				rotationButtons[i]->setBitmap(stick[i]);
-				rotationButtons[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrint->blocks.resize(reach(map));
+				bluePrint->blocks.foreach([&](Type::Coord coord, BluePrint::Block &block)
 				{
-					for (int i = 0; i < 4; ++i)
+					block.id = reach(map)[coord].object->id;
+					block.flags = reach(map)[coord].grid;
+					block.rotation = reach(map)[coord].object->rotation;
+				});
+				bluePrint->scoreToUnlock = std::atol(infotron_ToCollect_TextBox->getText().c_str());
+				bluePrint->title = titleOfBluePrint_TextBox->getText();
+				bluePrint->globalGravity = globalGravityOnOffButton->getText() == GLOBAL_GRAVITY_ON;
+
+				float w = -1, h = -1;
+				if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%f*%f", &w, &h) == 2)
+				{
+					bluePrint->cameraSize = {w,h};
+				}
+
+				float s = 0;
+				if (sscanf_s(murphySpeed_TextBox->getText().c_str(), "%f", &s) == 1)
+				{
+					bluePrint->speed = s;
+				}
+
+				eventEngine->sendEvent((void *)REFRESH_ITEM, (void *)(bluePrint.get()), (void *)0, (void *)0);
+			};
+
+			KIR5::EVENT<KIR5::Row<>> row;
+			row->show();
+			row->setGap(20);
+			row->pushBack(titleOfBluePrint_Label);
+			row->pushBack(titleOfBluePrint_TextBox);
+			row->pushBack(sizeOfCamera_Label);
+			row->pushBack(sizeOfCamera_TextBox);
+			row->pushBack(murphySpeed_Label);
+			row->pushBack(murphySpeed_TextBox);
+			row->pushBack(saveBluePrint_Button);
+			container->pushBack(row);
+		}
+		// UI ============= ROW 2
+		{
+			KIR5::EVENT<KIR5::Row<>> containerLine;
+			containerLine->show();
+			containerLine->setGap(20);
+			// ---------------- COL 1
+			{
+				rotation_Label->setText("Rotation");
+				rotation_Label->width(rotation_Label->getTextWidth() + 10);
+
+				for (size_t i = 0; i < rotation_Navigation_Buttons.size(); ++i)
+				{
+					rotation_Navigation_Buttons[i]->setBitmap(stick[i]);
+					rotation_Navigation_Buttons[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 					{
-						rotationButtons[i]->setColor(KIR5::Color(30, 30, 30));
-						rotationButtons[i]->isSelected = false;
-					}
+						for (auto &it : rotation_Navigation_Buttons)
+						{
+							it->setColor(KIR5::Color(30, 30, 30));
+							it->isSelected = false;
+						}
 
-					dynamic_cast<ResizeButtonClass *>(obj_)->setColor(KIR5::Color(200, 60, 30));
-					dynamic_cast<ResizeButtonClass *>(obj_)->isSelected = true;
-				};
-			}
+						dynamic_cast<ResizeButtonClass *>(obj_)->setColor(KIR5::Color(200, 60, 30));
+						dynamic_cast<ResizeButtonClass *>(obj_)->isSelected = true;
+					};
+				}
+				rotation_Navigation_Buttons[0]->fncPress(rotation_Navigation_Buttons[0].get(), 0, 0);
 
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				KIR5::EVENT<KIR5::Panel> tmp1;
-				tmp1->resize(buttonSize, buttonSize);
-				KIR5::EVENT<KIR5::Panel> tmp2;
-				tmp2->resize(buttonSize, buttonSize);
-
-				row->pushBack(tmp1);
-				row->pushBack(rotationButtons[0]);
-				row->pushBack(tmp2);
-
-				rotationContainer->pushBack(row);
-			}
-
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				row->pushBack(rotationButtons[3]);
-
-				rotationExecute->move(1 * (buttonSize + gap) + gap, mapResizeLabel->virtualy2() + gap, buttonSize, buttonSize);
-				rotationExecute->setBitmap(execute);
-				rotationExecute->show();
-				rotationExecute->setColor(KIR5::Color(30, 30, 30));
-				row->pushBack(rotationExecute);
-				rotationExecute->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				rotation_Apply_Button->setBitmap(execute);
+				rotation_Apply_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					Type::Rotation r =
-						rotationButtons[0]->isSelected ? Type::Rotations::Up :
-						rotationButtons[1]->isSelected ? Type::Rotations::Right :
-						rotationButtons[2]->isSelected ? Type::Rotations::Down :
+						rotation_Navigation_Buttons[0]->isSelected ? Type::Rotations::Up :
+						rotation_Navigation_Buttons[1]->isSelected ? Type::Rotations::Right :
+						rotation_Navigation_Buttons[2]->isSelected ? Type::Rotations::Down :
 						Type::Rotations::Left;
 
 					if (mainEvent->activeMap->isOperationModeAll())
@@ -170,81 +172,46 @@ namespace Editor
 					mainEvent->activeMap->blocksUpdated();
 				};
 
-				row->pushBack(rotationButtons[1]);
+				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				localContent->show();
+				localContent->setGap(UI_M::gap);
+				localContent->pushBack(rotation_Label);
 
-				rotationContainer->pushBack(row);
+				KIR5::EVENT<KIR5::Row<>> rows[3];
+				for (auto &row : rows)
+				{
+					row->show();
+					row->setGap(UI_M::gap);
+					localContent->pushBack(row);
+				}
+
+				rows[0]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+				rows[0]->pushBack(rotation_Navigation_Buttons[0]);
+				rows[0]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+
+				rows[1]->pushBack(rotation_Navigation_Buttons[3]);
+				rows[1]->pushBack(rotation_Apply_Button);
+				rows[1]->pushBack(rotation_Navigation_Buttons[1]);
+
+				rows[2]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+				rows[2]->pushBack(rotation_Navigation_Buttons[2]);
+				rows[2]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+
+				containerLine->pushBack(localContent);
 			}
-
+			// ---------------- COL 2
 			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
+				bluePrintResize_Label->setText("Resize");
+				bluePrintResize_Label->width(bluePrintResize_Label->getTextWidth() + 10);
 
-				KIR5::EVENT<KIR5::Panel> tmp1;
-				tmp1->resize(buttonSize, buttonSize);
-				KIR5::EVENT<KIR5::Panel> tmp2;
-				tmp2->resize(buttonSize, buttonSize);
+				bluePrintResize_Size_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
+				bluePrintResize_Size_TextBox->setTextAlignment(KIR5::CENTER);
 
-				row->pushBack(tmp1);
-				row->pushBack(rotationButtons[2]);
-				row->pushBack(tmp2);
-
-				rotationContainer->pushBack(row);
-			}
-
-			rotationButtons[0]->fncPress(rotationButtons[0].get(), 0, 0);
-
-			rotationBackground->resize(rotationContainer->width(), rotationContainer->height());
-			rotationBackground->setBackgroundColor(KIR5::Color(8, 8, 8));
-			rotationBackground->show();
-			*rotationBackground << rotationContainer;
-			rotationContainer->position(0, 0);
-
-			rotationFrame->resize(rotationContainer->width() + 4, rotationContainer->height() + 4);
-			rotationFrame->setBackgroundColor(KIR5::Color(60, 60, 60));
-			rotationFrame->show();
-			*rotationFrame << rotationBackground;
-			rotationBackground->position(2, 2);
-
-			rotationFrame->position(0, 0);
-			toolColumns->pushBack(rotationFrame);
-		}
-
-		{
-			mapResizeContainer->show();
-			mapResizeContainer->setGap(gap);
-
-			{
-				mapResizeLabel->setTextColor(KIR5::Color(50, 50, 50));
-				mapResizeLabel->setTextFont(Font::TimesNewRoman[12]);
-				mapResizeLabel->setText("Resize");
-				mapResizeLabel->resize(mapResizeLabel->getTextWidth(), labelSize);
-				mapResizeLabel->show();
-				mapResizeLabel->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-				mapResizeContainer->pushBack(mapResizeLabel);
-			}
-
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				mapResizeTextBox->resize(buttonSize * 2 + gap, buttonSize);
-				mapResizeTextBox->setTextFont(Font::TimesNewRoman[16]);
-				mapResizeTextBox->setTextColor(KIR5::Color(152, 152, 152));
-				mapResizeTextBox->show();
-				mapResizeTextBox->setColor(KIR5::Color(30, 30, 30));
-				row->pushBack(mapResizeTextBox);
-
-				mapResizeExecute->resize(buttonSize, buttonSize);
-				mapResizeExecute->show();
-				mapResizeExecute->setBitmap(execute);
-				mapResizeExecute->setColor(KIR5::Color(30, 30, 30));
-				row->pushBack(mapResizeExecute);
-				mapResizeExecute->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Apply_Button->setBitmap(execute);
+				bluePrintResize_Apply_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					int w, h;
-					if (sscanf_s(mapResizeTextBox->getText().c_str(), "%d*%d", &w, &h) == 2 && w >= 2 && h >= 2)
+					if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%d*%d", &w, &h) == 2 && w >= 2 && h >= 2)
 					{
 						Array2D<ActiveBlock<EditorObjectBase>> tmpMap(std::move(*(map.get())));
 						map->resize({w,h});
@@ -256,29 +223,29 @@ namespace Editor
 						int syShift = 0;
 
 						//X
-						if (resizeButtons[0][0]->isSelected || resizeButtons[0][1]->isSelected || resizeButtons[0][2]->isSelected)
+						if (bluePrintResize_Navigation_Buttons[0][0]->isSelected || bluePrintResize_Navigation_Buttons[0][1]->isSelected || bluePrintResize_Navigation_Buttons[0][2]->isSelected)
 						{
 							xShift = 0;
 						}
-						if (resizeButtons[1][0]->isSelected || resizeButtons[1][1]->isSelected || resizeButtons[1][2]->isSelected)
+						if (bluePrintResize_Navigation_Buttons[1][0]->isSelected || bluePrintResize_Navigation_Buttons[1][1]->isSelected || bluePrintResize_Navigation_Buttons[1][2]->isSelected)
 						{
 							xShift = (((Type::Size)(tmpMap)).width - w) / 2;
 						}
-						if (resizeButtons[2][0]->isSelected || resizeButtons[2][1]->isSelected || resizeButtons[2][2]->isSelected)
+						if (bluePrintResize_Navigation_Buttons[2][0]->isSelected || bluePrintResize_Navigation_Buttons[2][1]->isSelected || bluePrintResize_Navigation_Buttons[2][2]->isSelected)
 						{
 							xShift = ((Type::Size)(tmpMap)).width - w;
 						}
 
 						//Y
-						if (resizeButtons[0][0]->isSelected || resizeButtons[1][0]->isSelected || resizeButtons[2][0]->isSelected)
+						if (bluePrintResize_Navigation_Buttons[0][0]->isSelected || bluePrintResize_Navigation_Buttons[1][0]->isSelected || bluePrintResize_Navigation_Buttons[2][0]->isSelected)
 						{
 							yShift = 0;
 						}
-						if (resizeButtons[0][1]->isSelected || resizeButtons[1][1]->isSelected || resizeButtons[2][1]->isSelected)
+						if (bluePrintResize_Navigation_Buttons[0][1]->isSelected || bluePrintResize_Navigation_Buttons[1][1]->isSelected || bluePrintResize_Navigation_Buttons[2][1]->isSelected)
 						{
 							yShift = (((Type::Size)(tmpMap)).height - h) / 2;
 						}
-						if (resizeButtons[0][2]->isSelected || resizeButtons[1][2]->isSelected || resizeButtons[2][2]->isSelected)
+						if (bluePrintResize_Navigation_Buttons[0][2]->isSelected || bluePrintResize_Navigation_Buttons[1][2]->isSelected || bluePrintResize_Navigation_Buttons[2][2]->isSelected)
 						{
 							yShift = ((Type::Size)(tmpMap)).height - h;
 						}
@@ -294,7 +261,7 @@ namespace Editor
 							xShift = 0;
 						}
 
-						Type::Coord coord;
+						Type::Coord coord = {0};
 						for (coord.x = 0; coord.x < (std::min)(((Type::Size)(*map)).width, ((Type::Size)(tmpMap)).width - xShift); ++coord.x)
 						{
 							for (coord.y = 0; coord.y < (std::min)(((Type::Size)(*map)).height, ((Type::Size)(tmpMap)).height - yShift); ++coord.y)
@@ -309,301 +276,282 @@ namespace Editor
 					}
 					else
 					{
-						mapResizeTextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+						bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
 					}
 				};
 
-				mapResizeContainer->pushBack(row);
-			}
+				bluePrintResize_Navigation_Buttons[0][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[0][0]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowNarrow[2]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[2]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
+				};
+
+				bluePrintResize_Navigation_Buttons[1][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[1][0]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(arrowNarrow[3]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowTilted[3]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[2]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowTilted[2]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
+				};
+
+				bluePrintResize_Navigation_Buttons[2][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[2][0]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowNarrow[3]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[3]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowNarrow[2]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
+				};
+
+				bluePrintResize_Navigation_Buttons[0][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[0][1]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowTilted[1]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(arrowNarrow[2]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowTilted[2]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
+				};
+
+				bluePrintResize_Navigation_Buttons[1][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[1][1]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(arrowTilted[0]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(arrowTilted[1]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowNarrow[3]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(arrowTilted[3]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowNarrow[2]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(arrowTilted[2]);
+				};
+
+				bluePrintResize_Navigation_Buttons[2][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[2][1]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowTilted[0]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[3]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowTilted[3]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(arrowNarrow[2]);
+				};
+
+				bluePrintResize_Navigation_Buttons[0][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[0][2]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[1]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
+				};
+
+				bluePrintResize_Navigation_Buttons[1][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[1][2]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowTilted[0]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowTilted[1]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(arrowNarrow[3]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(arrowNarrow[1]);
+				};
+
+				bluePrintResize_Navigation_Buttons[2][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					for (int x = 0; x < 3; ++x)
+					{
+						for (int y = 0; y < 3; ++y)
+						{
+							bluePrintResize_Navigation_Buttons[x][y]->isSelected = false;
+						}
+					}
+
+					bluePrintResize_Navigation_Buttons[2][2]->isSelected = true;
+
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[0]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowNarrow[3]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(ball);
+				};
+
+				bluePrintResize_Navigation_Buttons[1][1]->fncPress(bluePrintResize_Navigation_Buttons[1][1].get(), 0, 0);
 
 
-			resizeButtons.resize(3);
-			for (auto &it : resizeButtons)
-			{
-				it.resize(3);
-			}
+				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				localContent->show();
+				localContent->setGap(UI_M::gap);
 
-			for (int y = 0; y < 3; ++y)
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
+				localContent->pushBack(bluePrintResize_Label);
+
+				KIR5::EVENT<KIR5::Row<>> row;
 				row->show();
-				row->setGap(gap);
-				for (int x = 0; x < 3; ++x)
+				row->setGap(UI_M::gap);
+				row->pushBack(bluePrintResize_Size_TextBox);
+				row->pushBack(bluePrintResize_Apply_Button);
+
+				localContent->pushBack(row);
+
+				for (size_t y = 0; y < bluePrintResize_Navigation_Buttons.size(); ++y)
 				{
-					resizeButtons[x][y]->resize(buttonSize, buttonSize);
-					resizeButtons[x][y]->show();
-					resizeButtons[x][y]->setColor(KIR5::Color(30, 30, 30));
-					row->pushBack(resizeButtons[x][y]);
+					KIR5::EVENT<KIR5::Row<>> row;
+					row->show();
+					row->setGap(UI_M::gap);
+					for (size_t x = 0; x < bluePrintResize_Navigation_Buttons[y].size(); ++x)
+					{
+						row->pushBack(bluePrintResize_Navigation_Buttons[x][y]);
+					}
+					localContent->pushBack(row);
 				}
-				mapResizeContainer->pushBack(row);
+
+				containerLine->pushBack(localContent);
 			}
-
-			resizeButtons[0][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			// ---------------- COL 3
 			{
-				for (int x = 0; x < 3; ++x)
+				object_Label->setText("Object");
+				object_Label->width(object_Label->getTextWidth() + 10);
+
+				object_Panel->fncMouseButtonDown = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
 				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[0][0]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(ball);
-				resizeButtons[1][0]->setBitmap(arrowNarrow[1]);
-				resizeButtons[2][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][1]->setBitmap(arrowNarrow[2]);
-				resizeButtons[1][1]->setBitmap(arrowTilted[2]);
-				resizeButtons[2][1]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[2][2]->setBitmap(KIR5::Bitmap());
-			};
-
-			resizeButtons[1][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[1][0]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(arrowNarrow[3]);
-				resizeButtons[1][0]->setBitmap(ball);
-				resizeButtons[2][0]->setBitmap(arrowNarrow[1]);
-				resizeButtons[0][1]->setBitmap(arrowTilted[3]);
-				resizeButtons[1][1]->setBitmap(arrowNarrow[2]);
-				resizeButtons[2][1]->setBitmap(arrowTilted[2]);
-				resizeButtons[0][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[2][2]->setBitmap(KIR5::Bitmap());
-			};
-
-			resizeButtons[2][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[2][0]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][0]->setBitmap(arrowNarrow[3]);
-				resizeButtons[2][0]->setBitmap(ball);
-				resizeButtons[0][1]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][1]->setBitmap(arrowTilted[3]);
-				resizeButtons[2][1]->setBitmap(arrowNarrow[2]);
-				resizeButtons[0][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[2][2]->setBitmap(KIR5::Bitmap());
-			};
-
-			resizeButtons[0][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[0][1]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(arrowNarrow[0]);
-				resizeButtons[1][0]->setBitmap(arrowTilted[1]);
-				resizeButtons[2][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][1]->setBitmap(ball);
-				resizeButtons[1][1]->setBitmap(arrowNarrow[1]);
-				resizeButtons[2][1]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][2]->setBitmap(arrowNarrow[2]);
-				resizeButtons[1][2]->setBitmap(arrowTilted[2]);
-				resizeButtons[2][2]->setBitmap(KIR5::Bitmap());
-			};
-
-			resizeButtons[1][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[1][1]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(arrowTilted[0]);
-				resizeButtons[1][0]->setBitmap(arrowNarrow[0]);
-				resizeButtons[2][0]->setBitmap(arrowTilted[1]);
-				resizeButtons[0][1]->setBitmap(arrowNarrow[3]);
-				resizeButtons[1][1]->setBitmap(ball);
-				resizeButtons[2][1]->setBitmap(arrowNarrow[1]);
-				resizeButtons[0][2]->setBitmap(arrowTilted[3]);
-				resizeButtons[1][2]->setBitmap(arrowNarrow[2]);
-				resizeButtons[2][2]->setBitmap(arrowTilted[2]);
-			};
-
-			resizeButtons[2][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[2][1]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][0]->setBitmap(arrowTilted[0]);
-				resizeButtons[2][0]->setBitmap(arrowNarrow[0]);
-				resizeButtons[0][1]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][1]->setBitmap(arrowNarrow[3]);
-				resizeButtons[2][1]->setBitmap(ball);
-				resizeButtons[0][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][2]->setBitmap(arrowTilted[3]);
-				resizeButtons[2][2]->setBitmap(arrowNarrow[2]);
-			};
-
-			resizeButtons[0][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[0][2]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[2][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][1]->setBitmap(arrowNarrow[0]);
-				resizeButtons[1][1]->setBitmap(arrowTilted[1]);
-				resizeButtons[2][1]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][2]->setBitmap(ball);
-				resizeButtons[1][2]->setBitmap(arrowNarrow[1]);
-				resizeButtons[2][2]->setBitmap(KIR5::Bitmap());
-			};
-
-			resizeButtons[1][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[1][2]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[2][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][1]->setBitmap(arrowTilted[0]);
-				resizeButtons[1][1]->setBitmap(arrowNarrow[0]);
-				resizeButtons[2][1]->setBitmap(arrowTilted[1]);
-				resizeButtons[0][2]->setBitmap(arrowNarrow[3]);
-				resizeButtons[1][2]->setBitmap(ball);
-				resizeButtons[2][2]->setBitmap(arrowNarrow[1]);
-			};
-
-			resizeButtons[2][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				for (int x = 0; x < 3; ++x)
-				{
-					for (int y = 0; y < 3; ++y)
-					{
-						resizeButtons[x][y]->isSelected = false;
-					}
-				}
-
-				resizeButtons[2][2]->isSelected = true;
-
-				resizeButtons[0][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[2][0]->setBitmap(KIR5::Bitmap());
-				resizeButtons[0][1]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][1]->setBitmap(arrowTilted[0]);
-				resizeButtons[2][1]->setBitmap(arrowNarrow[0]);
-				resizeButtons[0][2]->setBitmap(KIR5::Bitmap());
-				resizeButtons[1][2]->setBitmap(arrowNarrow[3]);
-				resizeButtons[2][2]->setBitmap(ball);
-			};
-
-			resizeButtons[1][1]->fncPress(resizeButtons[1][1].get(), 0, 0);
-
-			mapResizeBackground->resize(mapResizeContainer->width(), mapResizeContainer->height());
-			mapResizeBackground->setBackgroundColor(KIR5::Color(8, 8, 8));
-			mapResizeBackground->show();
-			*mapResizeBackground << mapResizeContainer;
-			mapResizeContainer->position(0, 0);
-
-			mapResizeFrame->resize(mapResizeContainer->width() + 4, mapResizeContainer->height() + 4);
-			mapResizeFrame->setBackgroundColor(KIR5::Color(60, 60, 60));
-			mapResizeFrame->show();
-			*mapResizeFrame << mapResizeBackground;
-			mapResizeBackground->position(2, 2);
-
-			mapResizeFrame->position(200, 0);
-			toolColumns->pushBack(mapResizeFrame);
-		}
-
-		{
-			blockPickerContainer->show();
-			blockPickerContainer->setGap(3);
-
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				objectPanel->show();
-				objectPanel->resize(32, 32);
-
-				objectPanel->fncMouseButtonDown = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
-				{
-					if (objectPanel->onPanel(x_, y_))
+					if (object_Panel->onPanel(x_, y_))
 					{
 						if (button_ == 1)
 						{
-							if (objectPanel->id == GetObjectNumber() - 1)
+							if (object_Panel->id == GetObjectNumber() - 1)
 							{
-								objectPanel->id = 0;
+								object_Panel->id = 0;
 							}
 							else
 							{
-								objectPanel->id++;
+								object_Panel->id++;
 							}
-							objectIDTextBox->setText(std::to_string(objectPanel->id));
+							object_ID_TextBox->setText(std::to_string(object_Panel->id));
 							updateBlocks();
 							return true;
 						}
 						else if (button_ == 2)
 						{
-							if (objectPanel->id == 0)
+							if (object_Panel->id == 0)
 							{
-								objectPanel->id = GetObjectNumber() - 1;
+								object_Panel->id = GetObjectNumber() - 1;
 							}
 							else
 							{
-								objectPanel->id--;
+								object_Panel->id--;
 							}
-							objectIDTextBox->setText(std::to_string(objectPanel->id));
+							object_ID_TextBox->setText(std::to_string(object_Panel->id));
 							updateBlocks();
 							return true;
 						}
@@ -611,50 +559,37 @@ namespace Editor
 					return false;
 				};
 
-				row->pushBack(objectPanel);
-
-				objectIDTextBox->resize(64, 32);
-				objectIDTextBox->setTextFont(Font::TimesNewRoman[24]);
-				objectIDTextBox->setText(std::to_string(objectPanel->id));
-				objectIDTextBox->setTextColor(KIR5::Color(152, 152, 152));
-				objectIDTextBox->show();
-				objectIDTextBox->setTextAlignment(KIR5::CENTER);
-				objectIDTextBox->setColor(KIR5::Color(30, 30, 30));
-
-				objectIDTextBoxGetFocus.lock(objectIDTextBox->fncGetFocus);
+				object_ID_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
+				object_ID_TextBox->setText(std::to_string(object_Panel->id));
+				object_ID_TextBox->setTextAlignment(KIR5::CENTER);
+				objectIDTextBoxGetFocus.lock(object_ID_TextBox->fncGetFocus);
 				objectIDTextBoxGetFocus.set([&](FNC_GET_FOCUS_PARAMS)->FNC_GET_FOCUS_RET
 				{
-					objectIDTextBox->setText("");
+					object_ID_TextBox->setText("");
 				});
 
-				objectIDTextBoxLossFocus.lock(objectIDTextBox->fncLossFocus);
+				objectIDTextBoxLossFocus.lock(object_ID_TextBox->fncLossFocus);
 				objectIDTextBoxLossFocus.set([&](FNC_LOSS_FOCUS_PARAMS)->FNC_LOSS_FOCUS_RET
 				{
-					objectIDTextBox->setText(std::to_string(objectPanel->id));
+					object_ID_TextBox->setText(std::to_string(object_Panel->id));
 				});
 
-				objectIDTextBox->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+				object_ID_TextBox->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 				{
-					if (objectIDTextBox->isActiveBox())
+					if (object_ID_TextBox->isActiveBox())
 					{
 						if (key_ == ALLEGRO_KEY_ENTER)
 						{
-							objectPanel->id = limiter<int>(0, GetObjectNumber() - 1, std::atoi(objectIDTextBox->getText().c_str()));
-							eventEngine->eventDestroyed(objectIDTextBox.get());
+							object_Panel->id = limiter<int>(0, GetObjectNumber() - 1, std::atoi(object_ID_TextBox->getText().c_str()));
+							eventEngine->eventDestroyed(object_ID_TextBox.get());
 							return true;
 						}
 					}
 					return false;
 				};
 
-				row->pushBack(objectIDTextBox);
-
-				fillButton->resize(buttonSize, buttonSize);
-				fillButton->show();
-				fillButton->setBitmap(execute);
-				fillButton->setColor(KIR5::Color(30, 30, 30));
-				row->pushBack(fillButton);
-				fillButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_Apply_Button->setBitmap(execute);
+				object_Apply_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (mainEvent->activeMap->isOperationModeAll())
 					{
@@ -662,14 +597,14 @@ namespace Editor
 						{
 							if (block.selected)
 							{
-								ObjectCreate(block.object, objectPanel->id, coord);
+								ObjectCreate(block.object, object_Panel->id, coord);
 								block.Redrawn = true;
 							}
 						});
 					}
 					else
 					{
-						ObjectCreate(reach(map)[mainEvent->activeMap->getTarget()].object, objectPanel->id, mainEvent->activeMap->getTarget());
+						ObjectCreate(reach(map)[mainEvent->activeMap->getTarget()].object, object_Panel->id, mainEvent->activeMap->getTarget());
 						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 					}
 					mainEvent->activeMap->blocksUpdated();
@@ -677,7 +612,7 @@ namespace Editor
 					int shiftFrom = prevBlockPickers.size() - 1;
 					for (size_t i = 0; i < prevBlockPickers.size(); ++i)
 					{
-						if (prevBlockPickers[i]->id == objectPanel->id)
+						if (prevBlockPickers[i]->id == object_Panel->id)
 						{
 							shiftFrom = i;
 							break;
@@ -687,118 +622,70 @@ namespace Editor
 					{
 						prevBlockPickers[i]->id = prevBlockPickers[i - 1]->id;
 					}
-					prevBlockPickers[0]->id = objectPanel->id;
+					prevBlockPickers[0]->id = object_Panel->id;
 				};
 
-				blockPickerContainer->pushBack(row);
-			}
-
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				randomFillButton->resize(120, 32);
-				randomFillButton->setTextFont(Font::TimesNewRoman[24]);
-				randomFillButton->setText("Random fill");
-				randomFillButton->setTextColor(KIR5::Color(152, 152, 152));
-				randomFillButton->show();
-				randomFillButton->setTextAlignment(KIR5::CENTER);
-				randomFillButton->setColor(KIR5::Color(30, 30, 30));
-				row->pushBack(randomFillButton);
-				randomFillButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_RandomFill_Button->setText("Random fill");
+				object_RandomFill_Button->width(object_RandomFill_Button->getTextWidth() + 10);
+				object_RandomFill_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
-					float chancef = std::atof(randomFillTextBox->getText().c_str());
+					float chancef = std::atof(object_Rate_TextBox->getText().c_str());
 					int chance = (int)(chancef * 10);
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (block.selected && rand() % 1000 < chance)
 						{
-							ObjectCreate(block.object, objectPanel->id, coord);
+							ObjectCreate(block.object, object_Panel->id, coord);
 							block.Redrawn = true;
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
 				};
 
-				randomFillTextBox->resize(64, 32);
-				randomFillTextBox->setTextFont(Font::TimesNewRoman[24]);
-				randomFillTextBox->setText("100.0");
-				randomFillTextBox->setTextColor(KIR5::Color(152, 152, 152));
-				randomFillTextBox->show();
-				randomFillTextBox->setTextAlignment(KIR5::RIGHT);
-				randomFillTextBox->setColor(KIR5::Color(30, 30, 30));
-				row->pushBack(randomFillTextBox);
+				object_Rate_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
+				object_Rate_TextBox->setText("100.0");
+				object_Rate_TextBox->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER);
 
-				randomFillLabel->setTextColor(KIR5::Color(50, 50, 50));
-				randomFillLabel->setTextFont(Font::TimesNewRoman[24]);
-				randomFillLabel->setText("%");
-				randomFillLabel->resize(mapResizeLabel->getTextWidth(), labelSize);
-				randomFillLabel->show();
-				randomFillLabel->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-				row->pushBack(randomFillLabel);
+				object_RandomFill_Label->setText("%");
+				object_RandomFill_Label->width(bluePrintResize_Label->getTextWidth() + 5);
 
-				blockPickerContainer->pushBack(row);
-			}
-
-			{
-				fillFrameButton->resize(120, 32);
-				fillFrameButton->setTextFont(Font::TimesNewRoman[24]);
-				fillFrameButton->setText("Fill frame");
-				fillFrameButton->setTextColor(KIR5::Color(152, 152, 152));
-				fillFrameButton->show();
-				fillFrameButton->setTextAlignment(KIR5::CENTER);
-				fillFrameButton->setColor(KIR5::Color(30, 30, 30));
-				blockPickerContainer->pushBack(fillFrameButton);
-				fillFrameButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_FillFrame_Button->setText("Fill frame");
+				object_FillFrame_Button->width(120);
+				object_FillFrame_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)reach(map)).width - 1 || coord.y == ((Type::Size)reach(map)).height - 1)
 						{
-							ObjectCreate(block.object, objectPanel->id, coord);
+							ObjectCreate(block.object, object_Panel->id, coord);
 							block.Redrawn = true;
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
 				};
-			}
-			{
-				fillContentButton->resize(120, 32);
-				fillContentButton->setTextFont(Font::TimesNewRoman[24]);
-				fillContentButton->setText("Fill content");
-				fillContentButton->setTextColor(KIR5::Color(152, 152, 152));
-				fillContentButton->show();
-				fillContentButton->setTextAlignment(KIR5::CENTER);
-				fillContentButton->setColor(KIR5::Color(30, 30, 30));
-				blockPickerContainer->pushBack(fillContentButton);
-				fillContentButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+
+				object_FillContent_Button->setText("Fill content");
+				object_FillContent_Button->width(120);
+				object_FillContent_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)reach(map)).width - 1 && coord.y != ((Type::Size)reach(map)).height - 1)
 						{
-							ObjectCreate(block.object, objectPanel->id, coord);
+							ObjectCreate(block.object, object_Panel->id, coord);
 							block.Redrawn = true;
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
 				};
-			}
-			{
-				fillSelectAllButton->resize(120, 32);
-				fillSelectAllButton->setTextFont(Font::TimesNewRoman[24]);
-				fillSelectAllButton->setText("Select all");
-				fillSelectAllButton->setTextColor(KIR5::Color(152, 152, 152));
-				fillSelectAllButton->show();
-				fillSelectAllButton->setTextAlignment(KIR5::CENTER);
-				fillSelectAllButton->setColor(KIR5::Color(30, 30, 30));
-				blockPickerContainer->pushBack(fillSelectAllButton);
-				fillSelectAllButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+
+				object_selectAllOfThisType_Button->setText("Select all");
+				object_selectAllOfThisType_Button->width(120);
+				object_selectAllOfThisType_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
-						if (block.object->id == objectPanel->id)
+						if (block.object->id == object_Panel->id)
 						{
 							if (!block.selected)
 							{
@@ -817,149 +704,273 @@ namespace Editor
 					});
 					mainEvent->activeMap->blocksUpdated();
 				};
-			}
 
 
-			blockPickerBackground->resize(blockPickerContainer->width(), blockPickerContainer->height());
-			blockPickerBackground->setBackgroundColor(KIR5::Color(8, 8, 8));
-			blockPickerBackground->show();
-			*blockPickerBackground << blockPickerContainer;
-			blockPickerContainer->position(0, 0);
+				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				localContent->show();
+				localContent->setGap(UI_M::gap);
 
-			blockPickerFrame->resize(blockPickerContainer->width() + 4, blockPickerContainer->height() + 4);
-			blockPickerFrame->setBackgroundColor(KIR5::Color(60, 60, 60));
-			blockPickerFrame->show();
-			*blockPickerFrame << blockPickerBackground;
-			blockPickerBackground->position(2, 2);
+				localContent->pushBack(object_Label);
 
-			blockPickerFrame->position(400, 0);
-			toolColumns->pushBack(blockPickerFrame);
-		}
-
-		{
-			int infotronMultipliers[] = {
-				1,
-				9,
-			};
-
-			Type::ID infotronIds[] = {
-			   ObjectID::Infotron,
-			   ObjectID::Electrons,
-			};
-			constexpr int numberOfinfotronIDs = (sizeof(infotronIds) / sizeof(Type::ID));
-
-			infotronContainer->show();
-			infotronContainer->setGap(3);
-
-			{
-				infotronLabel->setTextColor(KIR5::Color(50, 50, 50));
-				infotronLabel->setTextFont(Font::TimesNewRoman[12]);
-				infotronLabel->setText("Infotrons");
-				infotronLabel->resize(infotronLabel->getTextWidth(), labelSize);
-				infotronLabel->show();
-				infotronLabel->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-				infotronContainer->pushBack(infotronLabel);
-			}
-
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				infotronToCollectTextBox->resize(numberOfinfotronIDs * buttonSize + (numberOfinfotronIDs - 1) * gap, textBoxSize);
-				infotronToCollectTextBox->setTextFont(Font::TimesNewRoman[24]);
-				infotronToCollectTextBox->setTextColor(KIR5::Color(152, 152, 152));
-				infotronToCollectTextBox->show();
-				infotronToCollectTextBox->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER);
-				infotronToCollectTextBox->setColor(KIR5::Color(5, 5, 5));
-				row->pushBack(infotronToCollectTextBox);
-
-				infotronToCollectLabel->resize(infotronToCollectTextBox->width(), infotronToCollectTextBox->height());
-				infotronToCollectLabel->setTextFont(Font::TimesNewRoman[24]);
-				infotronToCollectLabel->setTextColor(KIR5::Color(152, 152, 202));
-				infotronToCollectLabel->show();
-				infotronToCollectLabel->setText("/0");
-				infotronToCollectLabel->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-				row->pushBack(infotronToCollectLabel);
-
-				infotronContainer->pushBack(row);
-			}
-
-			{
-				KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
-				row->show();
-				row->setGap(gap);
-
-				infotronPickers.resize(numberOfinfotronIDs);
-				for (int i = 0; i < numberOfinfotronIDs; ++i)
 				{
-					infotronPickers[i]->show();
-					infotronPickers[i]->resize(buttonSize, buttonSize);
-					infotronPickers[i]->id = infotronIds[i];
-					infotronPickers[i]->multiplier = infotronMultipliers[i];
-					infotronPickers[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-					{
-						objectPanel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
-						objectIDTextBox->setText(std::to_string(objectPanel->id));
-					};
-
-					row->pushBack(infotronPickers[i]);
+					KIR5::EVENT<KIR5::Row<>> row;
+					row->show();
+					row->setGap(UI_M::gap);
+					row->pushBack(object_Panel);
+					row->pushBack(object_ID_TextBox);
+					row->pushBack(object_Apply_Button);
+					localContent->pushBack(row);
 				}
 
-				infotronContainer->pushBack(row);
+				{
+					KIR5::EVENT<KIR5::Row<>> row;
+					row->show();
+					row->setGap(UI_M::gap);
+					row->pushBack(object_RandomFill_Button);
+					row->pushBack(object_Rate_TextBox);
+					row->pushBack(object_RandomFill_Label);
+					localContent->pushBack(row);
+				}
+				localContent->pushBack(object_FillFrame_Button);
+				localContent->pushBack(object_FillContent_Button);
+				localContent->pushBack(object_selectAllOfThisType_Button);
+
+				containerLine->pushBack(localContent);
 			}
-
-			infotronBackground->resize(infotronContainer->width(), infotronContainer->height());
-			infotronBackground->setBackgroundColor(KIR5::Color(8, 8, 8));
-			infotronBackground->show();
-			*infotronBackground << infotronContainer;
-			infotronContainer->position(0, 0);
-
-			infotronFrame->resize(infotronContainer->width() + 4, infotronContainer->height() + 4);
-			infotronFrame->setBackgroundColor(KIR5::Color(60, 60, 60));
-			infotronFrame->show();
-			*infotronFrame << infotronBackground;
-			infotronBackground->position(2, 2);
-
-			toolColumns->pushBack(infotronFrame);
-		}
-
-		{
-			KIR5::EVENT<KIR5::Column<KIR5::Panel>> column;
-			column->show();
-			column->setGap(gap);
-
-			selectAllButton->resize(220, 18);
-			selectAllButton->setTextFont(Font::TimesNewRoman[14]);
-			selectAllButton->setText("Select all");
-			selectAllButton->setTextColor(KIR5::Color(152, 152, 152));
-			selectAllButton->show();
-			selectAllButton->setTextAlignment(KIR5::CENTER);
-			selectAllButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(selectAllButton);
-			selectAllButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			// ---------------- COL 4
 			{
-				bool isNonSelected = false;
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				struct INF_
 				{
-					if (!block.selected)
-					{
-						isNonSelected = true;
-					}
-				});
+					Type::ID id;
+					int multiplier;
+				};
+				std::array<INF_, 2> infotrons{{
+					{ObjectID::Infotron,1},
+					{ObjectID::Electrons,9}
+					}};
 
-				if (isNonSelected)
+				infotron_Label->setText("Infotrons");
+				infotron_Label->width(infotron_Label->getTextWidth() + 10);
+
+				infotron_ToCollect_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
+				infotron_ToCollect_TextBox->setTextFont(Font::TimesNewRoman[24]);
+				infotron_ToCollect_TextBox->setTextColor(KIR5::Color(152, 152, 152));
+				infotron_ToCollect_TextBox->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER);
+
+				infotron_Capacity_Label->setText("/ 00000");
+				infotron_Capacity_Label->width(infotron_Capacity_Label->getTextWidth() + 5);
+				infotron_Capacity_Label->setText("/ 0");
+				infotron_Capacity_Label->setTextColor(KIR5::Color(182, 122, 202));
+
 				{
+					infotron_Pickers_Buttons.resize(infotrons.size());
+					for (size_t i = 0; i < infotrons.size(); ++i)
+					{
+						infotron_Pickers_Buttons[i]->id = infotrons[i].id;
+						infotron_Pickers_Buttons[i]->multiplier = infotrons[i].multiplier;
+						infotron_Pickers_Buttons[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+						{
+							object_Panel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
+							object_ID_TextBox->setText(std::to_string(object_Panel->id));
+						};
+					}
+				}
+
+
+				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				localContent->show();
+				localContent->setGap(UI_M::gap);
+
+				localContent->pushBack(infotron_Label);
+
+				{
+					KIR5::EVENT<KIR5::Row<>> row;
+					row->show();
+					row->setGap(UI_M::gap);
+					row->pushBack(infotron_ToCollect_TextBox);
+					row->pushBack(infotron_Capacity_Label);
+					localContent->pushBack(row);
+				}
+
+				{
+					KIR5::EVENT<KIR5::Row<>> row;
+					row->show();
+					row->setGap(UI_M::gap);
+					for (auto &it : infotron_Pickers_Buttons)
+					{
+						row->pushBack(it);
+					}
+					localContent->pushBack(row);
+				}
+
+				containerLine->pushBack(localContent);
+			}
+			// ---------------- COL 5
+			{
+				selectAllButton->setText("Select all");
+				selectAllButton->width(selectAllButton->getTextWidth());
+				selectAllButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					bool isNonSelected = false;
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
 						if (!block.selected)
 						{
-							block.selected = true;
-							block.Redrawn = true;
+							isNonSelected = true;
 						}
 					});
-				}
-				else
+
+					if (isNonSelected)
+					{
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						{
+							if (!block.selected)
+							{
+								block.selected = true;
+								block.Redrawn = true;
+							}
+						});
+					}
+					else
+					{
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						{
+							if (block.selected)
+							{
+								block.selected = false;
+								block.Redrawn = true;
+							}
+						});
+					}
+				};
+
+				gravityTurnOnOffButton->setText("Set gravity");
+				gravityTurnOnOffButton->width(gravityTurnOnOffButton->getTextWidth());
+				gravityTurnOnOffButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					if (!mainEvent->activeMap->isOperationModeAll())
+					{
+						if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::Gravity)
+						{
+							reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Gravity;
+						}
+						else
+						{
+							reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::Gravity;
+						}
+						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
+					}
+					else
+					{
+						bool isNew = false;
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						{
+							if (block.selected)
+							{
+								if (!(block.grid & GridFlags::Gravity))
+								{
+									isNew = true;
+								}
+							}
+						});
+
+						if (isNew)
+						{
+							map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+							{
+								if (block.selected)
+								{
+									if (!(block.grid & GridFlags::Gravity))
+									{
+										block.grid |= GridFlags::Gravity;
+										block.Redrawn = true;
+									}
+								}
+							});
+						}
+						else
+						{
+							map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+							{
+								if (block.selected)
+								{
+									if (block.grid & GridFlags::Gravity)
+									{
+										block.grid &= ~GridFlags::Gravity;
+										block.Redrawn = true;
+									}
+								}
+							});
+						}
+					}
+					mainEvent->activeMap->blocksUpdated();
+				};
+
+				initExplodeButton->setText("Set init explode");
+				initExplodeButton->width(initExplodeButton->getTextWidth());
+				initExplodeButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					if (!mainEvent->activeMap->isOperationModeAll())
+					{
+						if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::Detonate)
+						{
+							reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Detonate;
+						}
+						else
+						{
+							reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::Detonate;
+						}
+						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
+					}
+					else
+					{
+						bool isNew = false;
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						{
+							if (block.selected)
+							{
+								if (!(block.grid & GridFlags::Detonate))
+								{
+									isNew = true;
+								}
+							}
+						});
+
+						if (isNew)
+						{
+							map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+							{
+								if (block.selected)
+								{
+									if (!(block.grid & GridFlags::Detonate))
+									{
+										block.grid |= GridFlags::Detonate;
+										block.Redrawn = true;
+									}
+								}
+							});
+						}
+						else
+						{
+							map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+							{
+								if (block.selected)
+								{
+									if (block.grid & GridFlags::Detonate)
+									{
+										block.grid &= ~GridFlags::Detonate;
+										block.Redrawn = true;
+									}
+								}
+							});
+						}
+					}
+					mainEvent->activeMap->blocksUpdated();
+				};
+
+				selectFriendlyButton->setText("Select neighbors");
+				selectFriendlyButton->width(selectFriendlyButton->getTextWidth());
+				selectFriendlyButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
@@ -969,235 +980,128 @@ namespace Editor
 							block.Redrawn = true;
 						}
 					});
-				}
-			};
 
-			gravityTurnOnOffButton->resize(220, 18);
-			gravityTurnOnOffButton->setTextFont(Font::TimesNewRoman[14]);
-			gravityTurnOnOffButton->setText("Set gravity");
-			gravityTurnOnOffButton->setTextColor(KIR5::Color(152, 152, 152));
-			gravityTurnOnOffButton->show();
-			gravityTurnOnOffButton->setTextAlignment(KIR5::CENTER);
-			gravityTurnOnOffButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(gravityTurnOnOffButton);
-			gravityTurnOnOffButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				if (!mainEvent->activeMap->isOperationModeAll())
-				{
-					if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::Gravity)
-					{
-						reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Gravity;
-					}
-					else
-					{
-						reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::Gravity;
-					}
-					reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
-				}
-				else
-				{
-					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (block.selected)
-						{
-							if (!(block.grid & GridFlags::Gravity))
-							{
-								isNew = true;
-							}
-						}
-					});
+					reach(map)[mainEvent->activeMap->getTarget()].selected = true;
+					Type::ID id = reach(map)[mainEvent->activeMap->getTarget()].object->id;
 
-					if (isNew)
+					bool isNewSelected = false;
+					do
 					{
+						isNewSelected = false;
 						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
-							if (block.selected)
-							{
-								if (!(block.grid & GridFlags::Gravity))
-								{
-									block.grid |= GridFlags::Gravity;
-									block.Redrawn = true;
-								}
-							}
-						});
-					}
-					else
-					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-						{
-							if (block.selected)
-							{
-								if (block.grid & GridFlags::Gravity)
-								{
-									block.grid &= ~GridFlags::Gravity;
-									block.Redrawn = true;
-								}
-							}
-						});
-					}
-				}
-				mainEvent->activeMap->blocksUpdated();
-			};
+							if (!block.selected && block.object->id == id &&
+								(
+									(map->Test({coord.x - 1, coord.y - 1}) && reach(map)[{coord.x - 1, coord.y - 1}].selected) ||
+									(map->Test({coord.x - 0, coord.y - 1}) && reach(map)[{coord.x - 0, coord.y - 1}].selected) ||
+									(map->Test({coord.x + 1, coord.y - 1}) && reach(map)[{coord.x + 1, coord.y - 1}].selected) ||
 
-			initExplodeButton->resize(220, 18);
-			initExplodeButton->setTextFont(Font::TimesNewRoman[14]);
-			initExplodeButton->setText("Set init explode");
-			initExplodeButton->setTextColor(KIR5::Color(152, 152, 152));
-			initExplodeButton->show();
-			initExplodeButton->setTextAlignment(KIR5::CENTER);
-			initExplodeButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(initExplodeButton);
-			initExplodeButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				if (!mainEvent->activeMap->isOperationModeAll())
-				{
-					if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::Detonate)
-					{
-						reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::Detonate;
-					}
-					else
-					{
-						reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::Detonate;
-					}
-					reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
-				}
-				else
-				{
-					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (block.selected)
-						{
-							if (!(block.grid & GridFlags::Detonate))
-							{
-								isNew = true;
-							}
-						}
-					});
+									(map->Test({coord.x - 1, coord.y - 0}) && reach(map)[{coord.x - 1, coord.y - 0}].selected) ||
+									(map->Test({coord.x + 1, coord.y - 0}) && reach(map)[{coord.x + 1, coord.y - 0}].selected) ||
 
-					if (isNew)
-					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-						{
-							if (block.selected)
-							{
-								if (!(block.grid & GridFlags::Detonate))
-								{
-									block.grid |= GridFlags::Detonate;
-									block.Redrawn = true;
-								}
-							}
-						});
-					}
-					else
-					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-						{
-							if (block.selected)
-							{
-								if (block.grid & GridFlags::Detonate)
-								{
-									block.grid &= ~GridFlags::Detonate;
-									block.Redrawn = true;
-								}
-							}
-						});
-					}
-				}
-				mainEvent->activeMap->blocksUpdated();
-			};
-
-			selectFriendlyButton->resize(220, 18);
-			selectFriendlyButton->setTextFont(Font::TimesNewRoman[14]);
-			selectFriendlyButton->setText("Select neighbors");
-			selectFriendlyButton->setTextColor(KIR5::Color(152, 152, 152));
-			selectFriendlyButton->show();
-			selectFriendlyButton->setTextAlignment(KIR5::CENTER);
-			selectFriendlyButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(selectFriendlyButton);
-			selectFriendlyButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-				{
-					if (block.selected)
-					{
-						block.selected = false;
-						block.Redrawn = true;
-					}
-				});
-
-				reach(map)[mainEvent->activeMap->getTarget()].selected = true;
-				Type::ID id = reach(map)[mainEvent->activeMap->getTarget()].object->id;
-
-				bool isNewSelected;
-				do
-				{
-					isNewSelected = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (!block.selected && block.object->id == id &&
-							(
-								(map->Test({coord.x - 1, coord.y - 1}) && reach(map)[{coord.x - 1, coord.y - 1}].selected) ||
-								(map->Test({coord.x - 0, coord.y - 1}) && reach(map)[{coord.x - 0, coord.y - 1}].selected) ||
-								(map->Test({coord.x + 1, coord.y - 1}) && reach(map)[{coord.x + 1, coord.y - 1}].selected) ||
-
-								(map->Test({coord.x - 1, coord.y - 0}) && reach(map)[{coord.x - 1, coord.y - 0}].selected) ||
-								(map->Test({coord.x + 1, coord.y - 0}) && reach(map)[{coord.x + 1, coord.y - 0}].selected) ||
-
-								(map->Test({coord.x - 1, coord.y + 1}) && reach(map)[{coord.x - 1, coord.y + 1}].selected) ||
-								(map->Test({coord.x - 0, coord.y + 1}) && reach(map)[{coord.x - 0, coord.y + 1}].selected) ||
-								(map->Test({coord.x + 1, coord.y + 1}) && reach(map)[{coord.x + 1, coord.y + 1}].selected)
+									(map->Test({coord.x - 1, coord.y + 1}) && reach(map)[{coord.x - 1, coord.y + 1}].selected) ||
+									(map->Test({coord.x - 0, coord.y + 1}) && reach(map)[{coord.x - 0, coord.y + 1}].selected) ||
+									(map->Test({coord.x + 1, coord.y + 1}) && reach(map)[{coord.x + 1, coord.y + 1}].selected)
+									)
 								)
-							)
-						{
-							block.selected = true;
-							block.Redrawn = true;
-							isNewSelected = true;
-						}
-					});
-				}
-				while (isNewSelected);
-
-				mainEvent->activeMap->blocksUpdated();
-			};
-
-			static constexpr Type::ID ramIDs[] = {
-				ObjectID::RAMChipsMini,
-				ObjectID::RAMChipsLeft ,
-				ObjectID::RAMChipsRight,
-				ObjectID::RAMChipsTop ,
-				ObjectID::RAMChipsBottom ,
-			};
-			static constexpr int NUMBER_OF_RAMS = (sizeof(ramIDs) / sizeof(Type::ID));
-
-			static std::function<bool(Type::ID id)> isRam = [](Type::ID id)->bool
-			{
-				for (int i = 0; i < NUMBER_OF_RAMS; ++i)
-				{
-					if (id == ramIDs[i])
-					{
-						return true;
+							{
+								block.selected = true;
+								block.Redrawn = true;
+								isNewSelected = true;
+							}
+						});
 					}
-				}
-				return false;
-			};
+					while (isNewSelected);
 
-			ramRepairButton->resize(220, 18);
-			ramRepairButton->setTextFont(Font::TimesNewRoman[14]);
-			ramRepairButton->setText("Repair RAMs");
-			ramRepairButton->setTextColor(KIR5::Color(152, 152, 152));
-			ramRepairButton->show();
-			ramRepairButton->setTextAlignment(KIR5::CENTER);
-			ramRepairButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(ramRepairButton);
-			ramRepairButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				if (mainEvent->activeMap->isOperationModeAll())
+					mainEvent->activeMap->blocksUpdated();
+				};
+
+				static constexpr Type::ID ramIDs[] = {
+					ObjectID::RAMChipsMini,
+					ObjectID::RAMChipsLeft ,
+					ObjectID::RAMChipsRight,
+					ObjectID::RAMChipsTop ,
+					ObjectID::RAMChipsBottom ,
+				};
+				static constexpr int NUMBER_OF_RAMS = (sizeof(ramIDs) / sizeof(Type::ID));
+
+				static std::function<bool(Type::ID id)> isRam = [](Type::ID id)->bool
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					for (int i = 0; i < NUMBER_OF_RAMS; ++i)
 					{
-						if (block.selected)
+						if (id == ramIDs[i])
+						{
+							return true;
+						}
+					}
+					return false;
+				};
+
+				ramRepairButton->setText("Repair RAMs");
+				ramRepairButton->width(ramRepairButton->getTextWidth());
+				ramRepairButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					if (mainEvent->activeMap->isOperationModeAll())
+					{
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						{
+							if (block.selected)
+							{
+								if (block.object->id == ObjectID::RAMChipsRight)
+								{
+									if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+									{
+										while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
+										{
+											ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
+											block.Redrawn = true;
+										}
+									}
+								}
+								if (block.object->id == ObjectID::RAMChipsBottom)
+								{
+									if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+									{
+										while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
+										{
+											ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
+											block.Redrawn = true;
+										}
+									}
+								}
+
+								if (block.object->id == ObjectID::RAMChipsLeft)
+								{
+									if (map->Test({coord.x + 1,coord.y}) && reach(map)[{coord.x + 1, coord.y}].selected &&isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+									{
+										ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
+										reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
+									}
+									else
+									{
+										ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
+										block.Redrawn = true;
+									}
+								}
+								if (block.object->id == ObjectID::RAMChipsTop)
+								{
+									if (map->Test({coord.x,coord.y + 1}) && reach(map)[{coord.x, coord.y + 1}].selected &&isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
+									{
+										ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
+										reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
+									}
+									else
+									{
+										ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
+										block.Redrawn = true;
+									}
+								}
+							}
+						});
+					}
+					else
+					{
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.object->id == ObjectID::RAMChipsRight)
 							{
@@ -1224,7 +1128,7 @@ namespace Editor
 
 							if (block.object->id == ObjectID::RAMChipsLeft)
 							{
-								if (map->Test({coord.x + 1,coord.y}) && reach(map)[{coord.x + 1, coord.y}].selected &&isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+								if (map->Test({coord.x + 1,coord.y}) && isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
 								{
 									ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
 									reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
@@ -1237,7 +1141,7 @@ namespace Editor
 							}
 							if (block.object->id == ObjectID::RAMChipsTop)
 							{
-								if (map->Test({coord.x,coord.y + 1}) && reach(map)[{coord.x, coord.y + 1}].selected &&isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
+								if (map->Test({coord.x,coord.y + 1}) && isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
 								{
 									ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
 									reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
@@ -1248,231 +1152,180 @@ namespace Editor
 									block.Redrawn = true;
 								}
 							}
-						}
-					});
-				}
-				else
-				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (block.object->id == ObjectID::RAMChipsRight)
-						{
-							if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
-							{
-								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
-								{
-									ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-									block.Redrawn = true;
-								}
-							}
-						}
-						if (block.object->id == ObjectID::RAMChipsBottom)
-						{
-							if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
-							{
-								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
-								{
-									ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-									block.Redrawn = true;
-								}
-							}
-						}
+						});
+					}
+					mainEvent->activeMap->blocksUpdated();
+				};
 
-						if (block.object->id == ObjectID::RAMChipsLeft)
+				randomizeRamsButton->setText("Randomize RAMs");
+				randomizeRamsButton->width(randomizeRamsButton->getTextWidth());
+				randomizeRamsButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					if (mainEvent->activeMap->isOperationModeAll())
+					{
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
-							if (map->Test({coord.x + 1,coord.y}) && isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+							if (block.selected && isRam(block.object->id))
 							{
-								ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-								reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
-							}
-							else
-							{
-								ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
+								ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
 								block.Redrawn = true;
 							}
-						}
-						if (block.object->id == ObjectID::RAMChipsTop)
-						{
-							if (map->Test({coord.x,coord.y + 1}) && isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
-							{
-								ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-								reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
-							}
-							else
-							{
-								ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
-								block.Redrawn = true;
-							}
-						}
-					});
-				}
-				mainEvent->activeMap->blocksUpdated();
-			};
-
-			randomizeRamsButton->resize(220, 18);
-			randomizeRamsButton->setTextFont(Font::TimesNewRoman[14]);
-			randomizeRamsButton->setText("Randomize RAMs");
-			randomizeRamsButton->setTextColor(KIR5::Color(152, 152, 152));
-			randomizeRamsButton->show();
-			randomizeRamsButton->setTextAlignment(KIR5::CENTER);
-			randomizeRamsButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(randomizeRamsButton);
-			randomizeRamsButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				if (mainEvent->activeMap->isOperationModeAll())
-				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (block.selected && isRam(block.object->id))
-						{
-							ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-							block.Redrawn = true;
-						}
-					});
-				}
-				else
-				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (isRam(block.object->id))
-						{
-							ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-							block.Redrawn = true;
-						}
-					});
-				}
-				mainEvent->activeMap->blocksUpdated();
-			};
-
-			spawnPointButton->resize(220, 18);
-			spawnPointButton->setTextFont(Font::TimesNewRoman[14]);
-			spawnPointButton->setText("Set SPAWN");
-			spawnPointButton->setTextColor(KIR5::Color(152, 152, 152));
-			spawnPointButton->show();
-			spawnPointButton->setTextAlignment(KIR5::CENTER);
-			spawnPointButton->setColor(KIR5::Color(30, 30, 30));
-			column->pushBack(spawnPointButton);
-			spawnPointButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-			{
-				if (!mainEvent->activeMap->isOperationModeAll())
-				{
-					if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::SpawnPoint)
-					{
-						reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::SpawnPoint;
+						});
 					}
 					else
 					{
-						reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::SpawnPoint;
-					}
-					reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
-				}
-				else
-				{
-					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-					{
-						if (block.selected)
+						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
-							if (!(block.grid & GridFlags::SpawnPoint))
+							if (isRam(block.object->id))
 							{
-								isNew = true;
+								ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
+								block.Redrawn = true;
 							}
-						}
-					});
+						});
+					}
+					mainEvent->activeMap->blocksUpdated();
+				};
 
-					if (isNew)
+				spawnPointButton->setText("Set SPAWN");
+				spawnPointButton->width(spawnPointButton->getTextWidth());
+				spawnPointButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					if (!mainEvent->activeMap->isOperationModeAll())
 					{
+						if (reach(map)[mainEvent->activeMap->getTarget()].grid & GridFlags::SpawnPoint)
+						{
+							reach(map)[mainEvent->activeMap->getTarget()].grid &= ~GridFlags::SpawnPoint;
+						}
+						else
+						{
+							reach(map)[mainEvent->activeMap->getTarget()].grid |= GridFlags::SpawnPoint;
+						}
+						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
+					}
+					else
+					{
+						bool isNew = false;
 						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
 								if (!(block.grid & GridFlags::SpawnPoint))
 								{
-									block.grid |= GridFlags::SpawnPoint;
-									block.Redrawn = true;
+									isNew = true;
 								}
 							}
 						});
+
+						if (isNew)
+						{
+							map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+							{
+								if (block.selected)
+								{
+									if (!(block.grid & GridFlags::SpawnPoint))
+									{
+										block.grid |= GridFlags::SpawnPoint;
+										block.Redrawn = true;
+									}
+								}
+							});
+						}
+						else
+						{
+							map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+							{
+								if (block.selected)
+								{
+									if (block.grid & GridFlags::SpawnPoint)
+									{
+										block.grid &= ~GridFlags::SpawnPoint;
+										block.Redrawn = true;
+									}
+								}
+							});
+						}
+					}
+					mainEvent->activeMap->blocksUpdated();
+				};
+
+				globalGravityOnOffButton->setText(GLOBAL_GRAVITY_OFF);
+				globalGravityOnOffButton->width(globalGravityOnOffButton->getTextWidth());
+				globalGravityOnOffButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					if (globalGravityOnOffButton->getText() == GLOBAL_GRAVITY_OFF)
+					{
+						globalGravityOnOffButton->setText(GLOBAL_GRAVITY_ON);
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
-						{
-							if (block.selected)
-							{
-								if (block.grid & GridFlags::SpawnPoint)
-								{
-									block.grid &= ~GridFlags::SpawnPoint;
-									block.Redrawn = true;
-								}
-							}
-						});
+						globalGravityOnOffButton->setText(GLOBAL_GRAVITY_OFF);
 					}
-				}
-				mainEvent->activeMap->blocksUpdated();
-			};
-
-			toolColumns->pushBack(column);
-		}
-
-		{
-			prevBlockPickers.resize(24);
-			for (size_t i = 0; i < prevBlockPickers.size(); ++i)
-			{
-				prevBlockPickers[i]->resize(32, 32);
-				prevBlockPickers[i]->show();
-				prevBlockPickers[i]->id = i;
-				prevBlockPickers[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-				{
-					objectPanel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
-					objectIDTextBox->setText(std::to_string(objectPanel->id));
 				};
 
-				prevBlockColumns->pushBack(prevBlockPickers[i]);
+				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				localContent->show();
+				localContent->setGap(UI_S::gap);
+				localContent->addFlag(KIR5::Column<UIwindow<UI_M>>::ConsistentWidth);
+
+				localContent->pushBack(selectAllButton);
+				localContent->pushBack(gravityTurnOnOffButton);
+				localContent->pushBack(initExplodeButton);
+				localContent->pushBack(selectFriendlyButton);
+				localContent->pushBack(ramRepairButton);
+				localContent->pushBack(randomizeRamsButton);
+				localContent->pushBack(spawnPointButton);
+				localContent->pushBack(globalGravityOnOffButton);
+
+
+				containerLine->pushBack(localContent);
+			}
+			container->pushBack(containerLine);
+		}
+		// UI ============= ROW 3
+		{
+			for (size_t i = 0; i < prevBlockPickers.size(); ++i)
+			{
+				prevBlockPickers[i]->id = (Type::ID)i;
+				prevBlockPickers[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					object_Panel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
+					object_ID_TextBox->setText(std::to_string(object_Panel->id));
+				};
 			}
 
-		}
 
-		toolColumns->show();
-		prevBlockColumns->show();
+			KIR5::EVENT<KIR5::Row<UIwindow<UI_M>>> localContent;
+			localContent->show();
+			localContent->setGap(UI_S::gap);
 
-
-		nameOfTheMapTextBox->resize(300, textBoxSize);
-		nameOfTheMapTextBox->setTextFont(Font::TimesNewRoman[24]);
-		nameOfTheMapTextBox->setTextColor(KIR5::Color(152, 152, 152));
-		nameOfTheMapTextBox->show();
-		nameOfTheMapTextBox->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-		nameOfTheMapTextBox->setColor(KIR5::Color(5, 5, 5));
-
-		saveButton->resize(70, 32);
-		saveButton->setTextFont(Font::TimesNewRoman[24]);
-		saveButton->setText("Save");
-		saveButton->setTextColor(KIR5::Color(152, 152, 152));
-		saveButton->show();
-		saveButton->setTextAlignment(KIR5::CENTER);
-		saveButton->setColor(KIR5::Color(30, 30, 30));
-		saveButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
-		{
-			bluePrint->resize(reach(map));
-			bluePrint->foreach([&](Type::Coord coord, BluePrintBlock &block)
+			for (size_t i = 0; i < prevBlockPickers.size(); ++i)
 			{
-				block.id = reach(map)[coord].object->id;
-				block.flags = reach(map)[coord].grid;
-				block.rotation = reach(map)[coord].object->rotation;
-			});
-			bluePrint->SetAim(std::atol(infotronToCollectTextBox->getText().c_str()));
-			bluePrint->SetName(nameOfTheMapTextBox->getText());
+				localContent->pushBack(prevBlockPickers[i]);
+			}
 
-			eventEngine->sendEvent((void *)REFRESH_ITEM, (void *)(bluePrint.get()), (void *)0, (void *)0);
+			container->pushBack(localContent);
+
+		}
+		// UI =============
+
+
+		this->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		{
+			if (
+				eventEngine->getTergetPanel().get() == this ||
+				eventEngine->getTergetPanel().get() == mainEvent->activeMap.get()
+				)
+			{
+				if (key_ == ALLEGRO_KEY_ENTER)
+				{
+					object_Apply_Button->fncPress(object_Apply_Button.get(), 0, 0);
+					return true;
+				}
+			}
+			return false;
 		};
 
-		containerRows->pushBack(nameOfTheMapTextBox);
-		containerRows->pushBack(toolColumns);
-		containerRows->pushBack(prevBlockColumns);
-		containerRows->pushBack(saveButton);
-
-		containerRows->show();
-		*this << containerRows;
+		*this << container;
 	}
 	ControlPanel::~ControlPanel()
 	{
@@ -1484,11 +1337,11 @@ namespace Editor
 	{
 		KIR5::Color bcolor = mainEvent->activeMap->isOperationModeAll() ? KIR5::Color(78, 30, 30) : KIR5::Color(30, 30, 78);
 
-		rotationExecute->setColor(bcolor);
-		fillButton->setColor(bcolor);
-		fillSelectAllButton->setColor(bcolor);
-		fillFrameButton->setColor(bcolor);
-		fillContentButton->setColor(bcolor);
+		rotation_Apply_Button->setColor(bcolor);
+		object_Apply_Button->setColor(bcolor);
+		object_selectAllOfThisType_Button->setColor(bcolor);
+		object_FillFrame_Button->setColor(bcolor);
+		object_FillContent_Button->setColor(bcolor);
 		gravityTurnOnOffButton->setColor(bcolor);
 		initExplodeButton->setColor(bcolor);
 		spawnPointButton->setColor(bcolor);
@@ -1499,25 +1352,25 @@ namespace Editor
 
 	void ControlPanel::pickID(Type::ID id)
 	{
-		objectPanel->id = id;
-		objectIDTextBox->setText(std::to_string(objectPanel->id));
+		object_Panel->id = id;
+		object_ID_TextBox->setText(std::to_string(object_Panel->id));
 		updateBlocks();
 	}
 
 	void ControlPanel::updateBlocks()
 	{
-		objectPanel->counter = 0;
-		for (auto &it : infotronPickers)
+		object_Panel->counter = 0;
+		for (auto &it : infotron_Pickers_Buttons)
 		{
 			it->counter = 0;
 		}
 		this->map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 		{
-			if (block.object->id == objectPanel->id)
+			if (block.object->id == object_Panel->id)
 			{
-				++objectPanel->counter;
+				++object_Panel->counter;
 			}
-			for (auto &it : infotronPickers)
+			for (auto &it : infotron_Pickers_Buttons)
 			{
 				if (block.object->id == it->id)
 				{
@@ -1527,11 +1380,11 @@ namespace Editor
 		});
 
 		int totalInfotrons = 0;
-		for (auto &it : infotronPickers)
+		for (auto &it : infotron_Pickers_Buttons)
 		{
 			totalInfotrons += it->counter * it->multiplier;
 		}
-		infotronToCollectLabel->setText("/" + std::to_string(totalInfotrons));
+		infotron_Capacity_Label->setText("/" + std::to_string(totalInfotrons));
 
 	}
 
@@ -1539,9 +1392,23 @@ namespace Editor
 	{
 		bluePrint = bluePrint_;
 		this->map = map;
-		infotronToCollectTextBox->setText(std::to_string(bluePrint->GetAim()));
-		nameOfTheMapTextBox->setText(bluePrint->GetName());
-		mapResizeTextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+		infotron_ToCollect_TextBox->setText(std::to_string(bluePrint->scoreToUnlock));
+		titleOfBluePrint_TextBox->setText(bluePrint->title);
+		bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+
+		{
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(2) << bluePrint->cameraSize.width << "*" << bluePrint->cameraSize.height;
+			sizeOfCamera_TextBox->setText(stream.str());
+		}
+
+		{
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(4) << bluePrint->speed;
+			murphySpeed_TextBox->setText(stream.str());
+		}
+
+		globalGravityOnOffButton->setText(bluePrint->globalGravity ? GLOBAL_GRAVITY_ON : GLOBAL_GRAVITY_OFF);
 		updateBlocks();
 	}
 }

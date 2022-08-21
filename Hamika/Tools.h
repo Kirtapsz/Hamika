@@ -59,3 +59,70 @@ constexpr T limiter(const T &l, const T &h, const T &v)
 {
 	return (std::max)(l, (std::min)(h, v));
 }
+
+
+bool writeFileFromBuffer(const std::string &filename, const std::vector<unsigned char> &buffer);
+bool readFileToBuffer(const std::string &filename, std::vector<unsigned char> &buffer);
+
+
+
+template <typename T, typename A>
+void get(T &ret, const A &data, size_t idx, size_t len)
+{
+	memcpy(&ret, &data[idx], len);
+}
+template <typename A>
+void get(std::string &ret, const A &data, size_t idx, size_t len)
+{
+	ret.resize(len + 1, 0);
+	memcpy(&ret[0], &data[idx], len);
+	ret.resize(strlen(ret.c_str()));
+	ret.shrink_to_fit();
+}
+template <typename T, typename A>
+void getDx(typename T::type &ret, const A &data, size_t idxShift = 0)
+{
+	size_t requiredSize = T::idx + idxShift + T::len;
+	if (data.size() < requiredSize)
+	{
+		return;
+	}
+	get(ret, data, T::idx + idxShift, T::len);
+}
+
+
+template <typename T, typename A>
+void set(const T &val, A &data, size_t idx, size_t len)
+{
+	memcpy(&data[idx], &val, len);
+}
+template <typename A>
+void set(const std::string &val, A &data, size_t idx, size_t len)
+{
+	memset(&data[idx], 0, len);
+	if (val.length())
+	{
+		memcpy(&data[idx], &val[0], (std::min)(val.length(), len));
+	}
+}
+template<class T, std::size_t S, typename A>
+void set(const std::array<T, S> &val, A &data, size_t idx, size_t len)
+{
+	memcpy(&data[idx], &val[0], len);
+}
+template <typename T, typename A>
+void setDx(const typename T::type &val, A &data, size_t idxShift = 0)
+{
+	size_t requiredSize = T::idx + idxShift + T::len;
+	if (data.size() < requiredSize)
+	{
+		data.resize(requiredSize);
+	}
+	set(val, data, T::idx + idxShift, T::len);
+}
+
+template <typename T>
+inline constexpr size_t tail()
+{
+	return T::idx + T::len;
+}
