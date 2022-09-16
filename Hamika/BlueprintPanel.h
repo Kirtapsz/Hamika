@@ -18,7 +18,7 @@ class BlueprintPanel: public KIR5::Panel
 	private: KIR5::Bitmap disp_bmp;
 	public: float alpha = 255;
 
-	public: void setBluePrint(std::shared_ptr<BluePrint> &bluePrint);
+	public: void setBluePrint(const std::shared_ptr<BluePrint> &bluePrint);
 
 	public: BlueprintPanel();
 };

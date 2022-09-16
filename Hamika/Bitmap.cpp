@@ -1,5 +1,5 @@
 #include "Bitmap.h"
-#include "Global.h"
+#include "Tools.h"
 
 #include <KIR/KIR4_console.h>
 #include <KIR\AL\KIR5_bitmap_target.h>

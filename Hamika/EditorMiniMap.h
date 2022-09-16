@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.h"
-#include "BluePrints.h"
+#include "World.h"
 #include "Objects.h"
 #include "Font.h"
 #include "BlueprintPanel.h"

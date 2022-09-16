@@ -143,8 +143,6 @@ void ObjectCreate(EditorObjectBase *object, Type::ID id, Type::Coord coord, Edit
 {
 	object->id = id;
 	object->coord = coord;
-	object->DrawCoord.x = coord.x * object->DrawSize().width;
-	object->DrawCoord.y = coord.y * object->DrawSize().height;
 	memset(object->specific, 0, sizeof(object->specific));
 
 	object->isExists = true;

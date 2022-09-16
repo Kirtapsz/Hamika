@@ -1,4 +1,6 @@
-#include "Global.h"
+#include <fstream>
+
+#include "Tools.h"
 
 #include <KIR\AL\KIR5_event_engine.h>
 
@@ -37,4 +39,33 @@ std::map<std::string, std::string> parse(const std::string &s)
 	}
 
 	return output;
+}
+
+
+bool writeFileFromBuffer(const std::string &filename, const std::vector<unsigned char> &buffer)
+{
+	std::ofstream f(filename, std::ios::binary);
+	if (f.is_open())
+	{
+		f.write(reinterpret_cast<const char *>(buffer.data()), buffer.size());
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+bool readFileToBuffer(const std::string &filename, std::vector<unsigned char> &buffer)
+{
+	std::ifstream f(filename, std::ios::binary);
+	if (f.is_open())
+	{
+		buffer = std::move(std::vector<unsigned char>(std::istreambuf_iterator<char>(f), {}));
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

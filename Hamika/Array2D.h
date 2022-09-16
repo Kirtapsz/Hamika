@@ -85,7 +85,7 @@ class Array2D
 
 	public: template<typename F> inline void foreach(F &f)
 	{
-		Type::Coord coord;
+		Type::Coord coord = {0};
 		for (coord.x = 0; coord.x < size.width; ++coord.x)
 		{
 			for (coord.y = 0; coord.y < size.height; ++coord.y)
@@ -96,7 +96,7 @@ class Array2D
 	}
 	public: template<typename F> inline void reverse_foreach(F &f)
 	{
-		Type::Coord coord;
+		Type::Coord coord = {0};
 		for (coord.x = size.width - 1; coord.x >= 0; --coord.x)
 		{
 			for (coord.y = size.height - 1; coord.y >= 0; --coord.y)
@@ -107,7 +107,7 @@ class Array2D
 	}
 	public: template<typename F> inline void forrange(Type::Coord start, Type::Coord end, F &f)
 	{
-		Type::Coord coord;
+		Type::Coord coord = {0};
 		for (coord.x = start.x; coord.x < end.x; ++coord.x)
 		{
 			for (coord.y = start.y; coord.y < end.y; ++coord.y)
@@ -117,5 +117,3 @@ class Array2D
 		}
 	}
 };
-
-#include "Array2D.cpp"

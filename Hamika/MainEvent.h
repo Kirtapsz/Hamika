@@ -31,11 +31,11 @@ class MapList:public KIR5::Panel
 			   float fw;
 			   int ID;
 			   KIR5::Font font;
-			   std::vector<std::shared_ptr<BluePrint>> *bluePrints = nullptr;
+			   const std::vector<std::shared_ptr<BluePrint>> *bluePrints = nullptr;
 		public:
 		Panel();
 		PanelData source;
-		inline void SetMapContainer(std::vector<std::shared_ptr<BluePrint>> *bluePrints);
+		inline void SetMapContainer(const std::vector<std::shared_ptr<BluePrint>> *bluePrints);
 		void SetFocus(int ID);
 		inline void show();
 		int GetFocus() const;
@@ -57,7 +57,7 @@ class MapList:public KIR5::Panel
 	//jobbról balra
 	void MoveLeft();
 	int MoveCount = 0;
-	std::vector<std::shared_ptr<BluePrint>> bluePrints;
+	World world;
 	int Focus = 0;
 	int mx;
 	int lastMC;
@@ -67,8 +67,7 @@ class MapList:public KIR5::Panel
 	bool MouseButtonDown = false;
 	bool MouseAxes;
 	public:
-	inline void SetMaps(std::vector<std::shared_ptr<BluePrint>> &bluePrints);
-	inline void SetFocus(int Focus);
+	 void SetFocus(int Focus);
 	MapList();
 	~MapList();
 	static constexpr unsigned __int32 MoveToRetZero = 0x00000000;

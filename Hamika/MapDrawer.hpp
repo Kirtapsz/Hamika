@@ -5,52 +5,20 @@
 
 #include "MapDrawer.h"
 #include "Font.h"
-#include "Global.h"
+#include "Tools.h"
 
 #include <KIR\AL\KIR5_color.h>
 #include <KIR\AL\KIR5_bitmap_target.h>
 #include <KIR\KIR4_console.h>
 
-//struct StatisticsTimer
-//{
-//	int count = 0;
-//
-//	std::map<int, double> sum;
-//	std::map<int, double> max;
-//
-//	inline void clear()
-//	{
-//		count = 0;
-//		sum.clear();
-//		max.clear();
-//	}
-//
-//	inline void setValue(int key, double value)
-//	{
-//		sum[key] = value;
-//		if (max[key] < value)
-//		{
-//			max[key] = value;
-//		}
-//	}
-//
-//	inline void start()
-//	{
-//		count++;
-//	}
-//
-//	inline std::map<int, double> getAvg()
-//	{
-//		std::map<int, double> ret;
-//		for (auto &it : sum)
-//		{
-//			ret[it.first] = it.second / (double)count;
-//		}
-//		return ret;
-//	}
-//};
-//
-//extern StatisticsTimer drawStatistics;
+template <typename ACTIVE_BLOCK_T>
+void MapDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool globalGravity)
+{
+	if (this->globalGravity != globalGravity)
+	{
+		this->globalGravity = globalGravity;
+	}
+}
 
 template <typename ACTIVE_BLOCK_T>
 void MapDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
@@ -266,30 +234,40 @@ void MapDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 	clog << "-------------------" << KIR4::eol;*/
 }
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, float CalculatePerSec)
+void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
 {
+	if (cameraSizeAdjust.width > 0.f && cameraSizeAdjust.height > 0.f)
+	{
+		Type::CameraSize sizeDim = {cameraPhySize.width / cameraSizeAdjust.width, cameraPhySize.height / cameraSizeAdjust.height};
+		Type::CameraSize::Type sizeAdjust = (std::max)(sizeDim.width, sizeDim.height);
+		DrawSize = {(Type::Size::Type)sizeAdjust,(Type::Size::Type)sizeAdjust};
+	}
+	else
+	{
+		DrawSize = {blockSizeInPixel, blockSizeInPixel};
+	}
+
 	TotalPointDrawCount = 0;
 	TotalObjectDrawCount = 0;
 
-	this->CalculatePerSec = CalculatePerSec;
 	BlocksBitmapDrawOffset = {0,0};
 	CameraBegin = {0,0};
 
-	CameraSize.x = width / (float)DrawSize.width;
-	CameraSize.y = height / (float)DrawSize.height;
+	CameraSize.x = cameraPhySize.width / (float)DrawSize.width;
+	CameraSize.y = cameraPhySize.height / (float)DrawSize.height;
 
 	CameraCounts.x = CameraSize.x / 2.f;
 	CameraCounts.y = CameraSize.y / 2.f;
 
-	BlocksBitmapSize.width = (width + DrawSize.width - 1) / DrawSize.width + BlocksBitmapBufferSize * 2;
+	BlocksBitmapSize.width = (cameraPhySize.width + DrawSize.width - 1) / DrawSize.width + BlocksBitmapBufferSize * 2;
 	if (BlocksBitmapSize.width % 2 == 0)
 		BlocksBitmapSize.width++;
-	BlocksBitmapSize.height = (height + DrawSize.height - 1) / DrawSize.height + BlocksBitmapBufferSize * 2;
+	BlocksBitmapSize.height = (cameraPhySize.height + DrawSize.height - 1) / DrawSize.height + BlocksBitmapBufferSize * 2;
 	if (BlocksBitmapSize.height % 2 == 0)
 		BlocksBitmapSize.height++;
 
-	CameraX1 = (width / (float)DrawSize.width) / 2.f - 0.5f;
-	CameraY1 = (height / (float)DrawSize.height) / 2.f - 0.5f;
+	CameraX1 = (cameraPhySize.width / (float)DrawSize.width) / 2.f - 0.5f;
+	CameraY1 = (cameraPhySize.height / (float)DrawSize.height) / 2.f - 0.5f;
 	CameraX2 = ((Type::Size)reach(map)).width - CameraX1 - 1;
 	CameraY2 = ((Type::Size)reach(map)).height - CameraY1 - 1;
 
@@ -307,7 +285,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 		BlocksBitmapHcenter = false;
 		if (((Type::Size)reach(map)).width <= CameraSize.x)
 		{
-			BlocksBitmapDrawOffset.width = -(width - ((Type::Size)reach(map)).width * DrawSize.width) / 2 - BlocksBitmapBufferSize * DrawSize.width;
+			BlocksBitmapDrawOffset.width = -(cameraPhySize.width - ((Type::Size)reach(map)).width * DrawSize.width) / 2 - BlocksBitmapBufferSize * DrawSize.width;
 			CameraHcenter = false;
 		}
 		else
@@ -329,7 +307,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 		BlocksBitmapVcenter = false;
 		if (((Type::Size)reach(map)).height <= CameraSize.y)
 		{
-			BlocksBitmapDrawOffset.height = -(height - ((Type::Size)reach(map)).height * DrawSize.height) / 2 - BlocksBitmapBufferSize * DrawSize.height;
+			BlocksBitmapDrawOffset.height = -(cameraPhySize.height - ((Type::Size)reach(map)).height * DrawSize.height) / 2 - BlocksBitmapBufferSize * DrawSize.height;
 			CameraVcenter = false;
 		}
 		else
@@ -354,10 +332,12 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(int width, int height, flo
 	DrawBeginLast = {0,0};
 	DrawEndLast = {0,0};
 
-	Type::Coord coord;
-	for (coord.x = 0; coord.x < ((Type::Size)reach(map)).width; coord.x++)
-		for (coord.y = 0; coord.y < ((Type::Size)reach(map)).height; coord.y++)
-			Redrawn(coord);
+	map->foreach([&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		block.object->configureDrawOptions();
+		block.remain->configureDrawOptions();
+		block.Redrawn = true;
+	});
 
 	//drawStatistics.clear();
 }
@@ -615,11 +595,21 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 				al_clear_to_color(KIR5::Color::_transparent);
 				al_hold_bitmap_drawing(true);
-				map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+				if (globalGravity)
 				{
-					if (block.grid & GridFlags::Gravity)
+					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+					{
 						gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
-				});
+					});
+				}
+				else
+				{
+					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+					{
+						if (block.grid & GridFlags::Gravity)
+							gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
+					});
+				}
 				al_hold_bitmap_drawing(false);
 			}
 		}
@@ -627,6 +617,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 	}
 
 	al_set_clipping_rectangle(cx, cy, cw, ch);
+	//al_reset_clipping_rectangle();
 	BlocksBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width, y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height);
 	if (layerActive)
 	{
@@ -643,6 +634,8 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 		x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width + BlocksBitmap.width() + 1,
 		y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height + BlocksBitmap.height() + 1,
 		KIR5::Color(255, 0, 255), 1);
+
+	//al_set_clipping_rectangle(cx, cy, cw, ch);
 }
 
 template <typename ACTIVE_BLOCK_T>

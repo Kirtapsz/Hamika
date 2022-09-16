@@ -1,6 +1,6 @@
 #include "ActiveMap.h"
 #include "MainEvent.h"
-#include "Global.h"
+#include "Tools.h"
 
 #include <fstream>
 
@@ -112,7 +112,7 @@ ActiveMap::ActiveMap()
 	fncMoved = [&](FNC_MOVED_PARAMS)
 	{
 		drawnerPanel->move(0, 0, width(), height() - statusbar->Height());
-		drawer.InitializeDrawOptions(drawnerPanel->width(), drawnerPanel->height() - statusbar->Height(), CA);
+		drawer.InitializeDrawOptions({drawnerPanel->width(), drawnerPanel->height() - statusbar->Height()}, cameraSize);
 		statusbar->Align();
 	};
 
@@ -504,13 +504,15 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 	replayBot = bot;
 
 	victory = false;
+	globalGravity = disp_map.globalGravity;
+	cameraSize = disp_map.cameraSize;
 
 	loopCounter = 0;
 	startLoop = startLoopInit;
 	stopLoop = stopLoopInit;
 
 	std::vector<Type::Coord> spawns;
-	map.reset(new Array2D<ActiveBlock<ObjectBase>>(disp_map));
+	map.reset(new Array2D<ActiveBlock<ObjectBase>>(disp_map.blocks));
 	objects.resize(((Type::Size)*map).width * ((Type::Size)*map).height);
 	remains.resize(objects.size());
 	map->foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
@@ -537,7 +539,8 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 	murphy = reach(map)[spawn].object;
 
 	drawer.SetMap(map);
-	drawer.InitializeDrawOptions(width(), height() - statusbar->Height(), CA);
+	drawer.InitializeDrawOptions({drawnerPanel->width(), drawnerPanel->height()}, cameraSize);
+	drawer.setGlobalGravity(globalGravity);
 }
 
 void ActiveMap::Redrawn(Type::Coord coord)
@@ -1100,6 +1103,15 @@ bool ActiveMap::IamRemain(ObjectBase *o)
 			return true;
 	}
 	return true;
+}
+bool ActiveMap::IsGlobalGravity() const
+{
+	return globalGravity;
+}
+void ActiveMap::switchGravity()
+{
+	globalGravity = !globalGravity;
+	drawer.setGlobalGravity(globalGravity);
 }
 
 bool ActiveMap::rollTrigger(ObjectBase *obj_, float chancePerSec)

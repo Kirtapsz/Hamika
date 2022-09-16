@@ -1,0 +1,199 @@
+#include "Tools.h"
+#include "EditorSaveWorldDialog.h"
+#include "EditorMainEvent.h"
+#include "World.h"
+
+#include <KIR/sys/KIR5_files.h>
+#include <KIR/sys/KIR5_system.h>
+#include <KIR/AL/KIR5_panel_control.h>
+
+namespace Editor
+{
+	SaveWorldDialog::SaveWorldDialog()
+	{
+		centerBox->show();
+		centerBox->resize(400, 300);
+		centerBox->fncDraw = [&](FNC_DRAW_PARAMS)
+		{
+			al_clear_to_color(KIR5::Color(20, 20, 20));
+		};
+
+		KIR5::EVENT<KIR5::Column<KIR5::Panel>> col;
+		col->setGap(3);
+		col->show();
+
+		{
+			KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
+			row->setGap(3);
+			row->show();
+
+			directoryLabel->setTextFont(Font::TimesNewRoman[14]);
+			directoryLabel->setTextColor(KIR5::Color(100, 100, 100));
+			directoryLabel->setTextAlignment(KIR5::CENTER);
+			directoryLabel->show();
+			directoryLabel->setText("Directory: ");
+			directoryLabel->resize((std::max)(wordNameDirectoryLabel->getTextWidth(), directoryLabel->getTextWidth()), 26);
+			row->pushBack(directoryLabel);
+			directoryLabel->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				std::string directory_;
+				{
+					KIR5::CurrentDirectoryGuard<> dirGuard;
+					directory_ = KIR5::browseForFolder();
+				}
+				if (directory_.length())
+				{
+					directory->setText(directory_);
+				}
+			};
+
+			directory->setTextFont(Font::Consolas[12]);
+			directory->show();
+			directory->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
+			directory->setTextColor(KIR5::Color(230, 120, 40));
+			directory->resize(300, 26);
+			row->pushBack(directory);
+
+			col->pushBack(row);
+		}
+
+		{
+			KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
+			row->setGap(3);
+			row->show();
+
+			wordNameDirectoryLabel->setTextFont(Font::TimesNewRoman[14]);
+			wordNameDirectoryLabel->setTextColor(KIR5::Color(100, 100, 100));
+			wordNameDirectoryLabel->setTextAlignment(KIR5::CENTER);
+			wordNameDirectoryLabel->show();
+			wordNameDirectoryLabel->setText("Word name: ");
+			wordNameDirectoryLabel->resize((std::max)(wordNameDirectoryLabel->getTextWidth(), directoryLabel->getTextWidth()), 26);
+			row->pushBack(wordNameDirectoryLabel);
+
+			wordNameDirectory->setTextFont(Font::Consolas[12]);
+			wordNameDirectory->show();
+			wordNameDirectory->setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
+			wordNameDirectory->setTextColor(KIR5::Color(230, 120, 40));
+			wordNameDirectory->resize(300, 26);
+			row->pushBack(wordNameDirectory);
+
+			col->pushBack(row);
+		}
+
+		{
+			KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
+			row->setGap(3);
+			row->show();
+
+			mapTypeSelector->resize(130, 30);
+			mapTypeSelector->setTextFont(Font::TimesNewRoman[21]);
+			mapTypeSelector->setText("Select type");
+			mapTypeSelector->setTextColor(KIR5::Color(152, 152, 152));
+			mapTypeSelector->show();
+			mapTypeSelector->setTextAlignment(KIR5::CENTER);
+			mapTypeSelector->setColor(KIR5::Color(30, 30, 30));
+			mapTypeSelector->listPanel->height(32 * 3);
+			mapTypeSelector->listPanel->itemHeight(22);
+			row->pushBack(mapTypeSelector);
+
+			for (const auto &it : worldIOs)
+			{
+				KIR5::EVENT<KIR5::FramedRectangleButton<KIR5::Button<KIR5::TextButton<>>>> btn;
+
+				btn->setTextFont(Font::TimesNewRoman[11]);
+				btn->setText(it.name);
+				btn->setTextColor(KIR5::Color(152, 152, 152));
+				btn->show();
+				btn->setTextAlignment(KIR5::CENTER);
+				btn->setColor(KIR5::Color(30, 30, 30));
+
+				mapTypeSelector->listPanel->pushBack(btn);
+			}
+
+			col->pushBack(row);
+		}
+
+		{
+			KIR5::EVENT<KIR5::Row<KIR5::Panel>> row;
+			row->setGap(3);
+			row->show();
+
+			saveButton->setTextFont(Font::TimesNewRoman[14]);
+			saveButton->setTextColor(KIR5::Color(100, 100, 100));
+			saveButton->setTextAlignment(KIR5::CENTER);
+			saveButton->show();
+			saveButton->setColor(KIR5::Color(50, 50, 50));
+			saveButton->setText("Save");
+			saveButton->resize(saveButton->getTextWidth() + 16, 26);
+			saveButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				for (const auto &it : worldIOs)
+				{
+					if (it.name == mapTypeSelector->getText())
+					{
+						std::vector<std::shared_ptr<BluePrint>> bluePrints(mainEvent->worldi->list->items().size());
+						for (size_t i = 0; i < bluePrints.size(); ++i)
+						{
+							bluePrints[i] = mainEvent->worldi->list->items()[i]->getBluePrint();
+						}
+
+						World world;
+						world.setBluePrints(bluePrints);
+						world.setTitle(mainEvent->worldi->worltTitle_TextBox->getText());
+
+						std::vector<unsigned char> buffer;
+						if (it.save(buffer, world))
+						{
+							writeFileFromBuffer(KIR5::pathCombine<>(directory->getText(), wordNameDirectory->getText()), buffer);
+						}
+						break;
+					}
+				}
+				hide();
+			};
+			row->pushBack(saveButton);
+
+			cancelButton->setTextFont(Font::TimesNewRoman[14]);
+			cancelButton->setTextColor(KIR5::Color(100, 100, 100));
+			cancelButton->setTextAlignment(KIR5::CENTER);
+			cancelButton->show();
+			cancelButton->setColor(KIR5::Color(50, 50, 50));
+			cancelButton->setText("Cancel");
+			cancelButton->resize(cancelButton->getTextWidth() + 16, 26);
+			cancelButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			{
+				hide();
+			};
+			row->pushBack(cancelButton);
+
+			*centerBox << row;
+			row->align(KIR5::RIGHT | KIR5::BOTTOM);
+		}
+
+		*centerBox << col;
+		col->position(3, 3);
+
+		*this << centerBox;
+		fncDraw = [&](FNC_DRAW_PARAMS)
+		{
+			al_draw_filled_rectangle(x_, y_, w_, h_, KIR5::Color(0, 0, 0, 127).getAlphaColored());
+		};
+
+		fncMoved = [&](FNC_MOVED_PARAMS)
+		{
+			centerBox->align(KIR5::CENTER);
+		};
+	}
+	SaveWorldDialog::~SaveWorldDialog()
+	{
+
+	}
+	void SaveWorldDialog::show()
+	{
+		Panel::show();
+		bringTop();
+
+		directory->setText(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "worlds"));
+		wordNameDirectory->setText("word.dat");
+	}
+}
