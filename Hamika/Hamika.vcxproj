@@ -154,6 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Editor|Win32'">
@@ -161,6 +162,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -184,6 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -235,6 +238,7 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_string_conditional.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp" />
+    <ClCompile Include="Account.cpp" />
     <ClCompile Include="ActiveMap.cpp" />
     <ClCompile Include="Array2D.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
@@ -251,6 +255,10 @@
     <ClCompile Include="EditorObjects.cpp" />
     <ClCompile Include="EditorSaveWorldDialog.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="LoopControllInterface.cpp" />
+    <ClCompile Include="RngController.cpp" />
+    <ClCompile Include="KeyboardController.cpp" />
     <ClCompile Include="Tools.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainEvent.cpp" />
@@ -267,6 +275,7 @@
     <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Account.h" />
     <ClInclude Include="ActiveMap.h" />
     <ClInclude Include="Array2D.h" />
     <ClInclude Include="BaseFunctions.h" />
@@ -285,6 +294,10 @@
     <ClInclude Include="EditorObjects.h" />
     <ClInclude Include="EditorSaveWorldDialog.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="LoopControllInterface.h" />
+    <ClInclude Include="RngController.h" />
+    <ClInclude Include="KeyboardController.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="IDreg.h" />
     <ClInclude Include="MainEvent.h" />

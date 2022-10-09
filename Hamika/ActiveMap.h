@@ -16,53 +16,21 @@
 #include "MapDrawer.h"
 #include "Object.h"
 #include "ActiveBlock.h"
-
-
-class ActiveMapBot
-{
-	private: std::map<int, std::list<unsigned long long>> actions;
-
-	public: void push(int key, unsigned long long counter);
-	public: bool pop(int key, unsigned long long counter);
-	public: void load(const std::string &filename);
-	public: void save(const std::string &filename);
-};
-
-struct ControllInterface
-{
-	bool left = false;
-	bool leftChanged = true;
-	bool up = false;
-	bool upChanged = true;
-	bool down = false;
-	bool downChanged = true;
-	bool right = false;
-	bool rightChanged = true;
-	bool space = false;
-	bool spaceChanged = true;
-
-	inline void init()
-	{
-		left = false;
-		leftChanged = true;
-		up = false;
-		upChanged = true;
-		down = false;
-		downChanged = true;
-		right = false;
-		rightChanged = true;
-		space = false;
-		spaceChanged = true;
-	}
-};
+#include "KeyboardController.h"
+#include "RngController.h"
+#include "Account.h"
 
 class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 {
-	private: ControllInterface murphy1ControllInterface;
-	private: std::shared_ptr<ActiveMapBot> recordBot;
-	private: std::shared_ptr<ActiveMapBot> replayBot;
-	private: std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>> map = std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>>(new Array2D<ActiveBlock<ObjectBase>>());
+	private: std::shared_ptr<Account> account;
 
+	private: LoopControllerInterface loopControllerInterface;
+	private: std::shared_ptr<Logger> logger;
+
+	private: std::shared_ptr<KeyboardController> keyboardController;
+	private: std::shared_ptr<RngController> rngController;
+
+	private: std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>> map = std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>>(new Array2D<ActiveBlock<ObjectBase>>());
 	private: std::vector<ObjectBase *> objects;
 	private: std::vector<ObjectBase *> remains;
 	private: void buildObjectsHolder();
@@ -94,7 +62,8 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: void CopyObjectToRemain(Type::Coord coordDst, Type::Coord coordSrc);
 	public: void CopyRemainToObject(Type::Coord coordDst, Type::Coord coordSrc);
 
-	public: void startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot> &bot);
+	public: void startMap(const BluePrint &disp_map, const std::shared_ptr<Account> &account);
+	private: void stopMap();
 	public: virtual void Redrawn(Type::Coord coord);
 
 	public: void UpdateRun();
@@ -146,5 +115,5 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: virtual bool IamRemain(ObjectBase *);
 	public: virtual bool IsGlobalGravity() const;
 	public: virtual void switchGravity();
-	public: virtual bool rollTrigger(ObjectBase *obj_, float chancePerSec);
+	public: virtual bool rollTrigger(ObjectBase *obj_, unsigned __int16 typeID, float chancePerSec);
 };

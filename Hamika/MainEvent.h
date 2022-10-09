@@ -7,6 +7,7 @@
 #include <KIR/AL/KIR5_text_box.h>
 #include <KIR/AL/KIR5_button.h>
 
+#include "Account.h"
 #include "Font.h"
 #include "Bitmap.h"
 #include "BlueprintPanel.h"
@@ -78,6 +79,7 @@ class MapList:public KIR5::Panel
 
 class MainEvent:public KIR5::Display
 {
+	private: std::shared_ptr<Account> account;
 	private: KIR5::EVENT<ActiveMap> activeMap;
 	private: KIR5::EVENT<MapList> originalMapList;
 	private: KIR5::EVENT<KIR5::RectangleButton<KIR5::Button<KIR5::TextBox<>>>> replayTextBox;

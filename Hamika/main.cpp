@@ -10,6 +10,10 @@ std::default_random_engine generator(rd());
 
 int main(int argc, char *argv[])
 {
+	if (argc >= 2 && strcmp("--blueprints", argv[1]) == 0)
+	{
+	}
+
 	KIR5::initialize();
 
 	if (argc >= 2 && strcmp("--editor", argv[1]) == 0)

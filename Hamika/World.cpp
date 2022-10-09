@@ -351,7 +351,7 @@ namespace IO_Orig
 std::array<WorldIO, 3> worldIOs = {{
 	{"Star one",World::VType::T_HamSt1, IO_HamSt1::isType, IO_HamSt1::load, IO_HamSt1::save,},
 	{"Beta version",World::VType::T_HamBC, IO_HamBC::isType, IO_HamBC::load, IO_HamBC::save,},
-	{"1991 world",World::VType::T_Orig, IO_Orig::isType, IO_Orig::load, IO_Orig::save,},
+	{"Back to 91s",World::VType::T_Orig, IO_Orig::isType, IO_Orig::load, IO_Orig::save,},
 }};
 
 bool World::load(const std::string &filename)

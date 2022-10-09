@@ -1,83 +1,12 @@
 #include "ActiveMap.h"
 #include "MainEvent.h"
 #include "Tools.h"
+#include "Murphy.h"
 
 #include <fstream>
 
 #include <KIR/sys/KIR5_files.h>
 #include <KIR/sys/KIR5_system.h>
-
-enum
-{
-	ACTIVE_BOT_KEY_DOWN_UP = 1,
-	ACTIVE_BOT_KEY_DOWN_DOWN = 2,
-	ACTIVE_BOT_KEY_DOWN_LEFT = 3,
-	ACTIVE_BOT_KEY_DOWN_RIGHT = 4,
-	ACTIVE_BOT_KEY_DOWN_SPACE = 5,
-	ACTIVE_BOT_KEY_DOWN_ESCAPE = 6,
-
-	ACTIVE_BOT_KEY_UP_UP = 11,
-	ACTIVE_BOT_KEY_UP_DOWN = 12,
-	ACTIVE_BOT_KEY_UP_LEFT = 13,
-	ACTIVE_BOT_KEY_UP_RIGHT = 14,
-	ACTIVE_BOT_KEY_UP_SPACE = 15,
-
-	ACTIVE_BOT_KEY_RAND_V1 = 200,
-};
-
-void ActiveMapBot::push(int key, unsigned long long counter)
-{
-	actions[key].push_back(counter);
-}
-
-bool ActiveMapBot::pop(int key, unsigned long long counter)
-{
-	auto &v = actions[key];
-	if (v.size() > 0)
-	{
-		if (v.front() == counter)
-		{
-			v.pop_front();
-			return true;
-		}
-	}
-	return false;
-}
-
-void ActiveMapBot::load(const std::string &filename)
-{
-	std::ifstream dataFile(KIR5::pathCombine<KIR5::AString>(KIR5::getModuleDirectory<KIR5::AString>(), "records", filename + ".log"));
-	std::string line;
-
-	while (std::getline(dataFile, line) && line.length())
-	{
-		toLower(line);
-		auto row = parse(line);
-
-		int key = std::stoi(row["key"]);
-		unsigned long long counter = std::stoull(row["counter"]);
-
-		actions[key].push_back(counter);
-	}
-}
-void ActiveMapBot::save(const std::string &filename)
-{
-	std::string recordsDir = KIR5::pathCombine<KIR5::AString>(KIR5::getModuleDirectory<KIR5::AString>(), "records");
-	_mkdir(recordsDir.c_str());
-	std::ofstream dataFile(KIR5::pathCombine<KIR5::AString>(recordsDir, filename + ".log"));
-	for (auto &p : actions)
-	{
-		for (auto &it : p.second)
-		{
-			std::ostringstream line;
-
-			line << "key" << ":" << p.first << '|' << "counter" << ":" << it << '|';
-
-			dataFile << line.str() << std::endl;
-		}
-	}
-}
-
 
 ActiveMap::ActiveMap()
 {
@@ -118,275 +47,32 @@ ActiveMap::ActiveMap()
 
 	fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 	{
-		if (murphy)
-		{
-			if (!replayBot)
-			{
-				if (key_ == ALLEGRO_KEY_UP)
-				{
-					if (!murphy1ControllInterface.up)
-					{
-						murphy1ControllInterface.up = true;
-						murphy1ControllInterface.upChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_DOWN)
-				{
-					if (!murphy1ControllInterface.down)
-					{
-						murphy1ControllInterface.down = true;
-						murphy1ControllInterface.downChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_LEFT)
-				{
-					if (!murphy1ControllInterface.left)
-					{
-						murphy1ControllInterface.left = true;
-						murphy1ControllInterface.leftChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_RIGHT)
-				{
-					if (!murphy1ControllInterface.right)
-					{
-						murphy1ControllInterface.right = true;
-						murphy1ControllInterface.rightChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_SPACE)
-				{
-					if (!murphy1ControllInterface.space)
-					{
-						murphy1ControllInterface.space = true;
-						murphy1ControllInterface.spaceChanged = true;
-					}
-				}
-			}
-
-			if (key_ == ALLEGRO_KEY_ESCAPE)
-			{
-				recordBot->push(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter);
-				murphy->requests.blowUp = true;
-				murphy->hitCoord = murphy->GetCoord();
-				murphy->blowUp(murphy->GetCoord());
-				murphy = nullptr;
-			}
-		}
+		keyboardController->keyDown(key_);
 		return false;
 	};
 
 	fncKeyUp = [&](FNC_KEY_UP_PARAMS)->FNC_KEY_UP_RET
 	{
-		if (murphy)
-		{
-			if (!replayBot)
-			{
-				if (key_ == ALLEGRO_KEY_UP)
-				{
-					if (murphy1ControllInterface.up)
-					{
-						murphy1ControllInterface.up = false;
-						murphy1ControllInterface.upChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_DOWN)
-				{
-					if (murphy1ControllInterface.down)
-					{
-						murphy1ControllInterface.down = false;
-						murphy1ControllInterface.downChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_LEFT)
-				{
-					if (murphy1ControllInterface.left)
-					{
-						murphy1ControllInterface.left = false;
-						murphy1ControllInterface.leftChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_RIGHT)
-				{
-					if (murphy1ControllInterface.right)
-					{
-						murphy1ControllInterface.right = false;
-						murphy1ControllInterface.rightChanged = true;
-					}
-				}
-				else if (key_ == ALLEGRO_KEY_SPACE)
-				{
-					if (murphy1ControllInterface.space)
-					{
-						murphy1ControllInterface.space = false;
-						murphy1ControllInterface.spaceChanged = true;
-					}
-				}
-			}
-		}
+		keyboardController->keyUp(key_);
 		return false;
 	};
 
 	fncTimer = [&](FNC_TIMER_PARAMS)
 	{
+		loopControllerInterface.loopRoll();
+		keyboardController->loop();
 		if (startLoop == 0)
 		{
-			if (replayBot)
-			{
-				if (replayBot->pop(ACTIVE_BOT_KEY_UP_UP, loopCounter))
-				{
-					murphy1ControllInterface.upChanged = true;
-					murphy1ControllInterface.up = false;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_UP_DOWN, loopCounter))
-				{
-					murphy1ControllInterface.downChanged = true;
-					murphy1ControllInterface.down = false;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_UP_LEFT, loopCounter))
-				{
-					murphy1ControllInterface.leftChanged = true;
-					murphy1ControllInterface.left = false;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_UP_RIGHT, loopCounter))
-				{
-					murphy1ControllInterface.rightChanged = true;
-					murphy1ControllInterface.right = false;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_UP_SPACE, loopCounter))
-				{
-					murphy1ControllInterface.spaceChanged = true;
-					murphy1ControllInterface.space = false;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_UP, loopCounter))
-				{
-					murphy1ControllInterface.upChanged = true;
-					murphy1ControllInterface.up = true;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_DOWN, loopCounter))
-				{
-					murphy1ControllInterface.downChanged = true;
-					murphy1ControllInterface.down = true;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_LEFT, loopCounter))
-				{
-					murphy1ControllInterface.leftChanged = true;
-					murphy1ControllInterface.left = true;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_RIGHT, loopCounter))
-				{
-					murphy1ControllInterface.rightChanged = true;
-					murphy1ControllInterface.right = true;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_SPACE, loopCounter))
-				{
-					murphy1ControllInterface.spaceChanged = true;
-					murphy1ControllInterface.space = true;
-				}
-				if (replayBot->pop(ACTIVE_BOT_KEY_DOWN_ESCAPE, loopCounter))
-				{
-					murphy->requests.blowUp = true;
-					murphy->hitCoord = murphy->GetCoord();
-					Blasting(murphy->GetCoord());
-				}
-			}
-
-
-			if (murphy1ControllInterface.upChanged)
-			{
-				murphy1ControllInterface.upChanged = false;
-				if (murphy1ControllInterface.up)
-				{
-					recordBot->push(ACTIVE_BOT_KEY_DOWN_UP, loopCounter);
-					Object::Murphy::SetMoveUp(murphy, true);
-				}
-				else
-				{
-					recordBot->push(ACTIVE_BOT_KEY_UP_UP, loopCounter);
-					Object::Murphy::SetMoveUp(murphy, false);
-				}
-			}
-			else if (murphy1ControllInterface.downChanged)
-			{
-				murphy1ControllInterface.downChanged = false;
-				if (murphy1ControllInterface.down)
-				{
-					recordBot->push(ACTIVE_BOT_KEY_DOWN_DOWN, loopCounter);
-					Object::Murphy::SetMoveDown(murphy, true);
-				}
-				else
-				{
-					recordBot->push(ACTIVE_BOT_KEY_UP_DOWN, loopCounter);
-					Object::Murphy::SetMoveDown(murphy, false);
-				}
-			}
-			else if (murphy1ControllInterface.rightChanged)
-			{
-				murphy1ControllInterface.rightChanged = false;
-				if (murphy1ControllInterface.right)
-				{
-					recordBot->push(ACTIVE_BOT_KEY_DOWN_RIGHT, loopCounter);
-					Object::Murphy::SetMoveRight(murphy, true);
-				}
-				else
-				{
-					recordBot->push(ACTIVE_BOT_KEY_UP_RIGHT, loopCounter);
-					Object::Murphy::SetMoveRight(murphy, false);
-				}
-			}
-			else if (murphy1ControllInterface.leftChanged)
-			{
-				murphy1ControllInterface.leftChanged = false;
-				if (murphy1ControllInterface.left)
-				{
-					recordBot->push(ACTIVE_BOT_KEY_DOWN_LEFT, loopCounter);
-					Object::Murphy::SetMoveLeft(murphy, true);
-				}
-				else
-				{
-					recordBot->push(ACTIVE_BOT_KEY_UP_LEFT, loopCounter);
-					Object::Murphy::SetMoveLeft(murphy, false);
-				}
-			}
-			else if (murphy1ControllInterface.spaceChanged)
-			{
-				murphy1ControllInterface.spaceChanged = false;
-				if (murphy1ControllInterface.space)
-				{
-					recordBot->push(ACTIVE_BOT_KEY_DOWN_SPACE, loopCounter);
-					Object::Murphy::SetSpell(murphy, true);
-				}
-				else
-				{
-					recordBot->push(ACTIVE_BOT_KEY_UP_SPACE, loopCounter);
-					Object::Murphy::SetSpell(murphy, false);
-				}
-			}
-
-			if (murphy)
-			{
-				ObjectBase::Stack stack;
-				stack.o = murphy;
-				stack.specific = murphy->specific;
-				Object::Murphy::Controll(&stack);
-			}
-
 			buildObjectsHolder();
-
-			for (auto &o : objects)
+			static auto &fnc = [](ObjectBase *o)
 			{
 				if (o->isExists && o->events.timer && o->requests.timer)
 				{
 					o->RunTimer();
 				}
-			}
-			for (auto &o : remains)
-			{
-				if (o->isExists && o->events.timer && o->requests.timer)
-				{
-					o->RunTimer();
-				}
-			}
+			};
+			std::for_each(objects.begin(), objects.end(), fnc);
+			std::for_each(remains.begin(), remains.end(), fnc);
 
 			UpdateRun();
 
@@ -410,11 +96,7 @@ ActiveMap::ActiveMap()
 			{
 				if (stopLoop == 0)
 				{
-					mainEvent->mapFinished(victory, loopCounter);
-					if (!replayBot)
-					{
-						recordBot->save(KIR4::time().str("%d_%m_%Y__%H_%M_%S"));
-					}
+					stopMap();
 				}
 				else
 				{
@@ -437,21 +119,15 @@ ActiveMap::ActiveMap()
 		if (startLoop == 0)
 		{
 			buildObjectsHolder();
-
-			for (auto &o : objects)
+			static auto &fnc = [](ObjectBase *o)
 			{
 				if (o->isExists && o->events.tick && o->requests.tick)
 				{
 					o->RunTick();
 				}
-			}
-			for (auto &o : remains)
-			{
-				if (o->isExists && o->events.tick && o->requests.tick)
-				{
-					o->RunTick();
-				}
-			}
+			};
+			std::for_each(objects.begin(), objects.end(), fnc);
+			std::for_each(remains.begin(), remains.end(), fnc);
 		}
 	};
 
@@ -495,13 +171,34 @@ void ActiveMap::buildObjectsHolder()
 		++i;
 	});
 }
-void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot> &bot)
+void ActiveMap::stopMap()
 {
-	murphy1ControllInterface.init();
-	statusbar->SetMap(disp_map);
+	logger->save(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "replays", "test.log"));
 
-	recordBot = std::shared_ptr<ActiveMapBot>(new ActiveMapBot());
-	replayBot = bot;
+	keyboardController = nullptr;
+	rngController = nullptr;
+
+	logger = nullptr;
+
+	mainEvent->mapFinished(victory, loopCounter);
+}
+void ActiveMap::startMap(const BluePrint &disp_map, const std::shared_ptr<Account> &account)
+{
+	this->account = account;
+
+	loopControllerInterface.loopStart();
+
+
+	logger = std::shared_ptr<Logger>(new Logger(loopControllerInterface, disp_map.hash, account->hash));
+
+	//logger->load(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "replays", "test.log"));
+	//keyboardController = std::shared_ptr<KeyboardController>(new KeyboardLoopReplay(loopControllerInterface, *logger));
+	//rngController = std::shared_ptr<RngController>(new RngReplay(loopControllerInterface, *logger));
+
+	keyboardController = std::shared_ptr<KeyboardController>(new StandardKeyboardRecord(loopControllerInterface, *logger));
+	rngController = std::shared_ptr<RngController>(new RngRecord(loopControllerInterface, *logger));
+
+	statusbar->SetMap(disp_map);
 
 	victory = false;
 	globalGravity = disp_map.globalGravity;
@@ -537,10 +234,18 @@ void ActiveMap::startMap(const BluePrint &disp_map, std::shared_ptr<ActiveMapBot
 	Type::Coord spawn = spawns[rand() % spawns.size()];
 	ObjectCreate(reach(map)[spawn].object, ObjectID::Murphy, spawn);
 	murphy = reach(map)[spawn].object;
+	Object::Murphy::SetController(murphy, keyboardController.get());
 
 	drawer.SetMap(map);
 	drawer.InitializeDrawOptions({drawnerPanel->width(), drawnerPanel->height()}, cameraSize);
 	drawer.setGlobalGravity(globalGravity);
+
+	Type::ID rootId = 1;
+	map->foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
+	{
+		block.object->rootId = rootId++;
+		block.remain->rootId = rootId++;
+	});
 }
 
 void ActiveMap::Redrawn(Type::Coord coord)
@@ -792,17 +497,14 @@ void ActiveMap::DeleteRemain(Type::Coord coord)
 
 void ActiveMap::UpdateRun()
 {
-	enableupdateskip = true;
-	map->foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
+	std::function<void(const Type::Coord &, ActiveBlock<ObjectBase> &)> fncPre = [&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
 	{
 		if (block.object->isExists && GetObject(coord)->events.update && GetObject(coord)->requests.update && !block.object->IsMoving())
 		{
 			GetObject(coord)->Update();
 		}
-	});
-
-	enableupdateskip = false;
-	map->reverse_foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
+	};
+	std::function<void(const Type::Coord &, ActiveBlock<ObjectBase> &)> fncPost = [&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)
 	{
 		if (block.object->isExists && block.object->events.update && block.object->requests.update && !block.object->IsMoving())
 		{
@@ -812,7 +514,13 @@ void ActiveMap::UpdateRun()
 		{
 			block.remain->Update();
 		}
-	});
+	};
+
+	enableupdateskip = true;
+	map->foreach(fncPre);
+
+	enableupdateskip = false;
+	map->reverse_foreach(fncPost);
 }
 
 void ActiveMap::UpdateBlock(Type::Coord coord)
@@ -1114,23 +822,7 @@ void ActiveMap::switchGravity()
 	drawer.setGlobalGravity(globalGravity);
 }
 
-bool ActiveMap::rollTrigger(ObjectBase *obj_, float chancePerSec)
+bool ActiveMap::rollTrigger(ObjectBase *obj_, unsigned __int16 typeID, float chancePerSec)
 {
-	if (replayBot)
-	{
-		return replayBot->pop(ACTIVE_BOT_KEY_RAND_V1, loopCounter);
-	}
-	else
-	{
-		std::uniform_int_distribution<unsigned> distribution(0, (int)(CPS * 100000));
-		if (distribution(generator) <= (unsigned)(chancePerSec * 100000))
-		{
-			recordBot->push(ACTIVE_BOT_KEY_RAND_V1, loopCounter);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+	return rngController->rollTrigger(obj_->rootId, typeID, chancePerSec);
 }

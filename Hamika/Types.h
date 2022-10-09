@@ -72,7 +72,9 @@ namespace Type
 			return Up;
 		}
 	}
+
 	typedef __int16 ID;
+	constexpr ID INVALID_ID = -1;
 	typedef float Speed;
 	typedef __int8 Code;
 

@@ -91,7 +91,8 @@ struct ObjectEventsModule
 template<typename OBJECT_HANDLER>
 struct ObjectBase_
 {
-	Type::ID id = -1;
+	Type::ID rootId = Type::INVALID_ID;
+	Type::ID id = Type::INVALID_ID;
 	const char *name = nullptr;
 	bool isExists = false;
 
@@ -774,7 +775,7 @@ struct ObjectBase:
 		virtual bool IsGlobalGravity() const = 0;
 		virtual void switchGravity() = 0;
 
-		virtual bool rollTrigger(ObjectBase *obj_, float chancePerSec) = 0;
+		virtual bool rollTrigger(ObjectBase *obj_, unsigned __int16 typeID, float chancePerSec) = 0;
 	};
 	//ief easy
 	inline auto ObjectBase::Move(Type::Coord from, Type::Coord to, Type::ID remain)
