@@ -700,6 +700,8 @@ namespace Object
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			pops(Specific, s);
+			
+			stack->o->requests.timer = true;
 
 			if (ACTION_TIMER(s->disappearTimer,
 							 disappearTime,
@@ -763,7 +765,7 @@ namespace Object
 							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return stack->o->ief.rollTrigger(stack->o, triggerChance) || s->electricTimer == ACTION_TIMER_START;
+				return stack->o->ief.rollTrigger(stack->o, 1300, triggerChance) || s->electricTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{

@@ -400,15 +400,15 @@ MainEvent::MainEvent():
 		if (key_ == 's')
 		{
 			originalMapList->hide();
-			activeMap->startMap(*originalMapList->world.getBluePrints()[originalMapList->GetFocus()], std::shared_ptr<ActiveMapBot>());
+			activeMap->startMap(*originalMapList->world.getBluePrints()[originalMapList->GetFocus()], account);
 			activeMap->show();
 		}
 		if (key_ == 'r')
 		{
 			originalMapList->hide();
-			std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
-			replayBot->load(replayTextBox->getText());
-			activeMap->startMap(*originalMapList->world.getBluePrints()[originalMapList->GetFocus()], replayBot);
+			//std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
+			//replayBot->load(replayTextBox->getText());
+			activeMap->startMap(*originalMapList->world.getBluePrints()[originalMapList->GetFocus()], account);
 			activeMap->show();
 		}
 		return false;

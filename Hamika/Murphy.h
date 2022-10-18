@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "KeyboardController.h"
 
 namespace Object
 {
@@ -18,13 +19,6 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-
-		void Controll(ObjectBase::Stack *stack);
-
-		void SetSpell(ObjectBase *o, bool Spell);
-		void SetMoveUp(ObjectBase *o, bool MoveUp);
-		void SetMoveDown(ObjectBase *o, bool MoveDown);
-		void SetMoveLeft(ObjectBase *o, bool MoveLeft);
-		void SetMoveRight(ObjectBase *o, bool MoveRight);
+		void SetController(ObjectBase *o, KeyboardController *controller);
 	}
 }
