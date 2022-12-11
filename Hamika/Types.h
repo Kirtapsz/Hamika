@@ -82,6 +82,7 @@ namespace Type
 	struct _Dim
 	{
 		typedef typename T Type;
+		typedef typename T base;
 		Type width;
 		Type height;
 		inline bool operator==(const _Dim &size) const
@@ -107,6 +108,7 @@ namespace Type
 	struct _Pos
 	{
 		typedef typename T Type;
+		typedef typename T base;
 		Type x;
 		Type y;
 		inline bool operator==(const _Pos &pos) const

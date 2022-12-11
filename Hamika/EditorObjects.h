@@ -2,18 +2,16 @@
 
 #include "Object.h"
 
-namespace Object
+namespace Object::Editor
 {
-	//Editor object
-	namespace EditorObject
+	namespace Object
 	{
 		extern const char *name;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Drawner(EditorObjectBase::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h);
 	}
-	//Editor remain
-	namespace EditorRemain
+	namespace Remain
 	{
 		extern const char *name;
 

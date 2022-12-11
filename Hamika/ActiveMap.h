@@ -12,17 +12,17 @@
 #include <memory>
 #include <limits>
 
+#include "Account.h"
 #include "StatusBar.h"
 #include "MapDrawer.h"
 #include "Object.h"
 #include "ActiveBlock.h"
 #include "KeyboardController.h"
 #include "RngController.h"
-#include "Account.h"
 
 class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 {
-	private: std::shared_ptr<Account> account;
+	private: std::shared_ptr<Res::Account> account;
 
 	private: LoopControllerInterface loopControllerInterface;
 	private: std::shared_ptr<Logger> logger;
@@ -30,14 +30,14 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	private: std::shared_ptr<KeyboardController> keyboardController;
 	private: std::shared_ptr<RngController> rngController;
 
-	private: std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>> map = std::shared_ptr<Array2D<ActiveBlock<ObjectBase>>>(new Array2D<ActiveBlock<ObjectBase>>());
+	private: std::shared_ptr<Matrix<ActiveBlock<ObjectBase>>> map = std::shared_ptr<Matrix<ActiveBlock<ObjectBase>>>(new Matrix<ActiveBlock<ObjectBase>>());
 	private: std::vector<ObjectBase *> objects;
 	private: std::vector<ObjectBase *> remains;
 	private: void buildObjectsHolder();
 
 	private: MapDrawer<ActiveBlock<ObjectBase>> drawer;
-	private: KIR5::EVENT<StatusBar> statusbar;
-	private: KIR5::EVENT<KIR5::Panel> drawnerPanel;
+	private: KIR5::Shared<StatusBar> statusbar;
+	private: KIR5::Shared<KIR5::Panel> drawnerPanel;
 
 	private: ObjectBase *murphy = nullptr;
 	private: ObjectBase bedrock = ObjectBase(*this);
@@ -62,7 +62,7 @@ class ActiveMap:public KIR5::Panel, public ObjectBase::Interface
 	public: void CopyObjectToRemain(Type::Coord coordDst, Type::Coord coordSrc);
 	public: void CopyRemainToObject(Type::Coord coordDst, Type::Coord coordSrc);
 
-	public: void startMap(const BluePrint &disp_map, const std::shared_ptr<Account> &account);
+	public: void startMap(const Res::BluePrint &disp_map, const std::shared_ptr<Res::Account> &account);
 	private: void stopMap();
 	public: virtual void Redrawn(Type::Coord coord);
 

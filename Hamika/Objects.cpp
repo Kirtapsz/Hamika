@@ -73,8 +73,8 @@ namespace Objects
 	void RunInitializer()
 	{
 		ObjectBase::Initialize();
-		EditorObject::Initializer();
-		EditorRemain::Initializer();
+		Editor::Object::Initializer();
+		Editor::Remain::Initializer();
 		for (int i = 0; i < sizeof(objects) / sizeof(Container); i++)
 			if (objects[i].initializerFnc)
 				objects[i].initializerFnc();
@@ -98,7 +98,7 @@ void DrawObject(int id, int x, int y, int w, int h)
 	}
 	else
 	{
-		ObjectBase::unknownBmp.drawScaled(x, y, w, h);
+		static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(x, y, w, h);
 	}
 }
 
@@ -149,7 +149,7 @@ void ObjectCreate(EditorObjectBase *object, Type::ID id, Type::Coord coord, Edit
 	if (id >= 0 && id < sizeof(Objects::objects) / sizeof(Objects::Container))
 	{
 		object->name = Objects::objects[id].name;
-		object->drawnerFnc = EditorObject::Drawner;
+		object->drawnerFnc = Object::Editor::Object::Drawner;
 	}
 	else
 	{

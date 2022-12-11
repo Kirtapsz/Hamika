@@ -5,7 +5,7 @@
 #include <KIR\AL\KIR5_bitmap.h>
 
 #include "Types.h"
-#include "Array2D.h"
+#include "Matrix.h"
 #include "ActiveBlock.h"
 #include "Object.h"
 #include "BaseFunctions.h"
@@ -19,10 +19,10 @@ class MapDrawer
 {
 	public: void PrintBlock(Type::Coord coord);
 
-	private: std::shared_ptr<Array2D<ACTIVE_BLOCK_T>> map;
+	private: std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> map;
 
-	private: static StackTimer gravityAnimator;
-	private: static Slides gravitySlides;
+	private: static Object::Animator::Specific gravityAnimator;
+	private: static Res::Slides gravitySlides;
 
 	private: unsigned long long TotalPointDrawCount;
 	private: unsigned long long TotalObjectDrawCount;
@@ -93,7 +93,7 @@ class MapDrawer
 	public: MapDrawer();
 	public: void DrawBlocks(int x, int y);
 
-	public: void SetMap(std::shared_ptr<Array2D<ACTIVE_BLOCK_T>> &map);
+	public: void SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map);
 	public: void Redrawn(Type::Coord coord);
 };
 

@@ -5,7 +5,7 @@
 #include "EditorMainEvent.h"
 #include <KIR/AL/KIR5_panel_control.h>
 
-namespace Editor
+namespace UI::Editor
 {
 	const std::string ControlPanel::GLOBAL_GRAVITY_ON = "Global gravity is ON";
 	const std::string ControlPanel::GLOBAL_GRAVITY_OFF = "Global gravity is OFF";
@@ -13,46 +13,20 @@ namespace Editor
 
 	ControlPanel::BlockIDPanel::BlockIDPanel()
 	{
-		this->fncDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
 		{
 			DrawObject(id, x_, y_, w_, h_);
 			if (counter >= 0)
 			{
-				Font::TimesNewRoman[12].draw(x_ + 1, y_ + 1, std::to_string(counter), KIR5::Color(0, 0, 0));
-				Font::TimesNewRoman[12].draw(x_, y_, std::to_string(counter), KIR5::Color(255, 255, 255));
+				KIR5::Font font = Res::TimesNewRoman[12];
+				font.draw(x_ + 1, y_ + 1, std::to_string(counter), KIR5::Color(0, 0, 0));
+				font.draw(x_, y_, std::to_string(counter), KIR5::Color(255, 255, 255));
 			}
-		};
+		}));
 	}
 	ControlPanel::ControlPanel()
 	{
-		arrowTilted[0].load("Hamika\\texture\\editor\\ArrowTilted.png");
-		arrowTilted[1] = arrowTilted[0];
-		arrowTilted[1].flipHorizontal();
-		arrowTilted[2] = arrowTilted[1];
-		arrowTilted[2].flipVertical();
-		arrowTilted[3] = arrowTilted[0];
-		arrowTilted[3].flipVertical();
-
-		arrowNarrow[0].load("Hamika\\texture\\editor\\ArrowUp.png");
-		arrowNarrow[1] = arrowNarrow[0];
-		arrowNarrow[1].rotate(ALLEGRO_PI / 2.f);
-		arrowNarrow[2] = arrowNarrow[0];
-		arrowNarrow[2].flipVertical();
-		arrowNarrow[3] = arrowNarrow[1];
-		arrowNarrow[3].flipHorizontal();
-
-		stick[0].load("Hamika\\texture\\editor\\StickUp.png");
-		stick[1] = stick[0];
-		stick[1].rotate(ALLEGRO_PI / 2.f);
-		stick[2] = stick[0];
-		stick[2].flipVertical();
-		stick[3] = stick[1];
-		stick[3].flipHorizontal();
-
-		ball.load("Hamika\\texture\\editor\\Ball.png");
-		execute.load("Hamika\\texture\\editor\\Execute.png");
-
-		KIR5::EVENT<KIR5::Column<>> container;
+		KIR5::Shared<KIR5::Column<>> container;
 		container->show();
 		container->setGap(5);
 		// UI ============= ROW 1
@@ -77,10 +51,10 @@ namespace Editor
 
 			saveBluePrint_Button->setText("save");
 			saveBluePrint_Button->width(saveBluePrint_Button->getTextWidth() + 10);
-			saveBluePrint_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			saveBluePrint_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				bluePrint->blocks.resize(reach(map));
-				bluePrint->blocks.foreach([&](Type::Coord coord, BluePrint::Block &block)
+				bluePrint->blocks.foreach([&](Type::Coord coord, Res::BluePrint::Block &block)
 				{
 					block.id = reach(map)[coord].object->id;
 					block.flags = reach(map)[coord].grid;
@@ -91,7 +65,7 @@ namespace Editor
 				bluePrint->globalGravity = globalGravityOnOffButton->getText() == GLOBAL_GRAVITY_ON;
 
 				float w = -1, h = -1;
-				if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%f*%f", &w, &h) == 2)
+				if (sscanf_s(sizeOfCamera_TextBox->getText().c_str(), "%f*%f", &w, &h) == 2)
 				{
 					bluePrint->cameraSize = {w,h};
 				}
@@ -103,9 +77,9 @@ namespace Editor
 				}
 
 				eventEngine->sendEvent((void *)REFRESH_ITEM, (void *)(bluePrint.get()), (void *)0, (void *)0);
-			};
+			});
 
-			KIR5::EVENT<KIR5::Row<>> row;
+			KIR5::Shared<KIR5::Row<>> row;
 			row->show();
 			row->setGap(20);
 			row->pushBack(titleOfBluePrint_Label);
@@ -119,7 +93,7 @@ namespace Editor
 		}
 		// UI ============= ROW 2
 		{
-			KIR5::EVENT<KIR5::Row<>> containerLine;
+			KIR5::Shared<KIR5::Row<>> containerLine;
 			containerLine->show();
 			containerLine->setGap(20);
 			// ---------------- COL 1
@@ -129,8 +103,8 @@ namespace Editor
 
 				for (size_t i = 0; i < rotation_Navigation_Buttons.size(); ++i)
 				{
-					rotation_Navigation_Buttons[i]->setBitmap(stick[i]);
-					rotation_Navigation_Buttons[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+					rotation_Navigation_Buttons[i]->setBitmap(Res::uielements[Res::UIElements::Stick[i]]);
+					rotation_Navigation_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 					{
 						for (auto &it : rotation_Navigation_Buttons)
 						{
@@ -140,12 +114,13 @@ namespace Editor
 
 						dynamic_cast<ResizeButtonClass *>(obj_)->setColor(KIR5::Color(200, 60, 30));
 						dynamic_cast<ResizeButtonClass *>(obj_)->isSelected = true;
-					};
+					});
 				}
-				rotation_Navigation_Buttons[0]->fncPress(rotation_Navigation_Buttons[0].get(), 0, 0);
 
-				rotation_Apply_Button->setBitmap(execute);
-				rotation_Apply_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				KIR5::Event::EventCallback(rotation_Navigation_Buttons[0]->fncPress, rotation_Navigation_Buttons[0].get(), 0, 0);
+
+				rotation_Apply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
+				rotation_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					Type::Rotation r =
 						rotation_Navigation_Buttons[0]->isSelected ? Type::Rotations::Up :
@@ -170,14 +145,14 @@ namespace Editor
 						reach(map)[mainEvent->activeMap->getTarget()].Redrawn = true;
 					}
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
-				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				KIR5::Shared<KIR5::Column<UIwindow<UI_M>>> localContent;
 				localContent->show();
 				localContent->setGap(UI_M::gap);
 				localContent->pushBack(rotation_Label);
 
-				KIR5::EVENT<KIR5::Row<>> rows[3];
+				KIR5::Shared<KIR5::Row<>> rows[3];
 				for (auto &row : rows)
 				{
 					row->show();
@@ -185,17 +160,17 @@ namespace Editor
 					localContent->pushBack(row);
 				}
 
-				rows[0]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+				rows[0]->pushBack(KIR5::Shared<UIpanel<UI_M>>());
 				rows[0]->pushBack(rotation_Navigation_Buttons[0]);
-				rows[0]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+				rows[0]->pushBack(KIR5::Shared<UIpanel<UI_M>>());
 
 				rows[1]->pushBack(rotation_Navigation_Buttons[3]);
 				rows[1]->pushBack(rotation_Apply_Button);
 				rows[1]->pushBack(rotation_Navigation_Buttons[1]);
 
-				rows[2]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+				rows[2]->pushBack(KIR5::Shared<UIpanel<UI_M>>());
 				rows[2]->pushBack(rotation_Navigation_Buttons[2]);
-				rows[2]->pushBack(KIR5::EVENT<UIpanel<UI_M>>());
+				rows[2]->pushBack(KIR5::Shared<UIpanel<UI_M>>());
 
 				containerLine->pushBack(localContent);
 			}
@@ -207,13 +182,13 @@ namespace Editor
 				bluePrintResize_Size_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
 				bluePrintResize_Size_TextBox->setTextAlignment(KIR5::CENTER);
 
-				bluePrintResize_Apply_Button->setBitmap(execute);
-				bluePrintResize_Apply_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Apply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
+				bluePrintResize_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					int w, h;
 					if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%d*%d", &w, &h) == 2 && w >= 2 && h >= 2)
 					{
-						Array2D<ActiveBlock<EditorObjectBase>> tmpMap(std::move(*(map.get())));
+						Matrix<ActiveBlock<EditorObjectBase>> tmpMap(std::move(*(map.get())));
 						map->resize({w,h});
 
 						int xShift = 0;
@@ -278,9 +253,9 @@ namespace Editor
 					{
 						bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
 					}
-				};
+				});
 
-				bluePrintResize_Navigation_Buttons[0][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[0][0]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -292,18 +267,18 @@ namespace Editor
 
 					bluePrintResize_Navigation_Buttons[0][0]->isSelected = true;
 
-					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(ball);
-					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(Res::uielements[Res::UIElements::ArrowRight]);
 					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowNarrow[2]);
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[2]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownRight]);
 					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
-				};
+				});
 
-				bluePrintResize_Navigation_Buttons[1][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[1][0]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -315,18 +290,18 @@ namespace Editor
 
 					bluePrintResize_Navigation_Buttons[1][0]->isSelected = true;
 
-					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(arrowNarrow[3]);
-					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(ball);
-					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(arrowNarrow[1]);
-					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowTilted[3]);
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[2]);
-					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowTilted[2]);
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(Res::uielements[Res::UIElements::ArrowLeft]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(Res::uielements[Res::UIElements::Ball]);;
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(Res::uielements[Res::UIElements::ArrowRight]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownLeft]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownRight]);
 					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
-				};
+				});
 
-				bluePrintResize_Navigation_Buttons[2][0]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[2][0]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -339,17 +314,17 @@ namespace Editor
 					bluePrintResize_Navigation_Buttons[2][0]->isSelected = true;
 
 					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowNarrow[3]);
-					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(Res::uielements[Res::UIElements::ArrowLeft]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(Res::uielements[Res::UIElements::Ball]);
 					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[3]);
-					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowNarrow[2]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownLeft]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
 					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
-				};
+				});
 
-				bluePrintResize_Navigation_Buttons[0][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[0][1]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -361,18 +336,18 @@ namespace Editor
 
 					bluePrintResize_Navigation_Buttons[0][1]->isSelected = true;
 
-					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(arrowNarrow[0]);
-					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowTilted[1]);
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpRight]);
 					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(ball);
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowRight]);
 					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(arrowNarrow[2]);
-					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowTilted[2]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownRight]);
 					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
-				};
+				});
 
-				bluePrintResize_Navigation_Buttons[1][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[1][1]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -384,18 +359,18 @@ namespace Editor
 
 					bluePrintResize_Navigation_Buttons[1][1]->isSelected = true;
 
-					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(arrowTilted[0]);
-					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowNarrow[0]);
-					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(arrowTilted[1]);
-					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowNarrow[3]);
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(ball);
-					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowNarrow[1]);
-					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(arrowTilted[3]);
-					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowNarrow[2]);
-					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(arrowTilted[2]);
-				};
+					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpLeft]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpRight]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(Res::uielements[Res::UIElements::ArrowLeft]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(Res::uielements[Res::UIElements::ArrowRight]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownLeft]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownRight]);
+				});
 
-				bluePrintResize_Navigation_Buttons[2][1]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[2][1]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -408,17 +383,17 @@ namespace Editor
 					bluePrintResize_Navigation_Buttons[2][1]->isSelected = true;
 
 					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(arrowTilted[0]);
-					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpLeft]);
+					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
 					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[3]);
-					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(ball);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowLeft]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(Res::uielements[Res::UIElements::Ball]);
 					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowTilted[3]);
-					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(arrowNarrow[2]);
-				};
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedDownLeft]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
+				});
 
-				bluePrintResize_Navigation_Buttons[0][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[0][2]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -433,15 +408,15 @@ namespace Editor
 					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowNarrow[0]);
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[1]);
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpRight]);
 					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(ball);
-					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowNarrow[1]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(Res::uielements[Res::UIElements::ArrowRight]);
 					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(KIR5::Bitmap());
-				};
+				});
 
-				bluePrintResize_Navigation_Buttons[1][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[1][2]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -456,15 +431,15 @@ namespace Editor
 					bluePrintResize_Navigation_Buttons[0][0]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(arrowTilted[0]);
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowNarrow[0]);
-					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowTilted[1]);
-					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(arrowNarrow[3]);
-					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(ball);
-					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(arrowNarrow[1]);
-				};
+					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpLeft]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpRight]);
+					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(Res::uielements[Res::UIElements::ArrowLeft]);
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(Res::uielements[Res::UIElements::ArrowRight]);
+				});
 
-				bluePrintResize_Navigation_Buttons[2][2]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				bluePrintResize_Navigation_Buttons[2][2]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					for (int x = 0; x < 3; ++x)
 					{
@@ -480,23 +455,23 @@ namespace Editor
 					bluePrintResize_Navigation_Buttons[1][0]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[2][0]->setBitmap(KIR5::Bitmap());
 					bluePrintResize_Navigation_Buttons[0][1]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(arrowTilted[0]);
-					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(arrowNarrow[0]);
+					bluePrintResize_Navigation_Buttons[1][1]->setBitmap(Res::uielements[Res::UIElements::ArrowTiltedUpLeft]);
+					bluePrintResize_Navigation_Buttons[2][1]->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
 					bluePrintResize_Navigation_Buttons[0][2]->setBitmap(KIR5::Bitmap());
-					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(arrowNarrow[3]);
-					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(ball);
-				};
+					bluePrintResize_Navigation_Buttons[1][2]->setBitmap(Res::uielements[Res::UIElements::ArrowLeft]);
+					bluePrintResize_Navigation_Buttons[2][2]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+				});
 
-				bluePrintResize_Navigation_Buttons[1][1]->fncPress(bluePrintResize_Navigation_Buttons[1][1].get(), 0, 0);
+				KIR5::Event::EventCallback(bluePrintResize_Navigation_Buttons[1][1]->fncPress, bluePrintResize_Navigation_Buttons[1][1].get(), 0, 0);
 
 
-				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				KIR5::Shared<KIR5::Column<UIwindow<UI_M>>> localContent;
 				localContent->show();
 				localContent->setGap(UI_M::gap);
 
 				localContent->pushBack(bluePrintResize_Label);
 
-				KIR5::EVENT<KIR5::Row<>> row;
+				KIR5::Shared<KIR5::Row<>> row;
 				row->show();
 				row->setGap(UI_M::gap);
 				row->pushBack(bluePrintResize_Size_TextBox);
@@ -506,7 +481,7 @@ namespace Editor
 
 				for (size_t y = 0; y < bluePrintResize_Navigation_Buttons.size(); ++y)
 				{
-					KIR5::EVENT<KIR5::Row<>> row;
+					KIR5::Shared<KIR5::Row<>> row;
 					row->show();
 					row->setGap(UI_M::gap);
 					for (size_t x = 0; x < bluePrintResize_Navigation_Buttons[y].size(); ++x)
@@ -523,7 +498,7 @@ namespace Editor
 				object_Label->setText("Object");
 				object_Label->width(object_Label->getTextWidth() + 10);
 
-				object_Panel->fncMouseButtonDown = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+				object_Panel->fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
 				{
 					if (object_Panel->onPanel(x_, y_))
 					{
@@ -557,24 +532,22 @@ namespace Editor
 						}
 					}
 					return false;
-				};
+				});
 
 				object_ID_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
 				object_ID_TextBox->setText(std::to_string(object_Panel->id));
 				object_ID_TextBox->setTextAlignment(KIR5::CENTER);
-				objectIDTextBoxGetFocus.lock(object_ID_TextBox->fncGetFocus);
-				objectIDTextBoxGetFocus.set([&](FNC_GET_FOCUS_PARAMS)->FNC_GET_FOCUS_RET
+				object_ID_TextBox->fncGetFocus.push_back([&](FNC_GET_FOCUS_PARAMS)->FNC_GET_FOCUS_RET
 				{
 					object_ID_TextBox->setText("");
 				});
 
-				objectIDTextBoxLossFocus.lock(object_ID_TextBox->fncLossFocus);
-				objectIDTextBoxLossFocus.set([&](FNC_LOSS_FOCUS_PARAMS)->FNC_LOSS_FOCUS_RET
+				object_ID_TextBox->fncLossFocus.push_back([&](FNC_LOSS_FOCUS_PARAMS)->FNC_LOSS_FOCUS_RET
 				{
 					object_ID_TextBox->setText(std::to_string(object_Panel->id));
 				});
 
-				object_ID_TextBox->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+				object_ID_TextBox->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 				{
 					if (object_ID_TextBox->isActiveBox())
 					{
@@ -586,10 +559,10 @@ namespace Editor
 						}
 					}
 					return false;
-				};
+				});
 
-				object_Apply_Button->setBitmap(execute);
-				object_Apply_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_Apply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
+				object_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (mainEvent->activeMap->isOperationModeAll())
 					{
@@ -623,11 +596,11 @@ namespace Editor
 						prevBlockPickers[i]->id = prevBlockPickers[i - 1]->id;
 					}
 					prevBlockPickers[0]->id = object_Panel->id;
-				};
+				});
 
 				object_RandomFill_Button->setText("Random fill");
 				object_RandomFill_Button->width(object_RandomFill_Button->getTextWidth() + 10);
-				object_RandomFill_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_RandomFill_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					float chancef = std::atof(object_Rate_TextBox->getText().c_str());
 					int chance = (int)(chancef * 10);
@@ -640,7 +613,7 @@ namespace Editor
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				object_Rate_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
 				object_Rate_TextBox->setText("100.0");
@@ -651,7 +624,7 @@ namespace Editor
 
 				object_FillFrame_Button->setText("Fill frame");
 				object_FillFrame_Button->width(120);
-				object_FillFrame_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_FillFrame_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
@@ -662,11 +635,11 @@ namespace Editor
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				object_FillContent_Button->setText("Fill content");
 				object_FillContent_Button->width(120);
-				object_FillContent_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_FillContent_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
@@ -677,11 +650,11 @@ namespace Editor
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				object_selectAllOfThisType_Button->setText("Select all");
 				object_selectAllOfThisType_Button->width(120);
-				object_selectAllOfThisType_Button->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				object_selectAllOfThisType_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
@@ -703,17 +676,17 @@ namespace Editor
 						}
 					});
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 
-				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				KIR5::Shared<KIR5::Column<UIwindow<UI_M>>> localContent;
 				localContent->show();
 				localContent->setGap(UI_M::gap);
 
 				localContent->pushBack(object_Label);
 
 				{
-					KIR5::EVENT<KIR5::Row<>> row;
+					KIR5::Shared<KIR5::Row<>> row;
 					row->show();
 					row->setGap(UI_M::gap);
 					row->pushBack(object_Panel);
@@ -723,7 +696,7 @@ namespace Editor
 				}
 
 				{
-					KIR5::EVENT<KIR5::Row<>> row;
+					KIR5::Shared<KIR5::Row<>> row;
 					row->show();
 					row->setGap(UI_M::gap);
 					row->pushBack(object_RandomFill_Button);
@@ -753,7 +726,7 @@ namespace Editor
 				infotron_Label->width(infotron_Label->getTextWidth() + 10);
 
 				infotron_ToCollect_TextBox->width(UI_M::dimension * 2 + UI_M::gap);
-				infotron_ToCollect_TextBox->setTextFont(Font::TimesNewRoman[24]);
+				infotron_ToCollect_TextBox->setTextFont(Res::TimesNewRoman[24]);
 				infotron_ToCollect_TextBox->setTextColor(KIR5::Color(152, 152, 152));
 				infotron_ToCollect_TextBox->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER);
 
@@ -768,23 +741,23 @@ namespace Editor
 					{
 						infotron_Pickers_Buttons[i]->id = infotrons[i].id;
 						infotron_Pickers_Buttons[i]->multiplier = infotrons[i].multiplier;
-						infotron_Pickers_Buttons[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+						infotron_Pickers_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 						{
 							object_Panel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
 							object_ID_TextBox->setText(std::to_string(object_Panel->id));
-						};
+						});
 					}
 				}
 
 
-				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				KIR5::Shared<KIR5::Column<UIwindow<UI_M>>> localContent;
 				localContent->show();
 				localContent->setGap(UI_M::gap);
 
 				localContent->pushBack(infotron_Label);
 
 				{
-					KIR5::EVENT<KIR5::Row<>> row;
+					KIR5::Shared<KIR5::Row<>> row;
 					row->show();
 					row->setGap(UI_M::gap);
 					row->pushBack(infotron_ToCollect_TextBox);
@@ -793,7 +766,7 @@ namespace Editor
 				}
 
 				{
-					KIR5::EVENT<KIR5::Row<>> row;
+					KIR5::Shared<KIR5::Row<>> row;
 					row->show();
 					row->setGap(UI_M::gap);
 					for (auto &it : infotron_Pickers_Buttons)
@@ -809,7 +782,7 @@ namespace Editor
 			{
 				selectAllButton->setText("Select all");
 				selectAllButton->width(selectAllButton->getTextWidth());
-				selectAllButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				selectAllButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					bool isNonSelected = false;
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
@@ -842,11 +815,11 @@ namespace Editor
 							}
 						});
 					}
-				};
+				});
 
 				gravityTurnOnOffButton->setText("Set gravity");
 				gravityTurnOnOffButton->width(gravityTurnOnOffButton->getTextWidth());
-				gravityTurnOnOffButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				gravityTurnOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (!mainEvent->activeMap->isOperationModeAll())
 					{
@@ -904,11 +877,11 @@ namespace Editor
 						}
 					}
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				initExplodeButton->setText("Set init explode");
 				initExplodeButton->width(initExplodeButton->getTextWidth());
-				initExplodeButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				initExplodeButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (!mainEvent->activeMap->isOperationModeAll())
 					{
@@ -966,11 +939,11 @@ namespace Editor
 						}
 					}
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				selectFriendlyButton->setText("Select neighbors");
 				selectFriendlyButton->width(selectFriendlyButton->getTextWidth());
-				selectFriendlyButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				selectFriendlyButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 					{
@@ -1014,7 +987,7 @@ namespace Editor
 					while (isNewSelected);
 
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				static constexpr Type::ID ramIDs[] = {
 					ObjectID::RAMChipsMini,
@@ -1039,7 +1012,7 @@ namespace Editor
 
 				ramRepairButton->setText("Repair RAMs");
 				ramRepairButton->width(ramRepairButton->getTextWidth());
-				ramRepairButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				ramRepairButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (mainEvent->activeMap->isOperationModeAll())
 					{
@@ -1155,11 +1128,11 @@ namespace Editor
 						});
 					}
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				randomizeRamsButton->setText("Randomize RAMs");
 				randomizeRamsButton->width(randomizeRamsButton->getTextWidth());
-				randomizeRamsButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				randomizeRamsButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (mainEvent->activeMap->isOperationModeAll())
 					{
@@ -1184,11 +1157,11 @@ namespace Editor
 						});
 					}
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				spawnPointButton->setText("Set SPAWN");
 				spawnPointButton->width(spawnPointButton->getTextWidth());
-				spawnPointButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				spawnPointButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (!mainEvent->activeMap->isOperationModeAll())
 					{
@@ -1246,11 +1219,11 @@ namespace Editor
 						}
 					}
 					mainEvent->activeMap->blocksUpdated();
-				};
+				});
 
 				globalGravityOnOffButton->setText(GLOBAL_GRAVITY_OFF);
 				globalGravityOnOffButton->width(globalGravityOnOffButton->getTextWidth());
-				globalGravityOnOffButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				globalGravityOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					if (globalGravityOnOffButton->getText() == GLOBAL_GRAVITY_OFF)
 					{
@@ -1260,9 +1233,9 @@ namespace Editor
 					{
 						globalGravityOnOffButton->setText(GLOBAL_GRAVITY_OFF);
 					}
-				};
+				});
 
-				KIR5::EVENT<KIR5::Column<UIwindow<UI_M>>> localContent;
+				KIR5::Shared<KIR5::Column<UIwindow<UI_M>>> localContent;
 				localContent->show();
 				localContent->setGap(UI_S::gap);
 				localContent->addFlag(KIR5::Column<UIwindow<UI_M>>::ConsistentWidth);
@@ -1286,15 +1259,15 @@ namespace Editor
 			for (size_t i = 0; i < prevBlockPickers.size(); ++i)
 			{
 				prevBlockPickers[i]->id = (Type::ID)i;
-				prevBlockPickers[i]->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				prevBlockPickers[i]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 				{
 					object_Panel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
 					object_ID_TextBox->setText(std::to_string(object_Panel->id));
-				};
+				});
 			}
 
 
-			KIR5::EVENT<KIR5::Row<UIwindow<UI_M>>> localContent;
+			KIR5::Shared<KIR5::Row<UIwindow<UI_M>>> localContent;
 			localContent->show();
 			localContent->setGap(UI_S::gap);
 
@@ -1309,7 +1282,7 @@ namespace Editor
 		// UI =============
 
 
-		this->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		this->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 		{
 			if (
 				eventEngine->getTergetPanel().get() == this ||
@@ -1318,12 +1291,12 @@ namespace Editor
 			{
 				if (key_ == ALLEGRO_KEY_ENTER)
 				{
-					object_Apply_Button->fncPress(object_Apply_Button.get(), 0, 0);
+					KIR5::Event::EventCallback(object_Apply_Button->fncPress, object_Apply_Button.get(), 0, 0);
 					return true;
 				}
 			}
 			return false;
-		};
+		});
 
 		*this << container;
 	}
@@ -1388,7 +1361,7 @@ namespace Editor
 
 	}
 
-	void ControlPanel::SetMap(std::shared_ptr<BluePrint> &bluePrint_, std::shared_ptr<Array2D<ActiveBlock<EditorObjectBase>>> &map)
+	void ControlPanel::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint_, std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map)
 	{
 		bluePrint = bluePrint_;
 		this->map = map;

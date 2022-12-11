@@ -1,22 +1,22 @@
 #pragma once
 
-#include <KIR\AL\KIR5_font.h>
-#include <map>
+#include "Resource.h"
 
-namespace Font
+#include <KIR/AL/KIR5_font.h>
+
+namespace Res
 {
-	class FontContainer
+	class Font: public DynamicSkeleton<std::size_t, KIR5::Font>
 	{
-		private: std::map<int, KIR5::Font> fonts;
-		private: const std::string fontPath;
+		public: using DynamicSkeleton<std::size_t, KIR5::Font>::DynamicSkeleton;
+		public: using DynamicSkeleton<std::size_t, KIR5::Font>::operator[];
 
-		public: FontContainer(const char *fontPath);
-
-		public: const KIR5::Font &operator[](int size);
+		private: virtual KIR5::Font get(std::size_t &key) const;
+		private: virtual void vadlidate(std::size_t &key) const;
 	};
 
-	extern FontContainer MajorSnafu;
-	extern FontContainer CalibriBold;
-	extern FontContainer TimesNewRoman;
-	extern FontContainer Consolas;
+	extern Font MajorSnafu;
+	extern Font CalibriBold;
+	extern Font TimesNewRoman;
+	extern Font Consolas;
 }

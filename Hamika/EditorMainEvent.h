@@ -13,10 +13,9 @@
 #include "EditorSaveWorldDialog.h"
 #include "UItools.h"
 
-
-namespace Editor
+namespace UI::Editor
 {
-	class MainEvent:public KIR5::Display
+	class MainEvent
 	{
 		friend class ActiveMap;
 		friend class Worldi;
@@ -27,16 +26,18 @@ namespace Editor
 		friend class MapSavePanel;
 		friend class SaveWorldDialog;
 
-		private: KIR5::EVENT<KIR5::Column<>> columnControl;
-		private: KIR5::EVENT<KIR5::Row<>> rowsControl[3];
+		private: std::shared_ptr<KIR5::Panel> parent;
 
-		private: KIR5::EVENT<ActiveMap> activeMap;
-		private: KIR5::EVENT<Worldi> worldi;
-		private: KIR5::EVENT<MiniMap> miniMap;
-		private: KIR5::EVENT<ControlPanel> controlPanel;
-		private: KIR5::EVENT<SaveWorldDialog> saveWorldDialog;
+		private: KIR5::Shared<KIR5::Column<>> columnControl;
+		private: KIR5::Shared<KIR5::Row<>> rowsControl[3];
 
-		public: MainEvent();
+		private: KIR5::Shared<ActiveMap> activeMap;
+		private: KIR5::Shared<Worldi> worldi;
+		private: KIR5::Shared<MiniMap> miniMap;
+		private: KIR5::Shared<ControlPanel> controlPanel;
+		private: KIR5::Shared<SaveWorldDialog> saveWorldDialog;
+
+		public: MainEvent(std::shared_ptr<KIR5::Panel> parent);
 		public: ~MainEvent();
 	};
 

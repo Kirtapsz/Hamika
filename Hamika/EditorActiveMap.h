@@ -16,7 +16,7 @@
 #include "EditorActiveBlock.h"
 
 
-namespace Editor
+namespace UI::Editor
 {
 	class ActiveMap:public KIR5::Panel, public EditorObjectBase::Interface
 	{
@@ -35,14 +35,14 @@ namespace Editor
 		private: bool mouseMoveHold;
 		private: bool mouseAxe;
 
-		private: std::shared_ptr<Array2D<ActiveBlock<EditorObjectBase>>> map = std::shared_ptr<Array2D<ActiveBlock<EditorObjectBase>>>(new Array2D<ActiveBlock<EditorObjectBase>>());
+		private: std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> map = std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>>(new Matrix<ActiveBlock<EditorObjectBase>>());
 		private: MapDrawer<ActiveBlock<EditorObjectBase>> drawer;
 
 		public: ActiveMap();
 		public: ~ActiveMap();
 
 		public: void setTarget(Type::Move camera);
-		public: void SetMap(std::shared_ptr<BluePrint> &bluePrint);
+		public: void SetMap(std::shared_ptr<Res::BluePrint> &bluePrint);
 		public: void mapLayoutUpdated();
 		public: void blocksUpdated();
 

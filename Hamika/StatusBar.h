@@ -14,12 +14,12 @@ class StatusBar:public KIR5::Panel
 		public: Label();
 	};
 
-	private: KIR5::EVENT<Label> aimLabel;
-	private: KIR5::EVENT<Label> unitesLabel;
-	private: KIR5::EVENT<Label> HHLabel;
-	private: KIR5::EVENT<Label> MMLabel;
-	private: KIR5::EVENT<Label> SSLabel;
-	private: KIR5::EVENT<Label> mapNameLabel;
+	private: KIR5::Shared<Label> aimLabel;
+	private: KIR5::Shared<Label> unitesLabel;
+	private: KIR5::Shared<Label> HHLabel;
+	private: KIR5::Shared<Label> MMLabel;
+	private: KIR5::Shared<Label> SSLabel;
+	private: KIR5::Shared<Label> mapNameLabel;
 	private: int HH;
 	private: int MM;
 	private: int SS;
@@ -34,7 +34,7 @@ class StatusBar:public KIR5::Panel
 
 	public: StatusBar();
 
-	public: void SetMap(const BluePrint &disp_map);
+	public: void SetMap(const Res::BluePrint &disp_map);
 	public: int GetAimRemaining() const;
 	public: int GetUnityCount() const;
 	public: void AddUnity(int collect);

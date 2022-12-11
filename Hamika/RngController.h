@@ -41,7 +41,7 @@ struct RngRecord: RngController
 
 struct RngReplay: RngController
 {
-	std::vector<RNGeneratorLog*> rows;
+	std::vector<RNGeneratorLog *> rows;
 	std::vector<RNGeneratorLog *>::iterator it;
 
 	RngReplay(LoopControllerInterface &loopControllerInterface, Logger &logger);

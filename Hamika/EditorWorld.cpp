@@ -1,23 +1,23 @@
 #include "EditorWorld.h"
 #include "Tools.h"
 #include "EditorMainEvent.h"
-#include "World.h"
+#include "Resource.h"
 
 #include <KIR/sys/KIR5_files.h>
 #include <KIR/sys/KIR5_system.h>
 #include <KIR/AL/KIR5_panel_control.h>
 
-namespace Editor
+namespace UI::Editor
 {
-	Worldi::Item::Item(Worldi &mapList, int ID_, const std::shared_ptr<BluePrint> &bluePrint_):
+	Worldi::Item::Item(Worldi &mapList, int ID_, const std::shared_ptr<Res::BluePrint> &bluePrint_):
 		bluePrint(bluePrint_)
 	{
 		*this << ID;
-		ID->setTextFont(Font::Consolas[18]);
+		ID->setTextFont(Res::Consolas[18]);
 		ID->show();
 		ID->setTextAlignment(KIR5::CENTER);
 		ID->setTextColor(KIR5::Color(230, 120, 40));
-		ID->fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		ID->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 		{
 			if (ID->isActiveBox())
 			{
@@ -28,7 +28,7 @@ namespace Editor
 				}
 			}
 			return false;
-		};
+		});
 
 		*this << name;
 		name->show();
@@ -39,46 +39,45 @@ namespace Editor
 
 		*this << moveUp;
 		moveUp->show();
-		moveUp->setBitmap(mapList.arrowUpImg);
-		moveUp->fncPress = [&](FNC_PRESS_PARAMS)
+		moveUp->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
+		moveUp->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
 			if (this->ID_ > 0)
 			{
 				eventEngine->sendEvent((void *)MOVE_ITEM_UP, (void *)(this), (void *)0, (void *)0);
 			}
-		};
+		});
 
 		*this << moveDown;
 		moveDown->show();
-		moveDown->setBitmap(mapList.arrowDownImg);
-		moveDown->fncPress = [&](FNC_PRESS_PARAMS)
+		moveDown->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
+		moveDown->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
 			eventEngine->sendEvent((void *)MOVE_ITEM_DOWN, (void *)(this), (void *)0, (void *)0);
-		};
+		});
 
 		*this << deleteMap;
 		deleteMap->show();
-		deleteMap->setBitmap(mapList.deleteImg);
-		deleteMap->fncPress = [&](FNC_PRESS_PARAMS)
+		deleteMap->setBitmap(Res::uielements[Res::UIElements::Delete]);
+		deleteMap->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
 			eventEngine->sendEvent((void *)DELETE_ITEM, (void *)(this), (void *)0, (void *)0);
-		};
+		});
 
 		*this << editMap;
 		editMap->show();
-		editMap->setBitmap(mapList.editImg);
-		editMap->fncPress = [&](FNC_PRESS_PARAMS)
+		editMap->setBitmap(Res::uielements[Res::UIElements::Edit]);
+		editMap->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
 			mainEvent->activeMap->SetMap(this->bluePrint);
-		};
+		});
 
 
 		*this << blueprintPanel;
 		blueprintPanel->show();
 		blueprintPanel->setBluePrint(bluePrint);
 
-		FncMoved.lock(this->fncMoved);
-		FncMoved.set([&](FNC_MOVED_PARAMS)
+		this->fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
 			ID->move(0, 0, 40, 30);
 			name->move(ID->virtualx2(), 0, width() - ID->virtualx2(), 30);
@@ -93,19 +92,17 @@ namespace Editor
 		});
 
 
-		FncDraw.lock(fncDraw);
-		FncDraw.set([&](FNC_DRAW_PARAMS)
+		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
 		{
 			al_clear_to_color(al_map_rgb(15, 15, 16));
-		});
+		}));
 
-		FncDrawBlueprint.lock(blueprintPanel->fncDraw);
-		FncDrawBlueprint.set([&](FNC_DRAW_PARAMS)
+		blueprintPanel->fncDraw.push_front(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
 		{
 			al_clear_to_color(al_map_rgb(35, 35, 36));
-		});
+		}));
 
-		fncMoved(this);
+		callbackMove();
 		setID(ID_);
 	}
 	void Worldi::Item::setID(int ID_)
@@ -115,7 +112,7 @@ namespace Editor
 		sprintf(buffer, "%03d", ID_);
 		ID->setText(buffer);
 	}
-	const std::shared_ptr<BluePrint> &Worldi::Item::getBluePrint() const
+	const std::shared_ptr<Res::BluePrint> &Worldi::Item::getBluePrint() const
 	{
 		return bluePrint;
 	}
@@ -123,12 +120,6 @@ namespace Editor
 
 	Worldi::Worldi()
 	{
-		arrowUpImg.load("Hamika\\texture\\editor\\StickUp.png");
-		arrowDownImg = arrowUpImg;
-		arrowDownImg.flipVertical();
-		editImg.load("Hamika\\texture\\editor\\Edit.png");
-		deleteImg.load("Hamika\\texture\\editor\\Delete.png");
-
 		*this << content;
 
 		content->show();
@@ -137,7 +128,7 @@ namespace Editor
 		(*content) += KIR5::Row<>::ConsistentWidth;
 
 		{
-			KIR5::EVENT<KIR5::Row<>> row;
+			KIR5::Shared<KIR5::Row<>> row;
 			row->show();
 			row->setGap(3);
 			(*row) += KIR5::Row<>::WrapWidth;
@@ -149,8 +140,7 @@ namespace Editor
 
 			row->pushBack(worltTitle_TextBox);
 
-			FncNameRowMoved.lock(row->fncMoved);
-			FncNameRowMoved.set([&](FNC_MOVED_PARAMS)->FNC_MOVED_RET
+			row->fncMoved.push_back([&](FNC_MOVED_PARAMS)->FNC_MOVED_RET
 			{
 				dynamic_cast<KIR5::Row<> *>(obj_)->wrapItem(worltTitle_TextBox.get());
 			});
@@ -159,7 +149,7 @@ namespace Editor
 		}
 
 		{
-			KIR5::EVENT<KIR5::ColoredPanel> line;
+			KIR5::Shared<Editor::ColoredPanel> line;
 			line->setBackgroundColor(KIR5::Color(160, 90, 30));
 			line->height(2);
 			content->pushBack(line);
@@ -175,37 +165,37 @@ namespace Editor
 			scrollBar->show();
 			scrollBar->setThumb(scrollBarThumb);
 			*listPanel << scrollBar;
-			scrollBar->fncDraw = [&](FNC_DRAW_PARAMS)
+			scrollBar->fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
 			{
 				al_clear_to_color(KIR5::Color(62, 62, 62));
-			};
+			}));
 
 			scrollBarThumb->setColor(KIR5::Color(104, 104, 104));
 
-			listPanel->fncMoved = [&](FNC_MOVED_PARAMS)
+			listPanel->fncMoved.push_back([&](FNC_MOVED_PARAMS)
 			{
 				list->move(0, 0, listPanel->width() - 15, listPanel->height());
 				scrollBar->move(width() - 15, 0, 15, listPanel->height());
 				scrollBar->sizeOfPage(listPanel->height());
-			};
+			});
 
 			content->pushBack(listPanel);
 		}
 
 		{
-			KIR5::EVENT<KIR5::ColoredPanel> line;
+			KIR5::Shared<Editor::ColoredPanel> line;
 			line->setBackgroundColor(KIR5::Color(160, 90, 30));
 			line->height(2);
 			content->pushBack(line);
 		}
 
 		{
-			KIR5::EVENT<KIR5::Row<>> row;
+			KIR5::Shared<KIR5::Row<>> row;
 			row->setGap(3);
 			row->show();
 			(*row) += KIR5::Row<>::ConsistentHeight;
 
-			loadButton->setTextFont(Font::TimesNewRoman[12]);
+			loadButton->setTextFont(Res::TimesNewRoman[12]);
 			loadButton->setTextColor(KIR5::Color(100, 100, 100));
 			loadButton->setTextAlignment(KIR5::CENTER);
 			loadButton->show();
@@ -213,7 +203,7 @@ namespace Editor
 			loadButton->setText("Load");
 			loadButton->resize(loadButton->getTextWidth() + 20, 30);
 			row->pushBack(loadButton);
-			loadButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			loadButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				std::string filename;
 				std::cout << KIR5::getCurrentDirectory<>() << std::endl;
@@ -224,13 +214,13 @@ namespace Editor
 				std::cout << KIR5::getCurrentDirectory<>() << std::endl;
 				if (filename.length() > 0)
 				{
-					std::shared_ptr<World> world(new World);
-					world->load(filename);
+					std::shared_ptr<Res::World> world(new Res::World(filename));
+					Res::LoadResource(*world);
 					setWorld(world);
 				}
-			};
+			});
 
-			saveButton->setTextFont(Font::TimesNewRoman[12]);
+			saveButton->setTextFont(Res::TimesNewRoman[12]);
 			saveButton->setTextColor(KIR5::Color(100, 100, 100));
 			saveButton->setTextAlignment(KIR5::CENTER);
 			saveButton->show();
@@ -238,12 +228,12 @@ namespace Editor
 			saveButton->setText("Save");
 			saveButton->resize(saveButton->getTextWidth() + 20, 30);
 			row->pushBack(saveButton);
-			saveButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			saveButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				mainEvent->saveWorldDialog->show();
-			};
+			});
 
-			newMapButton->setTextFont(Font::TimesNewRoman[12]);
+			newMapButton->setTextFont(Res::TimesNewRoman[12]);
 			newMapButton->setTextColor(KIR5::Color(100, 100, 100));
 			newMapButton->setTextAlignment(KIR5::CENTER);
 			newMapButton->show();
@@ -251,24 +241,24 @@ namespace Editor
 			newMapButton->setText("New map");
 			newMapButton->resize(newMapButton->getTextWidth() + 20, 30);
 			row->pushBack(newMapButton);
-			newMapButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			newMapButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				KIR5::EVENT<BluePrint> bluePrint;
+				KIR5::Shared<Res::BluePrint> bluePrint;
 				bluePrint->blocks.resize({10,10});
-				bluePrint->blocks.foreach([](Type::Coord coord, BluePrint::Block &block)
+				bluePrint->blocks.foreach([](Type::Coord coord, Res::BluePrint::Block &block)
 				{
 					block.id = 0;
 					block.flags = 0;
 					block.rotation = 0;
 				});
 
-				list->pushBack(KIR5::EVENT<Item>(new Item(*this, list->items().size() + 1, bluePrint)));
+				list->pushBack(KIR5::Shared<Item>(new Item(*this, list->items().size() + 1, bluePrint)));
 
 				scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
 				scrollBar->cursor(0xFFFFFFFF);
-			};
+			});
 
-			newWorldButton->setTextFont(Font::TimesNewRoman[12]);
+			newWorldButton->setTextFont(Res::TimesNewRoman[12]);
 			newWorldButton->setTextColor(KIR5::Color(100, 100, 100));
 			newWorldButton->setTextAlignment(KIR5::CENTER);
 			newWorldButton->show();
@@ -276,36 +266,35 @@ namespace Editor
 			newWorldButton->setText("New world");
 			newWorldButton->resize(newWorldButton->getTextWidth() + 20, 30);
 			row->pushBack(newWorldButton);
-			newWorldButton->fncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			newWorldButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				list->clear();
 
-				KIR5::EVENT<BluePrint> bluePrint;
+				KIR5::Shared<Res::BluePrint> bluePrint;
 				bluePrint->blocks.resize({10,10});
-				bluePrint->blocks.foreach([](Type::Coord coord, BluePrint::Block &block)
+				bluePrint->blocks.foreach([](Type::Coord coord, Res::BluePrint::Block &block)
 				{
 					block.id = 0;
 					block.flags = 0;
 					block.rotation = 0;
 				});
 
-				list->pushBack(KIR5::EVENT<Item>(new Item(*this, list->items().size() + 1, bluePrint)));
+				list->pushBack(KIR5::Shared<Item>(new Item(*this, list->items().size() + 1, bluePrint)));
 
 				scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
 				scrollBar->cursor(0xFFFFFFFF);
-			};
+			});
 
 			content->pushBack(row);
 		}
 
-		FncMoved.lock(fncMoved);
-		FncMoved.set([&](FNC_MOVED_PARAMS)
+		fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
 			content->move(0, 0, width(), height());
 			content->wrapItem(listPanel.get());
 		});
 
-		fncUpdate = [&](FNC_UPDATE_PARAMS)
+		fncUpdate.push_back([&](FNC_UPDATE_PARAMS)
 		{
 			if (ALLEGRO_EVENT_TYPE_IS_USER(ptr_->type))
 			{
@@ -401,7 +390,7 @@ namespace Editor
 					}
 				}
 			}
-		};
+		});
 	}
 	Worldi::~Worldi()
 	{
@@ -411,7 +400,7 @@ namespace Editor
 	{
 		return 190;
 	}
-	void Worldi::setWorld(std::shared_ptr<World> &world)
+	void Worldi::setWorld(std::shared_ptr<Res::World> &world)
 	{
 		while (list->items().size() > 0)
 		{
@@ -419,15 +408,15 @@ namespace Editor
 		}
 
 		int ID_ = 1;
-		for (auto &it : world->getBluePrints())
+		for (auto &it : world->bluePrints)
 		{
-			list->pushBack(KIR5::EVENT<Item>(new Item(*this, ID_++, it)));
+			list->pushBack(KIR5::Shared<Item>(new Item(*this, ID_++, it)));
 		}
 
 		scrollBar->sizeOfBook(list->itemHeight() * list->items().size());
 		scrollBar->cursor(0);
 		list->cursor(0);
 
-		mainEvent->worldi->worltTitle_TextBox->setText(world->getTitle());
+		mainEvent->worldi->worltTitle_TextBox->setText(world->title);
 	}
 }

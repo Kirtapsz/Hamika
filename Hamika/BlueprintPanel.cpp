@@ -1,6 +1,6 @@
 #include "BlueprintPanel.h"
 
-void BlueprintPanel::setBluePrint(const std::shared_ptr<BluePrint> &bluePrint)
+void BlueprintPanel::setBluePrint(const std::shared_ptr<Res::BluePrint> &bluePrint)
 {
 	this->bluePrint = bluePrint;
 	redrawn = true;
@@ -8,8 +8,7 @@ void BlueprintPanel::setBluePrint(const std::shared_ptr<BluePrint> &bluePrint)
 
 BlueprintPanel::BlueprintPanel()
 {
-	FncDraw.lock(fncDraw);
-	FncDraw = [&](FNC_DRAW_PARAMS)
+	fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
 	{
 		if (redrawn && bluePrint)
 		{
@@ -27,7 +26,7 @@ BlueprintPanel::BlueprintPanel()
 
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 
-			bluePrint->blocks.foreach([&](const Type::Coord &coord, BluePrint::Block &object)
+			bluePrint->blocks.foreach([&](const Type::Coord &coord, Res::BluePrint::Block &object)
 			{
 				DrawObject(object.id, coord.x * DrawSize.width, coord.y * DrawSize.height, DrawSize.width, DrawSize.height);
 			});
@@ -46,5 +45,5 @@ BlueprintPanel::BlueprintPanel()
 			al_draw_filled_rectangle(x_, y_, x_ + w_, y_ + w_, KIR5::Color(0, 0, 0, min(20, alpha)).getAlphaColored());
 			disp_bmp.drawTintedScaled((int)x, (int)y, (int)w, (int)h, 0, 0, disp_bmp.width(), disp_bmp.height(), KIR5::Color(255, 255, 255, alpha).getAlphaColored());
 		}
-	};
+	}));
 }

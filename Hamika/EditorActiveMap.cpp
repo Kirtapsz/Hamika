@@ -3,14 +3,14 @@
 #include "EditorMainEvent.h"
 #include "EditorObjects.h"
 
-namespace Editor
+namespace UI::Editor
 {
 	ActiveMap::ActiveMap()
 	{
 		drawer.blockRefreshActive = false;
 		drawer.layerActive = false;
 
-		fncMouseButtonDown = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
 		{
 			if (button_ == 2)
 			{
@@ -22,9 +22,9 @@ namespace Editor
 				}
 			}
 			return false;
-		};
+		});
 
-		fncKeyDown = [&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
+		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 		{
 			if (key_ == ALLEGRO_KEY_LEFT)
 			{
@@ -135,8 +135,9 @@ namespace Editor
 				});
 			}
 			return false;
-		};
-		fncKeyUp = [&](FNC_KEY_UP_PARAMS) -> FNC_KEY_UP_RET
+		});
+
+		fncKeyUp.push_back([&](FNC_KEY_UP_PARAMS) -> FNC_KEY_UP_RET
 		{
 			if (key_ == ALLEGRO_KEY_RSHIFT)
 			{
@@ -178,9 +179,9 @@ namespace Editor
 				});
 			}
 			return false;
-		};
+		});
 
-		fncLock = [&](FNC_LOCK_PARAMS)->FNC_LOCK_RET
+		fncLock.push_back([&](FNC_LOCK_PARAMS)->FNC_LOCK_RET
 		{
 			if (map->Exists())
 			{
@@ -199,9 +200,9 @@ namespace Editor
 					mouseHoldy = y_;
 				}
 			}
-		};
+		});
 
-		fncMouseAxes = [&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
+		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
 		{
 			if (map->Exists())
 			{
@@ -261,9 +262,9 @@ namespace Editor
 					setTarget(camera);
 				}
 			}
-		};
+		});
 
-		fncUnlock = [&](FNC_UNLOCK_PARAMS)->FNC_UNLOCK_RET
+		fncUnlock.push_back([&](FNC_UNLOCK_PARAMS)->FNC_UNLOCK_RET
 		{
 			if (mouseSelectHold)
 			{
@@ -299,17 +300,17 @@ namespace Editor
 					reach(map)[targetCoord].Redrawn = true;
 				}
 			}
-		};
+		});
 
-		fncDraw = [&](FNC_DRAW_PARAMS)
+		fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
 		{
 			if (map->Exists())
 			{
 				drawer.DrawBlocks(x_, y_);
 			}
-		};
+		}));
 
-		fncMoved = [&](FNC_MOVED_PARAMS)
+		fncMoved.push_back([&](FNC_MOVED_PARAMS) ->FNC_MOVED_RET
 		{
 			if (map->Exists())
 			{
@@ -317,7 +318,7 @@ namespace Editor
 				drawer.InitializeDrawOptions({width(), height()}, Type::CameraSize::Invalid);
 				setTarget(camera);
 			}
-		};
+		});
 	}
 	ActiveMap::~ActiveMap()
 	{
@@ -365,12 +366,12 @@ namespace Editor
 			{
 				block.remain = new EditorObjectBase(*this);
 				ObjectCreate(block.remain, -1, coord);
-				block.remain->drawnerFnc = Object::EditorRemain::Drawner;
+				block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
 			}
 			else
 			{
 				ObjectCreate(block.remain, block.remain->id, coord);
-				block.remain->drawnerFnc = Object::EditorRemain::Drawner;
+				block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
 			}
 
 			block.GoTo = coord;
@@ -383,9 +384,9 @@ namespace Editor
 		mainEvent->miniMap->SetMap(map);
 		mainEvent->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
 	}
-	void ActiveMap::SetMap(std::shared_ptr<BluePrint> &bluePrint)
+	void ActiveMap::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint)
 	{
-		map.reset(new Array2D<ActiveBlock<EditorObjectBase>>(bluePrint->blocks));
+		map.reset(new Matrix<ActiveBlock<EditorObjectBase>>(bluePrint->blocks));
 
 		map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
 		{
@@ -395,7 +396,7 @@ namespace Editor
 
 			block.remain = new EditorObjectBase(*this);
 			ObjectCreate(block.remain, -1, coord);
-			block.remain->drawnerFnc = Object::EditorRemain::Drawner;
+			block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
 
 			block.grid = (*bluePrint)[coord].flags;
 		});
