@@ -12,7 +12,6 @@
 #include "IDreg.h"
 #include "Tools.h"
 #include "Bitmap.h"
-#include "BitmapPool.h"
 
 #undef GetObject
 
@@ -588,7 +587,7 @@ struct ObjectDrawModule:
 		}
 		else
 		{
-			ObjectBase::unknownBmp.drawScaled(this->GetDrawCoord().x, this->GetDrawCoord().y, DrawSize().width, DrawSize().height);
+			static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(this->GetDrawCoord().x, this->GetDrawCoord().y, DrawSize().width, DrawSize().height);
 		}
 	}
 	virtual void SDraw()//teszteés céljából hogy a conter mûködjön
@@ -730,9 +729,6 @@ struct ObjectBase:
 		currentspeed = 0;
 		hitactive = false;
 	}
-
-	static BitmapPool bitmapPool;
-	static KIR5::SubBitmap unknownBmp;
 
 	public:
 

@@ -17,26 +17,24 @@
 
 #include <memory>
 
-namespace Editor
+namespace UI::Editor
 {
 	class SaveWorldDialog: public KIR5::Panel
 	{
 		friend class MainEvent;
 
-		private: KIR5::EVENT<KIR5::ComboBox<
+		private: KIR5::Shared<KIR5::ComboBox<
 			KIR5::FramedRectangleButton<KIR5::Button<KIR5::TextButton<>>>,
 			KIR5::ListPanel<KIR5::Panel, KIR5::FramedRectangleButton<KIR5::Button<KIR5::TextButton<>>>>
 			>> mapTypeSelector;
 
-		private: KIR5::EVENT<KIR5::ColoredPanel> centerBox;
-		private: KIR5::EVENT<KIR5::Label<KIR5::Panel>> directoryLabel;
-		private: KIR5::EVENT<KIR5::TextBox<KIR5::Panel>> directory;
-		private: KIR5::EVENT<KIR5::Label<KIR5::Panel>> wordNameDirectoryLabel;
-		private: KIR5::EVENT<KIR5::TextBox<KIR5::Panel>> wordNameDirectory;
-		private: KIR5::EVENT<KIR5::RectangleButton<KIR5::TextButton<>>> saveButton;
-		private: KIR5::EVENT<KIR5::RectangleButton<KIR5::TextButton<>>> cancelButton;
-
-		private: KIR5::Event::FncSwap<FNC_MOVED_TYPE> FncMoved;
+		private: KIR5::Shared<KIR5::ColoredPanel> centerBox;
+		private: KIR5::Shared<KIR5::Label<KIR5::Panel>> directoryLabel;
+		private: KIR5::Shared<KIR5::TextBox<KIR5::Panel>> directory;
+		private: KIR5::Shared<KIR5::Label<KIR5::Panel>> wordNameDirectoryLabel;
+		private: KIR5::Shared<KIR5::TextBox<KIR5::Panel>> wordNameDirectory;
+		private: KIR5::Shared<KIR5::RectangleButton<KIR5::TextButton<>>> saveButton;
+		private: KIR5::Shared<KIR5::RectangleButton<KIR5::TextButton<>>> cancelButton;
 
 		public: SaveWorldDialog();
 		public: ~SaveWorldDialog();

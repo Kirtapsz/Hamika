@@ -1,14 +1,18 @@
 #include "EditorMainEvent.h"
 
-namespace Editor
+#include <KIR/sys/KIR5_files.h>
+
+namespace UI::Editor
 {
 	std::shared_ptr<MainEvent> mainEvent;
 
-	MainEvent::MainEvent():KIR5::Display("Hamika Builder", 640, 480, ALLEGRO_RESIZABLE)
+	MainEvent::MainEvent(std::shared_ptr<KIR5::Panel> _parent):
+		parent(_parent)
 	{
+
 		Objects::RunInitializer();
 
-		*this << columnControl;
+		*parent << columnControl;
 		columnControl->show();
 		columnControl->setGap(3);
 		(*columnControl) += KIR5::Column<>::WrapContent;
@@ -35,28 +39,28 @@ namespace Editor
 		(*rowsControl[0]) += KIR5::Row<>::FixHeight;
 
 		rowsControl[0]->pushBack(worldi);
-		rowsControl[0]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+		rowsControl[0]->pushBack(KIR5::Shared<UIline<UI_M>>());
 		rowsControl[0]->pushBack(activeMap);
 
-		rowsControl[1]->pushBack(KIR5::EVENT<UIline<UI_M>>());
-		rowsControl[1]->pushBack(KIR5::EVENT<KIR5::Panel>());
-		rowsControl[1]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+		rowsControl[1]->pushBack(KIR5::Shared<UIline<UI_M>>());
+		rowsControl[1]->pushBack(KIR5::Shared<KIR5::Panel>());
+		rowsControl[1]->pushBack(KIR5::Shared<UIline<UI_M>>());
 
 		rowsControl[2]->pushBack(miniMap);
-		rowsControl[2]->pushBack(KIR5::EVENT<UIline<UI_M>>());
+		rowsControl[2]->pushBack(KIR5::Shared<UIline<UI_M>>());
 		rowsControl[2]->pushBack(controlPanel);
 
-		*this << saveWorldDialog;
+		*parent << saveWorldDialog;
 		saveWorldDialog->hide();
 
-		fncDraw = [&](FNC_DRAW_PARAMS)
+		parent->fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
 		{
 			al_clear_to_color(KIR5::Color(20, 20, 20));
-		};
+		}));
 
-		fncMoved = [&](FNC_MOVED_PARAMS)
+		parent->fncMoved.push_back([&](FNC_MOVED_PARAMS)
 		{
-			saveWorldDialog->move(0, 0, width(), height());
+			saveWorldDialog->move(0, 0, parent->width(), parent->height());
 
 			for (auto &it : rowsControl)
 			{
@@ -66,9 +70,7 @@ namespace Editor
 			}
 
 			columnControl->wrapItem(rowsControl[0].get());
-		};
-
-		fncMoved(this);
+		});
 	}
 
 	MainEvent::~MainEvent()

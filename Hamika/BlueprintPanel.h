@@ -5,20 +5,19 @@
 
 #include <memory>
 
-#include "BluePrint.h"
+#include "World.h"
 #include "Font.h"
 #include "Bitmap.h"
 
 class BlueprintPanel: public KIR5::Panel
 {
 	public: bool redrawn = false;
-	private: std::shared_ptr<BluePrint> bluePrint;
-	private: KIR5::Event::FncSwap<FNC_DRAW_TYPE> FncDraw;
+	private: std::shared_ptr<Res::BluePrint> bluePrint;
 	private: Type::Size DrawSize;
 	private: KIR5::Bitmap disp_bmp;
 	public: float alpha = 255;
 
-	public: void setBluePrint(const std::shared_ptr<BluePrint> &bluePrint);
+	public: void setBluePrint(const std::shared_ptr<Res::BluePrint> &bluePrint);
 
 	public: BlueprintPanel();
 };

@@ -4,7 +4,7 @@
 #include "Types.h"
 #include "Objects.h"
 
-namespace Editor
+namespace UI::Editor
 {
 	template <typename OBJECT_T>
 	struct ActiveBlock

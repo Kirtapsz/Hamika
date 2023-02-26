@@ -52,7 +52,7 @@ namespace Object
 	{
 		const char *name = "001 - Zonk";
 
-		Slides ZonkMoveHorizontal;
+		Res::Slides ZonkMoveHorizontal;
 
 		const float moveSpeed = 4.401544f;
 		const float rollSpeed = 4.401544f;
@@ -64,7 +64,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			ZonkMoveHorizontal.initialize(ObjectBase::bitmapPool.get("001-ZonkMoveHorizontal"), ObjectBase::bitmapPool.get("Error"));
+			ZonkMoveHorizontal.initialize(Res::tiles[Res::Tiles::_001_ZonkMoveHorizontal], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -138,7 +138,7 @@ namespace Object
 		const char *name = "002 - BaseX";
 
 		KIR5::SubBitmap BaseX;
-		Slides BaseLineDisappear;
+		Res::Slides BaseLineDisappear;
 
 		const float disappearTime = 0.23f;
 
@@ -150,8 +150,8 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			BaseX = ObjectBase::bitmapPool.get("002-BaseX");
-			BaseLineDisappear.initialize(ObjectBase::bitmapPool.get("002-BaseX.square-disappear"), ObjectBase::bitmapPool.get("Error"));
+			BaseX = Res::tiles[Res::Tiles::_002_BaseX];
+			BaseLineDisappear.initialize(Res::tiles[Res::Tiles::_002_BaseX_square_disappear], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -192,10 +192,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->disappearTimer,
-							disappearTime,
-							s->drawNumber,
-							stack->o, BaseLineDisappear);
-				return true;
+				disappearTime,
+				s->drawNumber,
+				stack->o, BaseLineDisappear);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -249,7 +249,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareBlueLed = ObjectBase::bitmapPool.get("003-HardwareBlueLed");
+			HardwareBlueLed = Res::tiles[Res::Tiles::_003_HardwareBlueLed];
 		}
 
 		void Create(OBJECT_CREATER_PARAM)
@@ -291,7 +291,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareBrick1 = ObjectBase::bitmapPool.get("004-HardwareBrick1");
+			HardwareBrick1 = Res::tiles[Res::Tiles::_004_HardwareBrick1];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -332,7 +332,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareBlueResistance = ObjectBase::bitmapPool.get("005-HardwareBlueResistance");
+			HardwareBlueResistance = Res::tiles[Res::Tiles::_005_HardwareBlueResistance];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -373,7 +373,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareGreenLed = ObjectBase::bitmapPool.get("006-HardwareGreenLed");
+			HardwareGreenLed = Res::tiles[Res::Tiles::_006_HardwareGreenLed];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -414,7 +414,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareRedLed = ObjectBase::bitmapPool.get("007-HardwareRedLed");
+			HardwareRedLed = Res::tiles[Res::Tiles::_007_HardwareRedLed];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -455,7 +455,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareResource = ObjectBase::bitmapPool.get("008-HardwareResource");
+			HardwareResource = Res::tiles[Res::Tiles::_008_HardwareResource];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -496,7 +496,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareResistance = ObjectBase::bitmapPool.get("009-HardwareResistance");
+			HardwareResistance = Res::tiles[Res::Tiles::_009_HardwareResistance];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -537,7 +537,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareStripLine = ObjectBase::bitmapPool.get("010-HardwareStripLine");
+			HardwareStripLine = Res::tiles[Res::Tiles::_010_HardwareStripLine];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -578,7 +578,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareYellowResistance = ObjectBase::bitmapPool.get("011-HardwareYellowResistance");
+			HardwareYellowResistance = Res::tiles[Res::Tiles::_011_HardwareYellowResistance];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -619,7 +619,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareRedCapacitor = ObjectBase::bitmapPool.get("012-HardwareRedCapacitor");
+			HardwareRedCapacitor = Res::tiles[Res::Tiles::_012_HardwareRedCapacitor];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -656,7 +656,7 @@ namespace Object
 	{
 		const char *name = "013 - Bug";
 
-		Slides Bug;
+		Res::Slides Bug;
 
 		constexpr float electricTime = 0.7f;      // duration in sec
 		constexpr float electricDelayTime = 3.0f; // duration in sec
@@ -673,7 +673,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Bug.initialize(ObjectBase::bitmapPool.get("013-Bug"), ObjectBase::bitmapPool.get("Error"));
+			Bug.initialize(Res::tiles[Res::Tiles::_013_Bug], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -700,7 +700,7 @@ namespace Object
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			pops(Specific, s);
-			
+
 			stack->o->requests.timer = true;
 
 			if (ACTION_TIMER(s->disappearTimer,
@@ -721,10 +721,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->disappearTimer,
-							disappearTime,
-							s->drawNumber,
-							stack->o, BaseX_002::BaseLineDisappear);
-				return true;
+				disappearTime,
+				s->drawNumber,
+				stack->o, BaseX_002::BaseLineDisappear);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -778,10 +778,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->electricTimer,
-							electricTime,
-							s->drawNumber,
-							stack->o, Bug);
-				return true;
+				electricTime,
+				s->drawNumber,
+				stack->o, Bug);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -836,8 +836,8 @@ namespace Object
 	{
 		const char *name = "014 - Infotron";
 
-		Slides InfotronDisappear;
-		Slides InfotronMoveHorizontal;
+		Res::Slides InfotronDisappear;
+		Res::Slides InfotronMoveHorizontal;
 
 		const float moveSpeed = 4.401544f;
 		const float rollSpeed = 4.401544f;
@@ -851,8 +851,8 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			InfotronDisappear.initialize(ObjectBase::bitmapPool.get("014-InfotronDisappear"), ObjectBase::bitmapPool.get("Error"));
-			InfotronMoveHorizontal.initialize(ObjectBase::bitmapPool.get("014-InfotronMoveHorizontal"), ObjectBase::bitmapPool.get("Error"));
+			InfotronDisappear.initialize(Res::tiles[Res::Tiles::_014_InfotronDisappear], Res::tiles[Res::BitmapPool::Fallback]);
+			InfotronMoveHorizontal.initialize(Res::tiles[Res::Tiles::_014_InfotronMoveHorizontal], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -897,10 +897,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->disappearTimer,
-							disappearTime,
-							s->drawNumber,
-							stack->o, InfotronDisappear);
-				return true;
+				disappearTime,
+				s->drawNumber,
+				stack->o, InfotronDisappear);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -978,7 +978,7 @@ namespace Object
 	{
 		const char *name = "015 - Exit";
 
-		Slides Exit;
+		Res::Slides Exit;
 
 		constexpr float animateTime = 0.5f;
 
@@ -990,7 +990,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Exit.initialize(ObjectBase::bitmapPool.get("015-Exit"), ObjectBase::bitmapPool.get("Error"));
+			Exit.initialize(Res::tiles[Res::Tiles::_015_Exit], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1026,10 +1026,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->animateTimer,
-							animateTime,
-							s->drawNumber,
-							stack->o, Exit);
-				return true;
+				animateTime,
+				s->drawNumber,
+				stack->o, Exit);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -1062,7 +1062,7 @@ namespace Object
 
 		void Open(ObjectBase *o)
 		{
-			Type::Coord coord;
+			Type::Coord coord{};
 			for (coord.x = 0; coord.x < o->ief.MapSize().width; coord.x++)
 			{
 				for (coord.y = 0; coord.y < o->ief.MapSize().height; coord.y++)
@@ -1089,7 +1089,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			CrossPort = ObjectBase::bitmapPool.get("016-CrossPort");
+			CrossPort = Res::tiles[Res::Tiles::_016_CrossPort];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1126,7 +1126,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			DualPortHorizontal = ObjectBase::bitmapPool.get("017-DualPortHorizontal");
+			DualPortHorizontal = Res::tiles[Res::Tiles::_017_DualPortHorizontal];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1163,7 +1163,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			DualPortVertical = ObjectBase::bitmapPool.get("018-DualPortVertical");
+			DualPortVertical = Res::tiles[Res::Tiles::_018_DualPortVertical];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1200,7 +1200,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortDown = ObjectBase::bitmapPool.get("019-OneWayPortDown");
+			OneWayPortDown = Res::tiles[Res::Tiles::_019_OneWayPortDown];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1237,7 +1237,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortLeft = ObjectBase::bitmapPool.get("020-OneWayPortLeft");
+			OneWayPortLeft = Res::tiles[Res::Tiles::_020_OneWayPortLeft];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1274,7 +1274,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortRight = ObjectBase::bitmapPool.get("021-OneWayPortRight");
+			OneWayPortRight = Res::tiles[Res::Tiles::_021_OneWayPortRight];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1311,7 +1311,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortUp = ObjectBase::bitmapPool.get("022-OneWayPortUp");
+			OneWayPortUp = Res::tiles[Res::Tiles::_022_OneWayPortUp];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1348,7 +1348,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			RAMChipsMini = ObjectBase::bitmapPool.get("023-RAMChipsMini");
+			RAMChipsMini = Res::tiles[Res::Tiles::_023_RAMChipsMini];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1385,7 +1385,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			RAMChipsLeft = ObjectBase::bitmapPool.get("024-RAMChipsLeft");
+			RAMChipsLeft = Res::tiles[Res::Tiles::_024_RAMChipsLeft];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1422,7 +1422,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			RAMChipsRight = ObjectBase::bitmapPool.get("025-RAMChipsRight");
+			RAMChipsRight = Res::tiles[Res::Tiles::_025_RAMChipsRight];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1458,11 +1458,11 @@ namespace Object
 		const float moveSpeed = 4.401544f;
 		const float rotateSpeed = 492.156863f;
 
-		Slides Electrons;
+		Res::Slides Electrons;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Electrons.initialize(ObjectBase::bitmapPool.get("026-Electrons"), ObjectBase::bitmapPool.get("Error"));
+			Electrons.initialize(Res::tiles[Res::Tiles::_026_Electrons], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1472,7 +1472,7 @@ namespace Object
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
 
 			{
-				gets(StackTimer, s);
+				gets(Animator::Specific, s);
 				Animator::Create(OBJECT_CREATER_CALL);
 				s->SetNumberOfFrames(Electrons.getCount());
 				s->SetAnimationTime(0.8f);
@@ -1503,7 +1503,7 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			gets(StackTimer, s);
+			gets(Animator::Specific, s);
 			Electrons[s->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1517,11 +1517,11 @@ namespace Object
 	{
 		const char *name = "027 - SnikSnakMove";
 
-		Slides SnikSnakMoveUp;
-		Slides SnikSnakMoveRight;
-		Slides SnikSnakMoveDown;
-		Slides SnikSnakMoveLeft;
-		Slides SnikSnakRotate;
+		Res::Slides SnikSnakMoveUp;
+		Res::Slides SnikSnakMoveRight;
+		Res::Slides SnikSnakMoveDown;
+		Res::Slides SnikSnakMoveLeft;
+		Res::Slides SnikSnakRotate;
 
 		const float moveSpeed = 4.401544f;
 		const float rotateSpeed = 492.156863f;
@@ -1533,11 +1533,11 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			SnikSnakMoveUp.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveUp"), ObjectBase::bitmapPool.get("Error"));
-			SnikSnakMoveRight.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveRight"), ObjectBase::bitmapPool.get("Error"));
-			SnikSnakMoveDown.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveDown"), ObjectBase::bitmapPool.get("Error"));
-			SnikSnakMoveLeft.initialize(ObjectBase::bitmapPool.get("027-SnikSnakMoveLeft"), ObjectBase::bitmapPool.get("Error"));
-			SnikSnakRotate.initialize(ObjectBase::bitmapPool.get("027-SnikSnakRotate"), ObjectBase::bitmapPool.get("Error"));
+			SnikSnakMoveUp.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveUp], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMoveRight.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveRight], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMoveDown.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveDown], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMoveLeft.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveLeft], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakRotate.initialize(Res::tiles[Res::Tiles::_027_SnikSnakRotate], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1637,18 +1637,18 @@ namespace Object
 	{
 		const char *name = "028 - Terminal";
 
-		Slides Terminal;
+		Res::Slides Terminal;
 
 		const float activatedAnimateTime = 0.7f;
 		const float animateTime = 3.f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Terminal.initialize(ObjectBase::bitmapPool.get("028-Terminal"), ObjectBase::bitmapPool.get("Error"));
+			Terminal.initialize(Res::tiles[Res::Tiles::_028_Terminal], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			gets(StackTimer, s);
+			gets(Animator::Specific, s);
 			Animator::Create(OBJECT_CREATER_CALL);
 			s->SetNumberOfFrames(Terminal.getCount());
 			s->SetAnimationTime(animateTime);
@@ -1673,7 +1673,7 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			gets(StackTimer, s);
+			gets(Animator::Specific, s);
 			Terminal[s->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1684,14 +1684,14 @@ namespace Object
 		void speedUpTerminalSpeed(ObjectBase *o)
 		{
 			maks(o);
-			gets(StackTimer, s);
+			gets(Animator::Specific, s);
 			s->SetAnimationTime(activatedAnimateTime);
 		}
 
 		void Pushed(ObjectBase *o)
 		{
 			maks(o);
-			gets(StackTimer, s);
+			gets(Animator::Specific, s);
 			if (s->time != activatedAnimateTime)
 			{
 				Type::Coord coord;
@@ -1732,7 +1732,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Utility1 = ObjectBase::bitmapPool.get("029-Utility1");
+			Utility1 = Res::tiles[Res::Tiles::_029_Utility1];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1793,7 +1793,7 @@ namespace Object
 	{
 		const char *name = "030 - Utility2";
 
-		Slides Utility2;
+		Res::Slides Utility2;
 		KIR5::SubBitmap Utility2Activated;
 
 		const float activateTime = 1.8f;
@@ -1808,8 +1808,8 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Utility2.initialize(ObjectBase::bitmapPool.get("030-Utility2"), ObjectBase::bitmapPool.get("Error"));
-			Utility2Activated = ObjectBase::bitmapPool.get("030-Utility2Activated");
+			Utility2.initialize(Res::tiles[Res::Tiles::_030_Utility2], Res::tiles[Res::BitmapPool::Fallback]);
+			Utility2Activated = Res::tiles[Res::Tiles::_030_Utility2Activated];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1851,10 +1851,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->disappearTimer,
-							disappearTime,
-							s->drawNumber,
-							stack->o, Utility2);
-				return true;
+				disappearTime,
+				s->drawNumber,
+				stack->o, Utility2);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -1953,7 +1953,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Utility3 = ObjectBase::bitmapPool.get("031-Utility3");
+			Utility3 = Res::tiles[Res::Tiles::_031_Utility3];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -1986,7 +1986,7 @@ namespace Object
 	{
 		const char *name = "032 - ExplosionEffect";
 
-		Slides Blasting;
+		Res::Slides Blasting;
 
 		const float explosionTime = 0.6f;
 
@@ -1998,7 +1998,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Blasting.initialize(ObjectBase::bitmapPool.get("032-Explosion"), ObjectBase::bitmapPool.get("Error"));
+			Blasting.initialize(Res::tiles[Res::Tiles::_032_Explosion], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -2034,10 +2034,10 @@ namespace Object
 				[&stack, &s]()->bool
 			{
 				DRAW_NUMBER(s->explosionTimer,
-							explosionTime,
-							s->drawNumber,
-							stack->o, ExplosionEffect_032::Blasting);
-				return true;
+				explosionTime,
+				s->drawNumber,
+				stack->o, ExplosionEffect_032::Blasting);
+			return true;
 			},
 				[&stack, &s]()->bool
 			{
@@ -2227,7 +2227,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			RAMChipsTop = ObjectBase::bitmapPool.get("035-RAMChipsTop");
+			RAMChipsTop = Res::tiles[Res::Tiles::_035_RAMChipsTop];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -2264,7 +2264,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			RAMChipsBottom = ObjectBase::bitmapPool.get("036-RAMChipsBottom");
+			RAMChipsBottom = Res::tiles[Res::Tiles::_036_RAMChipsBottom];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -2301,7 +2301,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			HardwareSwitch = ObjectBase::bitmapPool.get("037-HardwareSwitch");
+			HardwareSwitch = Res::tiles[Res::Tiles::_037_HardwareSwitch];
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
@@ -2342,7 +2342,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortDown = ObjectBase::bitmapPool.get("038-OneWayPortDownGrav");
+			OneWayPortDown = Res::tiles[Res::Tiles::_038_OneWayPortDownGrav];
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2366,7 +2366,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortLeft = ObjectBase::bitmapPool.get("039-OneWayPortLeftGrav");
+			OneWayPortLeft = Res::tiles[Res::Tiles::_039_OneWayPortLeftGrav];
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2390,7 +2390,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortRight = ObjectBase::bitmapPool.get("040-OneWayPortRightGrav");
+			OneWayPortRight = Res::tiles[Res::Tiles::_040_OneWayPortRightGrav];
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2414,7 +2414,7 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			OneWayPortUp = ObjectBase::bitmapPool.get("041-OneWayPortUpGrav");
+			OneWayPortUp = Res::tiles[Res::Tiles::_041_OneWayPortUpGrav];
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{

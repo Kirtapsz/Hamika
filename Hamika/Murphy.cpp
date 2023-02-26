@@ -13,11 +13,11 @@ namespace Object
 		const char *name = "*** - Murphy";
 
 		KIR5::SubBitmap Base;
-		Slides MovingSlides[4];
-		Slides PassInSlides[4];
-		Slides PassOutSlides[4];
-		Slides Push;
-		Slides Sniff;
+		Res::Slides MovingSlides[4];
+		Res::Slides PassInSlides[4];
+		Res::Slides PassOutSlides[4];
+		Res::Slides Push;
+		Res::Slides Sniff;
 
 		const float PutUnityWaitTime = 0.8f;
 		const float PushEffectWaitTime = 0.15f;
@@ -567,25 +567,25 @@ namespace Object
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			Base = ObjectBase::bitmapPool.get("Pleyer-Base"), ObjectBase::bitmapPool.get("Error");
+			Base = Res::tiles[Res::Tiles::_Player_Base];
 
-			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingRight"), ObjectBase::bitmapPool.get("Error"));
-			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingUp"), ObjectBase::bitmapPool.get("Error"));
-			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingDown"), ObjectBase::bitmapPool.get("Error"));
-			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-MovingLeft"), ObjectBase::bitmapPool.get("Error"));
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(Res::tiles[Res::Tiles::_Player_MovingRight], Res::tiles[Res::BitmapPool::Fallback]);
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(Res::tiles[Res::Tiles::_Player_MovingUp], Res::tiles[Res::BitmapPool::Fallback]);
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(Res::tiles[Res::Tiles::_Player_MovingDown], Res::tiles[Res::BitmapPool::Fallback]);
+			MovingSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(Res::tiles[Res::Tiles::_Player_MovingLeft], Res::tiles[Res::BitmapPool::Fallback]);
 
-			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInRight"), ObjectBase::bitmapPool.get("Error"));
-			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInUp"), ObjectBase::bitmapPool.get("Error"));
-			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInDown"), ObjectBase::bitmapPool.get("Error"));
-			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassInLeft"), ObjectBase::bitmapPool.get("Error"));
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(Res::tiles[Res::Tiles::_Player_PassInRight], Res::tiles[Res::BitmapPool::Fallback]);
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(Res::tiles[Res::Tiles::_Player_PassInUp], Res::tiles[Res::BitmapPool::Fallback]);
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(Res::tiles[Res::Tiles::_Player_PassInDown], Res::tiles[Res::BitmapPool::Fallback]);
+			PassInSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(Res::tiles[Res::Tiles::_Player_PassInLeft], Res::tiles[Res::BitmapPool::Fallback]);
 
-			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutRight"), ObjectBase::bitmapPool.get("Error"));
-			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutUp"), ObjectBase::bitmapPool.get("Error"));
-			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutDown"), ObjectBase::bitmapPool.get("Error"));
-			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(ObjectBase::bitmapPool.get("Pleyer-PassOutLeft"), ObjectBase::bitmapPool.get("Error"));
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Right)].initialize(Res::tiles[Res::Tiles::_Player_PassOutRight], Res::tiles[Res::BitmapPool::Fallback]);
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Up)].initialize(Res::tiles[Res::Tiles::_Player_PassOutUp], Res::tiles[Res::BitmapPool::Fallback]);
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Down)].initialize(Res::tiles[Res::Tiles::_Player_PassOutDown], Res::tiles[Res::BitmapPool::Fallback]);
+			PassOutSlides[Type::Rotations::getIndexOfRotation(Type::Rotations::Left)].initialize(Res::tiles[Res::Tiles::_Player_PassOutLeft], Res::tiles[Res::BitmapPool::Fallback]);
 
-			Sniff.initialize(ObjectBase::bitmapPool.get("Pleyer-Sniff"), ObjectBase::bitmapPool.get("Error"));
-			Push.initialize(ObjectBase::bitmapPool.get("Pleyer-Push"), ObjectBase::bitmapPool.get("Error"));
+			Sniff.initialize(Res::tiles[Res::Tiles::_Player_Sniff], Res::tiles[Res::BitmapPool::Fallback]);
+			Push.initialize(Res::tiles[Res::Tiles::_Player_Push], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{

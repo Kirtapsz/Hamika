@@ -1,25 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="KIR">
       <UniqueIdentifier>{efade2a2-d0d2-4404-b9b1-c35debe809c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Hamika">
-      <UniqueIdentifier>{9cd9c993-2ea5-4b5e-84cf-14afb4415ed2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Hamika\ActiveMap">
-      <UniqueIdentifier>{eba58788-6e07-4b82-bc5e-975a9a053925}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Hamika\World">
-      <UniqueIdentifier>{888cc204-f3aa-4fd6-84f2-be6a8c72f12e}</UniqueIdentifier>
     </Filter>
     <Filter Include="KIR\AL">
       <UniqueIdentifier>{7c0798f7-9ac5-4bff-baf7-660557cc0f98}</UniqueIdentifier>
@@ -33,70 +16,70 @@
     <Filter Include="KIR\sys">
       <UniqueIdentifier>{ccee2d79-7bf1-475e-b111-bcaafb10d5c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\World\BluePrint">
-      <UniqueIdentifier>{3c2efebf-b8a0-4f23-8b8b-69eb273162e0}</UniqueIdentifier>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{567d3eab-a73d-4653-8472-c75e39c8d498}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\ActiveMap\Objects">
+    <Filter Include="Resource\Containers">
+      <UniqueIdentifier>{c99fbe85-cd89-44fb-a8e5-8855e0b8f5a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Tools">
+      <UniqueIdentifier>{c40b5c9f-17b7-454a-8138-a9d94fc6fbf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{cb7e819e-8b07-46b2-b050-b6f4acd35bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Containers\World">
+      <UniqueIdentifier>{940e71f2-170a-4ea9-a8a6-6dbf6387be8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{eba58788-6e07-4b82-bc5e-975a9a053925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects">
       <UniqueIdentifier>{0d116c3f-2883-4b16-bf4e-86f117a69e07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\Tools">
+    <Filter Include="Tools">
       <UniqueIdentifier>{a37f369d-646c-4be7-8718-5bcf9e291451}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\Controller">
+    <Filter Include="Resource\Containers\Controller">
       <UniqueIdentifier>{d9256992-e71d-448d-b263-b25f1f6a02d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\Controller\RngController">
+    <Filter Include="Resource\Containers\Controller\RngController">
       <UniqueIdentifier>{c17938b7-4332-42cb-96b9-d086a8f153dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\Controller\KeyboardController">
+    <Filter Include="Resource\Containers\Controller\KeyboardController">
       <UniqueIdentifier>{cde33a71-709d-4148-8465-43d77f8a9ecd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Hamika\Account">
-      <UniqueIdentifier>{0a6c3200-b99b-463e-b281-17cd4cf3cbb7}</UniqueIdentifier>
+    <Filter Include="UI\Tools">
+      <UniqueIdentifier>{f694de21-13a8-4f73-872e-5a2f3bd8c2fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MapDrawer.hpp">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="StatusBar.cpp">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="BaseFunctions.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="OriginalObjects.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Bedrock.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Space.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Murphy.cpp">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Bitmap.cpp">
-      <Filter>Hamika\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Types.cpp">
-      <Filter>Hamika\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Array2D.cpp">
-      <Filter>Hamika\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="MainEvent.cpp">
-      <Filter>Hamika</Filter>
+      <Filter>Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="EditorMainEvent.cpp">
       <Filter>Editor</Filter>
@@ -105,16 +88,13 @@
       <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="ActiveMap.cpp">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="ActiveBlock.hpp">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="EditorWorld.cpp">
       <Filter>Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Hamika\Tools</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_time.cpp">
       <Filter>KIR</Filter>
@@ -126,10 +106,7 @@
       <Filter>KIR</Filter>
     </ClCompile>
     <ClCompile Include="Tools.cpp">
-      <Filter>Hamika\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="BlueprintPanel.cpp">
-      <Filter>Hamika\Tools</Filter>
+      <Filter>Tools</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_md5.cpp">
       <Filter>KIR\hash</Filter>
@@ -141,9 +118,6 @@
       <Filter>KIR\AL</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap_target.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_button.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_clipping_rectangle.cpp">
@@ -164,28 +138,16 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_font.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_label.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_list_panel.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_main.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel_control.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_panel_tools.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_scroll_bar.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_text_box.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_base.cpp">
@@ -200,85 +162,104 @@
     <ClCompile Include="EditorObjects.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="BluePrint.cpp">
-      <Filter>Hamika\World\BluePrint</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Hamika\World</Filter>
-    </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp">
       <Filter>KIR\sys</Filter>
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp">
       <Filter>KIR\sys</Filter>
     </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_string_conditional.cpp">
+    <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_stream.cpp">
       <Filter>KIR</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapPool.cpp">
-      <Filter>Hamika\Tools</Filter>
     </ClCompile>
     <ClCompile Include="EditorSaveWorldDialog.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="UItools.cpp">
-      <Filter>Hamika\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="KeyboardController.cpp">
-      <Filter>Hamika\Controller\KeyboardController</Filter>
+      <Filter>Resource\Containers\Controller\KeyboardController</Filter>
     </ClCompile>
     <ClCompile Include="RngController.cpp">
-      <Filter>Hamika\Controller\RngController</Filter>
+      <Filter>Resource\Containers\Controller\RngController</Filter>
     </ClCompile>
     <ClCompile Include="LoopControllInterface.cpp">
-      <Filter>Hamika\Controller</Filter>
+      <Filter>Resource\Containers\Controller</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
-      <Filter>Hamika\Controller</Filter>
+      <Filter>Resource\Containers\Controller</Filter>
     </ClCompile>
     <ClCompile Include="Account.cpp">
-      <Filter>Hamika\Account</Filter>
+      <Filter>Resource\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Hash.cpp">
+      <Filter>Resource\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto.cpp">
+      <Filter>Resource\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Resource\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Resource\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Record.h">
+      <Filter>Resource\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Resource\Containers\World</Filter>
+    </ClCompile>
+    <ClCompile Include="BluePrint.cpp">
+      <Filter>Resource\Containers\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="MainEvent.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="BlueprintPanel.cpp">
+      <Filter>UI\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="UItools.cpp">
+      <Filter>UI\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Cursor.cpp">
+      <Filter>UI\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bedrock.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Space.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Murphy.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="StatusBar.h">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="MapDrawer.h">
-      <Filter>Hamika\ActiveMap</Filter>
-    </ClInclude>
-    <ClInclude Include="Bitmap.h">
-      <Filter>Hamika\Tools</Filter>
+      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Types.h">
-      <Filter>Hamika\Tools</Filter>
+      <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Objects.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="BaseFunctions.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="OriginalObjects.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Array2D.h">
-      <Filter>Hamika\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="MainEvent.h">
-      <Filter>Hamika</Filter>
+    <ClInclude Include="Matrix.h">
+      <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="EditorMainEvent.h">
       <Filter>Editor</Filter>
@@ -287,25 +268,19 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="ActiveMap.h">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="IDreg.h">
-      <Filter>Hamika\ActiveMap\Objects</Filter>
+      <Filter>Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="ActiveBlock.h">
-      <Filter>Hamika\ActiveMap</Filter>
+      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="EditorWorld.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Hamika\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Tools.h">
-      <Filter>Hamika\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="BlueprintPanel.h">
-      <Filter>Hamika\Tools</Filter>
+      <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="EditorMiniMap.h">
       <Filter>Editor</Filter>
@@ -322,35 +297,59 @@
     <ClInclude Include="EditorActiveBlock.hpp">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="BluePrint.h">
-      <Filter>Hamika\World\BluePrint</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Hamika\World</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapPool.h">
-      <Filter>Hamika\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="EditorSaveWorldDialog.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="UItools.h">
-      <Filter>Hamika\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="KeyboardController.h">
-      <Filter>Hamika\Controller\KeyboardController</Filter>
+      <Filter>Resource\Containers\Controller\KeyboardController</Filter>
     </ClInclude>
     <ClInclude Include="RngController.h">
-      <Filter>Hamika\Controller\RngController</Filter>
+      <Filter>Resource\Containers\Controller\RngController</Filter>
     </ClInclude>
     <ClInclude Include="LoopControllInterface.h">
-      <Filter>Hamika\Controller</Filter>
+      <Filter>Resource\Containers\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h">
-      <Filter>Hamika\Controller</Filter>
+      <Filter>Resource\Containers\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Account.h">
-      <Filter>Hamika\Account</Filter>
+      <Filter>Resource\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash.h">
+      <Filter>Resource\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto.h">
+      <Filter>Resource\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Bitmap.h">
+      <Filter>Resource\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Resource\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Resource\Containers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="BluePrint.h">
+      <Filter>Resource\Containers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="MainEvent.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueprintPanel.h">
+      <Filter>UI\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="UItools.h">
+      <Filter>UI\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>UI\Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

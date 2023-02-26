@@ -41,28 +41,43 @@ namespace Object
 		return false;
 	}
 
-	inline void DRAW_NUMBER(float timer, const float duration, int &drawNumber, ObjectBase *obj, const Slides &bmp)
+	inline void DRAW_NUMBER(float timer, const float duration, int &drawNumber, ObjectBase *obj, const Res::Slides &bmp)
 	{
 		int drawNumber_ = bmp.getDrawNumber(1 - (timer / duration));
 		if (drawNumber != drawNumber_)
 		{
-			obj->requests.draw=true;
+			obj->requests.draw = true;
 			drawNumber = drawNumber_;
 		}
 	}
 
-	inline void DRAW_NUMBER_R(float timer, const float duration, int &drawNumber, ObjectBase *obj, const Slides &bmp)
+	inline void DRAW_NUMBER_R(float timer, const float duration, int &drawNumber, ObjectBase *obj, const Res::Slides &bmp)
 	{
 		int drawNumber_ = bmp.getDrawNumber(timer / duration);
 		if (drawNumber != drawNumber_)
 		{
-			obj->requests.draw=true;
+			obj->requests.draw = true;
 			drawNumber = drawNumber_;
 		}
 	}
 
 	namespace Animator
 	{
+		struct Specific
+		{
+			std::float_t time;
+			std::float_t timer;
+			std::int8_t numberOfFrames;
+			std::int8_t drawNumber;
+
+			void Initialize();
+			void SetAnimationTime(std::float_t AnimationTime);
+			void SetNumberOfFrames(std::int8_t FramesNumber);
+			std::int8_t GetDrawNumber();
+			bool UpdateDrawNumber();
+			void UpdateTimer();
+		};
+
 		void Create(OBJECT_CREATER_PARAM);
 		void Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);

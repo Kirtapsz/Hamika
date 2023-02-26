@@ -1,8 +1,7 @@
 #include <fstream>
+#include <cstdint>
 
 #include "Tools.h"
-
-#include <KIR\AL\KIR5_event_engine.h>
 
 std::vector<std::string> split(const std::string &s, char separator)
 {
@@ -42,26 +41,49 @@ std::map<std::string, std::string> parse(const std::string &s)
 }
 
 
-bool writeFileFromBuffer(const std::string &filename, const std::vector<unsigned char> &buffer)
+
+bool WriteFile(const std::string &filename, const std::uint8_t *src, std::size_t size)
 {
 	std::ofstream f(filename, std::ios::binary);
 	if (f.is_open())
 	{
-		f.write(reinterpret_cast<const char *>(buffer.data()), buffer.size());
-		return true;
+		f.write(reinterpret_cast<const char *>(src), size);
+		return !f.bad();
 	}
 	else
 	{
 		return false;
 	}
-
 }
-bool readFileToBuffer(const std::string &filename, std::vector<unsigned char> &buffer)
+bool WriteFile(const std::string &filename, const std::vector<unsigned char> &buffer)
+{
+	return WriteFile(filename, reinterpret_cast<const std::uint8_t *>(buffer.data()), buffer.size());
+}
+bool WriteFile(const std::string &filename, const KIR5::DynamicStream &stream)
+{
+	return WriteFile(filename, &*stream.begin(), stream.size());
+}
+
+
+bool ReadFile(const std::string &filename, std::vector<unsigned char> &buffer)
 {
 	std::ifstream f(filename, std::ios::binary);
 	if (f.is_open())
 	{
 		buffer = std::move(std::vector<unsigned char>(std::istreambuf_iterator<char>(f), {}));
+		return !f.bad();
+	}
+	else
+	{
+		return false;
+	}
+}
+bool ReadFile(const std::string &filename, KIR5::DynamicStream &stream)
+{
+	std::vector<unsigned char> buffer;
+	if (ReadFile(filename, buffer))
+	{
+		stream = std::move(buffer);
 		return true;
 	}
 	else

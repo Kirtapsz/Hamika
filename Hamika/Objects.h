@@ -12,7 +12,6 @@
 
 #include "Murphy.h"
 #include "Types.h"
-#include "BitmapPool.h"
 
 
 namespace Objects

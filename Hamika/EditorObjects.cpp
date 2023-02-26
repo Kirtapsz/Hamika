@@ -8,10 +8,9 @@
 
 #include <KIR/KIR4_console.h>
 
-namespace Object
+namespace Object::Editor
 {
-	//Editor object
-	namespace EditorObject
+	namespace Object
 	{
 		const char *name = "EditorObject";
 
@@ -25,8 +24,7 @@ namespace Object
 			DrawObject(stack->o->id, x, y, w, h);
 		}
 	}
-	//Editor remain
-	namespace EditorRemain
+	namespace Remain
 	{
 		KIR5::Bitmap arrowDown;
 		KIR5::Bitmap arrowUp;
@@ -118,12 +116,15 @@ namespace Object
 			char buffer[32];
 
 			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x, stack->o->GetCoord().y);
-			Font::Consolas[stack->o->DrawSize().height / 6].draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			Font::Consolas[stack->o->DrawSize().height / 6].draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+
+			KIR5::Font font = Res::Consolas[stack->o->DrawSize().height / 6];
+
+			font.draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 
 			sprintf_s(buffer, "(%03d)", obj->id);
-			Font::Consolas[stack->o->DrawSize().height / 6].draw(x + 1, y + 1 + (stack->o->DrawSize().height / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			Font::Consolas[stack->o->DrawSize().height / 6].draw(x, y + (stack->o->DrawSize().height / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+			font.draw(x + 1, y + 1 + (stack->o->DrawSize().height / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(x, y + (stack->o->DrawSize().height / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 		}
 	}
 }

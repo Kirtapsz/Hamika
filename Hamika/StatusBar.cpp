@@ -10,7 +10,7 @@ StatusBar::Label::Label()
 {
 	show();
 	setTextColor(al_map_rgb(200, 200, 200));
-	setTextFont(Font::MajorSnafu[30]);
+	setTextFont(Res::MajorSnafu[30]);
 	setTextAlignment(KIR5::CENTER);
 }
 
@@ -63,7 +63,7 @@ StatusBar::StatusBar()
 	resize(550, 83);
 	show();
 
-	fncTick = [&](FNC_TICK_PARAMS)->FNC_TICK_RET
+	fncTick.push_back([&](FNC_TICK_PARAMS)->FNC_TICK_RET
 	{
 		if (++SS == 60)
 		{
@@ -77,18 +77,18 @@ StatusBar::StatusBar()
 			MMLabel->setText(ToSString(MM).c_str());
 		}
 		SSLabel->setText(ToSString(SS).c_str());
-	};
+	});
 
-	fncDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+	fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
 	{
 		statusBMP.drawScaled(x_, y_, w_, h_);
 
 		DrawObject(ObjectID::Infotron, x_ + 92, y_ + 46, 28, 28);
 		DrawObject(ObjectID::Utility2, x_ + 205, y_ + 46, 28, 28);
-	};
+	}));
 }
 
-void StatusBar::SetMap(const BluePrint &disp_map)
+void StatusBar::SetMap(const Res::BluePrint &disp_map)
 {
 	mapNameLabel->setText(disp_map.title);
 	AimCollect = 0;

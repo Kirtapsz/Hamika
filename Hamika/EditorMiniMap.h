@@ -17,7 +17,7 @@
 
 #include <memory>
 
-namespace Editor
+namespace UI::Editor
 {
 	class MiniMap: public KIR5::Panel
 	{
@@ -28,14 +28,14 @@ namespace Editor
 		private: Type::Move camera;
 		private: Type::Move cameraSize;
 
-		private: std::shared_ptr<Array2D<ActiveBlock<EditorObjectBase>>> map;
+		private: std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> map;
 		private: KIR5::Bitmap bitmap;
 
 		public: MiniMap();
 		public: ~MiniMap();
 
 		private: void setCameraToClick(int x, int y);
-		public: void SetMap(std::shared_ptr<Array2D<ActiveBlock<EditorObjectBase>>> &map);
+		public: void SetMap(std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map);
 		public: void updateBlocks();
 		public: void updatePosition(Type::Move center, Type::Move size);
 	};

@@ -3,7 +3,7 @@
 
 #include "EditorActiveBlock.h"
 
-namespace Editor
+namespace UI::Editor
 {
 	template <typename OBJECT_T>
 	ActiveBlock<OBJECT_T>::~ActiveBlock()

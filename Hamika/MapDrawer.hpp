@@ -639,7 +639,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 }
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::SetMap(std::shared_ptr<Array2D<ACTIVE_BLOCK_T>> &map_)
+void MapDrawer<ACTIVE_BLOCK_T>::SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map_)
 {
 	map = map_;
 }
@@ -670,9 +670,9 @@ void MapDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 
 
 template <typename ACTIVE_BLOCK_T>
-StackTimer MapDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
+Object::Animator::Specific MapDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
 
 template <typename ACTIVE_BLOCK_T>
-Slides MapDrawer<ACTIVE_BLOCK_T>::gravitySlides;
+Res::Slides MapDrawer<ACTIVE_BLOCK_T>::gravitySlides;
 
 #endif

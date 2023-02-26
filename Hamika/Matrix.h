@@ -4,7 +4,7 @@
 #include "Types.h"
 
 template<class Data>
-class Array2D
+class Matrix
 {
 	private: Type::Size size = {0,0};
 
@@ -29,9 +29,9 @@ class Array2D
 			clog << KIR4::LRED << "Coord ERROR!: " << coord << KIR4::eol << KIR4::pp;
 #endif // DEBUG
 		return data[coord.x][coord.y];
-	} 
+	}
 
-	public: Array2D(Type::Size size)
+	public: Matrix(Type::Size size)
 	{
 		if (size.width > 0 && size.height > 0)
 		{
@@ -42,17 +42,17 @@ class Array2D
 				data[i].resize(size.height);
 		}
 	}
-	public: Array2D()
+	public: Matrix()
 	{
 
 	}
-	public: Array2D(Array2D &&array2D):
+	public: Matrix(Matrix &&array2D):
 		size(array2D.size),
 		data(std::move(array2D.data))
 	{
 
 	}
-	public: virtual ~Array2D()
+	public: virtual ~Matrix()
 	{
 		data.clear();
 		size = {0,0};
@@ -84,6 +84,17 @@ class Array2D
 
 
 	public: template<typename F> inline void foreach(F &f)
+	{
+		Type::Coord coord = {0};
+		for (coord.x = 0; coord.x < size.width; ++coord.x)
+		{
+			for (coord.y = 0; coord.y < size.height; ++coord.y)
+			{
+				f(coord, (*this)[coord]);
+			}
+		}
+	}
+	public: template<typename F> inline void foreach(F &f) const
 	{
 		Type::Coord coord = {0};
 		for (coord.x = 0; coord.x < size.width; ++coord.x)

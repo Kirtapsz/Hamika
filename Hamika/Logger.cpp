@@ -16,11 +16,11 @@ void Logger::clear()
 	logs.clear();
 }
 
-Logger::Logger(LoopControllerInterface &loopControllerInterface, const KIR5::sha512digest &bluePrintHash, const KIR5::sha512digest &userHash):
-	loopControllerInterface(loopControllerInterface)
+Logger::Logger(LoopControllerInterface &_loopControllerInterface, const KIR5::sha512digest &_bluePrintHash, const KIR5::sha512digest &_userHash):
+	loopControllerInterface(_loopControllerInterface)
 {
-	memcpy(this->bluePrintHash, bluePrintHash, KIR5::SHA512_DIGEST_SIZE);
-	memcpy(this->userHash, userHash, KIR5::SHA512_DIGEST_SIZE);
+	bluePrintHash = _bluePrintHash;
+	userHash = _userHash;
 }
 
 Logger::~Logger()
@@ -41,7 +41,7 @@ bool Logger::load(const std::string &filename)
 	std::vector<unsigned __int8> headBuffer(2 + sizeof(unsigned __int32) + sizeof(unsigned __int32));
 	std::vector<unsigned __int8> rowBuffer;
 
-	if (readFileToBuffer(filename, buffer))
+	if (ReadFile(filename, buffer))
 	{
 		size_t idx = 1 + 7 + KIR5::SHA512_DIGEST_SIZE + KIR5::SHA512_DIGEST_SIZE;
 		size_t idxLast;
@@ -53,8 +53,8 @@ bool Logger::load(const std::string &filename)
 				return false;
 			}
 			memcpy(commit, &buffer[1], 7);
-			memcpy(bluePrintHash, &buffer[8], KIR5::SHA512_DIGEST_SIZE);
-			memcpy(userHash, &buffer[8 + KIR5::SHA512_DIGEST_SIZE], KIR5::SHA512_DIGEST_SIZE);
+			memcpy(bluePrintHash.data(), &buffer[8], KIR5::SHA512_DIGEST_SIZE);
+			memcpy(userHash.data(), &buffer[8 + KIR5::SHA512_DIGEST_SIZE], KIR5::SHA512_DIGEST_SIZE);
 
 			while (idx < buffer.size())
 			{
@@ -136,8 +136,8 @@ bool Logger::save(const std::string &filename) const
 
 	buffer[0] = version;
 	memcpy(&buffer[1], commit, 7);
-	memcpy(&buffer[8], bluePrintHash, KIR5::SHA512_DIGEST_SIZE);
-	memcpy(&buffer[8 + KIR5::SHA512_DIGEST_SIZE], userHash, KIR5::SHA512_DIGEST_SIZE);
+	memcpy(&buffer[8], bluePrintHash.data(), KIR5::SHA512_DIGEST_SIZE);
+	memcpy(&buffer[8 + KIR5::SHA512_DIGEST_SIZE], userHash.data(), KIR5::SHA512_DIGEST_SIZE);
 
 	for (auto &map : logs)
 	{
@@ -155,5 +155,5 @@ bool Logger::save(const std::string &filename) const
 		}
 	}
 
-	return writeFileFromBuffer(filename, buffer);
+	return WriteFile(filename, buffer);
 }

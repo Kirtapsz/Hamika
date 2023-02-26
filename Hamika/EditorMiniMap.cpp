@@ -1,20 +1,20 @@
 #include "EditorMiniMap.h"
 #include "EditorMainEvent.h"
 
-namespace Editor
+namespace UI::Editor
 {
 	MiniMap::MiniMap()
 	{
-		fncLock = [&](FNC_LOCK_PARAMS)->FNC_LOCK_RET
+		fncLock.push_back([&](FNC_LOCK_PARAMS)->FNC_LOCK_RET
 		{
 			if (map && map->Exists())
 			{
 				mouseHold = true;
 				setCameraToClick(x_, y_);
 			}
-		};
+		});
 
-		fncMouseAxes = [&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
+		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
 		{
 			if (map && map->Exists())
 			{
@@ -23,17 +23,17 @@ namespace Editor
 					setCameraToClick(x_, y_);
 				}
 			}
-		};
+		});
 
-		fncUnlock = [&](FNC_UNLOCK_PARAMS)->FNC_UNLOCK_RET
+		fncUnlock.push_back([&](FNC_UNLOCK_PARAMS)->FNC_UNLOCK_RET
 		{
 			if (mouseHold)
 			{
 				mouseHold = false;
 			}
-		};
+		});
 
-		fncDraw = [&](FNC_DRAW_PARAMS)
+		fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
 		{
 			float w = width() / float(bitmap.width());
 			float h = height() / float(bitmap.height());
@@ -53,7 +53,7 @@ namespace Editor
 				cx + (int)(camera.x * min + cameraSize.x / 2),
 				cy + (int)(camera.y * min + cameraSize.y / 2),
 				KIR5::Color(255, 255, 255), 1);
-		};
+		}));
 	}
 	MiniMap::~MiniMap()
 	{
@@ -87,7 +87,7 @@ namespace Editor
 		mainEvent->activeMap->setTarget({mx,my});
 	}
 
-	void MiniMap::SetMap(std::shared_ptr<Array2D<ActiveBlock<EditorObjectBase>>> &map_)
+	void MiniMap::SetMap(std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map_)
 	{
 		map = map_;
 		std::cout << ((Type::Size)(*map)).width << " - " << ((Type::Size)(*map)).height << std::endl;

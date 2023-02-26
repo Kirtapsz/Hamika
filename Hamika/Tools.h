@@ -1,6 +1,7 @@
 #pragma once
 
 #include <KIR\AL\KIR5_event_engine.h>
+#include <KIR/KIR5_stream.h>
 
 #include <map>
 #include <string>
@@ -8,6 +9,7 @@
 #include <algorithm>
 #include <random>
 
+extern std::shared_ptr<KIR5::Display> display;
 extern std::shared_ptr<KIR5::EventEngine> eventEngine;
 
 extern std::random_device rd;
@@ -61,10 +63,12 @@ constexpr T limiter(const T &l, const T &h, const T &v)
 }
 
 
-bool writeFileFromBuffer(const std::string &filename, const std::vector<unsigned char> &buffer);
-bool readFileToBuffer(const std::string &filename, std::vector<unsigned char> &buffer);
+bool WriteFile(const std::string &filename, const std::uint8_t *src, std::size_t size);
+bool WriteFile(const std::string &filename, const std::vector<unsigned char> &buffer);
+bool WriteFile(const std::string &filename, const KIR5::DynamicStream &stream);
 
-
+bool ReadFile(const std::string &filename, std::vector<unsigned char> &buffer);
+bool ReadFile(const std::string &filename, KIR5::DynamicStream &stream);
 
 template <typename T, typename A>
 void get(T &ret, const A &data, size_t idx, size_t len)
@@ -125,4 +129,25 @@ template <typename T>
 inline constexpr size_t tail()
 {
 	return T::idx + T::len;
+}
+
+
+
+struct ErrorMsgs
+{
+	std::uint16_t err_c;
+	const char *msg;
+};
+
+template<std::size_t size_>
+const char *translateErrorCode(std::uint16_t err_c, const std::array<ErrorMsgs, size_> &errorMsgs)
+{
+	for (auto &it : errorMsgs)
+	{
+		if (it.err_c == err_c)
+		{
+
+		}
+	}
+	return "Error message is not defined!";
 }

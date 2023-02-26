@@ -22,7 +22,7 @@ ActiveMap::ActiveMap()
 	*this << drawnerPanel;
 	drawnerPanel->show();
 
-	fncMouseButtonDown = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
+	fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
 	{
 		Type::Coord coord = drawer.GetFromCursor(x_, y_);
 		if (map->Test(coord))
@@ -36,28 +36,28 @@ ActiveMap::ActiveMap()
 		}
 
 		return false;
-	};
+	});
 
-	fncMoved = [&](FNC_MOVED_PARAMS)
+	fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 	{
 		drawnerPanel->move(0, 0, width(), height() - statusbar->Height());
 		drawer.InitializeDrawOptions({drawnerPanel->width(), drawnerPanel->height() - statusbar->Height()}, cameraSize);
 		statusbar->Align();
-	};
+	});
 
-	fncKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+	fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 	{
 		keyboardController->keyDown(key_);
 		return false;
-	};
+	});
 
-	fncKeyUp = [&](FNC_KEY_UP_PARAMS)->FNC_KEY_UP_RET
+	fncKeyUp.push_back([&](FNC_KEY_UP_PARAMS)->FNC_KEY_UP_RET
 	{
 		keyboardController->keyUp(key_);
 		return false;
-	};
+	});
 
-	fncTimer = [&](FNC_TIMER_PARAMS)
+	fncTimer.push_back([&](FNC_TIMER_PARAMS)
 	{
 		loopControllerInterface.loopRoll();
 		keyboardController->loop();
@@ -112,9 +112,9 @@ ActiveMap::ActiveMap()
 		{
 			--startLoop;
 		}
-	};
+	});
 
-	fncTick = [&](FNC_TICK_PARAMS)
+	fncTick.push_back([&](FNC_TICK_PARAMS)
 	{
 		if (startLoop == 0)
 		{
@@ -129,14 +129,14 @@ ActiveMap::ActiveMap()
 			std::for_each(objects.begin(), objects.end(), fnc);
 			std::for_each(remains.begin(), remains.end(), fnc);
 		}
-	};
+	});
 
-	fncKeyChar = [&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
+	fncKeyChar.push_back([&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
 	{
 		return false;
-	};
+	});
 
-	drawnerPanel->fncDraw = [&](FNC_DRAW_PARAMS)
+	drawnerPanel->fncDraw.push_back([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
 	{
 		if (murphy)
 		{
@@ -154,7 +154,7 @@ ActiveMap::ActiveMap()
 				al_draw_filled_rectangle(x_, y_, x_ + w_, y_ + h_, KIR5::Color(0, 0, 0, 255 - (255 * (stopLoop / (float)stopLoopInit))).getAlphaColored());
 			}
 		}
-	};
+	});
 }
 ActiveMap::~ActiveMap()
 {
@@ -173,30 +173,43 @@ void ActiveMap::buildObjectsHolder()
 }
 void ActiveMap::stopMap()
 {
-	logger->save(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "replays", "test.log"));
+	if (logger)
+	{
+		logger->save(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "replays", "test.log"));
+	}
 
 	keyboardController = nullptr;
 	rngController = nullptr;
 
 	logger = nullptr;
 
-	mainEvent->mapFinished(victory, loopCounter);
+	UI::mainEvent->mapFinished(victory, loopCounter);
 }
-void ActiveMap::startMap(const BluePrint &disp_map, const std::shared_ptr<Account> &account)
+void ActiveMap::startMap(const Res::BluePrint &disp_map, const std::shared_ptr<Res::Account> &account)
 {
 	this->account = account;
 
 	loopControllerInterface.loopStart();
 
+	if (account)
+	{
+		logger = std::shared_ptr<Logger>(new Logger(loopControllerInterface, disp_map.hash, account->hash()));
 
-	logger = std::shared_ptr<Logger>(new Logger(loopControllerInterface, disp_map.hash, account->hash));
+		//logger->load(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "replays", "test.log"));
+		//keyboardController = std::shared_ptr<KeyboardController>(new KeyboardLoopReplay(loopControllerInterface, *logger));
+		//rngController = std::shared_ptr<RngController>(new RngReplay(loopControllerInterface, *logger));
+	}
 
-	//logger->load(KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "replays", "test.log"));
-	//keyboardController = std::shared_ptr<KeyboardController>(new KeyboardLoopReplay(loopControllerInterface, *logger));
-	//rngController = std::shared_ptr<RngController>(new RngReplay(loopControllerInterface, *logger));
-
-	keyboardController = std::shared_ptr<KeyboardController>(new StandardKeyboardRecord(loopControllerInterface, *logger));
-	rngController = std::shared_ptr<RngController>(new RngRecord(loopControllerInterface, *logger));
+	if (logger)
+	{
+		keyboardController = std::shared_ptr<KeyboardController>(new StandardKeyboardRecord(loopControllerInterface, *logger));
+		rngController = std::shared_ptr<RngController>(new RngRecord(loopControllerInterface, *logger));
+	}
+	else
+	{
+		keyboardController = std::shared_ptr<KeyboardController>(new StandardKeyboard(loopControllerInterface));
+		rngController = std::shared_ptr<RngController>(new RngController(loopControllerInterface));
+	}
 
 	statusbar->SetMap(disp_map);
 
@@ -209,7 +222,7 @@ void ActiveMap::startMap(const BluePrint &disp_map, const std::shared_ptr<Accoun
 	stopLoop = stopLoopInit;
 
 	std::vector<Type::Coord> spawns;
-	map.reset(new Array2D<ActiveBlock<ObjectBase>>(disp_map.blocks));
+	map.reset(new Matrix<ActiveBlock<ObjectBase>>(disp_map.blocks));
 	objects.resize(((Type::Size)*map).width * ((Type::Size)*map).height);
 	remains.resize(objects.size());
 	map->foreach([&](const Type::Coord &coord, ActiveBlock<ObjectBase> &block)

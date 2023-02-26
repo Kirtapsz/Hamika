@@ -6,9 +6,52 @@ namespace Object
 {
 	namespace Animator
 	{
+		void Specific::Initialize()
+		{
+			timer = 0.f;
+			time = 0.f;
+			numberOfFrames = 0;
+			drawNumber = 0;
+		}
+		void Specific::SetAnimationTime(std::float_t _time)
+		{
+			std::uniform_real_distribution<std::float_t> distribution(0.f, _time);
+
+			time = _time;
+			timer = distribution(generator);
+			UpdateDrawNumber();
+		}
+		void Specific::SetNumberOfFrames(std::int8_t _numberOfFrames)
+		{
+			numberOfFrames = _numberOfFrames;
+		}
+		std::int8_t Specific::GetDrawNumber()
+		{
+			return drawNumber;
+		}
+		bool Specific::UpdateDrawNumber()
+		{
+			std::int8_t drawNumber_ = limiter<std::int8_t>(0, numberOfFrames - 1,
+														   static_cast<std::int8_t>((timer / time) * numberOfFrames));
+			if (drawNumber != drawNumber_)
+			{
+				drawNumber = drawNumber_;
+				return true;
+			}
+			return false;
+		}
+		void Specific::UpdateTimer()
+		{
+			timer += CA;
+			if (timer > time)
+			{
+				timer -= time;
+			}
+		}
+
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(StackTimer, s);
+			pops(Specific, s);
 			s->Initialize();
 
 			stack->o->events.timer = true;
@@ -17,7 +60,7 @@ namespace Object
 		}
 		void Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(StackTimer, s);
+			pops(Specific, s);
 			clog << "Animator::timer: " << s->timer << "\n";
 			clog << "Animator::time: " << s->time << "\n";
 			clog << "Animator::numberOfFrames: " << s->numberOfFrames << "\n";
@@ -25,7 +68,7 @@ namespace Object
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(StackTimer, s);
+			pops(Specific, s);
 
 			s->UpdateTimer();
 			if (s->UpdateDrawNumber())
@@ -37,11 +80,11 @@ namespace Object
 		}
 		void Tick(OBJECT_TICK_PARAM)
 		{
-			pops(StackTimer, s);
+			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(StackTimer, s);
+			pops(Specific, s);
 		}
 	}
 

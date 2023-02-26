@@ -1,30 +1,24 @@
 #include "Font.h"
 
-namespace Font
+namespace Res
 {
-	FontContainer::FontContainer(const char *fontPath):fontPath(fontPath)
+	KIR5::Font Font::get(std::size_t &key) const
 	{
-
+		KIR5::Font font;
+		font.load(path.c_str(), key);
+		return font;
 	}
-
-	const KIR5::Font &FontContainer::operator[](int size)
+	void Font::vadlidate(std::size_t &key) const
 	{
-		auto f=fonts.find(size);
-		if (f == fonts.end())
+		if (key == 0)
 		{
-			KIR5::Font newFont;
-			newFont.load(fontPath.c_str(), size);
-			fonts[size]=newFont;
-			return fonts[size];
-		}
-		else
-		{
-			return f->second;
+			key = 1;
 		}
 	}
 
-	FontContainer MajorSnafu("Hamika\\font\\MajorSnafu.ttf");
-	FontContainer CalibriBold("Hamika\\font\\CalibriBold.ttf");
-	FontContainer TimesNewRoman("Hamika\\font\\TimesNewRoman.ttf");
-	FontContainer Consolas("Hamika\\font\\Consolas.ttf");
-}
+	Font MajorSnafu("Hamika\\font\\MajorSnafu.ttf");
+	Font CalibriBold("Hamika\\font\\CalibriBold.ttf");
+	Font TimesNewRoman("Hamika\\font\\TimesNewRoman.ttf");
+	Font Consolas("Hamika\\font\\Consolas.ttf");
+
+};

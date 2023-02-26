@@ -1,58 +1,62 @@
 #pragma once
 
-#include "Types.h"
-#include "Array2D.h"
-
-#include "Objects.h"
-
-#include <string>
-#include <fstream>
-#include <vector>
-#include <array>
-
 #include "BluePrint.h"
 
-#include <KIR/hash/KIR5_sha512.h>
-
-class World
+namespace Res
 {
-	public: enum VType
+	struct World: public Base
 	{
-		T_HamSt1,
-		T_HamBC,
-		T_Orig,
+		using Base::Base;
+
+		std::string title{"UNKNOWN"};
+		std::vector<std::shared_ptr<BluePrint>> bluePrints;
+
+		struct IO_HamSt1: Record<
+			FixedStringRecord<128>,
+			VectorRecord<std::uint16_t, BluePrint::IO_HamSt1>
+		>
+		{
+			constexpr static std::size_t title = 0;
+			constexpr static std::size_t blueprints = 1;
+		};
+		void operator=(const IO_HamSt1 &record);
+		operator IO_HamSt1() const;
+
+		struct IO_HamBC: Record<
+			EofVectorRecord<BluePrint::IO_HamBC>
+		>
+		{
+			constexpr static std::size_t blueprints = 0;
+		};
+		void operator=(const IO_HamBC &record);
+		operator IO_HamBC() const;
+
+		struct IO_Orig: Record<
+			EofVectorRecord<BluePrint::IO_Orig>
+		>
+		{
+			constexpr static std::size_t blueprints = 0;
+		};
+		void operator=(const IO_Orig &record);
+		operator IO_Orig() const;
+
+		template <typename T>
+		struct _Handler: Handler<T>
+		{
+			const std::string name;
+		};
+
+
+		const static std::tuple<
+			World::_Handler<World::IO_HamSt1>,
+			World::_Handler<World::IO_Orig>,
+			World::_Handler<World::IO_HamBC>
+		> handlers;
+
+
+		public: virtual bool initialize(std::uint32_t mode);
 	};
 
-	private: std::string title = "UNKNOWN";
-	private: std::vector<std::shared_ptr<BluePrint>> bluePrints;
 
-	public: bool load(const std::string &filename);
-	public: bool save(const std::string &filename, World::VType type);
-
-	public: inline const std::vector<std::shared_ptr<BluePrint>> &getBluePrints() const
-	{
-		return bluePrints;
-	}
-	public: inline void setBluePrints(const std::vector<std::shared_ptr<BluePrint>> &bluePrints)
-	{
-		this->bluePrints = bluePrints;
-	}
-	public: inline const std::string &getTitle() const
-	{
-		return title;
-	}
-	public: inline void setTitle(const std::string &title)
-	{
-		this->title = title;
-	}
-};
-
-struct WorldIO
-{
-	const std::string name;
-	World::VType type;
-	std::function<bool(const std::vector<unsigned char> &data)> isType;
-	std::function<bool(const std::vector<unsigned char> &data, World &world)> load;
-	std::function<bool(std::vector<unsigned char> &data, const World &world)> save;
-};
-extern std::array<WorldIO, 3> worldIOs;
+	extern World world1;
+}
