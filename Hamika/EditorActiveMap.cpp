@@ -3,7 +3,7 @@
 #include "EditorMainEvent.h"
 #include "EditorObjects.h"
 
-namespace UI::Editor
+namespace UI::Editor::Game
 {
 	ActiveMap::ActiveMap()
 	{
@@ -16,7 +16,7 @@ namespace UI::Editor
 			{
 				if (this->onPanel(x_, y_))
 				{
-					mainEvent->controlPanel->pickID(reach(map)[drawer.GetFromCursor(x_ - x(), y_ - y())].object->id);
+					MainEvent::s_object->controlPanel->pickID(reach(map)[drawer.GetFromCursor(x_ - x(), y_ - y())].object->id);
 
 					return true;
 				}
@@ -98,7 +98,7 @@ namespace UI::Editor
 			if (key_ == ALLEGRO_KEY_RSHIFT)
 			{
 				isRShift = true;
-				mainEvent->controlPanel->setOperationMode();
+				MainEvent::s_object->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
 				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
@@ -142,7 +142,7 @@ namespace UI::Editor
 			if (key_ == ALLEGRO_KEY_RSHIFT)
 			{
 				isRShift = false;
-				mainEvent->controlPanel->setOperationMode();
+				MainEvent::s_object->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
 				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
@@ -284,7 +284,7 @@ namespace UI::Editor
 						block.Redrawn = true;
 					}
 				});
-				mainEvent->miniMap->updateBlocks();
+				MainEvent::s_object->miniMap->updateBlocks();
 			}
 			if (mouseMoveHold)
 			{
@@ -329,7 +329,7 @@ namespace UI::Editor
 		if (map->Exists())
 		{
 			drawer.MoveCameraTo(camera);
-			mainEvent->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
+			MainEvent::s_object->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
 		}
 	}
 
@@ -344,8 +344,8 @@ namespace UI::Editor
 
 	void ActiveMap::blocksUpdated()
 	{
-		mainEvent->miniMap->updateBlocks();
-		mainEvent->controlPanel->updateBlocks();
+		MainEvent::s_object->miniMap->updateBlocks();
+		MainEvent::s_object->controlPanel->updateBlocks();
 	}
 	void ActiveMap::mapLayoutUpdated()
 	{
@@ -381,8 +381,8 @@ namespace UI::Editor
 		drawer.SetMap(map);
 		drawer.InitializeDrawOptions({width(), height()}, Type::CameraSize::Invalid);
 		drawer.MoveCameraTo({0,0});
-		mainEvent->miniMap->SetMap(map);
-		mainEvent->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
+		MainEvent::s_object->miniMap->SetMap(map);
+		MainEvent::s_object->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
 	}
 	void ActiveMap::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint)
 	{
@@ -401,7 +401,7 @@ namespace UI::Editor
 			block.grid = (*bluePrint)[coord].flags;
 		});
 		mapLayoutUpdated();
-		mainEvent->controlPanel->SetMap(bluePrint, map);
+		MainEvent::s_object->controlPanel->SetMap(bluePrint, map);
 	}
 
 	Type::Size ActiveMap::GetDrawSize() const

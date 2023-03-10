@@ -29,7 +29,7 @@ namespace Res
 
 		std::get<IO_HamSt1::speed>(record) = speed;
 		std::get<IO_HamSt1::title>(record) = title;
-		std::get<IO_HamSt1::scoreToUnlock>(record) = scoreToUnlock;
+		std::get<IO_HamSt1::scoreToUnlock>(record) = static_cast<std::uint16_t>(scoreToUnlock);
 		std::get<IO_HamSt1::globalGravity>(record) = globalGravity;
 		std::get<IO_HamSt1::cameraWidth>(record) = cameraSize.width;
 		std::get<IO_HamSt1::cameraHeight>(record) = cameraSize.height;
@@ -89,7 +89,7 @@ namespace Res
 		IO_HamBC record;
 
 		std::get<IO_HamBC::title>(record) = title;
-		std::get<IO_HamBC::scoreToUnlock>(record) = scoreToUnlock;
+		std::get<IO_HamBC::scoreToUnlock>(record) = static_cast<std::uint16_t>(scoreToUnlock);
 		std::get<IO_HamBC::speed>(record) = speed;
 
 		Type::ID fillID = ObjectID::Space;
@@ -158,7 +158,7 @@ namespace Res
 		IO_Orig record;
 
 		std::get<IO_Orig::title>(record) = title;
-		std::get<IO_Orig::scoreToUnlock>(record) = scoreToUnlock;
+		std::get<IO_Orig::scoreToUnlock>(record) = static_cast<std::uint8_t>(scoreToUnlock);
 		std::get<IO_Orig::globalGravity>(record) = globalGravity;
 
 		std::uint8_t *id = const_cast<std::uint8_t *>(std::get<IO_Orig::id>(record).data());

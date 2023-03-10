@@ -197,7 +197,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
@@ -225,7 +225,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
@@ -258,7 +258,7 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -307,6 +307,7 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_stream.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_blender.cpp" />
     <ClCompile Include="ActiveMap.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
     <ClCompile Include="Bedrock.cpp" />
@@ -323,6 +324,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="LoopControllInterface.cpp" />
     <ClCompile Include="Account.cpp" />
+    <ClCompile Include="MapList.cpp" />
     <ClCompile Include="Record.h" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BluePrint.cpp" />
@@ -344,10 +346,12 @@
     <ClCompile Include="Murphy.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="StatusBar.cpp" />
+    <ClCompile Include="Worlds.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActiveMap.h" />
     <ClInclude Include="Cursor.h" />
+    <ClInclude Include="MapList.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="BaseFunctions.h" />
     <ClInclude Include="Bedrock.h" />
@@ -387,6 +391,7 @@
     <ClInclude Include="Space.h" />
     <ClInclude Include="StatusBar.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Worlds.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

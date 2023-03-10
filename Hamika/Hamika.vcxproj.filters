@@ -226,6 +226,15 @@
     <ClCompile Include="Cursor.cpp">
       <Filter>UI\Tools</Filter>
     </ClCompile>
+    <ClCompile Include="MapList.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_blender.cpp">
+      <Filter>KIR\AL</Filter>
+    </ClCompile>
+    <ClCompile Include="Worlds.cpp">
+      <Filter>Resource\Containers\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bedrock.h">
@@ -350,6 +359,12 @@
     </ClInclude>
     <ClInclude Include="Cursor.h">
       <Filter>UI\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="MapList.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Worlds.h">
+      <Filter>Resource\Containers\World</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

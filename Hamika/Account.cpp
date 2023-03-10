@@ -4,11 +4,47 @@
 
 namespace Res
 {
+	void Account::CompletedBluePrint::operator=(const Iv1Record &record)
+	{
+		_hash = std::get<Iv1Record::hash>(record);
+		_date = std::get<Iv1Record::date>(record);
+		_timeMS = std::get<Iv1Record::timeMS>(record);
+	}
+	Account::CompletedBluePrint::operator Iv1Record() const
+	{
+		Iv1Record record;
+		std::get<Iv1Record::hash>(record) = _hash;
+		std::get<Iv1Record::date>(record) = _date;
+		std::get<Iv1Record::timeMS>(record) = _timeMS;
+		return record;
+	}
+
+	KIR4::time Account::CompletedBluePrint::date() const
+	{
+		return _date;
+	}
+	std::uint32_t Account::CompletedBluePrint::timeMS() const
+	{
+		return _timeMS;
+	}
+	const KIR5::sha512digest &Account::CompletedBluePrint::hash() const
+	{
+		return _hash;
+	}
+
+
 	void Account::operator=(const Iv1Record &record)
 	{
 		_username = std::get<Iv1Record::username>(record);
 		_hash = std::get<Iv1Record::hash>(record);
 		_totalTimePlayedMS = std::get<Iv1Record::totalTimePlayedMS>(record);
+
+		auto &t_completedBlueprint = std::get<Iv1Record::completedBlueprints>(record);
+		_completedBlueprints.resize(t_completedBlueprint.size());
+		for (std::size_t i = 0; i < _completedBlueprints.size(); ++i)
+		{
+			_completedBlueprints[i] = t_completedBlueprint[i];
+		}
 	}
 
 	Account::operator Iv1Record() const
@@ -17,6 +53,13 @@ namespace Res
 		std::get<Iv1Record::username>(record) = _username;
 		std::get<Iv1Record::hash>(record) = _hash;
 		std::get<Iv1Record::totalTimePlayedMS>(record) = _totalTimePlayedMS;
+
+		auto &t_completedBlueprint = std::get<Iv1Record::completedBlueprints>(record);
+		t_completedBlueprint.resize(_completedBlueprints.size());
+		for (std::size_t i = 0; i < _completedBlueprints.size(); ++i)
+		{
+			t_completedBlueprint[i] = _completedBlueprints[i];
+		}
 		return record;
 	}
 
@@ -28,10 +71,55 @@ namespace Res
 	{
 		return _hash;
 	}
-
-	void Account::addPlayedTime(std::uint32_t time)
+	const std::uint32_t &Account::totalTimePlayedMS() const
 	{
-		_totalTimePlayedMS += time;
+		return _totalTimePlayedMS;
+	}
+	const std::vector<Account::CompletedBluePrint> &Account::completedBlueprints() const
+	{
+		return _completedBlueprints;
+	}
+
+	void Account::addPlayedTime(std::uint32_t timeMS_)
+	{
+		_totalTimePlayedMS += timeMS_;
+	}
+
+	void Account::addBluePrint(const std::shared_ptr<BluePrint> &bluePrint_, std::uint32_t timeMS_)
+	{
+		auto item = std::find_if(_completedBlueprints.begin(), _completedBlueprints.end(), [&bluePrint_](const CompletedBluePrint &completedBluePrint) -> bool
+		{
+			return bluePrint_->hash == completedBluePrint._hash;
+		});
+		if (item != _completedBlueprints.end())
+		{
+			if (item->_timeMS > timeMS_)
+			{
+				item->_date = KIR4::time();
+				item->_timeMS = timeMS_;
+			}
+		}
+		else
+		{
+			CompletedBluePrint completedBluePrint;
+			completedBluePrint._hash = bluePrint_->hash;
+			completedBluePrint._date = KIR4::time();
+			completedBluePrint._timeMS = timeMS_;
+
+			_completedBlueprints.push_back(completedBluePrint);
+		}
+	}
+	std::uint32_t Account::playTimeOn(const std::shared_ptr<BluePrint> &bluePrint_) const
+	{
+		auto item = std::find_if(_completedBlueprints.begin(), _completedBlueprints.end(), [&bluePrint_](const CompletedBluePrint &completedBluePrint) -> bool
+		{
+			return bluePrint_->hash == completedBluePrint._hash;
+		});
+		if (item != _completedBlueprints.end())
+		{
+			return item->timeMS();
+		}
+		return std::numeric_limits<std::uint32_t>::max();
 	}
 
 
@@ -127,5 +215,5 @@ namespace Res
 		SaveResource(*this);
 	}
 
-	Accounts accounts{"Hamika\\accounts.dat"};
+	Accounts accounts{"Hamika\\accounts.dat", Base::FILE_MISSING_ALLOWED};
 }

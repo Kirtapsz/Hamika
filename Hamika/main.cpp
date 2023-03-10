@@ -30,10 +30,10 @@ int main(int argc, char *argv[])
 
 		if (argc >= 2 && strcmp("--editor", argv[1]) == 0)
 		{
-			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Hamika Builder", 640, 480, ALLEGRO_RESIZABLE));
+			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Hamika Builder", 1340, 480, ALLEGRO_RESIZABLE));
 			if (Res::initialize(Res::EDITOR))
 			{
-				UI::Editor::mainEvent = std::shared_ptr<UI::Editor::MainEvent>(new UI::Editor::MainEvent(display));
+				UI::Editor::MainEvent::initialize(display);
 			}
 			else
 			{
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Hamika", 640, 480 + 83, ALLEGRO_RESIZABLE | ALLEGRO_OPENGL));
 			if (Res::initialize(Res::GAME))
 			{
-				UI::mainEvent = std::shared_ptr<UI::MainEvent>(new UI::MainEvent(display));
+				UI::MainEvent::initialize(display);
 			}
 			else
 			{
@@ -68,10 +68,9 @@ int main(int argc, char *argv[])
 
 	cursor = nullptr;
 	eventEngine = nullptr;
-	UI::Editor::mainEvent = nullptr;
-	UI::mainEvent = nullptr;
+	UI::Editor::MainEvent::shutdown();
+	UI::MainEvent::shutdown();
 	display = nullptr;
-
 
 	return ret;
 }

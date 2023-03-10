@@ -11,7 +11,7 @@ Cursor::Cursor(std::shared_ptr<KIR5::Display> &_display):
 		cursor[i] = al_create_mouse_cursor(slides[i], 0, 0);
 	}
 	cursorAnimator.Initialize();
-	cursorAnimator.SetNumberOfFrames(cursor.size());
+	cursorAnimator.SetNumberOfFrames(static_cast<std::int8_t>(cursor.size()));
 	cursorAnimator.SetAnimationTime(1.f);
 
 	fncTimer.push_back([&](FNC_TIMER_PARAMS)

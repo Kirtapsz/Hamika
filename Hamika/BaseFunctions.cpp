@@ -141,7 +141,7 @@ namespace Object
 			{
 				if (stack->o->CanMoveDown())
 				{
-					//clog << ief.GetObjectOut(GetCoordDown())->GetAbsMove() << KIR4::eol;
+					//clog <<ief.GetObjectOut(GetCoordDown())->GetAbsMove() <<KIR4::eol;
 					if (stack->o->ief.GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
 					{
 						s->active = 1;

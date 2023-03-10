@@ -28,7 +28,7 @@ Logger::~Logger()
 	clear();
 }
 
-const std::vector< LogBase *> &Logger::getLogs(LogID ID)
+const std::vector<LogBase *> &Logger::getLogs(LogID ID)
 {
 	return logs[ID];
 }

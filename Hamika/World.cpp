@@ -82,6 +82,4 @@ namespace Res
 	{
 		return LoadResource(*this);
 	}
-
-	World world1{"Hamika\\LEVELS.DAT"};
 }

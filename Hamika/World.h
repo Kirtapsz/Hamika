@@ -8,6 +8,7 @@ namespace Res
 	{
 		using Base::Base;
 
+		KIR5::Bitmap thumbnail;
 		std::string title{"UNKNOWN"};
 		std::vector<std::shared_ptr<BluePrint>> bluePrints;
 
@@ -56,7 +57,4 @@ namespace Res
 
 		public: virtual bool initialize(std::uint32_t mode);
 	};
-
-
-	extern World world1;
 }

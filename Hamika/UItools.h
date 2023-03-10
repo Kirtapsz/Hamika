@@ -8,70 +8,113 @@
 
 #include "Font.h"
 
-
 namespace UI
 {
-	class RPanel: public virtual KIR5::Panel
+	class AdjustParam
 	{
-		friend class REngine;
-		template<typename T, int X, int Y, int W, int H, int RW, int RH>
-		friend class RTpanel;
-		private: int _x = 0; int _y = 0; int _w = 0; int _h = 0; float _rw = 0; float _rh = 0;
-	};
+		template<typename T, int W, int H>
+		friend class AdjusterPanel;
 
-	template<typename T, int X, int Y, int W, int H, int RW, int RH>
-	class RTpanel: public virtual T, public virtual RPanel
-	{
-		public: inline RTpanel()
+		private: int _x;
+		private: int _y;
+		private: int _w;
+		private: int _h;
+
+		public: AdjustParam():
+			_x(0), _y(0), _w(0), _h(0)
 		{
-			_x = X;
-			_y = Y;
-			_w = W;
-			_h = H;
-			_rw = RW;
-			_rh = RH;
+
+		}
+		public: AdjustParam(int x_, int y_, int w_, int h_):
+			_x(x_), _y(y_), _w(w_), _h(h_)
+		{
+
+		}
+
+		public: void setAdjustParams(int x_, int y_, int w_, int h_)
+		{
+			_x = x_;
+			_y = y_;
+			_w = w_;
+			_h = h_;
 		}
 	};
 
-	class REngine: public virtual KIR5::Panel
+	template<typename T = KIR5::Panel, int X = 0, int Y = 0, int W = 0, int H = 0>
+	class AdjustablePanel: public virtual T, public AdjustParam
 	{
-		public: inline REngine()
+		public: AdjustablePanel(int x_, int y_, int w_, int h_):
+			AdjustParam(x_, y_, w_, h_)
 		{
+
+		}
+
+		public: AdjustablePanel():
+			AdjustParam(X, Y, W, H)
+		{
+
+		}
+	};
+
+	template<typename T, int W, int H>
+	class AdjusterPanel: public virtual T
+	{
+		public: static constexpr int ADJUSTER_WIDTH = W;
+		public: static constexpr int ADJUSTER_HEIGHT = H;
+
+		public: inline AdjusterPanel()
+		{
+			resize(W, H);
 			fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
+				float wr = width() / (float)W;
+				float hr = height() / (float)H;
+				float r = std::min(wr, hr);
+
 				for (auto &it : getChildrens())
 				{
-					RPanel *r_panel = dynamic_cast<RPanel *>(it.get());
-					if (r_panel)
+					AdjustParam *aParam = dynamic_cast<AdjustParam *>(it.get());
+					if (aParam)
 					{
-						r_panel->move(
-							(int)(r_panel->_x / r_panel->_rw * width()),
-							(int)(r_panel->_y / r_panel->_rh * height()),
-							(int)(r_panel->_w / r_panel->_rw * width()),
-							(int)(r_panel->_h / r_panel->_rh * height())
+						KIR5::Panel *panel = dynamic_cast<KIR5::Panel *>(it.get());
+						panel->move(
+							(int)(aParam->_x * r),
+							(int)(aParam->_y * r),
+							(int)(aParam->_w * r),
+							(int)(aParam->_h * r)
 						);
 					}
 				}
 			});
 		}
 	};
-	template<typename T>
-	class RTEngine: public virtual T, public virtual REngine
+
+	template<typename T, int X, int Y, int W, int H>
+	class AdjustPanel: public virtual AdjustablePanel<T, X, Y, W, H>, public virtual AdjusterPanel<T, W, H>
 	{
-	};
-
-
-
-	class Line: public KIR5::ColoredPanel
-	{
-		public: inline Line()
+		public: AdjustPanel(int x_, int y_):
+			AdjustablePanel(x_, y_, W, H)
 		{
-			show();
-			setBackgroundColor(KIR5::Color(160, 90, 30));
+
+		}
+
+		public: AdjustPanel()
+		{
+
 		}
 	};
-	template<Res::Font &FONT>
-	class TextBox: public KIR5::TextBox<KIR5::RectangleButton<KIR5::Button<>>>
+
+	class Panel: public virtual KIR5::ColoredPanel//KIR5::Panel
+	{
+		public: inline Panel()
+		{
+			show();
+			setBackgroundColor(KIR5::Color(rand() % 255, rand() % 255, rand() % 255));
+		}
+	};
+
+	template<Res::Font &FONT, std::size_t D = 10>
+	class TextBox: public virtual KIR5::TextBox<KIR5::RectangleButton<KIR5::Button<>>>
 	{
 		public: inline TextBox()
 		{
@@ -87,12 +130,12 @@ namespace UI
 
 			fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
-				this->setTextFont(FONT[height() - 2]);
+				setTextFont(FONT[height() / (D / 10.f) / 1.1f]);
 			});
 		}
 	};
-	template<Res::Font &FONT>
-	class ButtonX: public KIR5::TextButton<>
+	template<Res::Font &FONT, std::size_t D = 10>
+	class ButtonX: public virtual KIR5::TextButton<KIR5::Button<Panel>>
 	{
 		public: inline ButtonX()
 		{
@@ -103,29 +146,27 @@ namespace UI
 
 			fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
-				this->setTextFont(FONT[height() - 2]);
+				setTextFont(FONT[height() / (D / 10.f) - 2]);
 			});
 		}
 	};
-	template<Res::Font &FONT>
-	class Button: public KIR5::TextButton<KIR5::FramedRectangleButton<>>
+	template<Res::Font &FONT, std::size_t D = 10>
+	class Button: public virtual KIR5::TextButton<KIR5::RectangleButton<KIR5::Button<Panel>>>
 	{
 		public: inline Button()
 		{
 			show();
-			setTextColor(KIR5::Color(152, 152, 152));
+			setTextColor(KIR5::Color(10, 10, 10));
 			setTextAlignment(KIR5::CENTER | KIR5::IGNORE_DESCENT);
-			setColor(KIR5::Color(30, 30, 30));
-			setColorFrame(KIR5::Color(50, 50, 50));
-			setFrameSize(2);
+			setColor(KIR5::Color(40, 40, 40));
 
 			fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
-				this->setTextFont(FONT[height() - 2]);
+				setTextFont(FONT[height() / (D / 10.f) - 2]);
 			});
 		}
 	};
-	class BmpButton: public KIR5::ColoredBitmapButton<KIR5::RectangleButton<KIR5::Button<>>>
+	class BmpButton: public virtual KIR5::ColoredBitmapButton<KIR5::RectangleButton<KIR5::Button<Panel>>>
 	{
 		public: inline BmpButton()
 		{
@@ -133,8 +174,15 @@ namespace UI
 			setColor(KIR5::Color(30, 30, 30));
 		}
 	};
-	template<Res::Font &FONT>
-	class Label: public KIR5::Label<>
+	class BmpoButton: public virtual KIR5::ColoredBitmapButton<KIR5::Button<Panel>>
+	{
+		public: inline BmpoButton()
+		{
+			show();
+		}
+	};
+	template<Res::Font &FONT, std::size_t D = 10>
+	class Label: public virtual KIR5::Label<Panel>
 	{
 		public: inline Label()
 		{
@@ -144,11 +192,11 @@ namespace UI
 
 			fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
-				this->setTextFont(FONT[height() - 2]);
+				setTextFont(FONT[height() / (D / 10.f) - 2]);
 			});
 		}
 	};
-	class Background: public KIR5::ColoredPanel
+	class Background: public virtual KIR5::ColoredPanel
 	{
 		public: inline Background()
 		{
@@ -156,155 +204,28 @@ namespace UI
 			setBackgroundColor(KIR5::Color(20, 20, 20));
 		}
 	};
-	class Window: public KIR5::ColoredPanel
+	class Window: public virtual KIR5::ColoredPanel
 	{
 		public: inline Window()
 		{
 			show();
 			setBackgroundColor(KIR5::Color(15, 15, 15));
-		}
-	};
-	class Panel: public KIR5::Panel
-	{
-		public: inline Panel()
-		{
-			show();
-		}
-	};
-}
-
-namespace UI::Editor
-{
-	class ColoredPanel: public KIR5::ColoredPanel
-	{
-		public: inline ColoredPanel()
-		{
-			setBackgroundColor(KIR5::Color(rand() % 256, rand() % 256, rand() % 256));
-		}
-	};
-
-	struct UI_S
-	{
-		static constexpr int gap = 2;
-		static constexpr int lineSize = 1;
-		static constexpr int frameSize = 2;
-		static constexpr int textSize = 14;
-		static constexpr int dimension = 18;
-	};
-
-	struct UI_M
-	{
-		static constexpr int gap = 3;
-		static constexpr int lineSize = 2;
-		static constexpr int frameSize = 2;
-		static constexpr int textSize = 24;
-		static constexpr int dimension = 32;
-	};
-
-	struct UI_L
-	{
-		static constexpr int gap = 10;
-		static constexpr int lineSize = 2;
-		static constexpr int frameSize = 2;
-		static constexpr int textSize = 30;
-		static constexpr int dimension = 40;
-	};
-
-	template<typename UI_SIZE>
-	class UIline: public Editor::ColoredPanel
-	{
-		public: inline UIline()
-		{
-			show();
-			setBackgroundColor(KIR5::Color(160, 90, 30));
-			resize(UI_SIZE::lineSize, UI_SIZE::lineSize);
-		}
-	};
-	template<typename UI_SIZE>
-	class UItextBox: public KIR5::TextBox<KIR5::RectangleButton<KIR5::Button<>>>
-	{
-		public: inline UItextBox()
-		{
-			show();
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
-			setTextFont(Res::Consolas[UI_SIZE::textSize]);
-			setTextColor(KIR5::Color(230, 120, 40));
-			setColor(KIR5::Color(30, 30, 30));
-			setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
 
 			fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
 			{
-				al_draw_line(x_, y_ + h_ - 1, x_ + w_, y_ + h_ - 1, KIR5::Color(230, 120, 40), 1.f);
+				al_draw_rectangle(x_ + 1, y_ + 1, x_ + w_, y_ + h_, KIR5::Color(116, 109, 161), 1.f);
 			}));
 		}
 	};
-	template<typename UI_SIZE>
-	class UIbutton: public KIR5::TextButton<KIR5::FramedRectangleButton<>>
-	{
-		public: inline UIbutton()
-		{
-			show();
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
-			setTextFont(Res::Consolas[UI_SIZE::textSize]);
-			setTextColor(KIR5::Color(152, 152, 152));
-			setTextAlignment(KIR5::CENTER);
-			setColor(KIR5::Color(30, 30, 30));
-			setColorFrame(KIR5::Color(50, 50, 50));
-			setFrameSize(2);
-		}
-	};
-	template<typename UI_SIZE>
-	class UIbbutton: public KIR5::ColoredBitmapButton<KIR5::RectangleButton<KIR5::Button<>>>
-	{
-		public: inline UIbbutton()
-		{
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
-			show();
-			setColor(KIR5::Color(30, 30, 30));
-		}
-	};
-	template<typename UI_SIZE>
-	class UIlabel: public KIR5::Label<>
-	{
-		public: inline UIlabel()
-		{
-			show();
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
-			setTextColor(KIR5::Color(50, 50, 50));
-			setTextFont(Res::Consolas[UI_SIZE::textSize]);
-			setTextAlignment(KIR5::LEFT | KIR5::VCENTER);
-		}
-	};
 
-	template<typename UI_SIZE>
-	class UIbackground: public Editor::ColoredPanel
+	template <int W = 0, int H = 0>
+	class Line: public virtual KIR5::ColoredPanel
 	{
-		public: inline UIbackground()
+		public: inline Line()
 		{
 			show();
-			setBackgroundColor(KIR5::Color(20, 20, 20));
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
-		}
-	};
-
-	template<typename UI_SIZE>
-	class UIwindow: public Editor::ColoredPanel
-	{
-		public: inline UIwindow()
-		{
-			show();
-			setBackgroundColor(KIR5::Color(15, 15, 15));
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
-		}
-	};
-
-	template<typename UI_SIZE>
-	class UIpanel: public KIR5::Panel
-	{
-		public: inline UIpanel()
-		{
-			show();
-			resize(UI_SIZE::dimension, UI_SIZE::dimension);
+			setBackgroundColor(KIR5::Color(160, 90, 30));
+			resize(W, H);
 		}
 	};
 }

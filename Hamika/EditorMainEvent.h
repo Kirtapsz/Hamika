@@ -15,6 +15,7 @@
 
 namespace UI::Editor
 {
+	using namespace Game;
 	class MainEvent
 	{
 		friend class ActiveMap;
@@ -34,12 +35,13 @@ namespace UI::Editor
 		private: KIR5::Shared<ActiveMap> activeMap;
 		private: KIR5::Shared<Worldi> worldi;
 		private: KIR5::Shared<MiniMap> miniMap;
-		private: KIR5::Shared<ControlPanel> controlPanel;
+		public: KIR5::Shared<ControlPanel> controlPanel;
 		private: KIR5::Shared<SaveWorldDialog> saveWorldDialog;
 
 		public: MainEvent(std::shared_ptr<KIR5::Panel> parent);
+		public: static std::shared_ptr<MainEvent> s_object;
+		public: static void initialize(std::shared_ptr<KIR5::Panel> _parent);
+		public: static void shutdown();
 		public: ~MainEvent();
 	};
-
-	extern std::shared_ptr<MainEvent> mainEvent;
 }

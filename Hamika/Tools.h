@@ -44,6 +44,48 @@ std::vector<std::string> split(const std::string &s, char separator);
 std::map<std::string, std::string> parse(const std::string &s);
 
 template <typename T>
+std::string dayStopper(T value)
+{
+	std::time_t ms = value % 1000;
+
+	value /= 1000;
+	std::time_t sec = value % 60;
+
+	value /= 60;
+	std::time_t min = value % 60;
+
+	value /= 60;
+	std::time_t hour = value % 24;
+
+	value /= 24;
+	std::time_t day = value;
+
+	char buffer[32]{};
+	sprintf_s(buffer, "%03lld %02lld:%02lld:%02lld.%lld", day, hour, min, sec, ms);
+	return buffer;
+}
+
+template <typename T>
+std::string hourStopper(T value)
+{
+	std::time_t ms = value % 1000;
+
+	value /= 1000;
+	std::time_t sec = value % 60;
+
+	value /= 60;
+	std::time_t min = value % 60;
+
+	value /= 60;
+	std::time_t hour = value;
+
+	char buffer[32]{};
+	sprintf_s(buffer, "%02lld:%02lld:%02lld.%lld", hour, min, sec, ms);
+
+	return buffer;
+}
+
+template <typename T>
 inline T &reach(std::shared_ptr<T> &map)
 {
 	return *map;
@@ -55,9 +97,31 @@ inline const T &reach(const std::shared_ptr<T> &map)
 	return *map;
 }
 
+template <typename T>
+inline T CPStime(T _value, T _cps, T _base)
+{
+	return _value * (_base / _cps);
+}
+
+template <typename T, typename F>
+inline T ifSync(T &original, const F &checkVal)
+{
+	if (original != static_cast<T>(checkVal))
+	{
+		original = static_cast<T>(checkVal);
+		return true;
+	}
+	return false;
+}
+
 
 template <typename T>
 constexpr T limiter(const T &l, const T &h, const T &v)
+{
+	return (std::max)(l, (std::min)(h, v));
+}
+template <typename T>
+constexpr T range(const T &l, const T &h, const T &v)
 {
 	return (std::max)(l, (std::min)(h, v));
 }

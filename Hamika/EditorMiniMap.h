@@ -19,14 +19,14 @@
 
 namespace UI::Editor
 {
-	class MiniMap: public KIR5::Panel
+	class MiniMap: public Panel
 	{
 		private: static constexpr int blockDimension = 5;
 
-		private: bool mouseHold;
+		private: bool mouseHold{false};
 
-		private: Type::Move camera;
-		private: Type::Move cameraSize;
+		private: Type::Move camera{};
+		private: Type::Move cameraSize{};
 
 		private: std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> map;
 		private: KIR5::Bitmap bitmap;

@@ -1,7 +1,7 @@
 #ifndef RES_HANDLER_HPP
 #define RES_HANDLER_HPP
 
-template < template <typename...> class base, typename derived>
+template <template <typename...> class base, typename derived>
 struct is_base_of_template_impl
 {
 	template<typename... Ts>
@@ -15,10 +15,10 @@ struct is_base_of_template_impl
 	using type = decltype(testType(std::declval<derived *>()));
 };
 
-template < template <typename...> class base, typename derived>
+template <template <typename...> class base, typename derived>
 using is_base_of_template = typename is_base_of_template_impl<base, derived>::value;
 
-template < template <typename...> class base, typename derived>
+template <template <typename...> class base, typename derived>
 using type_of_base_template = typename is_base_of_template_impl<base, derived>::type;
 
 namespace Res
@@ -82,6 +82,23 @@ namespace Res
 	}
 	template<typename T, std::size_t COUNT>
 	inline void WriteToStream_(KIR5::Stream &stream, const FixedVectorRecord<T, COUNT> &t)
+	{
+		for (auto &it : t)
+		{
+			WriteToStream_(stream, static_cast<const type_of_base_template<Record, type_of_base_template<HashRecord, T>>&>(it));
+		}
+	}
+
+	template<typename T, std::size_t COUNT>
+	inline void ReadFromStream_(KIR5::Stream &stream, HeapVectorRecord<T, COUNT> &t)
+	{
+		for (auto &it : t)
+		{
+			ReadFromStream_(stream, static_cast<type_of_base_template<Record, type_of_base_template<HashRecord, T>>&>(it));
+		}
+	}
+	template<typename T, std::size_t COUNT>
+	inline void WriteToStream_(KIR5::Stream &stream, const HeapVectorRecord<T, COUNT> &t)
 	{
 		for (auto &it : t)
 		{
@@ -387,7 +404,7 @@ namespace Res
 		KIR5::DynamicStream stream;
 		if (!ReadFile(resource.path, stream))
 		{
-			return false;
+			return (resource.mode & Base::FILE_MISSING_ALLOWED) != 0;
 		}
 
 		bool ret = false;

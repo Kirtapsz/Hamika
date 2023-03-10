@@ -41,7 +41,7 @@ namespace Res
 
 		struct IO_HamSt1: HashRecord <
 			std::float_t,                 // speed
-			FixedStringRecord<128>,             // title
+			FixedStringRecord<128>,       // title
 			std::uint16_t,                // scoreToUnlock
 			std::uint8_t,                 // globalGravity
 			std::float_t,                 // camera width
@@ -73,9 +73,9 @@ namespace Res
 			FixedMatrixRecord<std::uint16_t, 63, 53>, // rotation of block
 			FixedMatrixRecord<std::uint8_t, 63, 53>,  // is explode
 			FixedMatrixRecord<std::uint8_t, 63, 53>,  // is gravitation
-			std::uint16_t,                      // scoreToUnlock
-			std::float_t,                       // speed
-			std::uint8_t,                       // murphy spawn fill block ID
+			std::uint16_t,                            // scoreToUnlock
+			std::float_t,                             // speed
+			std::uint8_t,                             // murphy spawn fill block ID
 			TerminatedStringRecord<98>                // title of blue print
 		>
 		{
@@ -230,13 +230,13 @@ namespace Res
 		operator IO_HamBC() const;
 
 		struct IO_Orig: HashRecord <
-			FixedVectorRecord<std::uint8_t, 60 * 24>, // block ID
+			HeapVectorRecord<std::uint8_t, 60 * 24>,  // block ID
 			FixedVectorRecord<std::uint8_t, 4>,       // unused
-			std::uint8_t,                       // gravity
+			std::uint8_t,                             // gravity
 			FixedVectorRecord<std::uint8_t, 1>,       // unused
 			FixedStringRecord<23>,                    // title
 			FixedVectorRecord<std::uint8_t, 1>,       // unused
-			std::uint8_t,                       // score to unlockD
+			std::uint8_t,                             // score to unlockD
 			FixedVectorRecord<std::uint8_t, 65>       // unused
 		>
 		{
@@ -298,13 +298,13 @@ namespace Res
 				ObjectID::HardwareBlueResistance,
 				ObjectID::HardwareYellowResistance,
 			};
-			inline static Type::ID transition(size_t idx)
+			inline static Type::ID transition(std::uint8_t idx)
 			{
 				return translate[idx];
 			}
-			inline static size_t detransition(Type::ID id)
+			inline static std::uint8_t detransition(Type::ID id)
 			{
-				for (size_t i = 0; i < std::size(translate); ++i)
+				for (std::uint8_t i = 0; i < std::size(translate); ++i)
 				{
 					if (translate[i] == id)
 					{

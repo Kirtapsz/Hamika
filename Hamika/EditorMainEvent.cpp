@@ -4,12 +4,20 @@
 
 namespace UI::Editor
 {
-	std::shared_ptr<MainEvent> mainEvent;
+	std::shared_ptr<MainEvent> MainEvent::s_object;
 
+	void MainEvent::initialize(std::shared_ptr<KIR5::Panel> _parent)
+	{
+		new MainEvent(display);
+	}
+	void MainEvent::shutdown()
+	{
+		s_object = nullptr;
+	}
 	MainEvent::MainEvent(std::shared_ptr<KIR5::Panel> _parent):
 		parent(_parent)
 	{
-
+		s_object = std::shared_ptr<MainEvent>(this);
 		Objects::RunInitializer();
 
 		*parent << columnControl;
@@ -39,15 +47,15 @@ namespace UI::Editor
 		(*rowsControl[0]) += KIR5::Row<>::FixHeight;
 
 		rowsControl[0]->pushBack(worldi);
-		rowsControl[0]->pushBack(KIR5::Shared<UIline<UI_M>>());
+		rowsControl[0]->pushBack(KIR5::Shared<Line<2, 2>>());
 		rowsControl[0]->pushBack(activeMap);
 
-		rowsControl[1]->pushBack(KIR5::Shared<UIline<UI_M>>());
-		rowsControl[1]->pushBack(KIR5::Shared<KIR5::Panel>());
-		rowsControl[1]->pushBack(KIR5::Shared<UIline<UI_M>>());
+		rowsControl[1]->pushBack(KIR5::Shared<Line<2, 2>>());
+		rowsControl[1]->pushBack(KIR5::Shared<Panel>());
+		rowsControl[1]->pushBack(KIR5::Shared<Line<2, 2>>());
 
 		rowsControl[2]->pushBack(miniMap);
-		rowsControl[2]->pushBack(KIR5::Shared<UIline<UI_M>>());
+		rowsControl[2]->pushBack(KIR5::Shared<Line<2, 2>>());
 		rowsControl[2]->pushBack(controlPanel);
 
 		*parent << saveWorldDialog;
