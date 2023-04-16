@@ -364,6 +364,7 @@ namespace UI
 			activeMap->playGame(bluePrint_, account_);
 			menu->hide();
 			activeMap->show();
+			al_hide_mouse_cursor(*display);
 		}
 	}
 	void MainEvent::finishGame()
@@ -374,6 +375,7 @@ namespace UI
 		menu.currentAccount.refresh();
 		menu.blueprintInfo.refresh();
 		menu.bluePrints->refresh();
+		al_show_mouse_cursor(*display);
 	}
 
 	MainEvent::Menu::Accounts::Create::Create()
