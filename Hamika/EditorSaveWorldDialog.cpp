@@ -84,6 +84,12 @@ namespace UI::Editor
 				}(args.name)), ...);
 			}, Res::World::handlers);
 
+			jsonFormat->resize(130, 30);
+			jsonFormat->buttonSign->setText("Select type");
+			jsonFormat->buttonSquare->setBackgroundColor(KIR5::Color(255, 0, 0));
+			jsonFormat->buttonSquare->setPinColor(KIR5::Color(0, 255, 0));
+			row->pushBack(jsonFormat);
+
 			col->pushBack(row);
 		}
 
@@ -114,13 +120,36 @@ namespace UI::Editor
 								world.bluePrints[i] = oBluePrints[i]->getBluePrint();
 							}
 
-							KIR5::DynamicStream stream;
-							if (SaveResource(world, stream, handler))
+							if (jsonFormat->isChecked())
 							{
-								std::string aPath = KIR5::pathCombine(KIR5::getModuleDirectory(), world.path);
-								if (WriteFile(aPath, stream))
+								try
 								{
+									Json json;
+									Res::Json::SaveResource(world, json, handler);
+									std::string aPath = KIR5::pathCombine(KIR5::getModuleDirectory(), world.path);
+									std::ofstream file(aPath);
+									file << std::setw(4) << json << std::endl;
+								}
+								catch (const std::exception &e)
+								{
+									std::cout << "Failed to save resource: " << e.what() << std::endl;
+								}
+							}
+							else
+							{
+								try
+								{
+									KIR5::DynamicStream stream;
+									SaveResource(world, stream, handler);
+									std::string aPath = KIR5::pathCombine(KIR5::getModuleDirectory(), world.path);
+									if (WriteFile(aPath, stream))
+									{
 
+									}
+								}
+								catch (const std::exception &e)
+								{
+									std::cout << "Failed to save resource: " << e.what() << std::endl;
 								}
 							}
 						}

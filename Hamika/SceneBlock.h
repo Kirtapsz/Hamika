@@ -1,12 +1,12 @@
-#ifndef __ACTIVE_BLOCK_H__
-#define __ACTIVE_BLOCK_H__
+#ifndef __SCENE_BLOCK_H__
+#define __SCENE_BLOCK_H__
 
 #include "Types.h"
 #include "Objects.h"
 
 
 template <typename OBJECT_T>
-struct ActiveBlock
+struct SceneBlock
 {
 	OBJECT_T *object = nullptr;//jön be, vagy már bent van
 	OBJECT_T *remain = nullptr;//épp eltûnik, kimegy
@@ -25,9 +25,9 @@ struct ActiveBlock
 		LastDrawned = 16,
 	};
 
-	~ActiveBlock();
+	~SceneBlock();
 };
 
 #endif
 
-#include "ActiveBlock.hpp"
+#include "SceneBlock.hpp"

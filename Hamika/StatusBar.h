@@ -7,7 +7,7 @@
 #include "World.h"
 #include "UItools.h"
 
-namespace UI::Game
+namespace UI::Scene
 {
 	class StatusBar:public Panel
 	{
@@ -17,29 +17,36 @@ namespace UI::Game
 			public: Label();
 		};
 
-		private: KIR5::Shared<Label> aimLabel;
-		private: KIR5::Shared<Label> unitesLabel;
+		private: KIR5::Shared<Label> scoreLabel;
+		private: KIR5::Shared<Label> unityLabel;
+
 		private: KIR5::Shared<Label> HHLabel;
 		private: KIR5::Shared<Label> MMLabel;
 		private: KIR5::Shared<Label> SSLabel;
 		private: KIR5::Shared<Label> mapNameLabel;
 		private: std::string ToSString(int i) const;
 
+		private: int unityCount = 0;
+		private: int scoreToReach = 0;
+		private: int scoreCount = 0;
+
+		public: int getUnityCount() const;
+		public: int getScoreToReach() const;
+		public: int getScoreCount() const;
+		public: int getScoreToCollect() const;
+
+		public: void addUnity(int count);
+		public: void addScore(int count);
+
+		public: void setUnity(int count);
+		public: void setScore(int count, int toReach);
+
 		public: void Restart();
-		public: int AimCollect;
-		public: int UnitiyCollect;
-		public: int Aim;
-		public: void SetAimStr();
-		public: void SetUnityStr();
 		public: void updateLoopCounter(unsigned long long _loopCounter);
 
 		public: StatusBar();
 
 		public: void SetMap(const std::shared_ptr<Res::BluePrint> &bluePrint_);
-		public: int GetAimRemaining() const;
-		public: int GetUnityCount() const;
-		public: void AddUnity(int collect);
-		public: void AddAim(int collect);
 		public: int Height() const;
 		public: void Align();
 	};

@@ -18,9 +18,9 @@ namespace Res
 		blocks.resize(blockRecords);
 		blocks.foreach([&blockRecords](Type::Coord &coord, Block &block)
 		{
-			block.id = std::get<IO_HamSt1::id>(blockRecords[coord]);
-			block.rotation = std::get<IO_HamSt1::rotation>(blockRecords[coord]);
-			block.flags = std::get<IO_HamSt1::flags>(blockRecords[coord]);
+			block.id = std::get<IO_HamSt1_Block::id>(blockRecords[coord]);
+			block.rotation = std::get<IO_HamSt1_Block::rotation>(blockRecords[coord]);
+			block.flags = std::get<IO_HamSt1_Block::flags>(blockRecords[coord]);
 		});
 	}
 	BluePrint::operator BluePrint::IO_HamSt1() const
@@ -38,9 +38,9 @@ namespace Res
 		blockRecords.resize(blocks);
 		blocks.foreach([&blockRecords](Type::Coord &coord, const Block &block)
 		{
-			std::get<IO_HamSt1::id>(blockRecords[coord]) = block.id;
-			std::get<IO_HamSt1::rotation>(blockRecords[coord]) = block.rotation;
-			std::get<IO_HamSt1::flags>(blockRecords[coord]) = block.flags;
+			std::get<IO_HamSt1_Block::id>(blockRecords[coord]) = block.id;
+			std::get<IO_HamSt1_Block::rotation>(blockRecords[coord]) = block.rotation;
+			std::get<IO_HamSt1_Block::flags>(blockRecords[coord]) = block.flags;
 		});
 
 		return record;

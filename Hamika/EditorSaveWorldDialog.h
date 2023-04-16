@@ -15,6 +15,7 @@
 #include <KIR\AL\KIR5_text_box.h>
 #include <KIR\AL\KIR5_button.h>
 #include <KIR\AL\KIR5_combo_box.h>
+#include <KIR\AL\KIR5_check_box.h>
 
 #include <memory>
 
@@ -28,6 +29,12 @@ namespace UI::Editor
 			Button<Res::Consolas, 20>,
 			KIR5::ListPanel<Panel, Button<Res::Consolas, 20>>
 			>> mapTypeSelector;
+		private: KIR5::Shared<
+			KIR5::SquaredCheckBox<
+			KIR5::CheckBox<>::RoundedBox,
+			Label<Res::Consolas, 20>>
+			> jsonFormat;
+
 
 		private: KIR5::Shared<Window> centerBox;
 		private: KIR5::Shared<Label<Res::Consolas, 20>> directoryLabel;

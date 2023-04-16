@@ -28,6 +28,12 @@ namespace Res
 		public: using std::tuple<T...>::tuple;
 	};
 
+	template<class B, typename I, class... T>
+	struct SwitchVectorRecord: std::vector<std::shared_ptr<B>>
+	{
+		using std::vector<std::shared_ptr<B>>::vector;
+	};
+
 	template<typename I, class T>
 	struct VectorRecord: std::vector<T>
 	{

@@ -58,13 +58,17 @@ namespace Object
 
 			stack->o->requests.timer = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "Animator::timer: " << s->timer << "\n";
-			clog << "Animator::time: " << s->time << "\n";
-			clog << "Animator::numberOfFrames: " << s->numberOfFrames << "\n";
-			clog << "Animator::drawNumber: " << s->drawNumber << "\n";
+			Json json;
+
+			json["timer"] = s->timer;
+			json["time"] = s->time;
+			json["numberOfFrames"] = s->numberOfFrames;
+			json["drawNumber"] = s->drawNumber;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -77,10 +81,6 @@ namespace Object
 			}
 
 			stack->o->requests.timer = true;
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -103,10 +103,14 @@ namespace Object
 			stack->o->requests.timer = true;
 			stack->o->requests.update = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "Move Down Is Active: " << s->active << "\n";
+			Json json;
+
+			json["active"] = s->active;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -129,10 +133,6 @@ namespace Object
 			}
 			stack->o->requests.timer = true;
 		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			pops(Specific, s);
@@ -141,15 +141,15 @@ namespace Object
 			{
 				if (stack->o->CanMoveDown())
 				{
-					//clog <<ief.GetObjectOut(GetCoordDown())->GetAbsMove() <<KIR4::eol;
-					if (stack->o->ief.GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
+					//clog <<scene->GetObjectOut(GetCoordDown())->GetAbsMove() <<KIR4::eol;
+					if (stack->o->scene->GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), 0);
+						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), 0);
 						regets(Specific, s);
 						stack->o->SetMove({stack->o->GetMove().x,-1});
 					}
-					else if (!stack->o->ief.EnableUpdateSkip())
+					else if (!stack->o->scene->EnableUpdateSkip())
 					{
 						stack->o->requests.update = true;
 						return;
@@ -163,16 +163,20 @@ namespace Object
 	{
 		void Blasting(ObjectBase *o)
 		{
-			o->ief.BlowUpBlock(o->GetCoordDown());
+			o->scene->BlowUpBlock(o->GetCoordDown());
 		}
 
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			MoveDown::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			MoveDown::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\MoveDown"] = MoveDown::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -195,10 +199,6 @@ namespace Object
 				}
 			}
 		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			MoveDown::Tick(OBJECT_TICK_CALL);
-		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			MoveDown::Update(OBJECT_UPDATE_CALL);
@@ -210,27 +210,27 @@ namespace Object
 	{
 		void Blasting(Type::Coord coord, ObjectBase *o)
 		{
-			o->ief.BlowUpBlock(coord);
+			o->scene->BlowUpBlock(coord);
 		}
 		bool CanMoveForward(Type::Coord to, ObjectBase *o)
 		{
 			return
-				o->ief.GetObject(to)->GetFlags() & ObjectBase::Flags::StepOn
+				o->scene->GetObject(to)->GetFlags() & ObjectBase::Flags::StepOn
 				&&
-				o->ief.GetRemain(to)->GetFlags() & ObjectBase::Flags::StepOn
+				o->scene->GetRemain(to)->GetFlags() & ObjectBase::Flags::StepOn
 				&&
-				o->ief.GetObjectOut(to)->GetFlags() & ObjectBase::Flags::StepOn
+				o->scene->GetObjectOut(to)->GetFlags() & ObjectBase::Flags::StepOn
 				;
 		}
 		bool CanExlosive(Type::Coord coord, ObjectBase *o)
 		{
 			ObjectBase *object;
 
-			object = o->ief.GetObject(coord);
+			object = o->scene->GetObject(coord);
 			if (object->GetFlags() & ObjectBase::Flags::CanBeKilled)
 				return true;
 
-			object = o->ief.GetObjectOut(coord);
+			object = o->scene->GetObjectOut(coord);
 			if (object->GetFlags() & ObjectBase::Flags::CanBeKilled && object->GetAbsMove() > 0.5f)
 				return true;
 			return false;
@@ -255,11 +255,16 @@ namespace Object
 			stack->o->requests.timer = true;
 			stack->o->requests.update = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "Move Active: " << s->active << "\n";
-			clog << "PriorityStep: " << s->PriorityStep << "\n";
+			Json json;
+
+			json["active"] = s->active;
+			json["PriorityStep"] = s->PriorityStep;
+			json["myNumber"] = s->myNumber;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -270,7 +275,7 @@ namespace Object
 				if (!stack->o->IsMove())
 				{
 					s->active = 0;
-					stack->o->ief.ObjectArrived(stack->o->GetCoord());
+					stack->o->scene->ObjectArrived(stack->o->GetCoord());
 				}
 			}
 			else if (s->active == F_TurnLeft)
@@ -278,7 +283,7 @@ namespace Object
 				if (stack->o->RotationLeft())
 				{
 					s->active = 0;
-					stack->o->ief.ObjectArrived(stack->o->GetCoord());
+					stack->o->scene->ObjectArrived(stack->o->GetCoord());
 				}
 			}
 			else if (s->active == F_TurnRight)
@@ -286,14 +291,10 @@ namespace Object
 				if (stack->o->RotationRight())
 				{
 					s->active = 0;
-					stack->o->ief.ObjectArrived(stack->o->GetCoord());
+					stack->o->scene->ObjectArrived(stack->o->GetCoord());
 				}
 			}
 			stack->o->requests.timer = true;
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -312,12 +313,12 @@ namespace Object
 					else if (CanMoveForward(to, stack->o))
 					{
 						s->active = F_Step;
-						stack->o->ief.ObjectMove(stack->o->GetCoord(), to, 0);
+						stack->o->scene->ObjectMove(stack->o->GetCoord(), to, 0);
 						regets(Specific, s);
 						stack->o->SetMove(stack->o->GetRotation());
 						s->PriorityStep = false;
 					}
-					else if (stack->o->ief.EnableUpdateSkip())
+					else if (stack->o->scene->EnableUpdateSkip())
 					{
 						stack->o->requests.update = true;
 						return;
@@ -348,12 +349,12 @@ namespace Object
 						else if (CanMoveForward(to, stack->o))
 						{
 							s->active = F_Step;
-							stack->o->ief.ObjectMove(stack->o->GetCoord(), to, 0);
+							stack->o->scene->ObjectMove(stack->o->GetCoord(), to, 0);
 							regets(Specific, s);
 							stack->o->SetMove(stack->o->GetRotation());
 							s->PriorityStep = false;
 						}
-						else if (stack->o->ief.EnableUpdateSkip())
+						else if (stack->o->scene->EnableUpdateSkip())
 						{
 							stack->o->requests.update = true;
 							return;
@@ -375,11 +376,11 @@ namespace Object
 		bool CanRollAffect(ObjectBase *o, Type::Coord coord1)
 		{
 			return
-				!o->ief.IsObjectOut(o->GetCoordUp())
+				!o->scene->IsObjectOut(o->GetCoordUp())
 				||
-				!o->ief.IsObjectOut({o->GetCoord().x,o->GetCoord().y - 2})
+				!o->scene->IsObjectOut({o->GetCoord().x,o->GetCoord().y - 2})
 				||
-				o->ief.GetGoto({o->GetCoord().x, o->GetCoord().y - 2}).x != coord1.x
+				o->scene->GetGoto({o->GetCoord().x, o->GetCoord().y - 2}).x != coord1.x
 				;
 		}
 		bool CanRoll(ObjectBase *o, Type::Coord coordNeighbor, Type::Coord coordDiagonal)
@@ -387,32 +388,32 @@ namespace Object
 			return
 				(
 					(
-						o->ief.GetObject(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� object-re r� tud l�pni
+						o->scene->GetObject(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� object-re r� tud l�pni
 						&&
-						o->ief.GetRemain(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� remain-re r� tud l�pni
+						o->scene->GetRemain(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� remain-re r� tud l�pni
 						&&
 						(
-							!o->ief.IsObjectOut(coordNeighbor)
+							!o->scene->IsObjectOut(coordNeighbor)
 							||
 							(
-								o->ief.GetObjectOut(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� kimen� object-ra r� tud l�pni
+								o->scene->GetObjectOut(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� kimen� object-ra r� tud l�pni
 								||
-								o->ief.GetObjectOut(coordNeighbor)->GetCoord().x != coordNeighbor.x//a mellette l�v� kimen� object horizont�lisan t�vozik
+								o->scene->GetObjectOut(coordNeighbor)->GetCoord().x != coordNeighbor.x//a mellette l�v� kimen� object horizont�lisan t�vozik
 								)
 							)
 						&&
 						(
-							o->ief.GetObject(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s object-re r� tud l�pni
+							o->scene->GetObject(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s object-re r� tud l�pni
 							&&
-							o->ief.GetRemain(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s remain-re r� tud l�pni
+							o->scene->GetRemain(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s remain-re r� tud l�pni
 							&&
 							(
-								!o->ief.IsObjectOut(coordDiagonal)
+								!o->scene->IsObjectOut(coordDiagonal)
 								||
 								(
-									o->ief.GetObjectOut(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s kimen� object-ra r� tud l�pni
+									o->scene->GetObjectOut(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s kimen� object-ra r� tud l�pni
 									||
-									o->ief.GetObjectOut(coordDiagonal)->IsMoving()//�tl�s kimen� object t�vozik
+									o->scene->GetObjectOut(coordDiagonal)->IsMoving()//�tl�s kimen� object t�vozik
 									//GetObjectOut(coord2)->GetCoord().y > GetCoord().y//�tl�s kimen� object lefel� t�vozik
 									)
 								)
@@ -424,7 +425,7 @@ namespace Object
 		bool CanRollOff(ObjectBase *o)
 		{
 			return
-				o->ief.GetSectionFlags(o->GetCoordDown()) & ObjectBase::RollOffTop;
+				o->scene->GetSectionFlags(o->GetCoordDown()) & ObjectBase::RollOffTop;
 		}
 
 		void Create(OBJECT_CREATER_PARAM)
@@ -439,11 +440,15 @@ namespace Object
 			stack->o->requests.timer = true;
 			stack->o->requests.update = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "ObjectRollDown::active: " << s->active << "\n";
-			clog << "ObjectRollDown::lastRoll: " << s->active << "\n";
+			Json json;
+
+			json["active"] = s->active;
+			json["rollCounter"] = s->rollCounter;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -463,10 +468,6 @@ namespace Object
 			}
 			stack->o->requests.timer = true;
 		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			pops(Specific, s);
@@ -479,7 +480,7 @@ namespace Object
 					if (s->rollCounter <= 0 && left && CanRollAffect(stack->o, stack->o->GetCoordLeft()))
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
+						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
 						stack->o->SetMove({1,stack->o->GetMove().y});
 						if (s->rollCounter >= 0)
 						{
@@ -493,7 +494,7 @@ namespace Object
 					else if (s->rollCounter >= 0 && CanRoll(stack->o, stack->o->GetCoordRight(), {stack->o->GetCoord().x + 1,stack->o->GetCoord().y + 1}) && CanRollAffect(stack->o, stack->o->GetCoordRight()))
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordRight(), 0);
+						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordRight(), 0);
 						stack->o->SetMove({-1,stack->o->GetMove().y});
 						if (s->rollCounter <= 0)
 						{
@@ -504,14 +505,14 @@ namespace Object
 							++s->rollCounter;
 						}
 					}
-					else if (stack->o->ief.EnableUpdateSkip())
+					else if (stack->o->scene->EnableUpdateSkip())
 					{
 						stack->o->requests.update = true;
 					}
 					else if (s->rollCounter <= 0 && left)
 					{
 						s->active = 1;
-						stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
+						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
 						stack->o->SetMove({1,stack->o->GetMove().y});
 						if (s->rollCounter >= 0)
 						{

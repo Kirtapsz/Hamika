@@ -20,6 +20,8 @@ shutil.rmtree(dst, ignore_errors=True)
 os.makedirs(dst, exist_ok=True)
 shutil.copytree(src, dst, dirs_exist_ok=True)
 
+os.chdir(out_dir)
+
 ret = subprocess.run(["git" ,"-C" ,kirlib ,"rev-parse" ,"HEAD"], capture_output=True)
 if (ret.returncode != 0):
     raise Exception("Git command failed")
@@ -48,10 +50,16 @@ stdout=ret.stdout.decode("utf-8")
 hamika_commited="nothing to commit, working tree clea" in stdout
 logging.info(f'Hamika commit status: {hamika_commited}')
 
-if (release_type == "release"):
+if (release_type == "Release"):
     if (hamika_commited == False):
         raise Exception("Hamika Changes are not commited")
     if (kirlib_commited == False):
         raise Exception("KIRLIB changes are not commited")
+    validators = "Hamika\\multitest\\validators"
+    ext = ('.json')
+    for file in os.listdir(validators):
+        print(file)
+        if file.endswith(ext):
+            subprocess.run(["Hamika.exe", "--multitest", "-json", os.path.join(validators,file)], shell=True, check=True)
 
 logging.info('PostBuild script done...')

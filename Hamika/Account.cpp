@@ -6,14 +6,16 @@ namespace Res
 {
 	void Account::CompletedBluePrint::operator=(const Iv1Record &record)
 	{
-		_hash = std::get<Iv1Record::hash>(record);
+		_replayUuid = std::get<Iv1Record::replayUuid>(record);
+		_bluePrintHash = std::get<Iv1Record::bluePrintHash>(record);
 		_date = std::get<Iv1Record::date>(record);
 		_timeMS = std::get<Iv1Record::timeMS>(record);
 	}
 	Account::CompletedBluePrint::operator Iv1Record() const
 	{
 		Iv1Record record;
-		std::get<Iv1Record::hash>(record) = _hash;
+		std::get<Iv1Record::replayUuid>(record) = _replayUuid;
+		std::get<Iv1Record::bluePrintHash>(record) = _bluePrintHash;
 		std::get<Iv1Record::date>(record) = _date;
 		std::get<Iv1Record::timeMS>(record) = _timeMS;
 		return record;
@@ -27,9 +29,13 @@ namespace Res
 	{
 		return _timeMS;
 	}
-	const KIR5::sha512digest &Account::CompletedBluePrint::hash() const
+	const std::string &Account::CompletedBluePrint::replayUuid() const
 	{
-		return _hash;
+		return _replayUuid;
+	}
+	const KIR5::sha512digest &Account::CompletedBluePrint::bluePrintHash() const
+	{
+		return _bluePrintHash;
 	}
 
 
@@ -85,43 +91,44 @@ namespace Res
 		_totalTimePlayedMS += timeMS_;
 	}
 
-	void Account::addBluePrint(const std::shared_ptr<BluePrint> &bluePrint_, std::uint32_t timeMS_)
+	void Account::addBluePrint(const std::shared_ptr<BluePrint> &bluePrint_, std::uint32_t timeMS_, const KIR4::time &date, const std::string &replayUuid)
 	{
 		auto item = std::find_if(_completedBlueprints.begin(), _completedBlueprints.end(), [&bluePrint_](const CompletedBluePrint &completedBluePrint) -> bool
 		{
-			return bluePrint_->hash == completedBluePrint._hash;
+			return bluePrint_->hash == completedBluePrint._bluePrintHash;
 		});
 		if (item != _completedBlueprints.end())
 		{
 			if (item->_timeMS > timeMS_)
 			{
-				item->_date = KIR4::time();
+				item->_date = date;
 				item->_timeMS = timeMS_;
+				item->_replayUuid = replayUuid;
 			}
 		}
 		else
 		{
 			CompletedBluePrint completedBluePrint;
-			completedBluePrint._hash = bluePrint_->hash;
-			completedBluePrint._date = KIR4::time();
+			completedBluePrint._bluePrintHash = bluePrint_->hash;
+			completedBluePrint._date = date;
 			completedBluePrint._timeMS = timeMS_;
+			completedBluePrint._replayUuid = replayUuid;
 
 			_completedBlueprints.push_back(completedBluePrint);
 		}
 	}
-	std::uint32_t Account::playTimeOn(const std::shared_ptr<BluePrint> &bluePrint_) const
+	const Account::CompletedBluePrint *Account::getRecordOn(const std::shared_ptr<BluePrint> &bluePrint_) const
 	{
 		auto item = std::find_if(_completedBlueprints.begin(), _completedBlueprints.end(), [&bluePrint_](const CompletedBluePrint &completedBluePrint) -> bool
 		{
-			return bluePrint_->hash == completedBluePrint._hash;
+			return bluePrint_->hash == completedBluePrint._bluePrintHash;
 		});
 		if (item != _completedBlueprints.end())
 		{
-			return item->timeMS();
+			return &*item;
 		}
-		return std::numeric_limits<std::uint32_t>::max();
+		return nullptr;
 	}
-
 
 	void Accounts::operator=(const Iv1Record &record)
 	{
@@ -144,13 +151,13 @@ namespace Res
 		return record;
 	}
 
-	Accounts::ERR_C Accounts::add(const std::shared_ptr<Account> &account)
+	void Accounts::add(const std::shared_ptr<Account> &account)
 	{
 		for (auto &it : list)
 		{
 			if (it->_username == account->_username)
 			{
-				return USERNAME_TAKEN;
+				throw Account::Exception::UsernameTaken();
 			}
 		}
 
@@ -162,10 +169,8 @@ namespace Res
 		{
 			return accountL->_username < accountR->_username;
 		});
-
-		return E_OK;
 	}
-	Accounts::ERR_C Accounts::add(const std::string &username, const std::string &password)
+	void Accounts::add(const std::string &username, const std::string &password)
 	{
 		std::shared_ptr<Account> account(new Account);
 		account->_username = username;
@@ -179,7 +184,7 @@ namespace Res
 			memset(account->_hash.data(), 0, KIR5::SHA512_DIGEST_SIZE);
 		}
 
-		return add(account);
+		add(account);
 	}
 	std::shared_ptr<Account> Accounts::get(const std::string &username)
 	{
@@ -204,15 +209,28 @@ namespace Res
 
 	bool Accounts::initialize(std::uint32_t mode)
 	{
-		if (mode & RESET)
+		try
 		{
-			return true;
+			LoadResource(*this);
 		}
-		return LoadResource(*this);
+		catch (const std::exception &e)
+		{
+			std::cout << "Failed to initialize Accounts: " << e.what() << std::endl;
+			return false;
+		}
+
+		return true;
 	}
 	void Accounts::shutdown()
 	{
-		SaveResource(*this);
+		try
+		{
+			SaveResource(*this);
+		}
+		catch (const std::exception &e)
+		{
+			std::cout << "Failed to shutdown Accounts: " << e.what() << std::endl;
+		}
 	}
 
 	Accounts accounts{"Hamika\\accounts.dat", Base::FILE_MISSING_ALLOWED};

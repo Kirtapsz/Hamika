@@ -1,0 +1,331 @@
+{
+    "BlueprintHash": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "Commit": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "Records": [
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 5392,
+            "LoopCounter": 1,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 6987,
+            "LoopCounter": 10,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": true,
+            "CurrentTimeMS": 9127,
+            "LoopCounter": 12,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 9127,
+            "LoopCounter": 12,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 11057,
+            "LoopCounter": 18,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 11057,
+            "LoopCounter": 18,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": false,
+            "CurrentTimeMS": 14082,
+            "LoopCounter": 26,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 14082,
+            "LoopCounter": 26,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 24268,
+            "LoopCounter": 39,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 34608,
+            "LoopCounter": 68,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 38194,
+            "LoopCounter": 74,
+            "ObjectProperties": {
+                "\\ObjectActionsModule": {
+                    "actions.move": false,
+                    "actions.rotate": false
+                },
+                "\\ObjectBase_": {
+                    "id": 0,
+                    "isExists": true
+                },
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 0
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 38194,
+            "LoopCounter": 74,
+            "ObjectProperties": {
+                "\\ObjectActionsModule": {
+                    "actions.move": false,
+                    "actions.rotate": false
+                },
+                "\\ObjectBase_": {
+                    "id": 0,
+                    "isExists": true
+                },
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 1
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 62879,
+            "LoopCounter": 89,
+            "ObjectProperties": {
+                "\\ObjectActionsModule": {
+                    "actions.move": false,
+                    "actions.rotate": false
+                },
+                "\\ObjectBase_": {
+                    "id": 0,
+                    "isExists": true
+                },
+                "\\ObjectCoordModule": {
+                    "coord.x": 2,
+                    "coord.y": 0
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 62879,
+            "LoopCounter": 89,
+            "ObjectProperties": {
+                "\\ObjectActionsModule": {
+                    "actions.move": false,
+                    "actions.rotate": false
+                },
+                "\\ObjectBase_": {
+                    "id": 1,
+                    "isExists": true
+                },
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 2
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 84252,
+            "LoopCounter": 117,
+            "ObjectProperties": {
+                "\\ObjectActionsModule": {
+                    "actions.move": false,
+                    "actions.rotate": false
+                },
+                "\\ObjectBase_": {
+                    "id": 1,
+                    "isExists": true
+                },
+                "\\ObjectCoordModule": {
+                    "coord.x": 2,
+                    "coord.y": 2
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 84252,
+            "LoopCounter": 117,
+            "ObjectProperties": {
+                "victory": false
+            },
+            "ObjectType": 2,
+            "ValidateType": 5
+        },
+        {
+            "CurrentTimeMS": 84252,
+            "LoopCounter": 117,
+            "ObjectProperties": null,
+            "ObjectType": 2,
+            "ValidateType": 4
+        }
+    ],
+    "UserHash": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}

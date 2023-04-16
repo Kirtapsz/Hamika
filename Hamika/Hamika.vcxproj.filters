@@ -31,12 +31,6 @@
     <Filter Include="Resource\Containers\World">
       <UniqueIdentifier>{940e71f2-170a-4ea9-a8a6-6dbf6387be8f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{eba58788-6e07-4b82-bc5e-975a9a053925}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects">
-      <UniqueIdentifier>{0d116c3f-2883-4b16-bf4e-86f117a69e07}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tools">
       <UniqueIdentifier>{a37f369d-646c-4be7-8718-5bcf9e291451}</UniqueIdentifier>
     </Filter>
@@ -52,46 +46,61 @@
     <Filter Include="UI\Tools">
       <UniqueIdentifier>{f694de21-13a8-4f73-872e-5a2f3bd8c2fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource\Containers\Controller\Validator">
+      <UniqueIdentifier>{a8e99d7a-4154-4f2c-9bbf-dd7f0fd41daa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Multitest">
+      <UniqueIdentifier>{b485f11e-4826-4e8f-b86c-3e72eecf7886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{eba58788-6e07-4b82-bc5e-975a9a053925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Objects">
+      <UniqueIdentifier>{0d116c3f-2883-4b16-bf4e-86f117a69e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Module">
+      <UniqueIdentifier>{9fcba180-6f41-4a8f-9b82-ec4fd72fdc09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Scene">
+      <UniqueIdentifier>{8e4dc34f-f4df-41f8-a800-abaabaa0c7ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MapDrawer.hpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="SceneDrawer.hpp">
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="StatusBar.cpp">
-      <Filter>Game</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="BaseFunctions.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="OriginalObjects.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Bedrock.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Space.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Murphy.cpp">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="EditorMainEvent.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="EditorActiveMap.cpp">
-      <Filter>Editor</Filter>
+    <ClCompile Include="SceneConfiguration.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="ActiveMap.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="ActiveBlock.hpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="SceneBlock.hpp">
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="EditorWorld.cpp">
       <Filter>Editor</Filter>
@@ -235,37 +244,46 @@
     <ClCompile Include="Worlds.cpp">
       <Filter>Resource\Containers\World</Filter>
     </ClCompile>
+    <ClCompile Include="Validator.cpp">
+      <Filter>Resource\Containers\Controller\Validator</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMainEvent.cpp">
+      <Filter>Multitest</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorScene.cpp">
+      <Filter>Editor\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bedrock.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Space.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Murphy.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="StatusBar.h">
-      <Filter>Game</Filter>
+      <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="MapDrawer.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="SceneDrawer.h">
+      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Types.h">
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Objects.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="BaseFunctions.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="OriginalObjects.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>Tools</Filter>
@@ -273,17 +291,14 @@
     <ClInclude Include="EditorMainEvent.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="EditorActiveMap.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="ActiveMap.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="SceneConfiguration.h">
+      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="IDreg.h">
-      <Filter>Game\Objects</Filter>
+      <Filter>Scene\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="ActiveBlock.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="SceneBlock.h">
+      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="EditorWorld.h">
       <Filter>Editor</Filter>
@@ -298,12 +313,6 @@
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="EditorObjects.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorActiveBlock.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorActiveBlock.hpp">
       <Filter>Editor</Filter>
     </ClInclude>
     <ClInclude Include="EditorSaveWorldDialog.h">
@@ -345,7 +354,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.hpp">
+    <ClInclude Include="BinaryResource.hpp">
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="MainEvent.h">
@@ -365,6 +374,39 @@
     </ClInclude>
     <ClInclude Include="Worlds.h">
       <Filter>Resource\Containers\World</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonResource.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Validator.h">
+      <Filter>Resource\Containers\Controller\Validator</Filter>
+    </ClInclude>
+    <ClInclude Include="TestMainEvent.h">
+      <Filter>Multitest</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneField.h">
+      <Filter>Scene\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneArt.h">
+      <Filter>Scene\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneAction.h">
+      <Filter>Scene\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMurphy.h">
+      <Filter>Scene\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneControl.h">
+      <Filter>Scene\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorScene.h">
+      <Filter>Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorSceneBlock.hpp">
+      <Filter>Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorSceneBlock.h">
+      <Filter>Editor\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
