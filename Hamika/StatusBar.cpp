@@ -41,20 +41,22 @@ namespace UI::Game
 	}
 	void StatusBar::updateLoopCounter(unsigned long long _loopCounter)
 	{
-		std::time_t ms = _loopCounter % 1000;
+		std::time_t timeMS = _loopCounter * CA * 1000;
 
-		_loopCounter /= 1000;
-		std::time_t sec = _loopCounter % 60;
+		std::time_t ms = timeMS % 1000;
 
-		_loopCounter /= 60;
-		std::time_t min = _loopCounter % 60;
+		timeMS /= 1000;
+		std::time_t sec = timeMS % 60;
 
-		_loopCounter /= 60;
-		std::time_t hour = _loopCounter % 24;
+		timeMS /= 60;
+		std::time_t min = timeMS % 60;
 
-		HHLabel->setText(ToSString(sec));
+		timeMS /= 60;
+		std::time_t hour = timeMS % 24;
+
+		HHLabel->setText(ToSString(hour));
 		MMLabel->setText(ToSString(min));
-		SSLabel->setText(ToSString(hour));
+		SSLabel->setText(ToSString(sec));
 	}
 
 	StatusBar::StatusBar()
