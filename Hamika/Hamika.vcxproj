@@ -201,7 +201,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)PostBuild.bat" "$(OutDir)" "$(ProjectDir)"</Command>
+      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir)</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -215,7 +215,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)PostBuild.bat" "$(OutDir)" "$(ProjectDir)"</Command>
+      <Command>call "python" "$(SolutionDir)PostBuild\main.py" "$(OutDir)" "$(ProjectDir)" "reset"</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -229,7 +229,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)PostBuild.bat" "$(OutDir)" "$(ProjectDir)"</Command>
+      <Command>call "python" "$(SolutionDir)PostBuild\main.py" "$(OutDir)" "$(ProjectDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -269,7 +269,7 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)PostBuild.bat" "$(OutDir)" "$(ProjectDir)"</Command>
+      <Command>call "python" "$(SolutionDir)PostBuild\main.py" "$(OutDir)" "$(ProjectDir)" "release"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
