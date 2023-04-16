@@ -8,6 +8,7 @@
 #include "Tools.h"
 
 #include <KIR\AL\KIR5_color.h>
+#include <KIR\AL\KIR5_blender.h>
 #include <KIR\AL\KIR5_bitmap_target.h>
 #include <KIR\KIR4_console.h>
 
@@ -221,17 +222,17 @@ void MapDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 			BlocksBitmapDrawOffset.height = (CameraBegin.y - (DrawBeginSource.y + BlocksBitmapBufferSize)) * DrawSize.height;
 		}
 	}
-	/*clog << "Camera: " << camera << KIR4::eol;
-	clog << "CameraBegin: " << CameraBegin << KIR4::eol;
-	clog << "CameraEnd: " << CameraEnd << KIR4::eol;
-	clog << "CameraBox: " << CameraX1 << "*" << CameraY1 << "  " << CameraX2 << "*" << CameraY2 << KIR4::eol;
-	clog << "BlocksBitmapCounts: " << BlocksBitmapCounts << KIR4::eol;
-	clog << "CameraCounts: " << CameraCounts << KIR4::eol;
-	clog << "DrawBegin: " << DrawBegin << KIR4::eol;
-	clog << "DrawEnd: " << DrawEnd << KIR4::eol;
-	clog << "DrawOffset: " << DrawOffset << KIR4::eol;
-	clog << "BlocksBitmapDrawOffset: " << BlocksBitmapDrawOffset << KIR4::eol;
-	clog << "-------------------" << KIR4::eol;*/
+	/*clog <<"Camera: " <<camera <<KIR4::eol;
+	clog <<"CameraBegin: " <<CameraBegin <<KIR4::eol;
+	clog <<"CameraEnd: " <<CameraEnd <<KIR4::eol;
+	clog <<"CameraBox: " <<CameraX1 <<"*" <<CameraY1 <<"  " <<CameraX2 <<"*" <<CameraY2 <<KIR4::eol;
+	clog <<"BlocksBitmapCounts: " <<BlocksBitmapCounts <<KIR4::eol;
+	clog <<"CameraCounts: " <<CameraCounts <<KIR4::eol;
+	clog <<"DrawBegin: " <<DrawBegin <<KIR4::eol;
+	clog <<"DrawEnd: " <<DrawEnd <<KIR4::eol;
+	clog <<"DrawOffset: " <<DrawOffset <<KIR4::eol;
+	clog <<"BlocksBitmapDrawOffset: " <<BlocksBitmapDrawOffset <<KIR4::eol;
+	clog <<"-------------------" <<KIR4::eol;*/
 }
 template <typename ACTIVE_BLOCK_T>
 void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
@@ -437,9 +438,10 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			target.lock(RedrawnedBitmap);
 			al_reset_clipping_rectangle();
 
-			al_set_blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ONE, ALLEGRO_ONE);
-			al_draw_filled_rectangle(0, 0, RedrawnedBitmap.width(), RedrawnedBitmap.height(), KIR5::Color(10, 10, 10, 10));
-			al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+			{
+				KIR5::Blender blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ONE, ALLEGRO_ONE);
+				al_draw_filled_rectangle(0, 0, RedrawnedBitmap.width(), RedrawnedBitmap.height(), KIR5::Color(10, 10, 10, 10));
+			}
 			int PurpleDraw = 0;
 			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 			{
@@ -450,11 +452,11 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 					//	||
 					//	coord.y*DrawSize.height - DrawOffset.height >= bitmap.height() + MapBitmapBufferSize + DrawSize.height
 					//	||
-					//	coord.x*DrawSize.width - DrawOffset.width + DrawSize.width < -DrawSize.width
+					//	coord.x*DrawSize.width - DrawOffset.width + DrawSize.width <-DrawSize.width
 					//	||
-					//	coord.y*DrawSize.height - DrawOffset.height + DrawSize.height < -+DrawSize.height
+					//	coord.y*DrawSize.height - DrawOffset.height + DrawSize.height <-+DrawSize.height
 					//	)
-					//	clog << KIR4::LRED << "NON VISIBLE BLOCK DRAWNED! " << coord << KIR4::eol;
+					//	clog <<KIR4::LRED <<"NON VISIBLE BLOCK DRAWNED! " <<coord <<KIR4::eol;
 
 					PurpleDraw++;
 					al_draw_filled_rectangle(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, coord.x * DrawSize.width - DrawOffset.width + DrawSize.width, coord.y * DrawSize.height - DrawOffset.height + DrawSize.height, KIR5::Color(255, 0, 255, 20));
@@ -542,29 +544,30 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 		al_reset_clipping_rectangle();
 
-		//al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{
-			if (block.Redrawn && (block.ComeFrom != coord || block.object->events.topDraw))
+			//KIR5::Blender blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 			{
-				//if (block.object->isExists && block.object->IsMoving())
+				if (block.Redrawn && (block.ComeFrom != coord || block.object->events.topDraw))
 				{
-					block.object->SDraw();
-					block.object->DrawNumber = TotalObjectDrawCount++;
+					//if (block.object->isExists && block.object->IsMoving())
+					{
+						block.object->SDraw();
+						block.object->DrawNumber = TotalObjectDrawCount++;
+						block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsMovingObjectDrawned;
+					}
+				}
+			});
+			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+			{
+				if (block.Redrawn && block.remain->isExists && block.remain->events.topDraw)
+				{
+					block.remain->SDraw();
+					block.remain->DrawNumber = TotalObjectDrawCount++;
 					block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsMovingObjectDrawned;
 				}
-			}
-		});
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		{
-			if (block.Redrawn && block.remain->isExists && block.remain->events.topDraw)
-			{
-				block.remain->SDraw();
-				block.remain->DrawNumber = TotalObjectDrawCount++;
-				block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsMovingObjectDrawned;
-			}
-		});
-		//al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_INVERSE_ALPHA);
+			});
+		}
 
 		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 		{

@@ -3,7 +3,7 @@
 #include "Bitmap.h"
 #include "Account.h"
 #include "Font.h"
-#include "World.h"
+#include "Worlds.h"
 
 namespace Res
 {
@@ -14,7 +14,6 @@ namespace Res
 		bool initialized = false;
 	};
 	std::array<_Base, 9> resources{{
-
 		{&bitmapBox, ALWAYS},
 		{&tiles, GAME | EDITOR},
 		{&uielements, GAME | EDITOR},
@@ -26,7 +25,7 @@ namespace Res
 
 		{&accounts, GAME | RESET},
 
-		{&world1, GAME | BLUEPRINTS_INFO},
+		{&worlds, GAME | BLUEPRINTS_GAME},
 	}};
 
 	bool initialize(std::uint32_t mode)

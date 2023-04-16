@@ -104,7 +104,7 @@ struct Logger
 	template<typename L, typename... _Types>
 	void record(_Types... _Args);
 
-	const std::vector< LogBase *> &getLogs(LogID ID);
+	const std::vector<LogBase *> &getLogs(LogID ID);
 
 	bool load(const std::string &filename);
 	bool save(const std::string &filename) const;

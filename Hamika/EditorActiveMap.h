@@ -13,12 +13,13 @@
 #include "StatusBar.h"
 #include "MapDrawer.h"
 #include "Object.h"
+#include "UItools.h"
 #include "EditorActiveBlock.h"
 
 
-namespace UI::Editor
+namespace UI::Editor::Game
 {
-	class ActiveMap:public KIR5::Panel, public EditorObjectBase::Interface
+	class ActiveMap:public Panel, public EditorObjectBase::Interface
 	{
 		private: Type::Coord targetCoord;
 

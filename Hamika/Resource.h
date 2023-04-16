@@ -19,10 +19,18 @@ namespace Res
 	// Models
 	struct Base
 	{
-		const std::string path;
+		enum Enum
+		{
+			NONE = 0,
 
-		inline Base(const std::string &path):
-			path(KIR5::pathCombine(KIR5::getModuleDirectory(), path))
+			FILE_MISSING_ALLOWED = 1 << 5,
+		};
+		const std::string path;
+		Enum mode;
+
+		inline Base(const std::string &path, Enum mode = NONE):
+			path(KIR5::pathCombine(KIR5::getModuleDirectory(), path)),
+			mode(mode)
 		{
 
 		}
@@ -180,10 +188,11 @@ namespace Res
 	{
 		GAME = 1 << 0,
 		EDITOR = 1 << 1,
-		BLUEPRINTS_INFO = 1 << 2,
-		RESET = 1 << 3,
+		BLUEPRINTS_GAME = 1 << 2,
+		BLUEPRINTS_TEST = 1 << 3,
+		RESET = 1 << 4,
 
-		ALWAYS = GAME | EDITOR | BLUEPRINTS_INFO,
+		ALWAYS = GAME | EDITOR | BLUEPRINTS_GAME,
 	};
 	bool initialize(std::uint32_t editorMode);
 	void shutdown();

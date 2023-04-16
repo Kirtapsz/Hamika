@@ -84,7 +84,7 @@ namespace UI::Editor
 		mx /= blockDimension;
 		my /= blockDimension;
 
-		mainEvent->activeMap->setTarget({mx,my});
+		MainEvent::s_object->activeMap->setTarget({mx,my});
 	}
 
 	void MiniMap::SetMap(std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map_)

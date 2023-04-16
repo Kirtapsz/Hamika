@@ -13,10 +13,6 @@ namespace UI::Editor
 		bluePrint(bluePrint_)
 	{
 		*this << ID;
-		ID->setTextFont(Res::Consolas[18]);
-		ID->show();
-		ID->setTextAlignment(KIR5::CENTER);
-		ID->setTextColor(KIR5::Color(230, 120, 40));
 		ID->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 		{
 			if (ID->isActiveBox())
@@ -31,14 +27,9 @@ namespace UI::Editor
 		});
 
 		*this << name;
-		name->show();
-		name->setTextAlignment(KIR5::CENTER);
-		name->setTextFont(ID->getTextFont());
-		name->setTextColor(KIR5::Color(180, 180, 180));
 		name->setText(bluePrint->title);
 
 		*this << moveUp;
-		moveUp->show();
 		moveUp->setBitmap(Res::uielements[Res::UIElements::ArrowUp]);
 		moveUp->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
@@ -49,7 +40,6 @@ namespace UI::Editor
 		});
 
 		*this << moveDown;
-		moveDown->show();
 		moveDown->setBitmap(Res::uielements[Res::UIElements::ArrowDown]);
 		moveDown->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
@@ -57,7 +47,6 @@ namespace UI::Editor
 		});
 
 		*this << deleteMap;
-		deleteMap->show();
 		deleteMap->setBitmap(Res::uielements[Res::UIElements::Delete]);
 		deleteMap->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
@@ -65,17 +54,15 @@ namespace UI::Editor
 		});
 
 		*this << editMap;
-		editMap->show();
 		editMap->setBitmap(Res::uielements[Res::UIElements::Edit]);
 		editMap->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
-			mainEvent->activeMap->SetMap(this->bluePrint);
+			MainEvent::s_object->activeMap->SetMap(this->bluePrint);
 		});
 
 
 		*this << blueprintPanel;
-		blueprintPanel->show();
-		blueprintPanel->setBluePrint(bluePrint);
+		blueprintPanel->bluePrint(bluePrint);
 
 		this->fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
@@ -121,11 +108,10 @@ namespace UI::Editor
 	Worldi::Worldi()
 	{
 		*this << content;
-
 		content->show();
 		content->setGap(3);
-		(*content) += KIR5::Row<>::WrapHeight;
-		(*content) += KIR5::Row<>::ConsistentWidth;
+		(*content) += KIR5::Column<Panel>::WrapHeight;
+		(*content) += KIR5::Column<Panel>::ConsistentWidth;
 
 		{
 			KIR5::Shared<KIR5::Row<>> row;
@@ -135,6 +121,7 @@ namespace UI::Editor
 			(*row) += KIR5::Row<>::ConsistentHeight;
 
 			worltTitle_Label->setText("World title:");
+			worltTitle_Label->height(30);
 			worltTitle_Label->width(worltTitle_Label->getTextWidth() + 10);
 			row->pushBack(worltTitle_Label);
 
@@ -149,10 +136,7 @@ namespace UI::Editor
 		}
 
 		{
-			KIR5::Shared<Editor::ColoredPanel> line;
-			line->setBackgroundColor(KIR5::Color(160, 90, 30));
-			line->height(2);
-			content->pushBack(line);
+			content->pushBack(KIR5::Shared<Line<2, 2>>());
 		}
 
 		{
@@ -183,10 +167,7 @@ namespace UI::Editor
 		}
 
 		{
-			KIR5::Shared<Editor::ColoredPanel> line;
-			line->setBackgroundColor(KIR5::Color(160, 90, 30));
-			line->height(2);
-			content->pushBack(line);
+			content->pushBack(KIR5::Shared<Line<2, 2>>());
 		}
 
 		{
@@ -195,13 +176,9 @@ namespace UI::Editor
 			row->show();
 			(*row) += KIR5::Row<>::ConsistentHeight;
 
-			loadButton->setTextFont(Res::TimesNewRoman[12]);
-			loadButton->setTextColor(KIR5::Color(100, 100, 100));
-			loadButton->setTextAlignment(KIR5::CENTER);
-			loadButton->show();
-			loadButton->setColor(KIR5::Color(50, 50, 50));
 			loadButton->setText("Load");
-			loadButton->resize(loadButton->getTextWidth() + 20, 30);
+			loadButton->height(30);
+			loadButton->width(loadButton->getTextWidth() + 20);
 			row->pushBack(loadButton);
 			loadButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
@@ -220,26 +197,18 @@ namespace UI::Editor
 				}
 			});
 
-			saveButton->setTextFont(Res::TimesNewRoman[12]);
-			saveButton->setTextColor(KIR5::Color(100, 100, 100));
-			saveButton->setTextAlignment(KIR5::CENTER);
-			saveButton->show();
-			saveButton->setColor(KIR5::Color(50, 50, 50));
 			saveButton->setText("Save");
-			saveButton->resize(saveButton->getTextWidth() + 20, 30);
+			saveButton->height(30);
+			saveButton->width(saveButton->getTextWidth() + 20);
 			row->pushBack(saveButton);
 			saveButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				mainEvent->saveWorldDialog->show();
+				MainEvent::s_object->saveWorldDialog->show();
 			});
 
-			newMapButton->setTextFont(Res::TimesNewRoman[12]);
-			newMapButton->setTextColor(KIR5::Color(100, 100, 100));
-			newMapButton->setTextAlignment(KIR5::CENTER);
-			newMapButton->show();
-			newMapButton->setColor(KIR5::Color(50, 50, 50));
 			newMapButton->setText("New map");
-			newMapButton->resize(newMapButton->getTextWidth() + 20, 30);
+			newMapButton->height(30);
+			newMapButton->width(newMapButton->getTextWidth() + 20);
 			row->pushBack(newMapButton);
 			newMapButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
@@ -258,13 +227,9 @@ namespace UI::Editor
 				scrollBar->cursor(0xFFFFFFFF);
 			});
 
-			newWorldButton->setTextFont(Res::TimesNewRoman[12]);
-			newWorldButton->setTextColor(KIR5::Color(100, 100, 100));
-			newWorldButton->setTextAlignment(KIR5::CENTER);
-			newWorldButton->show();
-			newWorldButton->setColor(KIR5::Color(50, 50, 50));
 			newWorldButton->setText("New world");
-			newWorldButton->resize(newWorldButton->getTextWidth() + 20, 30);
+			newWorldButton->height(30);
+			newWorldButton->width(newWorldButton->getTextWidth() + 20);
 			row->pushBack(newWorldButton);
 			newWorldButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
@@ -377,7 +342,7 @@ namespace UI::Editor
 						{
 							if (list->items()[i]->bluePrint.get() == ptr)
 							{
-								list->items()[i]->blueprintPanel->redrawn = true;
+								list->items()[i]->blueprintPanel->redraw();
 								break;
 							}
 						}
@@ -417,6 +382,6 @@ namespace UI::Editor
 		scrollBar->cursor(0);
 		list->cursor(0);
 
-		mainEvent->worldi->worltTitle_TextBox->setText(world->title);
+		MainEvent::s_object->worldi->worltTitle_TextBox->setText(world->title);
 	}
 }

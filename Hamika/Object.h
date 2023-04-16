@@ -21,26 +21,26 @@ typedef void(*SIMPLE_DRAWNER)(OBJECT_SIMPLE_DRAWNER_PARAM);
 
 /*enum ObjectEvent:Type::Flags
 {
-	Timer = 1 << 1, //events->timer
-	Tick = 1 << 2, //events->tick
-	Update = 1 << 3, //events->update
-	HightLayer = 1 << 8, //events->topDraw
+	Timer = 1 <<1, //events->timer
+	Tick = 1 <<2, //events->tick
+	Update = 1 <<3, //events->update
+	HightLayer = 1 <<8, //events->topDraw
 
 
-	Remove = 1 << 5, //requests->remove
-	Blasting = 1 << 6, //requests->blowUp
-	UpdateRequest = 1 << 9, //requests->update
-	Draw = 1 << 4, //requests->draw
+	Remove = 1 <<5, //requests->remove
+	Blasting = 1 <<6, //requests->blowUp
+	UpdateRequest = 1 <<9, //requests->update
+	Draw = 1 <<4, //requests->draw
 
-	Moving = 1 << 12, //actions->move
-	Rotating = 1 << 13, //actions->rotate
+	Moving = 1 <<12, //actions->move
+	Rotating = 1 <<13, //actions->rotate
 
-	TimerDone = 1 << 10, // remove
-	TickDone = 1 << 11, // remove
+	TimerDone = 1 <<10, // remove
+	TickDone = 1 <<11, // remove
 
 	UpdateEnable = UpdateRequest | Update, //remove
 
-	DrawScreen = 1 << 14 | Draw, //remove
+	DrawScreen = 1 <<14 | Draw, //remove
 };*/
 
 template<typename OBJECT_HANDLER>

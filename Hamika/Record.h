@@ -24,7 +24,7 @@ namespace Res
 	template<class... T>
 	class HashRecord: public std::tuple<T...>
 	{
-		public: KIR5::sha512digest hash;
+		public: KIR5::sha512digest hash{};
 		public: using std::tuple<T...>::tuple;
 	};
 
@@ -68,6 +68,16 @@ namespace Res
 	struct FixedVectorRecord: std::array<T, COUNT>
 	{
 		using std::array<T, COUNT>::array;
+	};
+	template<class T, std::size_t COUNT>
+	struct HeapVectorRecord: std::vector<T>
+	{
+		using std::vector<T>::operator[];
+
+		HeapVectorRecord()
+		{
+			resize(COUNT);
+		}
 	};
 	template<class T, std::size_t WIDTH, std::size_t HEIGHT>
 	struct FixedMatrixRecord: std::array<std::array<T, HEIGHT>, WIDTH>

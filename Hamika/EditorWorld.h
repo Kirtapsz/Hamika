@@ -30,21 +30,21 @@ namespace UI::Editor
 		REFRESH_ITEM,
 	};
 
-	class Worldi: public KIR5::Panel
+	class Worldi: public Panel
 	{
 		friend class MainEvent;
 		friend class SaveWorldDialog;
 
-		private: class Item: public KIR5::Panel
+		private: class Item: public Panel
 		{
 			friend class Worldi;
 			private: int ID_;
-			private: KIR5::Shared<KIR5::TextBox<KIR5::Panel>> ID;
-			private: KIR5::Shared<KIR5::Label<KIR5::Panel>> name;
-			private: KIR5::Shared<KIR5::ColoredBitmapButton<KIR5::Button<>>> moveUp;
-			private: KIR5::Shared<KIR5::ColoredBitmapButton<KIR5::Button<>>> moveDown;
-			private: KIR5::Shared<KIR5::ColoredBitmapButton<KIR5::Button<>>> deleteMap;
-			private: KIR5::Shared<KIR5::ColoredBitmapButton<KIR5::Button<>>> editMap;
+			private: KIR5::Shared<TextBox<Res::Consolas, 15>> ID;
+			private: KIR5::Shared<Label<Res::Consolas, 15>> name;
+			private: KIR5::Shared<BmpButton> moveUp;
+			private: KIR5::Shared<BmpButton> moveDown;
+			private: KIR5::Shared<BmpButton> deleteMap;
+			private: KIR5::Shared<BmpButton> editMap;
 			private: KIR5::Shared<BlueprintPanel> blueprintPanel;
 			private: std::shared_ptr<Res::BluePrint> bluePrint;
 
@@ -54,18 +54,18 @@ namespace UI::Editor
 			public: const std::shared_ptr<Res::BluePrint> &getBluePrint() const;
 		};
 
-		private: KIR5::Shared<KIR5::Column<KIR5::Panel>> content;
+		private: KIR5::Shared<KIR5::Column<Panel>> content;
 
-		private: KIR5::Shared<KIR5::TextButton<KIR5::RectangleButton<>>> loadButton;
-		private: KIR5::Shared<KIR5::TextButton<KIR5::RectangleButton<>>> saveButton;
-		private: KIR5::Shared<KIR5::TextButton<KIR5::RectangleButton<>>> newMapButton;
-		private: KIR5::Shared<KIR5::TextButton<KIR5::RectangleButton<>>> newWorldButton;
+		private: KIR5::Shared<Button<Res::Consolas, 20>> loadButton;
+		private: KIR5::Shared<Button<Res::Consolas, 20>> saveButton;
+		private: KIR5::Shared<Button<Res::Consolas, 20>> newMapButton;
+		private: KIR5::Shared<Button<Res::Consolas, 20>> newWorldButton;
 
-		private: KIR5::Shared<UIlabel<UI_S>> worltTitle_Label;
-		private: KIR5::Shared<UItextBox<UI_S>> worltTitle_TextBox;
+		private: KIR5::Shared<Label<Res::Consolas, 15>> worltTitle_Label;
+		private: KIR5::Shared<TextBox<Res::Consolas, 15>> worltTitle_TextBox;
 
-		private: KIR5::Shared<KIR5::Panel> listPanel;
-		private: KIR5::Shared<KIR5::ListPanel<KIR5::Panel, Item>> list;
+		private: KIR5::Shared<Panel> listPanel;
+		private: KIR5::Shared<KIR5::ListPanel<Panel, Item>> list;
 		private: KIR5::Shared<KIR5::VerticalScrollBar<>> scrollBar;
 		private: KIR5::Shared<KIR5::RectangleButton<>> scrollBarThumb;
 		private: KIR5::Shared<KIR5::ScrollControl> scrollControl = new KIR5::ScrollControl(list, scrollBar);

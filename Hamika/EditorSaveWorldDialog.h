@@ -5,6 +5,7 @@
 #include "Objects.h"
 #include "Font.h"
 #include "BlueprintPanel.h"
+#include "UItools.h"
 
 #include <KIR\AL\KIR5_panel.h>
 #include <KIR\AL\KIR5_list_panel.h>
@@ -19,22 +20,22 @@
 
 namespace UI::Editor
 {
-	class SaveWorldDialog: public KIR5::Panel
+	class SaveWorldDialog: public Panel
 	{
 		friend class MainEvent;
 
 		private: KIR5::Shared<KIR5::ComboBox<
-			KIR5::FramedRectangleButton<KIR5::Button<KIR5::TextButton<>>>,
-			KIR5::ListPanel<KIR5::Panel, KIR5::FramedRectangleButton<KIR5::Button<KIR5::TextButton<>>>>
+			Button<Res::Consolas, 20>,
+			KIR5::ListPanel<Panel, Button<Res::Consolas, 20>>
 			>> mapTypeSelector;
 
-		private: KIR5::Shared<KIR5::ColoredPanel> centerBox;
-		private: KIR5::Shared<KIR5::Label<KIR5::Panel>> directoryLabel;
-		private: KIR5::Shared<KIR5::TextBox<KIR5::Panel>> directory;
-		private: KIR5::Shared<KIR5::Label<KIR5::Panel>> wordNameDirectoryLabel;
-		private: KIR5::Shared<KIR5::TextBox<KIR5::Panel>> wordNameDirectory;
-		private: KIR5::Shared<KIR5::RectangleButton<KIR5::TextButton<>>> saveButton;
-		private: KIR5::Shared<KIR5::RectangleButton<KIR5::TextButton<>>> cancelButton;
+		private: KIR5::Shared<Window> centerBox;
+		private: KIR5::Shared<Label<Res::Consolas, 20>> directoryLabel;
+		private: KIR5::Shared<TextBox<Res::Consolas, 20>> directory;
+		private: KIR5::Shared<Label<Res::Consolas, 20>> wordNameDirectoryLabel;
+		private: KIR5::Shared<TextBox<Res::Consolas, 20>> wordNameDirectory;
+		private: KIR5::Shared<Button<Res::Consolas, 20>> saveButton;
+		private: KIR5::Shared<Button<Res::Consolas, 20>> cancelButton;
 
 		public: SaveWorldDialog();
 		public: ~SaveWorldDialog();

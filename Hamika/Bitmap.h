@@ -79,7 +79,7 @@ namespace Res
 		public: static constexpr char *RotationUp = "RotationUp";
 		public: static constexpr std::array<const char *, 4> Rotation{RotationDown, RotationLeft, RotationRight, RotationUp};
 		public: static constexpr char *Set = "Set";
-		public: static constexpr char *Skip = "Skip";
+		public: static constexpr char *Locked = "Locked";
 		public: static constexpr char *SpawnPoint = "SpawnPoint";
 		public: static constexpr char *StatusBar = "StatusBar";
 		public: static constexpr char *StickUp = "StickUp";
@@ -88,6 +88,7 @@ namespace Res
 		public: static constexpr char *StickLeft = "StickLeft";
 		public: static constexpr std::array<const char *, 4> Stick{StickUp, StickRight, StickDown, StickLeft};
 		public: static constexpr char *Unset = "Unset";
+		public: static constexpr char *Settings = "Settings";
 	};
 
 	class BitmapPool: public Base

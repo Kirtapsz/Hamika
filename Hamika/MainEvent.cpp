@@ -2,7 +2,7 @@
 #include "Font.h"
 
 #include "OriginalObjects.h"
-#include "Resource.h"
+#include "Worlds.h"
 
 #include <KIR\AL\KIR5_bitmap_target.h>
 #include <KIR\AL\KIR5_event_engine.h>
@@ -10,337 +10,14 @@
 
 namespace UI
 {
-
-	MapList::Panel::Panel()
-	{
-		font = Res::MajorSnafu[30];
-
-		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
-		{
-			font.draw(x_ + 10, y_ + 10, KIR4::to_string(ID), KIR5::Color(255, 255, 0, alpha).getAlphaColored(), KIR5::LEFT);
-		}));
-	}
-
-	void MapList::Panel::SetMapContainer(const std::vector<std::shared_ptr<Res::BluePrint>> *bluePrints)
-	{
-		this->bluePrints = bluePrints;
-	}
-	void MapList::Panel::SetFocus(int ID)
-	{
-		this->ID = ID;
-		if (ID < 0 || (int)bluePrints->size() <= ID)
-		{
-			hide();
-			setBluePrint(std::shared_ptr<Res::BluePrint>());
-		}
-		else
-		{
-			setBluePrint((*bluePrints)[ID]);
-		}
-	}
-	void MapList::Panel::show()
-	{
-		if (ID >= 0 && (int)bluePrints->size() > ID)
-			KIR5::Panel::show();
-	}
-	int MapList::Panel::GetFocus() const
-	{
-		return ID;
-	}
-	void MapList::Panel::Restart()
-	{
-		source.w = width();
-		source.x = virtualx();
-		source.y = virtualy();
-		source.a = alpha;
-	}
-
-	void MapList::Panel::resize(float w)
-	{
-		fw = w;
-		KIR5::Panel::resize(fw, fw);
-	}
-	void MapList::Panel::move(float x, float y)
-	{
-		fx += x;
-		fy += y;
-		KIR5::Panel::position(fx, fy);
-	}
-	void MapList::Panel::position(float x, float y)
-	{
-		fx = x;
-		fy = y;
-		KIR5::Panel::position(fx, fy);
-	}
-	float MapList::Panel::widthf()
-	{
-		return fw;
-	}
-	float MapList::Panel::virtual_xf()
-	{
-		return fx;
-	}
-	float MapList::Panel::virtual_yf()
-	{
-		return fy;
-	}
-	void MapList::Panel::align(int type)
-	{
-		KIR5::Panel::align(type);
-
-		fw = width();
-		fx = virtualx();
-		fy = virtualy();
-	}
-
-	void MapList::SetTop()
-	{
-		panelp[2]->bringTop();
-	}
-	//balr�l jobbra
-	void MapList::MoveRight()
-	{
-		if (MoveCount < 0)
-		{
-			if (Focus > 0)
-			{
-				Panel *tmp = panelp[4];
-				for (int i = 4; i > 0; i--)
-					panelp[i] = panelp[i - 1];
-				panelp[0] = tmp;
-				panelp[1]->show();
-				panelp[0]->SetFocus(panelp[1]->GetFocus() - 1);
-
-				for (int i = 0; i < 5; i++)
-					panel[i]->Restart();
-				MoveCount++;
-				Focus--;
-				arrived = 1;
-
-				SetTop();
-			}
-			else
-				MoveCount = 0;
-		}
-	}
-	//jobbr�l balra
-	void MapList::MoveLeft()
-	{
-		if (MoveCount > 0)
-		{
-			if (Focus < (int)world->bluePrints.size() - 1)
-			{
-				Panel
-					*tmp = panelp[0];
-				for (int i = 0; i < 4; i++)
-					panelp[i] = panelp[i + 1];
-				panelp[4] = tmp;
-				panelp[3]->show();
-				panelp[4]->SetFocus(panelp[3]->GetFocus() + 1);
-
-				for (int i = 0; i < 5; i++)
-					panel[i]->Restart();
-				MoveCount--;
-				Focus++;
-				arrived = 1;
-
-				SetTop();
-			}
-			else
-				MoveCount = 0;
-		}
-	}
-	void MapList::SetFocus(int Focus)
-	{
-		this->Focus = Focus;
-		for (int i = 0; i < 5; i++)
-			panelp[i]->SetFocus(Focus + (i - 2));
-		MouseButtonDown = false;
-	}
-	MapList::MapList()
-	{
-		world = &Res::world1;
-
-		for (int i = 0; i < 5; i++)
-		{
-			panelp[i] = panel[i].get();
-			panel[i]->SetMapContainer(&world->bluePrints);
-		}
-
-		fncMoved.push_back([&](FNC_MOVED_PARAMS)
-		{
-			//LEFT
-			panelp[0]->resize(height() * 0.6f);
-			panelp[1]->resize(height() * 0.9f);
-			panelp[2]->resize(height());
-			panelp[3]->resize(height() * 0.9f);
-			panelp[4]->resize(height() * 0.6f);
-			//RIGHT
-
-			for (int i = 0; i < 5; i++)
-			{
-				*this << panel[i];
-				panelp[i]->show();
-				panelp[i]->align(KIR5::CENTER);
-			}
-			//LEFT
-			panelp[0]->move(-height(), 0);
-			panelp[1]->move(-height() * 0.5f, 0);
-			//CENTER
-			panelp[3]->move(+height() * 0.5f, 0);
-			panelp[4]->move(+height(), 0);
-			//RIGHT
-
-			paneldata[0].a = 0;
-			paneldata[1].a = 240;
-			paneldata[2].a = 255;
-			paneldata[3].a = 240;
-			paneldata[4].a = 0;
-
-			for (int i = 0; i < 5; i++)
-			{
-				paneldata[i].x = panelp[i]->virtualx();
-				paneldata[i].y = panelp[i]->virtualy();
-				paneldata[i].w = panelp[i]->widthf();
-			}
-
-			for (int i = 0; i < 5; i++)
-			{
-				panelp[i]->Restart();
-				panelp[i]->alpha = paneldata[i].a;
-			}
-
-			panelp[0]->hide();
-			panelp[4]->hide();
-
-			SetTop();
-		});
-
-		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
-		{
-			if (key_ == 83)
-				MoveCount++;
-			if (key_ == 82)
-				MoveCount--;
-			return false;
-		});
-
-		fncTimer.push_back([&](FNC_TIMER_PARAMS)
-		{
-			if (arrived != 2)
-			{
-				arrived = 1;
-				for (int i = 0; i < 5; i++)
-				{
-					float
-						ret;
-
-					if ((ret = MoveTo(paneldata[i].x, panelp[i]->source.x, panelp[i]->virtual_xf(), cps_)) == MoveToRetLast)
-						panelp[i]->position(paneldata[i].x, panelp[i]->virtualy());
-					else if (ret != MoveToRetZero)
-						panelp[i]->move(ret, 0);
-
-					if ((ret = MoveTo(paneldata[i].y, panelp[i]->source.y, panelp[i]->virtual_yf(), cps_)) == MoveToRetLast)
-						panelp[i]->position(panelp[i]->virtualx(), paneldata[i].y);
-					else if (ret != MoveToRetZero)
-						panelp[i]->move(0, ret);
-
-					if ((ret = MoveTo(paneldata[i].w, panelp[i]->source.w, panelp[i]->widthf(), cps_)) == MoveToRetLast)
-						panelp[i]->resize(paneldata[i].w);
-					else if (ret != MoveToRetZero)
-						panelp[i]->resize(panelp[i]->widthf() + ret);
-
-					if ((ret = MoveTo(paneldata[i].a, panelp[i]->source.a, panelp[i]->alpha, cps_)) == MoveToRetLast)
-					{
-						panelp[i]->alpha = paneldata[i].a;
-						if (panelp[i]->alpha == 0)
-							panelp[i]->hide();
-					}
-					else if (ret != MoveToRetZero)
-						panelp[i]->alpha += ret;
-				}
-				if (arrived == 1)
-				{
-					arrived = 2;
-					MoveRight();
-					MoveLeft();
-					if (arrived == 2)
-						speed = Defspeed;
-				}
-			}
-			else
-			{
-				MoveRight();
-				MoveLeft();
-			}
-		});
-
-		fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
-		{
-			al_draw_rectangle(x_, y_, x_ + w_, y_ + h_, al_map_rgb(255, 0, 255), 1);
-		}));
-
-		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS)
-		{
-			if (MouseButtonDown)
-			{
-				int
-					MC = (x_ - mx) / (width() * 0.9f) * world->bluePrints.size();
-				MoveCount += lastMC - MC;
-				lastMC = MC;
-				MouseAxes = true;
-			}
-		});
-
-		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
-		{
-			if (button_ == KIR5::MOUSE_BUTTON_LEFT)
-			{
-				MoveCount = 0;
-				MouseButtonDown = true;
-				MouseAxes = false;
-				mx = x_;
-				lastMC = 0;
-			}
-			return false;
-		});
-
-		fncMouseButtonUp.push_back([&](FNC_MOUSE_BUTTON_UP_PARAMS)->FNC_MOUSE_BUTTON_UP_RET
-		{
-			if (button_ == KIR5::MOUSE_BUTTON_LEFT)
-			{
-				if (!MouseAxes)
-				{
-					float
-						percent = (x_ - x()) / (float)(width()) * 100.f;
-					if (percent >= 0.f && percent <= 35.f)
-						MoveCount--;
-					else if (percent <= 100.f && percent >= 65.f)
-						MoveCount++;
-				}
-				MouseButtonDown = false;
-			}
-			return false;
-		});
-	}
-	MapList::~MapList()
-	{
-
-	}
-
 	MainEvent::Menu::Worlds::Worlds()
 	{
-		(*this)->addFlag(KIR5::Row<KIR5::Panel, WorldButton>::FixHeight);
+		(*this)->addFlag(KIR5::Row<Panel, WorldButton>::FixHeight);
 		(*this)->setGap(3);
 
-		KIR5::STRING_CONDITION::stringT worldPath = KIR5::pathCombine(KIR5::getModuleDirectory(), "Hamika", "worlds");
-		KIR5::FindFiles ff(worldPath, "\\*.dat");
-		for (auto &it : ff)
+		for (auto &it : Res::worlds)
 		{
-			KIR5::Shared<WorldButton> worldButton = new WorldButton(KIR5::pathCombine(worldPath, it.getShortName()));
-			worldButton->show();
-			//worldButton->setBitmap(Bitmap::world[it.getNameOnly()]);
-			(*this)->pushBack(worldButton);
+			(*this)->pushBack(KIR5::Shared<WorldButton>(it));
 		}
 
 		get()->fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
@@ -351,101 +28,265 @@ namespace UI
 			}
 		});
 	}
+	MainEvent::Menu::OpenSettings::OpenSettings()
+	{
+		get()->setBitmap(Res::uielements[Res::UIElements::Settings]);
+
+		get()->fncPress.push_back([](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
+		{
+			s_object->hideDynamicPanel();
+			s_object->menu.settings->show();
+		});
+	}
 	MainEvent::Menu::Settings::Settings()
 	{
+		panelLabel->setText("Settings");
 
-	}
-	MainEvent::Menu::BluePrints::BluePrints()
-	{
-		(*this)->SetFocus(0);
+		cancelButton->fncPress.push_back([](FNC_PRESS_PARAMS)
+		{
+			s_object->defaultDynamicPanel();
+		});
+
+		(*get()) << panelLabel << cancelButton;
 	}
 	MainEvent::Menu::Accounts::Accounts()
 	{
-		(**this) << list << create;
+		panelLabel->setText("Accounts");
+
+		cancelButton->fncPress.push_back([](FNC_PRESS_PARAMS)
+		{
+			s_object->defaultDynamicPanel();
+		});
+
+		(*get()) << panelLabel << cancelButton << list << create;
 		list->show();
 		create->show();
 
 		refresh();
-	}
-	MainEvent::Menu::Accounts::~Accounts()
-	{
 	}
 	void MainEvent::Menu::Accounts::refresh()
 	{
 		list.items->clear();
 		for (auto &it : Res::accounts.list)
 		{
-			KIR5::Shared<UI::Button<Res::Consolas>> newAccountButton;
-			newAccountButton->setText(it->username());
-			list.items->pushBack(newAccountButton);
+			KIR5::Shared<UI::Button<Res::Consolas>> accountButton;
+			accountButton->setText(it->username());
+			accountButton->fncPress.push_back([](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
+			{
+				UI::Button<Res::Consolas> *_ptr = dynamic_cast<UI::Button<Res::Consolas>*>(obj_);
+				s_object->setAccount(Res::accounts.get(_ptr->getText()));
+			});
+			list.items->pushBack(accountButton);
 			list.scrollBar->sizeOfBook(list.items->itemHeight() * list.items->items().size());
 		}
 	}
-	MainEvent::Menu::HirtoryOfBlueprint::HirtoryOfBlueprint()
+	MainEvent::Menu::BlueprintInfo::BlueprintInfo()
 	{
+		*get()
+			<< ID
+			<< title
+			<< hallOfFlameLabel
+			<< hallOfFlameLine
+			<< personalRecordLabel
+			<< personalRecord;
 
+		personalRecordLabel->setText("Personal record:");
+		personalRecord->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER | KIR5::IGNORE_DESCENT);
+		hallOfFlameLabel->setText("HALL OF FLAME");
+		hallOfFlameLabel->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER | KIR5::IGNORE_DESCENT);
+
+		for (std::size_t i = 0; i < hallOfFlameRows.size(); ++i)
+		{
+			*get() << hallOfFlameRows[i];
+
+			*hallOfFlameRows[i]
+				<< hallOfFlameRows[i]->rank
+				<< hallOfFlameRows[i]->username
+				<< hallOfFlameRows[i]->time;
+
+			hallOfFlameRows[i]->rank->setText("#" + std::to_string(i));
+			hallOfFlameRows[i]->time->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER | KIR5::IGNORE_DESCENT);
+		}
+	}
+	void MainEvent::Menu::BlueprintInfo::refresh()
+	{
+		if (MainEvent::s_object->menu.bluePrints->getWorld())
+		{
+			char buffer[32];
+
+			ID->show();
+			title->show();
+			hallOfFlameLabel->show();
+			hallOfFlameLine->show();
+
+			sprintf_s(buffer, "%03d", MainEvent::s_object->menu.bluePrints->getIndex());
+			ID->setText(buffer);
+
+			auto bluePrint_ = MainEvent::s_object->menu.bluePrints->getBluePrint();
+			title->setText(bluePrint_->title);
+
+			if (MainEvent::s_object->account_)
+			{
+				auto _completedBlueprints = MainEvent::s_object->account_->completedBlueprints();
+				auto item = std::find_if(_completedBlueprints.cbegin(), _completedBlueprints.cend(), [&bluePrint_](const Res::Account::CompletedBluePrint &completedBluePrint) -> bool
+				{
+					return bluePrint_->hash == completedBluePrint.hash();
+				});
+				if (item != _completedBlueprints.end())
+				{
+					personalRecord->setText(hourStopper(item->timeMS()));
+
+					personalRecordLabel->show();
+					personalRecord->show();
+				}
+				else
+				{
+					personalRecordLabel->hide();
+					personalRecord->hide();
+				}
+			}
+			else
+			{
+				personalRecordLabel->hide();
+				personalRecord->hide();
+			}
+
+			struct Record
+			{
+				std::string _username;
+				std::uint32_t _timeMS;
+			};
+			std::vector<Record> records;
+			for (auto &account : Res::accounts.list)
+			{
+				std::uint32_t playTimeOn = account->playTimeOn(bluePrint_);
+				if (playTimeOn != std::numeric_limits<std::uint32_t>::max())
+				{
+					records.push_back({
+						account->username(),
+						playTimeOn
+									  });
+				}
+			}
+
+			std::sort(records.begin(), records.end(), [](const Record &left, const Record &right) -> bool
+			{
+				return left._timeMS < right._timeMS;
+			});
+
+			for (std::size_t i = 0; i < hallOfFlameRows.size(); ++i)
+			{
+				if (i < records.size())
+				{
+					hallOfFlameRows[i]->show();
+					hallOfFlameRows[i]->username->setText(records[i]._username);
+					hallOfFlameRows[i]->time->setText(hourStopper(records[i]._timeMS));
+				}
+				else
+				{
+					hallOfFlameRows[i]->hide();
+				}
+			}
+		}
+		else
+		{
+			ID->hide();
+			title->hide();
+			hallOfFlameLabel->hide();
+			hallOfFlameLine->hide();
+			personalRecordLabel->hide();
+			personalRecord->hide();
+			for (auto &it : hallOfFlameRows)
+			{
+				it->hide();
+			}
+		}
 	}
 	MainEvent::Menu::CurrentAccount::CurrentAccount()
 	{
+		panelLabel->setText("Account");
 
+		usernameLabel->setText("Username  : ");
+		totalTimePlayedLabel->setText("Played    : ");
+		numberOfCompletedMapsLabel->setText("Completed : ");
+
+		cancelButton->fncPress.push_back([](FNC_PRESS_PARAMS)
+		{
+			s_object->setAccount(nullptr);
+			s_object->defaultDynamicPanel();
+		});
+
+		(*get()) << panelLabel << cancelButton
+			<< usernameLabel << totalTimePlayedLabel << numberOfCompletedMapsLabel
+			<< username << totalTimePlayed << numberOfCompletedMaps;
+	}
+	void MainEvent::Menu::CurrentAccount::refresh()
+	{
+		if (s_object->account_)
+		{
+			username->setText(s_object->account_->username());
+			totalTimePlayed->setText(dayStopper(s_object->account_->totalTimePlayedMS()));
+			numberOfCompletedMaps->setText(std::to_string(s_object->account_->completedBlueprints().size()));
+		}
 	}
 	MainEvent::Menu::CreateAccount::CreateAccount()
 	{
-		(*this)->hide();
-		(**this) << panelLabel << usernameTextBox << passwrodTextBox << usernameLabel << passwrodLabel << cancelButton << applyButton;
-	}
-	MainEvent::Menu::PlayButton::PlayButton()
-	{
-		(*this)->setBitmap(Res::uielements[Res::UIElements::Play]);
-	}
-	MainEvent::Menu::SkipButton::SkipButton()
-	{
-		(*this)->setBitmap(Res::uielements[Res::UIElements::Skip]);
-	}
+		panelLabel->setText("Add account");
+		usernameLabel->setText("Username:");
+		passwrodLabel->setText("Password:");
 
-
-	float MapList::MoveTo(float dest, float source, float current, float cps)
-	{
-		float
-			ret = MoveToRetZero;
-		if (current < dest)
+		cancelButton->fncPress.push_back([](FNC_PRESS_PARAMS)
 		{
-			ret = std::abs((std::abs(dest) - std::abs(source))) / (speed / float(std::abs(MoveCount) + 1) * cps);
-			if (current + ret >= dest)
-				return MoveToRetLast;
-			else
-				arrived = 0;
-		}
-		else if (current > dest)
+			s_object->defaultDynamicPanel();
+		});
+
+		applyButton->setText("Create");
+		applyButton->fncPress.push_back([](FNC_PRESS_PARAMS)
 		{
-			ret = -std::abs((std::abs(dest) - std::abs(source))) / (speed / float(std::abs(MoveCount) + 1) * cps);
-			if (current + ret <= dest)
-				return MoveToRetLast;
-			else
-				arrived = 0;
-		}
-		return ret;
+			const std::string &username = s_object->menu.createAccount.usernameTextBox->getText();
+			const std::string &password = s_object->menu.createAccount.passwrodTextBox->getText();
+			Res::Accounts::ERR_C err_c = Res::accounts.add(username, password);
+			if (err_c == Res::Accounts::E_OK)
+			{
+				s_object->menu.accounts.refresh();
+				s_object->setAccount(Res::accounts.get(username));
+			}
+
+			s_object->defaultDynamicPanel();
+		});
+
+		get()->hide();
+		(*get()) << panelLabel << usernameTextBox << passwrodTextBox << usernameLabel << passwrodLabel << cancelButton << applyButton;
 	}
 
-	int MapList::GetFocus() const
-	{
-		return Focus;
-	}
-
-	const double MapList::Defspeed = 0.5;
-
-	std::shared_ptr<MainEvent> mainEvent;
+	std::shared_ptr<MainEvent> MainEvent::s_object;
 	int maxBitmapSize;
 
-	MainEvent::WorldButton::WorldButton(const std::string &filename):
-		filename(filename)
+	MainEvent::WorldButton::WorldButton(const std::shared_ptr<Res::World> &_world):
+		world_(_world)
 	{
+		show();
+		setBitmap(world_->thumbnail);
 
+		fncPress.push_back([&](FNC_PRESS_PARAMS)
+		{
+			s_object->menu.bluePrints->setWorld(world_);
+			s_object->menu.worldTitle->setText(world_->title);
+		});
 	}
 
-	MainEvent::MainEvent(std::shared_ptr<KIR5::Panel> _parent):
+	void MainEvent::initialize(std::shared_ptr<KIR5::Panel> _parent)
+	{
+		new MainEvent(display);
+	}
+	void MainEvent::shutdown()
+	{
+		s_object = nullptr;
+	}
+	MainEvent::MainEvent(const std::shared_ptr<KIR5::Panel> &_parent):
 		parent(_parent)
 	{
+		s_object = std::shared_ptr<MainEvent>(this);
 		Objects::RunInitializer();
 
 		*parent << menu << activeMap;
@@ -454,107 +295,97 @@ namespace UI
 
 		parent->fncKeyChar.push_back([&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
 		{
-			if (key_ == 's')
-			{
-				activeMap->startMap(*menu.bluePrints->world->bluePrints[menu.bluePrints->GetFocus()], account);
-				activeMap->show();
-			}
-			if (key_ == 'r')
-			{
-				//std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
-				//replayBot->load(replayTextBox->getText());
-				activeMap->startMap(*menu.bluePrints->world->bluePrints[menu.bluePrints->GetFocus()], account);
-				activeMap->show();
-			}
+			//if (key_ == 'r')
+			//{
+			//	//std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
+			//	//replayBot->load(replayTextBox->getText());
+			//	activeMap->startMap(*menu.bluePrints->world->bluePrints[menu.bluePrints->GetFocus()], account);
+			//	activeMap->show();
+			//}
 			return false;
 		});
-
-		parent->fncTimer.push_back([&](FNC_TIMER_PARAMS)
-		{
-		});
-
-		parent->fncDraw.push_back(KIR5::Event::FNC_DRAW([&](FNC_DRAW_PARAMS)
-		{
-			al_clear_to_color(KIR5::Color(20, 20, 20));
-
-			//Object::cpuKill();
-		}));
-
 		parent->fncMoved.push_back([&](FNC_MOVED_PARAMS)
 		{
-			static constexpr float rw = 500.f;
-			static constexpr float rh = 400.f;
-			float rate = (std::min)(parent->width() / rw, parent->height() / rh);
+			static constexpr float rw = decltype(menu)::element_type::ADJUSTER_WIDTH;
+			static constexpr float rh = decltype(menu)::element_type::ADJUSTER_HEIGHT;
+			float rate = (std::min)(parent->width() / rw, parent->height() / rh) * 0.95f;
 			menu->resize(rw * rate, rh * rate);
 			menu->align(KIR5::CENTER);
 
 			activeMap->move(0, 0, parent->width(), parent->height());
 		});
-		account = nullptr;
-		menu.accounts.refresh();
+		setAccount(nullptr);
+		menu.currentAccount.refresh();
+		menu.blueprintInfo.refresh();
+		menu.bluePrints->refresh();
+
+		defaultDynamicPanel();
 	}
 	MainEvent::~MainEvent()
 	{
 	}
 
-	void MainEvent::mapFinished(bool victory, unsigned long long ticks)
+	void MainEvent::hideDynamicPanel()
 	{
-		menu->show();
-
-		activeMap->hide();
+		menu.currentAccount->hide();
+		menu.createAccount->hide();
+		menu.accounts->hide();
+		menu.settings->hide();
+	}
+	void MainEvent::setAccount(const std::shared_ptr<Res::Account> &_account)
+	{
+		account_ = _account;
+		menu.bluePrints->setAccount(account_);
+		menu.currentAccount.refresh();
+		menu.blueprintInfo.refresh();
+		defaultDynamicPanel();
+	}
+	void MainEvent::defaultDynamicPanel()
+	{
+		hideDynamicPanel();
+		if (account_)
+		{
+			menu.currentAccount->show();
+		}
+		else if (menu.accounts.list.items->items().size())
+		{
+			menu.accounts->show();
+		}
+		else
+		{
+			menu.createAccount->show();
+		}
 	}
 
-	MainEvent::Menu::CreateAccount::UsernameLabel::UsernameLabel()
+	void MainEvent::playGame(const std::shared_ptr<Res::BluePrint> &bluePrint_)
 	{
-		(*this)->setText("Username:");
+		if (account_ && bluePrint_)
+		{
+			activeMap->playGame(bluePrint_, account_);
+			menu->hide();
+			activeMap->show();
+		}
+	}
+	void MainEvent::finishGame()
+	{
+		menu->show();
+		activeMap->hide();
+
+		menu.currentAccount.refresh();
+		menu.blueprintInfo.refresh();
+		menu.bluePrints->refresh();
 	}
 
 	MainEvent::Menu::Accounts::Create::Create()
 	{
 		(*this)->setBitmap(Res::uielements[Res::UIElements::Add]);
+
 		(*this)->fncPress.push_back([](FNC_PRESS_PARAMS)
 		{
-			mainEvent->menu.createAccount->show();
-			mainEvent->menu.currentAccount->hide();
-			mainEvent->menu.createAccount.usernameTextBox->setText("");
-			mainEvent->menu.createAccount.passwrodTextBox->setText("");
-		});
-	}
-
-	MainEvent::Menu::CreateAccount::PasswrodLabel::PasswrodLabel()
-	{
-		(*this)->setText("Password:");
-	}
-
-	MainEvent::Menu::CreateAccount::ApplyButton::ApplyButton()
-	{
-		(*this)->setText("Create");
-		(*this)->fncPress.push_back([](FNC_PRESS_PARAMS)
-		{
-			mainEvent->menu.createAccount->hide();
-			mainEvent->menu.currentAccount->show();
-
-			const std::string &username = mainEvent->menu.createAccount.usernameTextBox->getText();
-			const std::string &password = mainEvent->menu.createAccount.passwrodTextBox->getText();
-			Res::Accounts::ERR_C err_c = Res::accounts.add(username, password);
-			if (err_c == Res::Accounts::E_OK)
-			{
-				mainEvent->menu.accounts.refresh();
-			}
-		});
-	}
-
-	MainEvent::Menu::CreateAccount::PanelLabel::PanelLabel()
-	{
-		(*this)->setText("Create new account");
-	}
-
-	MainEvent::Menu::CreateAccount::CancelButton::CancelButton()
-	{
-		(*this)->fncPress.push_back([](FNC_PRESS_PARAMS)
-		{
-			mainEvent->menu.createAccount->hide();
-			mainEvent->menu.currentAccount->show();
+			s_object->menu.createAccount->show();
+			s_object->menu.currentAccount->hide();
+			s_object->menu.createAccount.usernameTextBox->setText("");
+			s_object->menu.createAccount.passwrodTextBox->setText("");
 		});
 	}
 
