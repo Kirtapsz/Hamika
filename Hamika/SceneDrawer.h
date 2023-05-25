@@ -6,7 +6,7 @@
 
 #include "Types.h"
 #include "Matrix.h"
-#include "ActiveBlock.h"
+#include "SceneBlock.h"
 #include "Object.h"
 #include "BaseFunctions.h"
 #include "Bitmap.h"
@@ -15,7 +15,7 @@
 //#define SHOW_TIMER
 
 template <typename ACTIVE_BLOCK_T>
-class MapDrawer
+class SceneDrawer
 {
 	public: void PrintBlock(Type::Coord coord);
 
@@ -30,8 +30,8 @@ class MapDrawer
 	public: bool layerActive = true;
 	public: bool blockRefreshActive = true;
 
-	private: bool globalGravity = false;
-	public: void setGlobalGravity(bool globalGravity);
+	private: bool *globalGravity;
+	public: void setGlobalGravity(bool *globalGravity);
 
 	private: KIR5::Bitmap RedrawnedBitmap;
 	private: KIR5::Bitmap LayerBitmap;
@@ -90,7 +90,7 @@ class MapDrawer
 	public: void MoveCameraTo(Type::Move camera);
 	public: void InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust);
 
-	public: MapDrawer();
+	public: SceneDrawer();
 	public: void DrawBlocks(int x, int y);
 
 	public: void SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map);
@@ -99,4 +99,4 @@ class MapDrawer
 
 #endif
 
-#include "MapDrawer.hpp"
+#include "SceneDrawer.hpp"

@@ -57,6 +57,15 @@ struct ObjectActionsModule
 		actions.move = false;
 		actions.rotate = false;
 	}
+	Json print()
+	{
+		Json json;
+
+		json["actions.move"] = actions.move;
+		json["actions.rotate"] = actions.rotate;
+
+		return json;
+	}
 };
 
 template<typename OBJECT_HANDLER>
@@ -84,6 +93,17 @@ struct ObjectEventsModule
 		events.clear();
 		events.topDraw = false;
 	}
+	Json print()
+	{
+		Json json;
+
+		json["events.timer"] = events.timer;
+		json["events.tick"] = events.tick;
+		json["events.update"] = events.update;
+		json["events.topDraw"] = events.topDraw;
+
+		return json;
+	}
 };
 
 
@@ -95,13 +115,28 @@ struct ObjectBase_
 	const char *name = nullptr;
 	bool isExists = false;
 
+	virtual ~ObjectBase_()
+	{
+
+	}
+
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
 		this->id = id;
 		name = nullptr;
 		isExists = false;
 	}
-	virtual void Print() = 0;
+	Json print()
+	{
+		Json json;
+
+		json["rootId"] = rootId;
+		json["id"] = id;
+		json["name"] = name == nullptr ? "nullptr" : name;
+		json["isExists"] = isExists;
+
+		return json;
+	}
 };
 
 template<typename OBJECT_HANDLER>
@@ -114,8 +149,17 @@ struct ObjectHitActionModule:
 	{
 		hitCoord = coord;
 	}
+	Json print()
+	{
+		Json json;
 
-	virtual void SetHitCoord(Type::Coord coord_)
+		json["hitCoord.x"] = hitCoord.x;
+		json["hitCoord.y"] = hitCoord.y;
+
+		return json;
+	}
+
+	void SetHitCoord(Type::Coord coord_)
 	{
 		hitCoord = coord_;
 	}
@@ -156,6 +200,19 @@ struct ObjectRequestsModule:
 	{
 		requests.clear();
 	}
+	Json print()
+	{
+		Json json;
+
+		json["requests.timer"] = requests.timer;
+		json["requests.tick"] = requests.tick;
+		json["requests.update"] = requests.update;
+		json["requests.draw"] = requests.draw;
+		json["requests.remove"] = requests.remove;
+		json["requests.blowUp"] = requests.blowUp;
+
+		return json;
+	}
 
 	inline void blowUp(Type::Coord coord)
 	{
@@ -175,14 +232,6 @@ struct ObjectStackModule:
 		unsigned int pos = 0;
 	};
 
-	//OBJECT SPECIFIC
-	unsigned char specific[256] = {0};
-
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		memset(specific, 0, sizeof(specific));
-	}
-
 #define pops(Specific,name) \
 unsigned int pos=stack->pos; \
 stack->pos+=sizeof(Specific); \
@@ -201,6 +250,32 @@ ObjectBase::Stack *stack=&stack_; \
 stack->o=object; \
 stack->specific=object->specific; 
 
+	//OBJECT SPECIFIC
+	unsigned char specific[256] = {0};
+
+	inline void __init__(Type::ID id, Type::Coord coord)
+	{
+		memset(specific, 0, sizeof(specific));
+	}
+#define OBJECT_PRINTER_PARAM ObjectBase::Stack *stack
+#define OBJECT_PRINTER_CALL stack
+#define OBJECT_PRINTER_RET Json
+	typedef Json(*PRINT)(Stack *);
+	PRINT printFnc = nullptr;
+	Json print()
+	{
+		if (printFnc)
+		{
+			Stack stack;
+			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
+			stack.specific = this->specific;
+			return printFnc(&stack);
+		}
+		else
+		{
+			return Json();
+		}
+	}
 };
 
 template<typename OBJECT_HANDLER>
@@ -210,53 +285,17 @@ struct ObjectEventModule:
 	virtual ObjectStackModule<OBJECT_HANDLER>,
 	virtual ObjectHitActionModule<OBJECT_HANDLER>
 {
-	//Type::Flags events = 0;
-
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
-		//events = 0;
 		printFnc = nullptr;
 		updaterFnc = nullptr;
 		timerFnc = nullptr;
-		tickerFnc = nullptr;
 	}
-
-	//void SetEvent(Type::Flags ev)
-	//{
-	//	events = ev;
-	//}
-	//void SetBlasingEvent(Type::Coord coord)
-	//{
-	//	events = ObjectEvent::Blasting;
-	//	hitCoord = coord;
-	//}
-	//void AddEvent(Type::Flags ev)
-	//{
-	//	events |= ev;
-	//}
-	//void RemoveEvent(Type::Flags ev)
-	//{
-	//	events &= ~ev;
-	//}
-	//Type::Flags GetEvents()
-	//{
-	//	return events;
-	//}
-
-
-#define OBJECT_PRINTER_PARAM ObjectBase::Stack *stack
-#define OBJECT_PRINTER_CALL stack
-	typedef void(*PRINT)(Stack *);
-	PRINT printFnc = nullptr;
-	void RunPrinter()
+	Json print()
 	{
-		if (printFnc)
-		{
-			Stack stack;
-			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
-			stack.specific = this->specific;
-			printFnc(&stack);
-		}
+		Json json;
+
+		return json;
 	}
 
 	//LÉTRHOZÁS #####################################################################################
@@ -307,23 +346,6 @@ struct ObjectEventModule:
 			timerFnc(&stack);
 		}
 	}
-
-	//TIMER EVENT #####################################################################################
-#define OBJECT_TICK_PARAM ObjectBase::Stack *stack
-#define OBJECT_TICK_CALL stack
-	typedef void(*TICK)(Stack *);
-	TICK tickerFnc = nullptr;
-	void RunTick()
-	{
-		requests.tick = false;
-		if (tickerFnc)
-		{
-			Stack stack;
-			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
-			stack.specific = this->specific;
-			tickerFnc(&stack);
-		}
-	}
 };
 
 template<typename OBJECT_HANDLER>
@@ -334,6 +356,15 @@ struct ObjectMoveModule:
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
 		move = {0,0};
+	}
+	Json print()
+	{
+		Json json;
+
+		json["move.x"] = move.x;
+		json["move.y"] = move.y;
+
+		return json;
 	}
 
 	Type::Move move = {0,0};
@@ -422,6 +453,14 @@ struct ObjectRotationModule:
 	{
 		rotation = 0;
 	}
+	Json print()
+	{
+		Json json;
+
+		json["rotation"] = rotation;
+
+		return json;
+	}
 
 	Type::Rotation rotation = 0;
 
@@ -446,6 +485,15 @@ struct ObjectCoordModule:
 	inline void __init__(Type::ID id, Type::Coord coord)
 	{
 		this->coord = coord;
+	}
+	Json print()
+	{
+		Json json;
+
+		json["coord.x"] = coord.x;
+		json["coord.y"] = coord.y;
+
+		return json;
 	}
 
 	Type::Coord coord = Type::Coord::Invalid;
@@ -480,6 +528,14 @@ struct ObjectFlagsModule:
 	{
 		flags = 0;
 	}
+	Json print()
+	{
+		Json json;
+
+		json["flags"] = flags;
+
+		return json;
+	}
 
 	enum Flags:Type::Flags
 	{
@@ -513,7 +569,7 @@ struct ObjectFlagsModule:
 		CanBeKilled = 1 << 27,//meg lehet ölni
 		GiveGravityDelay = 1 << 28,//nem esik vissza azonnal
 		ButtonPush = 1 << 29,//megnyomható, pl egy terminal, hozzá tartozó függvény: virtual void ButtonPushed()
-		Give1Aim = 1 << 30,//a célhoz hozzátesz 1-et
+		Give1Score = 1 << 30,//a célhoz hozzátesz 1-et
 		Give1Unity = 1 << 31,//1 bombát ad
 	};
 
@@ -556,6 +612,15 @@ struct ObjectDrawModule:
 		drawnerFnc = nullptr;
 		configureDrawOptions();
 	}
+	Json print()
+	{
+		Json json;
+
+		json["DrawCoord.x"] = DrawCoord.x;
+		json["DrawCoord.y"] = DrawCoord.y;
+
+		return json;
+	}
 
 	inline void configureDrawOptions()
 	{
@@ -596,7 +661,6 @@ struct ObjectDrawModule:
 		if (DrawnedCount >= 2)
 		{
 			clog << "WARNING! An object has been drawned two times (" << GetCoord().x << "," << GetCoord().y << "):" << KIR4::eol;
-			Print();
 		}
 		SObjectDrawCounts++;
 		Draw();
@@ -610,7 +674,7 @@ struct ObjectDrawModule:
 		{
 			DrawCoord = NewDrawCoord;
 			requests.draw = true;
-			//ief.Redrawn(coord);
+			//scene->Redrawn(coord);
 		}
 	}
 	Type::Coord GetDrawCoord()
@@ -627,10 +691,9 @@ struct ObjectDrawModule:
 		return drawIef->GetDrawOffSet();
 	}
 
-	inline ObjectDrawModule(Interface *drawIef):
-		drawIef(drawIef)
+	inline void setIef(Interface *drawIef_)
 	{
-
+		drawIef = drawIef_;
 	}
 
 	//DRAW #####################################################################################
@@ -677,18 +740,12 @@ struct EditorObjectBase:
 		virtual int selectStatus(Type::Coord) const = 0;
 		virtual bool isTarget(Type::Coord) const = 0;
 	};
-	Interface &ief;
+	Interface *scene;
 
-	inline EditorObjectBase(Interface &ief):
-		ief(ief),
-		ObjectDrawModule(&ief)
+	inline void setIef(Interface *scene_)
 	{
-
-	}
-
-	inline void Print()
-	{
-
+		scene = scene_;
+		ObjectDrawModule<EditorObjectBase>::setIef(scene_);
 	}
 };
 
@@ -729,6 +786,34 @@ struct ObjectBase:
 		currentspeed = 0;
 		hitactive = false;
 	}
+	inline Json print()
+	{
+		Json json;
+
+		json["currentspeed"] = currentspeed;
+		json["limitspeed"] = limitspeed;
+		json["MoveSpeed.x"] = MoveSpeed.x;
+		json["MoveSpeed.y"] = MoveSpeed.y;
+		json["RotationSpeed"] = RotationSpeed;
+		json["TranslationTo"] = TranslationTo;
+		json["ObjectIDremain"] = ObjectIDremain;
+
+		json["\\ObjectRequestsModule"] = ObjectRequestsModule<ObjectBase>::print();
+		json["\\ObjectActionsModule"] = ObjectActionsModule<ObjectBase>::print();
+		json["\\ObjectEventsModule"] = ObjectEventsModule<ObjectBase>::print();
+
+		json["\\ObjectBase_"] = ObjectBase_<ObjectBase>::print();
+		json["\\ObjectHitActionModule"] = ObjectHitActionModule<ObjectBase>::print();
+		json["\\ObjectStackModule"] = ObjectStackModule<ObjectBase>::print();
+		json["\\ObjectEventModule"] = ObjectEventModule<ObjectBase>::print();
+		json["\\ObjectMoveModule"] = ObjectMoveModule<ObjectBase>::print();
+		json["\\ObjectRotationModule"] = ObjectRotationModule<ObjectBase>::print();
+		json["\\ObjectCoordModule"] = ObjectCoordModule<ObjectBase>::print();
+		json["\\ObjectFlagsModule"] = ObjectFlagsModule<ObjectBase>::print();
+		json["\\ObjectDrawModule"] = ObjectDrawModule<ObjectBase>::print();
+
+		return json;
+	}
 
 	public:
 
@@ -740,17 +825,35 @@ struct ObjectBase:
 	struct Interface:
 		ObjectDrawModule<ObjectBase>::Interface
 	{
+		// murphy
 		virtual void murphyMoved(ObjectBase *object) = 0;
 		virtual void murphyDead(ObjectBase *) = 0;
 		virtual void murphyVictory() = 0;
 
-		virtual void BlowUpBlock(Type::Coord coord) = 0;
+		// art
+		virtual void addUnity(int) = 0;
+		virtual void addScore(int) = 0;
+		virtual int getUnity() const = 0;
+		virtual int getScoreToCollect() const = 0;
+
+		// field
 		virtual Type::Flags GetBlockFlags(Type::Coord) = 0;
 		virtual ObjectBase *GetObject(Type::Coord) = 0;
 		virtual ObjectBase *GetObjectOut(Type::Coord) = 0;
 		virtual ObjectBase *GetRemain(Type::Coord) = 0;
 		virtual Type::Flags GetUnionFlags(Type::Coord) = 0;
 		virtual Type::Flags GetSectionFlags(Type::Coord) = 0;
+		virtual Type::Coord GetGoto(Type::Coord) = 0;
+		virtual Type::Coord GetComefrom(Type::Coord) = 0;
+		virtual bool IsObjectOut(Type::Coord) = 0;
+		virtual bool IsGlobalGravity() const = 0;
+		virtual void switchGravity() = 0;
+		virtual bool IamRemain(ObjectBase *) = 0;
+		virtual Type::Size MapSize() = 0;
+		virtual ObjectBase *GetObjectU(Type::Coord) = 0;
+
+		// action
+		virtual void BlowUpBlock(Type::Coord coord) = 0;
 		virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
 		virtual void ObjectPut(Type::Coord, Type::ID) = 0;
 		virtual void RemainPut(Type::Coord, Type::ID) = 0;
@@ -758,45 +861,32 @@ struct ObjectBase:
 		virtual void ObjectVirtualArrived(Type::Coord) = 0;
 		virtual void ObjectDisappear(Type::Coord) = 0;
 		virtual bool EnableUpdateSkip() = 0;
-		virtual bool IsObjectOut(Type::Coord) = 0;
-		virtual Type::Coord GetGoto(Type::Coord) = 0;
-		virtual Type::Coord GetComefrom(Type::Coord) = 0;
-		virtual Type::Size MapSize() = 0;
-		virtual ObjectBase *GetObjectU(Type::Coord) = 0;
-		virtual void AddUnity(int) = 0;
-		virtual void AddAim(int) = 0;
-		virtual int GetUnityCount() const = 0;
-		virtual int GetAimRemaining() const = 0;
-		virtual bool IamRemain(ObjectBase *) = 0;
-		virtual bool IsGlobalGravity() const = 0;
-		virtual void switchGravity() = 0;
-
 		virtual bool rollTrigger(ObjectBase *obj_, unsigned __int16 typeID, float chancePerSec) = 0;
 	};
-	//ief easy
+	//scene easy
 	inline auto ObjectBase::Move(Type::Coord from, Type::Coord to, Type::ID remain)
 	{
-		return ief.ObjectMove(from, to, remain);
+		return scene->ObjectMove(from, to, remain);
 	}
 	inline auto ObjectBase::Arrived()
 	{
-		return ief.ObjectArrived(coord);
+		return scene->ObjectArrived(coord);
 	}
 	inline auto ObjectBase::Disappear()
 	{
-		return ief.ObjectDisappear(coord);
+		return scene->ObjectDisappear(coord);
 	}
 	inline auto ObjectBase::GetObject(Type::Coord coord)
 	{
-		return ief.GetObject(coord);
+		return scene->GetObject(coord);
 	}
 	inline auto ObjectBase::GetObjectOut(Type::Coord coord)
 	{
-		return ief.GetObjectOut(coord);
+		return scene->GetObjectOut(coord);
 	}
 	inline auto ObjectBase::GetRemain(Type::Coord coord)
 	{
-		return ief.GetRemain(coord);
+		return scene->GetRemain(coord);
 	}
 
 
@@ -808,8 +898,13 @@ struct ObjectBase:
 
 
 	public:
-	Interface &ief;
-	ObjectBase(Interface &ief);
+	Interface *scene;
+	inline void setIef(Interface *scene_)
+	{
+		scene = scene_;
+		ObjectDrawModule<ObjectBase>::setIef(scene_);
+	}
+
 	virtual ~ObjectBase();
 	bool Roll(double PpM);
 	public:
@@ -857,7 +952,6 @@ struct ObjectBase:
 	Type::ID GetTranslationTo();
 	Type::ID GetObjectIDremain();
 	Type::Rotation GetAngel();
-	virtual void Print();
 	static void Initialize();
 
 

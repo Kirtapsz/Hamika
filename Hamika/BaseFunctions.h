@@ -79,9 +79,8 @@ namespace Object
 		};
 
 		void Create(OBJECT_CREATER_PARAM);
-		void Print(OBJECT_PRINTER_PARAM);
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);
-		void Tick(OBJECT_TICK_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 	}
 
@@ -94,9 +93,8 @@ namespace Object
 		};
 
 		void Create(OBJECT_CREATER_PARAM);
-		void Print(OBJECT_PRINTER_PARAM);
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);
-		void Tick(OBJECT_TICK_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 	}
 
@@ -105,9 +103,8 @@ namespace Object
 		void Blasting(ObjectBase *o);
 
 		void Create(OBJECT_CREATER_PARAM);
-		void Print(OBJECT_PRINTER_PARAM);
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);
-		void Tick(OBJECT_TICK_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 	}
 
@@ -133,9 +130,8 @@ namespace Object
 		};
 
 		void Create(OBJECT_CREATER_PARAM);
-		void Print(OBJECT_PRINTER_PARAM);
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);
-		void Tick(OBJECT_TICK_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 	}
 
@@ -152,9 +148,8 @@ namespace Object
 		bool CanRollOff(ObjectBase *o);
 
 		void Create(OBJECT_CREATER_PARAM);
-		void Print(OBJECT_PRINTER_PARAM);
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);
-		void Tick(OBJECT_TICK_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 	}
 }

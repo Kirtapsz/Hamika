@@ -18,14 +18,13 @@ namespace UI::Editor
 		parent(_parent)
 	{
 		s_object = std::shared_ptr<MainEvent>(this);
-		Objects::RunInitializer();
 
 		*parent << columnControl;
 		columnControl->show();
 		columnControl->setGap(3);
 		(*columnControl) += KIR5::Column<>::WrapContent;
 
-		activeMap->show();
+		scene->show();
 		worldi->show();
 		worldi->width(280);
 		miniMap->show();
@@ -48,7 +47,7 @@ namespace UI::Editor
 
 		rowsControl[0]->pushBack(worldi);
 		rowsControl[0]->pushBack(KIR5::Shared<Line<2, 2>>());
-		rowsControl[0]->pushBack(activeMap);
+		rowsControl[0]->pushBack(scene);
 
 		rowsControl[1]->pushBack(KIR5::Shared<Line<2, 2>>());
 		rowsControl[1]->pushBack(KIR5::Shared<Panel>());

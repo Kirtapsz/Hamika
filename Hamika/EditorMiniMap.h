@@ -5,7 +5,7 @@
 #include "Objects.h"
 #include "Font.h"
 #include "BlueprintPanel.h"
-#include "EditorActiveBlock.h"
+#include "EditorSceneBlock.h"
 
 #include <KIR\AL\KIR5_panel.h>
 #include <KIR\AL\KIR5_list_panel.h>
@@ -28,14 +28,14 @@ namespace UI::Editor
 		private: Type::Move camera{};
 		private: Type::Move cameraSize{};
 
-		private: std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> map;
+		private: std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> map;
 		private: KIR5::Bitmap bitmap;
 
 		public: MiniMap();
 		public: ~MiniMap();
 
 		private: void setCameraToClick(int x, int y);
-		public: void SetMap(std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map);
+		public: void SetMap(std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map);
 		public: void updateBlocks();
 		public: void updatePosition(Type::Move center, Type::Move size);
 	};

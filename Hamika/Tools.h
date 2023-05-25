@@ -2,6 +2,8 @@
 
 #include <KIR\AL\KIR5_event_engine.h>
 #include <KIR/KIR5_stream.h>
+#include <KIR/KIR4_algorithm.h>
+#include <KIR/KIR4_time.h>
 
 #include <map>
 #include <string>
@@ -9,15 +11,88 @@
 #include <algorithm>
 #include <random>
 
+#include <fstream>
+#include <nlohmann/json.hpp>
+using Json = nlohmann::json;
+
+template <template <typename...> class base, typename derived>
+struct is_base_of_template_impl
+{
+	template<typename... Ts>
+	static constexpr std::true_type  testValue(const base<Ts...> *);
+	static constexpr std::false_type testValue(...);
+	using value = decltype(testValue(std::declval<derived *>()));
+
+	template<typename... Ts>
+	static constexpr base<Ts...> testType(const base<Ts...> *);
+	static constexpr derived testType(...);
+	using type = decltype(testType(std::declval<derived *>()));
+};
+
+template <template <typename...> class base, typename derived>
+using is_base_of_template = typename is_base_of_template_impl<base, derived>::value;
+
+template <template <typename...> class base, typename derived>
+using type_of_base_template = typename is_base_of_template_impl<base, derived>::type;
+
+
+template <typename derived, template <typename...> class... base>
+struct is_base_of_templates_impl;
+
+template <typename derived, template <typename...> class base>
+struct is_base_of_templates_impl<derived, base>
+{
+	using type = type_of_base_template<base, derived>;
+};
+template <typename derived, template <typename...> class base, template <typename...>class... _rest>
+struct is_base_of_templates_impl<derived, base, _rest...>
+{
+	using type = typename type_of_base_template<base, typename is_base_of_templates_impl<derived, _rest...>::type>;
+};
+
+template <typename derived, template <typename...>class... base>
+using type_of_base_templates = typename is_base_of_templates_impl<derived, base...>::type;
+
+
 extern std::shared_ptr<KIR5::Display> display;
 extern std::shared_ptr<KIR5::EventEngine> eventEngine;
 
 extern std::random_device rd;
 extern std::default_random_engine generator;
+extern int processRet;
 
 constexpr float CPS = KIR5_60_CPS;
 constexpr float CA = 1 / CPS;
 constexpr int blockSizeInPixel = 64;
+
+
+template<typename O>
+inline void concatenate_(std::ostringstream &os, const O &o)
+{
+	os << o;
+}
+
+template<typename O, typename ...T>
+inline void concatenate_(std::ostringstream &os, const O &o, const T... t)
+{
+	os << o;
+	concatenate_(os, t...);
+}
+
+template<typename ...T>
+inline std::string concatenate(T... t)
+{
+	std::ostringstream os;
+	concatenate_(os, t...);
+	return os.str();
+}
+
+
+inline bool endingWith(const std::string &data, const std::string &ending)
+{
+	if (ending.size() > data.size()) return false;
+	return std::equal(ending.rbegin(), ending.rend(), data.rbegin());
+}
 
 inline std::string &toLower(std::string &in)
 {
@@ -134,84 +209,5 @@ bool WriteFile(const std::string &filename, const KIR5::DynamicStream &stream);
 bool ReadFile(const std::string &filename, std::vector<unsigned char> &buffer);
 bool ReadFile(const std::string &filename, KIR5::DynamicStream &stream);
 
-template <typename T, typename A>
-void get(T &ret, const A &data, size_t idx, size_t len)
-{
-	memcpy(&ret, &data[idx], len);
-}
-template <typename A>
-void get(std::string &ret, const A &data, size_t idx, size_t len)
-{
-	ret.resize(len + 1, 0);
-	memcpy(&ret[0], &data[idx], len);
-	ret.resize(strlen(ret.c_str()));
-	ret.shrink_to_fit();
-}
-template <typename T, typename A>
-void getDx(typename T::type &ret, const A &data, size_t idxShift = 0)
-{
-	size_t requiredSize = T::idx + idxShift + T::len;
-	if (data.size() < requiredSize)
-	{
-		return;
-	}
-	get(ret, data, T::idx + idxShift, T::len);
-}
 
-
-template <typename T, typename A>
-void set(const T &val, A &data, size_t idx, size_t len)
-{
-	memcpy(&data[idx], &val, len);
-}
-template <typename A>
-void set(const std::string &val, A &data, size_t idx, size_t len)
-{
-	memset(&data[idx], 0, len);
-	if (val.length())
-	{
-		memcpy(&data[idx], &val[0], (std::min)(val.length(), len));
-	}
-}
-template<class T, std::size_t S, typename A>
-void set(const std::array<T, S> &val, A &data, size_t idx, size_t len)
-{
-	memcpy(&data[idx], &val[0], len);
-}
-template <typename T, typename A>
-void setDx(const typename T::type &val, A &data, size_t idxShift = 0)
-{
-	size_t requiredSize = T::idx + idxShift + T::len;
-	if (data.size() < requiredSize)
-	{
-		data.resize(requiredSize);
-	}
-	set(val, data, T::idx + idxShift, T::len);
-}
-
-template <typename T>
-inline constexpr size_t tail()
-{
-	return T::idx + T::len;
-}
-
-
-
-struct ErrorMsgs
-{
-	std::uint16_t err_c;
-	const char *msg;
-};
-
-template<std::size_t size_>
-const char *translateErrorCode(std::uint16_t err_c, const std::array<ErrorMsgs, size_> &errorMsgs)
-{
-	for (auto &it : errorMsgs)
-	{
-		if (it.err_c == err_c)
-		{
-
-		}
-	}
-	return "Error message is not defined!";
-}
+extern std::string uuid();

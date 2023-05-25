@@ -11,15 +11,15 @@
 #include <memory>
 
 #include "StatusBar.h"
-#include "MapDrawer.h"
+#include "SceneDrawer.h"
 #include "Object.h"
 #include "UItools.h"
-#include "EditorActiveBlock.h"
+#include "EditorSceneBlock.h"
 
 
-namespace UI::Editor::Game
+namespace UI::Editor::Scene
 {
-	class ActiveMap:public Panel, public EditorObjectBase::Interface
+	class Edit:public Panel, public EditorObjectBase::Interface
 	{
 		private: Type::Coord targetCoord;
 
@@ -36,11 +36,11 @@ namespace UI::Editor::Game
 		private: bool mouseMoveHold;
 		private: bool mouseAxe;
 
-		private: std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> map = std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>>(new Matrix<ActiveBlock<EditorObjectBase>>());
-		private: MapDrawer<ActiveBlock<EditorObjectBase>> drawer;
+		private: std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> map = std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>>(new Matrix<SceneBlock<EditorObjectBase>>());
+		private: SceneDrawer<SceneBlock<EditorObjectBase>> drawer;
 
-		public: ActiveMap();
-		public: ~ActiveMap();
+		public: Edit();
+		public: ~Edit();
 
 		public: void setTarget(Type::Move camera);
 		public: void SetMap(std::shared_ptr<Res::BluePrint> &bluePrint);
@@ -53,7 +53,7 @@ namespace UI::Editor::Game
 		public: virtual Type::Size GetDrawSize() const;
 		public: virtual Type::Size GetDrawOffSet() const;
 		public: virtual EditorObjectBase *GetObject(Type::Coord);
-		public: virtual Type::Flags ActiveMap::GetBlockFlags(Type::Coord) const;
+		public: virtual Type::Flags GetBlockFlags(Type::Coord) const;
 		public: virtual int selectStatus(Type::Coord) const;
 		public: virtual bool isTarget(Type::Coord) const;
 	};

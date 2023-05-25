@@ -3,6 +3,7 @@
 
 #include "MainEvent.h"
 #include "EditorMainEvent.h"
+#include "TestMainEvent.h"
 #include "Cursor.h"
 #include "Resource.h"
 
@@ -12,17 +13,56 @@ std::shared_ptr<KIR5::Event> cursor;
 
 std::random_device rd;
 std::default_random_engine generator(rd());
-
+int processRet = 0;
 
 int main(int argc, char *argv[])
 {
-	int ret = 0;
-	if (argc >= 2 && strcmp("--blueprints", argv[1]) == 0)
+	if (argc >= 4 && strcmp("--multitest", argv[1]) == 0 && strcmp("-json", argv[2]) == 0)
 	{
+		Res::MultitestInput testinput{argv[3]};
+		Res::Json::LoadResource_(testinput);
+		if (Res::initialize(Res::TEST))
+		{
+			std::vector<std::string> &testPaths = std::get<0>(testinput);
+			for (auto &testPath : testPaths)
+			{
+				if (!UI::Scene::Multitest(testPath).isPassed())
+				{
+					processRet = -1;
+					clog << KIR4::LWHITE << testPath << " - " << KIR4::LRED << "FAILED" << KIR4::eol;
+				}
+				else
+				{
+					clog << KIR4::LWHITE << testPath << " - " << KIR4::LGREEN << "PASSED" << KIR4::eol;
+				}
+			}
+		}
+		else
+		{
+			processRet = -1;
+		}
 	}
-	if (argc >= 2 && strcmp("--reset", argv[1]) == 0)
+	else if (argc >= 3 && strcmp("--multitest", argv[1]) == 0 && strcmp("-i", argv[2]) != 0)
 	{
-		Res::initialize(Res::RESET);
+		if (Res::initialize(Res::TEST))
+		{
+			for (std::size_t i = 2; i < argc; ++i)
+			{
+				if (!UI::Scene::Multitest(argv[i]).isPassed())
+				{
+					processRet = -1;
+					clog << KIR4::LWHITE << argv[i] << " - " << KIR4::LRED << "FAILED" << KIR4::eol;
+				}
+				else
+				{
+					clog << KIR4::LWHITE << argv[i] << " - " << KIR4::LGREEN << "PASSED" << KIR4::eol;
+				}
+			}
+		}
+		else
+		{
+			processRet = -1;
+		}
 	}
 	else
 	{
@@ -37,7 +77,24 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				ret = -1;
+				processRet = -1;
+			}
+		}
+		else if (argc >= 5 && strcmp("--multitest", argv[1]) == 0 && strcmp("-i", argv[2]) == 0)
+		{
+			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Interactive multitest", 640, 480 + 83, ALLEGRO_RESIZABLE | ALLEGRO_OPENGL));
+			std::list<std::string> replayPaths;
+			for (std::size_t i = 4; i < argc; ++i)
+			{
+				replayPaths.push_back(argv[i]);
+			}
+			if (Res::initialize(Res::ITEST))
+			{
+				UI::Multitest::MainEvent::initialize(display, replayPaths, std::atol(argv[3]));
+			}
+			else
+			{
+				processRet = -1;
 			}
 		}
 		else
@@ -49,11 +106,11 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				ret = -1;
+				processRet = -1;
 			}
 		}
 
-		if (ret == 0)
+		if (processRet == 0)
 		{
 			cursor = KIR5::Shared<Cursor>(display);
 			*display << cursor;
@@ -69,8 +126,9 @@ int main(int argc, char *argv[])
 	cursor = nullptr;
 	eventEngine = nullptr;
 	UI::Editor::MainEvent::shutdown();
+	UI::Multitest::MainEvent::shutdown();
 	UI::MainEvent::shutdown();
 	display = nullptr;
 
-	return ret;
+	return processRet;
 }

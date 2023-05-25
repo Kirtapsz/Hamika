@@ -95,6 +95,12 @@ namespace UI
 		hallOfFlameLabel->setText("HALL OF FLAME");
 		hallOfFlameLabel->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER | KIR5::IGNORE_DESCENT);
 
+		KIR5::Panel::FNC_PRESS fncPress = [&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
+		{
+			HallOfFlameRow *hallOfFlameRow = dynamic_cast<HallOfFlameRow *>(obj_->getParent());
+			MainEvent::s_object->replayGame(hallOfFlameRow->_replayUuid);
+		};
+
 		for (std::size_t i = 0; i < hallOfFlameRows.size(); ++i)
 		{
 			*get() << hallOfFlameRows[i];
@@ -106,6 +112,7 @@ namespace UI
 
 			hallOfFlameRows[i]->rank->setText("#" + std::to_string(i));
 			hallOfFlameRows[i]->time->setTextAlignment(KIR5::RIGHT | KIR5::VCENTER | KIR5::IGNORE_DESCENT);
+			hallOfFlameRows[i]->rank->fncPress.push_back(fncPress);
 		}
 	}
 	void MainEvent::Menu::BlueprintInfo::refresh()
@@ -130,7 +137,7 @@ namespace UI
 				auto _completedBlueprints = MainEvent::s_object->account_->completedBlueprints();
 				auto item = std::find_if(_completedBlueprints.cbegin(), _completedBlueprints.cend(), [&bluePrint_](const Res::Account::CompletedBluePrint &completedBluePrint) -> bool
 				{
-					return bluePrint_->hash == completedBluePrint.hash();
+					return bluePrint_->hash == completedBluePrint.bluePrintHash();
 				});
 				if (item != _completedBlueprints.end())
 				{
@@ -153,18 +160,20 @@ namespace UI
 
 			struct Record
 			{
+				std::string _replayUuid;
 				std::string _username;
 				std::uint32_t _timeMS;
 			};
 			std::vector<Record> records;
 			for (auto &account : Res::accounts.list)
 			{
-				std::uint32_t playTimeOn = account->playTimeOn(bluePrint_);
-				if (playTimeOn != std::numeric_limits<std::uint32_t>::max())
+				const Res::Account::CompletedBluePrint *record = account->getRecordOn(bluePrint_);
+				if (record != nullptr)
 				{
 					records.push_back({
+						record->replayUuid(),
 						account->username(),
-						playTimeOn
+						record->timeMS()
 									  });
 				}
 			}
@@ -181,6 +190,7 @@ namespace UI
 					hallOfFlameRows[i]->show();
 					hallOfFlameRows[i]->username->setText(records[i]._username);
 					hallOfFlameRows[i]->time->setText(hourStopper(records[i]._timeMS));
+					hallOfFlameRows[i]->_replayUuid = records[i]._replayUuid;
 				}
 				else
 				{
@@ -245,11 +255,15 @@ namespace UI
 		{
 			const std::string &username = s_object->menu.createAccount.usernameTextBox->getText();
 			const std::string &password = s_object->menu.createAccount.passwrodTextBox->getText();
-			Res::Accounts::ERR_C err_c = Res::accounts.add(username, password);
-			if (err_c == Res::Accounts::E_OK)
+			try
 			{
+				Res::accounts.add(username, password);
 				s_object->menu.accounts.refresh();
 				s_object->setAccount(Res::accounts.get(username));
+			}
+			catch (const std::exception &)
+			{
+
 			}
 
 			s_object->defaultDynamicPanel();
@@ -260,7 +274,6 @@ namespace UI
 	}
 
 	std::shared_ptr<MainEvent> MainEvent::s_object;
-	int maxBitmapSize;
 
 	MainEvent::WorldButton::WorldButton(const std::shared_ptr<Res::World> &_world):
 		world_(_world)
@@ -287,23 +300,10 @@ namespace UI
 		parent(_parent)
 	{
 		s_object = std::shared_ptr<MainEvent>(this);
-		Objects::RunInitializer();
 
-		*parent << menu << activeMap;
+		*parent << menu;
 		menu->show();
-		activeMap->hide();
 
-		parent->fncKeyChar.push_back([&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
-		{
-			//if (key_ == 'r')
-			//{
-			//	//std::shared_ptr<ActiveMapBot> replayBot(new ActiveMapBot());
-			//	//replayBot->load(replayTextBox->getText());
-			//	activeMap->startMap(*menu.bluePrints->world->bluePrints[menu.bluePrints->GetFocus()], account);
-			//	activeMap->show();
-			//}
-			return false;
-		});
 		parent->fncMoved.push_back([&](FNC_MOVED_PARAMS)
 		{
 			static constexpr float rw = decltype(menu)::element_type::ADJUSTER_WIDTH;
@@ -312,12 +312,35 @@ namespace UI
 			menu->resize(rw * rate, rh * rate);
 			menu->align(KIR5::CENTER);
 
-			activeMap->move(0, 0, parent->width(), parent->height());
+			if (scene_)
+			{
+				scene_->move(0, 0, parent->width(), parent->height());
+			}
 		});
 		setAccount(nullptr);
 		menu.currentAccount.refresh();
 		menu.blueprintInfo.refresh();
 		menu.bluePrints->refresh();
+
+		parent->fncUpdate.push_back([&](FNC_UPDATE_PARAMS)
+		{
+			if (ALLEGRO_EVENT_TYPE_IS_USER(ptr_->type))
+			{
+				switch (ptr_->user.data1)
+				{
+					case Scene::ACTIVE_MAP_FINISHED:
+					{
+						finishGame(ptr_->user.data2);
+
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+		});
 
 		defaultDynamicPanel();
 	}
@@ -357,25 +380,49 @@ namespace UI
 		}
 	}
 
+
+
+
+	void MainEvent::devGame(const std::shared_ptr<Res::BluePrint> &bluePrint_)
+	{
+		if (bluePrint_)
+		{
+			scene_ = KIR5::Shared<Scene::Developer>(bluePrint_);
+			*parent << scene_;
+			scene_->move(0, 0, parent->width(), parent->height());
+			menu->hide();
+		}
+	}
+
 	void MainEvent::playGame(const std::shared_ptr<Res::BluePrint> &bluePrint_)
 	{
 		if (account_ && bluePrint_)
 		{
-			activeMap->playGame(bluePrint_, account_);
+			scene_ = KIR5::Shared<Scene::Play>(bluePrint_, account_);
+			*parent << scene_;
+			scene_->move(0, 0, parent->width(), parent->height());
 			menu->hide();
-			activeMap->show();
-			al_hide_mouse_cursor(*display);
 		}
 	}
-	void MainEvent::finishGame()
+	void MainEvent::replayGame(const std::string &replayUuid)
+	{
+		scene_ = KIR5::Shared<Scene::Replay>(replayUuid);
+		*parent << scene_;
+		scene_->move(0, 0, parent->width(), parent->height());
+		menu->hide();
+	}
+	void MainEvent::finishGame(bool updateUI)
 	{
 		menu->show();
-		activeMap->hide();
+		*parent >> scene_;
+		scene_ = nullptr;
 
-		menu.currentAccount.refresh();
-		menu.blueprintInfo.refresh();
-		menu.bluePrints->refresh();
-		al_show_mouse_cursor(*display);
+		if (updateUI)
+		{
+			menu.currentAccount.refresh();
+			menu.blueprintInfo.refresh();
+			menu.bluePrints->refresh();
+		}
 	}
 
 	MainEvent::Menu::Accounts::Create::Create()

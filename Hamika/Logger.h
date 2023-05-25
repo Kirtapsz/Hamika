@@ -5,117 +5,107 @@
 #include "Tools.h"
 #include "Types.h"
 #include "LoopControllInterface.h"
+#include "Resource.h"
 
-#include <map>
-#include <vector>
-#include <tuple>
+#include "Account.h"
+#include "BluePrint.h"
 
-enum class LogID: unsigned __int8
+namespace Res
 {
-	_None = 0,
-	_StandardKeyboard = 1,
-	_RNGenerator = 3,
-};
-
-struct LogBase
-{
-	unsigned __int32 loopCounter = 0;
-	unsigned __int32 currentTimeMS = 0;
-
-	virtual void write(std::vector<unsigned __int8> &buffer) = 0;
-	virtual void read(std::vector<unsigned __int8> &buffer) = 0;
-};
-
-
-template<LogID ID_T, typename T>
-struct LogBaseData: LogBase
-{
-	static constexpr LogID ID = ID_T;
-	T data;
-
-	template <typename... _Types>
-	inline LogBaseData(_Types... _Args)
+	namespace Log
 	{
-		data = std::make_tuple<>(std::forward<_Types>(_Args)...);
-	}
-
-	inline LogBaseData()
-	{
-	}
-
-	virtual void write(std::vector<unsigned __int8> &buffer)
-	{
-		std::apply([&buffer](auto&&... args)
+		struct Base
 		{
-			size_t totalSize = 0;
-			((totalSize += sizeof(args)), ...);
-			buffer.resize(totalSize);
-		}, data);
+			virtual ~Base();
+		};
 
-		std::apply([&buffer](auto&&... args)
+		struct RNGenerator;
+		struct StandardKeyboard;
+		struct ObjectValidator;
+
+		struct Container: Record <
+			FixedVectorRecord<std::uint8_t, 7>,
+			KIR5::sha512digest,
+			KIR5::sha512digest,
+			SwitchVectorRecord<Base, std::uint32_t, RNGenerator, StandardKeyboard, ObjectValidator>>
 		{
-			size_t idx = 0;
-			size_t len = 0;
-			((
-				idx += len,
-				len = sizeof(args),
-				set(args, buffer, idx, len)
-				), ...);
-		}, data);
+			static constexpr std::size_t commit = 0;
+			static constexpr std::size_t blueprintHash = 1;
+			static constexpr std::size_t userHash = 2;
+			static constexpr std::size_t records = 3;
+
+			constexpr static std::array<const char *, 4> keys{{"Commit", "BlueprintHash", "UserHash", "Records"}};
+		};
 	}
-	virtual void read(std::vector<unsigned __int8> &buffer)
+
+	struct Logger: public Base
 	{
-		std::apply([&buffer](auto&&... args)
+		std::string _uuid = uuid();
+		const LoopControllerInterface &loopController;
+		mutable std::shared_ptr<BluePrint> bluePrint;
+		mutable std::shared_ptr<Account> account;
+		Log::Container logContainer;
+
+		inline Logger(LoopControllerInterface &loopController, const std::shared_ptr<BluePrint> &bluePrint, const std::shared_ptr<Account> &account):
+			loopController(loopController), bluePrint(bluePrint), account(account)
 		{
-			size_t idx = 0;
-			size_t len = 0;
-			((
-				idx += len,
-				len = sizeof(args),
-				get(args, buffer, idx, len)
-				), ...);
-		}, data);
-	}
-};
+			//std::get<logContainer.commit>(logContainer) = ;
+			if (bluePrint)
+			{
+				std::get<logContainer.blueprintHash>(logContainer) = bluePrint->hash;
+			}
+			if (account)
+			{
+				std::get<logContainer.userHash>(logContainer) = account->hash();
+			}
+		}
 
+		void operator=(const Log::Container &record);
+		operator Log::Container() const;
 
-struct Logger
-{
-	static constexpr unsigned __int8 version = 0x01;
+		template<typename L, typename... _Types>
+		void record(_Types... _Args)
+		{
+			auto &records = std::get<Log::Container::records>(logContainer);
 
-	LoopControllerInterface &loopControllerInterface;
-	std::map<LogID, std::vector<LogBase *>> logs;
-	char commit[7] = {0};
-	KIR5::sha512digest bluePrintHash;
-	KIR5::sha512digest userHash;
+			Log::Base *log = new L(
+				static_cast<unsigned __int32>(loopController.loopCounter),
+				static_cast<unsigned __int32>(loopController.currentTimeMS),
+				std::forward<_Types>(_Args)...);
 
-	/*
+			records.push_back(std::shared_ptr<Log::Base>(log));
+		}
 
-	version[1] | blank commit version[7] | blue print hash [64] | user hash [64] | records...
-	| LogID[1] | LEN[1] | LOOP[4] | MS[4] |
+		template<typename T>
+		std::vector<T *> getLogs()
+		{
+			std::vector<T *> rows;
 
-	*/
+			auto &records = std::get<Log::Container::records>(logContainer);
 
-	void clear();
+			for (auto &it : records)
+			{
+				T *t = dynamic_cast<T *>(it.get());
+				if (t != nullptr)
+				{
+					rows.push_back(t);
+				}
+			}
 
-	Logger(LoopControllerInterface &loopControllerInterface, const KIR5::sha512digest &bluePrintHash, const KIR5::sha512digest &userHash);
-	~Logger();
+			std::sort(rows.begin(), rows.end(), [](const T *left, T *right)->bool
+			{
+				return std::get<T::loopCounter>(*left) < std::get<T::loopCounter>(*right);
+			});
 
-	template<typename L, typename... _Types>
-	void record(_Types... _Args);
+			return rows;
+		}
 
-	const std::vector<LogBase *> &getLogs(LogID ID);
+		const static std::tuple<
+			Handler<Log::Container>
+		>
+			handlers;
 
-	bool load(const std::string &filename);
-	bool save(const std::string &filename) const;
-};
-
-
-template<typename L, typename... _Types>
-void Logger::record(_Types... _Args)
-{
-	LogBase *log = new L(std::forward<_Types>(_Args)...);
-	log->loopCounter = static_cast<unsigned __int32>(loopControllerInterface.loopCounter);
-	log->currentTimeMS = static_cast<unsigned __int32>(loopControllerInterface.currentTimeMS);
-	logs[L::ID].push_back(log);
+		void load(const std::string &filename);
+		void save(const std::string &filename) const;
+	};
 }

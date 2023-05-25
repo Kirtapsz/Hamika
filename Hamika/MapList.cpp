@@ -21,7 +21,7 @@ namespace UI
 				KIR5::sha512digest &_hash = world_->bluePrints[i]->hash;
 				auto item = std::find_if(account_->completedBlueprints().begin(), account_->completedBlueprints().end(), [&_hash](const Res::Account::CompletedBluePrint &completedBluePrint) -> bool
 				{
-					return _hash == completedBluePrint.hash();
+					return _hash == completedBluePrint.bluePrintHash();
 				});
 				if (item != account_->completedBlueprints().end())
 				{
@@ -260,6 +260,24 @@ namespace UI
 				MainEvent::s_object->playGame(getByIndex(ptr->index_));
 			}
 		};
+#ifdef _DEBUG
+		auto devActionPress = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+		{
+			if (button_ == KIR5::MOUSE_BUTTON_RIGHT)
+			{
+				S_BlueprintPanel *ptr = dynamic_cast<S_BlueprintPanel *>(obj_);
+				if (ptr)
+				{
+					if (ptr->onPanel(x_, y_))
+					{
+						MainEvent::s_object->devGame(getByIndex(ptr->index_));
+						return true;
+					}
+				}
+			}
+			return false;
+		};
+#endif
 
 		auto actionPress = [&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
 		{
@@ -302,18 +320,24 @@ namespace UI
 			*it << it->button;
 			it->button->show();
 			it->button->fncPress.push_back(actionButton);
+#ifdef _DEBUG
+			it->fncMouseButtonDown.push_back(devActionPress);
+#endif
 			it->button->fncKeyChar.push_back(actionPress);
 			it->fncPress.push_back(jumpOnIndex);
 		}
 
 		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
 		{
-			if (onPanel(x_, y_))
+			if (button_ == KIR5::MOUSE_BUTTON_LEFT)
 			{
-				mouseHoldX = x_;
-				mouseOnHold = true;
-				mouseHoldIndex = targetTransition_;
-				return true;
+				if (onPanel(x_, y_))
+				{
+					mouseHoldX = x_;
+					mouseOnHold = true;
+					mouseHoldIndex = targetTransition_;
+					return true;
+				}
 			}
 			return false;
 		});

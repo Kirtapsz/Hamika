@@ -20,17 +20,17 @@ namespace Object
 		{
 			Space::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Space::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Space"] = Space::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Space::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Space::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -78,13 +78,17 @@ namespace Object
 			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
 			RollDown::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			MoveDownHeavy::Print(OBJECT_PRINTER_CALL);
-			RollDown::Print(OBJECT_PRINTER_CALL);
+			Json json;
 
-			clog << "DrawNum: " << s->drawNumber << "\n";
+			json["drawNumber"] = s->drawNumber;
+
+			json["\\MoveDownHeavy"] = MoveDownHeavy::Print(OBJECT_PRINTER_CALL);
+			json["\\RollDown"] = RollDown::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -107,12 +111,6 @@ namespace Object
 					stack->o->requests.draw = true;
 				}
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-			MoveDownHeavy::Tick(OBJECT_TICK_CALL);
-			RollDown::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -163,12 +161,15 @@ namespace Object
 
 			stack->o->events.update = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
+			Json json;
 
-			clog << "disappearTimer: " << s->disappearTimer << "\n";
-			clog << "drawNumber: " << s->drawNumber << "\n";
+			json["disappearTimer"] = s->disappearTimer;
+			json["drawNumber"] = s->drawNumber;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -206,10 +207,6 @@ namespace Object
 			{
 				return;
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -256,17 +253,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -297,17 +294,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -338,17 +335,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -379,17 +376,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -420,17 +417,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -461,17 +458,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -502,17 +499,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -543,17 +540,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -584,17 +581,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -625,17 +622,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -689,13 +686,17 @@ namespace Object
 
 			stack->o->requests.timer = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "electricDelayTimer: " << s->electricDelayTimer << "\n";
-			clog << "electricTimer: " << s->electricTimer << "\n";
-			clog << "disappearTimer: " << s->disappearTimer << "\n";
-			clog << "drawNumber: " << s->drawNumber << "\n";
+			Json json;
+
+			json["electricDelayTimer"] = s->electricDelayTimer;
+			json["electricTimer"] = s->electricTimer;
+			json["disappearTimer"] = s->disappearTimer;
+			json["drawNumber"] = s->drawNumber;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -765,7 +766,7 @@ namespace Object
 							 stack->o,
 							 [&stack, &s]()->bool
 			{
-				return stack->o->ief.rollTrigger(stack->o, 1300, triggerChance) || s->electricTimer == ACTION_TIMER_START;
+				return stack->o->scene->rollTrigger(stack->o, 1300, triggerChance) || s->electricTimer == ACTION_TIMER_START;
 			},
 							 [&stack, &s]()->bool
 			{
@@ -793,10 +794,6 @@ namespace Object
 			{
 				return;
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -860,20 +857,24 @@ namespace Object
 			s->disappearTimer = 0;
 			s->drawNumber = 0;
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::Give1Aim);
+			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::Give1Score);
 
 			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
 			RollDown::Create(OBJECT_CREATER_CALL);
 
 			stack->o->events.update = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "disappearTimer: " << s->disappearTimer << "\n";
-			clog << "drawNumber: " << s->drawNumber << "\n";
-			MoveDownHeavy::Print(OBJECT_PRINTER_CALL);
-			RollDown::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["disappearTimer"] = s->disappearTimer;
+			json["drawNumber"] = s->drawNumber;
+			json["\\MoveDownHeavy"] = MoveDownHeavy::Print(OBJECT_PRINTER_CALL);
+			json["\\RollDown"] = RollDown::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -931,12 +932,6 @@ namespace Object
 				}
 			}
 		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-			MoveDownHeavy::Tick(OBJECT_TICK_CALL);
-			RollDown::Tick(OBJECT_TICK_CALL);
-		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			gets(Specific, s);
@@ -947,7 +942,7 @@ namespace Object
 				Timer(stack);
 			}
 
-			if (!stack->o->ief.IamRemain(stack->o))
+			if (!stack->o->scene->IamRemain(stack->o))
 			{
 				pops(Specific, s);
 				MoveDownHeavy::Update(OBJECT_UPDATE_CALL);
@@ -997,14 +992,20 @@ namespace Object
 			gets(Specific, s);
 
 			s->drawNumber = 0;
-			s->animateTimer = stack->o->ief.GetAimRemaining() > 0 ? 0.f : ACTION_TIMER_START;
+			s->animateTimer = stack->o->scene->getScoreToCollect() > 0 ? 0.f : ACTION_TIMER_START;
 
 			stack->o->SetFlags(ObjectBase::CanBeExplosion);
 			Timer(stack);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
+			Json json;
+
+			json["drawNumber"] = s->drawNumber;
+			json["animateTimer"] = s->animateTimer;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -1042,10 +1043,6 @@ namespace Object
 				return;
 			}
 		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			pops(Specific, s);
@@ -1063,11 +1060,11 @@ namespace Object
 		void Open(ObjectBase *o)
 		{
 			Type::Coord coord{};
-			for (coord.x = 0; coord.x < o->ief.MapSize().width; coord.x++)
+			for (coord.x = 0; coord.x < o->scene->MapSize().width; coord.x++)
 			{
-				for (coord.y = 0; coord.y < o->ief.MapSize().height; coord.y++)
+				for (coord.y = 0; coord.y < o->scene->MapSize().height; coord.y++)
 				{
-					ObjectBase *oe = o->ief.GetObjectU(coord);
+					ObjectBase *oe = o->scene->GetObjectU(coord);
 					if (oe->id == ObjectID::Exit)
 					{
 						maks(oe);
@@ -1095,13 +1092,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::Passage);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1132,13 +1129,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageHorizontal);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1169,13 +1166,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageVertical);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1206,13 +1203,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromTop);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1243,13 +1240,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromRight);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1280,13 +1277,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromLeft);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1317,13 +1314,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromBottom);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1354,13 +1351,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1391,13 +1388,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1428,13 +1425,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -1480,21 +1477,19 @@ namespace Object
 
 			MoveLeftWay::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Animator::Print(OBJECT_PRINTER_CALL);
-			MoveLeftWay::Print(OBJECT_PRINTER_CALL);
+			Json json;
 
+			json["\\Animator"] = Animator::Print(OBJECT_PRINTER_CALL);
+			json["\\MoveLeftWay"] = MoveLeftWay::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Animator::Timer(OBJECT_TIMER_CALL);
 			MoveLeftWay::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Animator::Tick(OBJECT_TICK_CALL);
-			MoveLeftWay::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -1551,12 +1546,15 @@ namespace Object
 
 			MoveLeftWay::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			MoveLeftWay::Print(OBJECT_PRINTER_CALL);
+			Json json;
 
-			clog << "drawNumber: " << s->drawNumber << "\n";
+			json["drawNumber"] = s->drawNumber;
+			json["\\MoveLeftWay"] = MoveLeftWay::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -1587,11 +1585,6 @@ namespace Object
 						stack->o->rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
 					Type::Rotations::_360, s->drawNumber, stack->o, SnikSnakRotate);
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-			MoveLeftWay::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -1655,17 +1648,17 @@ namespace Object
 
 			stack->o->SetFlags(ObjectBase::ButtonPush);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Animator::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Animator"] = Animator::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Animator::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Animator::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -1695,19 +1688,19 @@ namespace Object
 			if (s->time != activatedAnimateTime)
 			{
 				Type::Coord coord;
-				for (coord.x = 0; coord.x < o->ief.MapSize().width; coord.x++)
+				for (coord.x = 0; coord.x < o->scene->MapSize().width; coord.x++)
 				{
-					for (coord.y = 0; coord.y < o->ief.MapSize().height; coord.y++)
+					for (coord.y = 0; coord.y < o->scene->MapSize().height; coord.y++)
 					{
-						if (o->ief.GetObjectU(coord))
+						if (o->scene->GetObjectU(coord))
 						{
-							if (o->ief.GetObjectU(coord)->id == ObjectID::Utility3)
+							if (o->scene->GetObjectU(coord)->id == ObjectID::Utility3)
 							{
-								o->ief.GetObjectU(coord)->blowUp(coord);
+								o->scene->GetObjectU(coord)->blowUp(coord);
 							}
-							else if (o->ief.GetObjectU(coord)->id == o->id)
+							else if (o->scene->GetObjectU(coord)->id == o->id)
 							{
-								speedUpTerminalSpeed(o->ief.GetObjectU(coord));
+								speedUpTerminalSpeed(o->scene->GetObjectU(coord));
 							}
 						}
 					}
@@ -1744,22 +1737,20 @@ namespace Object
 
 			MoveDown::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			MoveDown::Print(OBJECT_PRINTER_CALL);
+			Json json;
 
-			clog << "Active: " << s->active << "\n";
+			json["active"] = s->active;
+			json["\\MoveDown"] = MoveDown::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			pops(Specific, s);
 			MoveDown::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-			MoveDown::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -1773,7 +1764,7 @@ namespace Object
 			}
 			else if (s->active)
 			{
-				stack->o->ief.ObjectArrived(stack->o->GetCoord());
+				stack->o->scene->ObjectArrived(stack->o->GetCoord());
 				stack->o->blowUp(stack->o->GetCoord());
 			}
 		}
@@ -1821,13 +1812,16 @@ namespace Object
 
 			stack->o->events.update = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
+			Json json;
 
-			clog << "activateTimer: " << s->activateTimer << "\n";
-			clog << "disappearTimer: " << s->disappearTimer << "\n";
-			clog << "drawNumber: " << s->drawNumber << "\n";
+			json["activateTimer"] = s->activateTimer;
+			json["disappearTimer"] = s->disappearTimer;
+			json["drawNumber"] = s->drawNumber;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -1902,10 +1896,6 @@ namespace Object
 				return;
 			}
 		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
-		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			gets(Specific, s);
@@ -1959,13 +1949,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3 | ObjectBase::CanPush);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -2011,11 +2001,15 @@ namespace Object
 
 			stack->o->requests.timer = true;
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
-			clog << "explosionTimer: " << s->explosionTimer << "\n";
-			clog << "drawNumber: " << s->drawNumber << "\n";
+			Json json;
+
+			json["explosionTimer"] = s->explosionTimer;
+			json["drawNumber"] = s->drawNumber;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -2047,10 +2041,6 @@ namespace Object
 			{
 				return;
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -2098,13 +2088,20 @@ namespace Object
 
 			stack->o->requests.timer = true;
 
-			stack->o->ief.GetObject(stack->o->GetCoord())->events.clear();
-			stack->o->ief.GetObject(stack->o->GetCoord())->requests.clear();
-			stack->o->ief.GetObject(stack->o->GetCoord())->RemoveFlags(ObjectBase::Flags::CanBeKilled);
+			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
+			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
+			stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(ObjectBase::Flags::CanBeKilled);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			pops(Specific, s);
+			Json json;
+
+			json["explosionTimer"] = s->explosionTimer;
+			json["drawNumber"] = s->drawNumber;
+			json["rmobj"] = s->rmobj;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -2125,14 +2122,14 @@ namespace Object
 			{
 				if (!s->rmobj && s->explosionTimer <= blastingTime)
 				{
-					if (stack->o->ief.GetObject(stack->o->GetCoord())->GetFlags() & ObjectBase::ExplosionType1)
+					if (stack->o->scene->GetObject(stack->o->GetCoord())->GetFlags() & ObjectBase::ExplosionType1)
 					{
-						stack->o->ief.BlowUpBlock(stack->o->GetCoord());
+						stack->o->scene->BlowUpBlock(stack->o->GetCoord());
 					}
 					else
 					{
-						stack->o->ief.ObjectVirtualArrived(stack->o->GetCoord());
-						stack->o->ief.ObjectPut(stack->o->GetCoord(), stack->o->GetObjectIDremain());
+						stack->o->scene->ObjectVirtualArrived(stack->o->GetCoord());
+						stack->o->scene->ObjectPut(stack->o->GetCoord(), stack->o->GetObjectIDremain());
 					}
 					s->rmobj = true;
 				}
@@ -2151,10 +2148,6 @@ namespace Object
 			{
 				return;
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			pops(Specific, s);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -2189,20 +2182,20 @@ namespace Object
 
 			stack->o->requests.timer = true;
 
-			stack->o->ief.GetObject(stack->o->GetCoord())->events.clear();
-			stack->o->ief.GetObject(stack->o->GetCoord())->requests.clear();
+			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
+			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Explosion_033::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Explosion_033"] = Explosion_033::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Explosion_033::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Explosion_033::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -2233,13 +2226,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -2270,13 +2263,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::CanBeExplosion);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
@@ -2307,17 +2300,17 @@ namespace Object
 		{
 			Bedrock::Create(OBJECT_CREATER_CALL);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Bedrock::Print(OBJECT_PRINTER_CALL);
+			Json json;
+
+			json["\\Bedrock"] = Bedrock::Print(OBJECT_PRINTER_CALL);
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
 			Bedrock::Timer(OBJECT_TIMER_CALL);
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
-			Bedrock::Tick(OBJECT_TICK_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
@@ -2344,8 +2337,11 @@ namespace Object
 		{
 			OneWayPortDown = Res::tiles[Res::Tiles::_038_OneWayPortDownGrav];
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2368,8 +2364,11 @@ namespace Object
 		{
 			OneWayPortLeft = Res::tiles[Res::Tiles::_039_OneWayPortLeftGrav];
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2392,8 +2391,11 @@ namespace Object
 		{
 			OneWayPortRight = Res::tiles[Res::Tiles::_040_OneWayPortRightGrav];
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2416,8 +2418,11 @@ namespace Object
 		{
 			OneWayPortUp = Res::tiles[Res::Tiles::_041_OneWayPortUpGrav];
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Record.h"
+#include "Tools.h"
 
 namespace Res
 {
@@ -25,9 +26,13 @@ namespace Res
 
 			FILE_MISSING_ALLOWED = 1 << 5,
 		};
-		const std::string path;
-		Enum mode;
+		mutable std::string path;
+		Enum mode = NONE;
 
+		inline Base()
+		{
+
+		}
 		inline Base(const std::string &path, Enum mode = NONE):
 			path(KIR5::pathCombine(KIR5::getModuleDirectory(), path)),
 			mode(mode)
@@ -42,6 +47,28 @@ namespace Res
 		virtual void shutdown()
 		{
 		}
+	};
+
+	template <typename T, std::size_t N, const std::array<const char *, N> &K, const Res::Handler<T> &H>
+	struct Container: public Base, public T
+	{
+		struct type_: public T
+		{
+			constexpr static std::array<const char *, N> keys{K};
+		};
+
+		using Base::Base;
+
+		void operator=(const T &record)
+		{
+			*this = record;
+		}
+		operator T() const
+		{
+			return *this;
+		}
+
+		constexpr static std::tuple<Res::Handler<type_>> handlers;
 	};
 
 
@@ -188,14 +215,61 @@ namespace Res
 	{
 		GAME = 1 << 0,
 		EDITOR = 1 << 1,
-		BLUEPRINTS_GAME = 1 << 2,
-		BLUEPRINTS_TEST = 1 << 3,
-		RESET = 1 << 4,
-
-		ALWAYS = GAME | EDITOR | BLUEPRINTS_GAME,
+		ITEST = 1 << 2,
+		TEST = 1 << 3,
 	};
 	bool initialize(std::uint32_t editorMode);
 	void shutdown();
+
+	template <typename T>
+	using record_cast = typename type_of_base_templates<T, Record, HashRecord>;
 }
 
-#include "Resource.hpp"
+#include "BinaryResource.hpp"
+#include "JsonResource.hpp"
+
+namespace Res
+{
+	template<typename T>
+	void LoadResource(T &resource)
+	{
+		if (endingWith(toLower(resource.path), ".json"))
+		{
+			Json::LoadResource_(resource);
+		}
+		else
+		{
+			LoadResource_(resource);
+		}
+	}
+	template<typename T>
+	void SaveResource(T &resource)
+	{
+		if (endingWith(toLower(resource.path), ".json"))
+		{
+			Json::SaveResource_(resource);
+		}
+		else
+		{
+			SaveResource_(resource);
+		}
+	}
+
+	struct MultitestInput: public Base, public Res::Record<Res::VectorRecord<std::uint16_t, std::string>>
+	{
+		constexpr static std::array<const char *, 1> keys{"files"};
+
+		using Base::Base;
+
+		void operator=(const MultitestInput &record)
+		{
+			Res::Record<Res::VectorRecord<std::uint16_t, std::string>>::operator=(record);
+		}
+		operator const MultitestInput&() const
+		{
+			return *this;
+		}
+
+		const static std::tuple<Res::Handler<MultitestInput>> handlers;
+	};
+}

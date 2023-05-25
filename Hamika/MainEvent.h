@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ActiveMap.h"
-#include "MapDrawer.h"
+#include "SceneConfiguration.h"
+#include "SceneDrawer.h"
 #include "MapList.h"
 
 #include <KIR\AL\KIR5_event_engine.h>
@@ -18,7 +18,6 @@
 
 namespace UI
 {
-	using namespace Game;
 	class MainEvent
 	{
 		friend class MapList;
@@ -57,7 +56,8 @@ namespace UI
 
 				struct HallOfFlameRow: AdjusterPanel<Panel, 144, 10>
 				{
-					KIR5::Shared<AdjustablePanel<UI::Label<Res::Consolas, 12>, 0, 0, 22, 10>> rank;
+					std::string _replayUuid;
+					KIR5::Shared<AdjustablePanel<UI::Button<Res::Consolas, 12>, 0, 0, 22, 10>> rank;
 					KIR5::Shared<AdjustablePanel<UI::Label<Res::Consolas, 12>, 23, 0, 56, 10>> username;
 					KIR5::Shared<AdjustablePanel<UI::Label<Res::Consolas, 12>, 80, 0, 64, 10>> time;
 				};
@@ -139,10 +139,8 @@ namespace UI
 		} menu;
 
 		private: std::shared_ptr<KIR5::Panel> parent;
-
 		private: std::shared_ptr<Res::Account> account_;
-		private: KIR5::Shared<ActiveMap> activeMap;
-		private: KIR5::Shared<KIR5::RectangleButton<KIR5::Button<KIR5::TextBox<>>>> replayTextBox;
+		private: std::shared_ptr<Scene::Base::Standard::Type> scene_;
 
 		private: MainEvent(const std::shared_ptr<KIR5::Panel> &_parent);
 		public: static std::shared_ptr<MainEvent> s_object;
@@ -150,13 +148,13 @@ namespace UI
 		public: static void shutdown();
 		public: ~MainEvent();
 
-		public: void playGame(const std::shared_ptr<Res::BluePrint> &bluePrint_);
-		public: void finishGame();
+		private: void playGame(const std::shared_ptr<Res::BluePrint> &bluePrint_);
+		private: void devGame(const std::shared_ptr<Res::BluePrint> &bluePrint_);
+		private: void replayGame(const std::string &replayUuid);
+		private: void finishGame(bool updateUI = true);
 
 		private: void defaultDynamicPanel();
 		private: void hideDynamicPanel();
 		private: void setAccount(const std::shared_ptr<Res::Account> &_account);
 	};
-
-	extern int maxBitmapSize;
 }

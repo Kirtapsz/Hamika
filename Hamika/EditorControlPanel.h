@@ -5,7 +5,7 @@
 #include "Objects.h"
 #include "Font.h"
 #include "BlueprintPanel.h"
-#include "EditorActiveBlock.h"
+#include "EditorSceneBlock.h"
 #include "UItools.h"
 
 #include <KIR\AL\KIR5_panel.h>
@@ -28,7 +28,7 @@ namespace UI::Editor
 		private: static const std::string GLOBAL_GRAVITY_OFF;
 
 		private: std::shared_ptr<Res::BluePrint> bluePrint;
-		private: std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> map;
+		private: std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> map;
 
 		private: class ResizeButtonClass:public BmpButton
 		{
@@ -130,7 +130,7 @@ namespace UI::Editor
 		public: void pickID(Type::ID id);
 		public: void setOperationMode();
 		public: void updateBlocks();
-		public: void SetMap(std::shared_ptr<Res::BluePrint> &bluePrint, std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map);
+		public: void SetMap(std::shared_ptr<Res::BluePrint> &bluePrint, std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map);
 
 		public: ControlPanel();
 		public: ~ControlPanel();

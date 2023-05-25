@@ -4,7 +4,7 @@
 #include "Object.h"
 #include "Font.h"
 
-namespace UI::Game
+namespace UI::Scene
 {
 	KIR5::Bitmap StatusBar::statusBMP;
 
@@ -31,46 +31,40 @@ namespace UI::Game
 		SSLabel->setText("00");
 	}
 
-	void StatusBar::SetAimStr()
-	{
-		aimLabel->setText((KIR4::to_string(Aim - AimCollect)).c_str());
-	}
-	void StatusBar::SetUnityStr()
-	{
-		unitesLabel->setText(KIR4::to_string(UnitiyCollect).c_str());
-	}
 	void StatusBar::updateLoopCounter(unsigned long long _loopCounter)
 	{
-		std::time_t ms = _loopCounter % 1000;
+		std::time_t timeMS = _loopCounter * CA * 1000;
 
-		_loopCounter /= 1000;
-		std::time_t sec = _loopCounter % 60;
+		std::time_t ms = timeMS % 1000;
 
-		_loopCounter /= 60;
-		std::time_t min = _loopCounter % 60;
+		timeMS /= 1000;
+		std::time_t sec = timeMS % 60;
 
-		_loopCounter /= 60;
-		std::time_t hour = _loopCounter % 24;
+		timeMS /= 60;
+		std::time_t min = timeMS % 60;
 
-		HHLabel->setText(ToSString(sec));
+		timeMS /= 60;
+		std::time_t hour = timeMS % 24;
+
+		HHLabel->setText(ToSString(hour));
 		MMLabel->setText(ToSString(min));
-		SSLabel->setText(ToSString(hour));
+		SSLabel->setText(ToSString(sec));
 	}
 
 	StatusBar::StatusBar()
 	{
-		*this << aimLabel << unitesLabel << HHLabel << MMLabel << SSLabel << mapNameLabel;
+		*this << scoreLabel << unityLabel << HHLabel << MMLabel << SSLabel << mapNameLabel;
 
 		mapNameLabel->position(92, 9);
-		aimLabel->position(120, 46);
-		unitesLabel->position(233, 46);
+		scoreLabel->position(120, 46);
+		unityLabel->position(233, 46);
 		HHLabel->position(318, 46);
 		MMLabel->position(365, 46);
 		SSLabel->position(412, 46);
 
 		mapNameLabel->resize(365, 28);
-		aimLabel->resize(68, 28);
-		unitesLabel->resize(68, 28);
+		scoreLabel->resize(68, 28);
+		unityLabel->resize(68, 28);
 		HHLabel->resize(45, 28);
 		MMLabel->resize(45, 28);
 		SSLabel->resize(45, 28);
@@ -91,37 +85,53 @@ namespace UI::Game
 	void StatusBar::SetMap(const std::shared_ptr<Res::BluePrint> &bluePrint_)
 	{
 		mapNameLabel->setText(bluePrint_->title);
-		AimCollect = 0;
-		UnitiyCollect = 0;
-		Aim = bluePrint_->scoreToUnlock;
-		SetAimStr();
-		SetUnityStr();
+		setUnity(0);
+		setScore(0, bluePrint_->scoreToUnlock);
 		Restart();
 	}
-	int StatusBar::GetAimRemaining() const
+
+	int StatusBar::getUnityCount() const
 	{
-		return Aim - AimCollect;
+		return unityCount;
 	}
-	int StatusBar::GetUnityCount() const
+	int StatusBar::getScoreToReach() const
 	{
-		return UnitiyCollect;
+		return scoreToReach;
 	}
-	void StatusBar::AddUnity(int collect)
+	int StatusBar::getScoreCount() const
 	{
-		UnitiyCollect += collect;
-		if (UnitiyCollect < 0)
-			UnitiyCollect = 0;
-		SetUnityStr();
+		return scoreCount;
 	}
-	void StatusBar::AddAim(int collect)
+	int StatusBar::getScoreToCollect() const
 	{
-		AimCollect += collect;
-		if (AimCollect < 0)
-			AimCollect = 0;
-		if (AimCollect > Aim)
-			AimCollect = Aim;
-		SetAimStr();
+		return std::max(0, scoreToReach - scoreCount);
 	}
+
+
+	void StatusBar::addUnity(int count)
+	{
+		unityCount += count;
+		unityLabel->setText(std::to_string(unityCount));
+	}
+	void StatusBar::addScore(int count)
+	{
+		scoreCount += count;
+		scoreLabel->setText(std::to_string(getScoreToCollect()));
+	}
+
+	void StatusBar::setUnity(int count)
+	{
+		unityCount = count;
+		unityLabel->setText(std::to_string(unityCount));
+	}
+	void StatusBar::setScore(int count, int toReach)
+	{
+		scoreToReach = toReach;
+		scoreCount = count;
+		scoreLabel->setText(std::to_string(getScoreToCollect()));
+	}
+
+
 	int StatusBar::Height() const
 	{
 		return height();

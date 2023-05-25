@@ -59,17 +59,10 @@ void StandardKeyboard::loop()
 
 
 
-KeyboardLoopReplay::KeyboardLoopReplay(LoopControllerInterface &loopControllerInterface, Logger &logger):
+KeyboardLoopReplay::KeyboardLoopReplay(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
 	KeyboardController(loopControllerInterface)
 {
-	auto &rows_ = logger.getLogs(LogID::_StandardKeyboard);
-	rows.resize(rows_.size());
-
-	for (size_t i = 0; i < rows_.size(); ++i)
-	{
-		rows[i] = static_cast<StandardKeyboardLog *>(rows_[i]);
-	}
-
+	rows = logger.getLogs<Res::Log::StandardKeyboard>();
 	it = rows.begin();
 }
 void KeyboardLoopReplay::keyUp(int key)
@@ -86,37 +79,40 @@ void KeyboardLoopReplay::loop()
 	{
 		if (it != rows.end())
 		{
-			if ((*it)->loopCounter < loopControllerInterface.loopCounter)
+			auto &loopCounter = std::get<Res::Log::StandardKeyboard::loopCounter>(**it);
+			if (loopCounter < loopControllerInterface.loopCounter)
 			{
 				++it;
-				clog << KIR4::LRED << "RngReplay loop was jumped!" << KIR4::eol;
+				clog << KIR4::LRED << "KeyboardLoopReplay loop was jumped!" << KIR4::eol;
 				continue;
 			}
-			else if ((*it)->loopCounter == loopControllerInterface.loopCounter)
+			else if (loopCounter == loopControllerInterface.loopCounter)
 			{
-				if (std::get<StandardKeyboardLog_::_actionKeyIndex >((*it)->data) == StandardKeyboardLog_::ACTION_DESTROY_UPDATE)
+				auto &_actionKey = std::get<Res::Log::StandardKeyboard::actionKey>(**it);
+				auto &_actionState = std::get<Res::Log::StandardKeyboard::actionState>(**it);
+				if (_actionKey == Res::Log::StandardKeyboard::ACTION_DESTROY_UPDATE)
 				{
-					actionDestroy = std::get<StandardKeyboardLog_::_actionStateIndex >((*it)->data);
+					actionDestroy = _actionState;
 				}
-				else if (std::get<StandardKeyboardLog_::_actionKeyIndex >((*it)->data) == StandardKeyboardLog_::ACTION_SPECIAL_UPDATE)
+				else if (_actionKey == Res::Log::StandardKeyboard::ACTION_SPECIAL_UPDATE)
 				{
-					actionSpecial = std::get<StandardKeyboardLog_::_actionStateIndex >((*it)->data);
+					actionSpecial = _actionState;
 				}
-				else if (std::get<StandardKeyboardLog_::_actionKeyIndex >((*it)->data) == StandardKeyboardLog_::ACTION_UP_UPDATE)
+				else if (_actionKey == Res::Log::StandardKeyboard::ACTION_UP_UPDATE)
 				{
-					actionUp = std::get<StandardKeyboardLog_::_actionStateIndex >((*it)->data);
+					actionUp = _actionState;
 				}
-				else if (std::get<StandardKeyboardLog_::_actionKeyIndex >((*it)->data) == StandardKeyboardLog_::ACTION_DOWN_UPDATE)
+				else if (_actionKey == Res::Log::StandardKeyboard::ACTION_DOWN_UPDATE)
 				{
-					actionDown = std::get<StandardKeyboardLog_::_actionStateIndex >((*it)->data);
+					actionDown = _actionState;
 				}
-				else if (std::get<StandardKeyboardLog_::_actionKeyIndex >((*it)->data) == StandardKeyboardLog_::ACTION_LEFT_UPDATE)
+				else if (_actionKey == Res::Log::StandardKeyboard::ACTION_LEFT_UPDATE)
 				{
-					actionLeft = std::get<StandardKeyboardLog_::_actionStateIndex >((*it)->data);
+					actionLeft = _actionState;
 				}
-				else if (std::get<StandardKeyboardLog_::_actionKeyIndex >((*it)->data) == StandardKeyboardLog_::ACTION_RIGHT_UPDATE)
+				else if (_actionKey == Res::Log::StandardKeyboard::ACTION_RIGHT_UPDATE)
 				{
-					actionRight = std::get<StandardKeyboardLog_::_actionStateIndex >((*it)->data);
+					actionRight = _actionState;
 				}
 				++it;
 				continue;

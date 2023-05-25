@@ -39,6 +39,19 @@ namespace Res
 			return blocks[coord];
 		}
 
+		struct IO_HamSt1_Block: public Record<
+			std::uint16_t,                // id
+			std::uint8_t,                 // rotation (0-up, 1-right, 2-down, 3-left)
+			std::uint8_t                  // flags
+		>
+		{
+			constexpr static std::size_t id = 0;
+			constexpr static std::size_t rotation = 1;
+			constexpr static std::size_t flags = 2;
+
+			constexpr static std::array<const char*, 3> keys{{"BlockID", "Rotation", "Flags"}};
+		};
+
 		struct IO_HamSt1: HashRecord <
 			std::float_t,                 // speed
 			FixedStringRecord<128>,       // title
@@ -46,12 +59,8 @@ namespace Res
 			std::uint8_t,                 // globalGravity
 			std::float_t,                 // camera width
 			std::float_t,                 // camera height
-			MatrixRecord<std::uint16_t, Record<
-			std::uint16_t,                // id
-			std::uint8_t,                 // rotation (0-up, 1-right, 2-down, 3-left)
-			std::uint8_t                  // flags
-			>>
-			>
+			MatrixRecord<std::uint16_t, IO_HamSt1_Block>
+		>
 		{
 			constexpr static std::size_t speed = 0;
 			constexpr static std::size_t title = 1;
@@ -61,9 +70,7 @@ namespace Res
 			constexpr static std::size_t cameraHeight = 5;
 			constexpr static std::size_t blocks = 6;
 
-			constexpr static std::size_t id = 0;
-			constexpr static std::size_t rotation = 1;
-			constexpr static std::size_t flags = 2;
+			constexpr static std::array<const char *, 7> keys{{"Speed", "Title", "ScoreToUnlock", "Gravity", "CameraWidth", "CameraHeight", "Blocks"}};
 		};
 		BluePrint(const IO_HamSt1 &record);
 		operator IO_HamSt1() const;
@@ -87,6 +94,8 @@ namespace Res
 			constexpr static std::size_t speed = 5;
 			constexpr static std::size_t fillId = 6;
 			constexpr static std::size_t title = 7;
+
+			constexpr static std::array<const char *, 8> keys{{"BlockID", "Rotation", "Explode", "Gravity", "ScoreToUnlock", "Speed", "FillID", "Title"}};
 
 			static constexpr std::size_t MAP_SIZE = 0x41A0;
 
@@ -236,7 +245,7 @@ namespace Res
 			FixedVectorRecord<std::uint8_t, 1>,       // unused
 			FixedStringRecord<23>,                    // title
 			FixedVectorRecord<std::uint8_t, 1>,       // unused
-			std::uint8_t,                             // score to unlockD
+			std::uint8_t,                             // score to unlock
 			FixedVectorRecord<std::uint8_t, 65>       // unused
 		>
 		{
@@ -244,6 +253,8 @@ namespace Res
 			constexpr static std::size_t globalGravity = 2;
 			constexpr static std::size_t title = 4;
 			constexpr static std::size_t scoreToUnlock = 6;
+
+			constexpr static std::array<const char *, 8> keys{{"BlockID", "Unused1", "Gravity", "Unused2", "Title", "Unused3", "ScoreToUnlock", "Unused4"}};
 
 			static constexpr std::size_t MAP_SIZE = 0x600;
 
