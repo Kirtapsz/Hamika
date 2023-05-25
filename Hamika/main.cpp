@@ -6,6 +6,7 @@
 #include "TestMainEvent.h"
 #include "Cursor.h"
 #include "Resource.h"
+#include "versions.h"
 
 std::shared_ptr<KIR5::Display> display;
 std::shared_ptr<KIR5::EventEngine> eventEngine;
@@ -17,7 +18,12 @@ int processRet = 0;
 
 int main(int argc, char *argv[])
 {
-	if (argc >= 4 && strcmp("--multitest", argv[1]) == 0 && strcmp("-json", argv[2]) == 0)
+	if (argc >= 2 && strcmp("--info", argv[1]) == 0)
+	{
+		clog << "KIR LIB commit ID: " << Versions::ApplicationCommitID << KIR4::eol;
+		clog << "Application commit ID: " << Versions::KIRLIBCommitID << KIR4::eol;
+	}
+	else if (argc >= 4 && strcmp("--multitest", argv[1]) == 0 && strcmp("-json", argv[2]) == 0)
 	{
 		Res::MultitestInput testinput{argv[3]};
 		Res::Json::LoadResource_(testinput);

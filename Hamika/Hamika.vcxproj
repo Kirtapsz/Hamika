@@ -191,11 +191,14 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir) $(Configuration)</Command>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PreBuildEvent>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py pre $(ProjectDir) $(Configuration)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MultitestInteractive|Win32'">
     <ClCompile>
@@ -205,11 +208,14 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir) $(Configuration)</Command>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PreBuildEvent>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py pre $(ProjectDir) $(Configuration)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MultitestInline|Win32'">
     <ClCompile>
@@ -219,11 +225,14 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir) $(Configuration)</Command>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PreBuildEvent>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py pre $(ProjectDir) $(Configuration)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MultitestFile|Win32'">
     <ClCompile>
@@ -233,11 +242,14 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir) $(Configuration)</Command>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PreBuildEvent>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py pre $(ProjectDir) $(Configuration)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">
     <ClCompile>
@@ -247,11 +259,14 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir) $(Configuration)</Command>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
     </PostBuildEvent>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PreBuildEvent>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py pre $(ProjectDir) $(Configuration)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -269,8 +284,11 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>call python $(SolutionDir)PostBuild\main.py $(OutDir) $(ProjectDir) $(Configuration)</Command>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>call python $(SolutionDir)BuildEvent\build_event.py pre $(ProjectDir) $(Configuration)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_console.cpp" />
@@ -373,6 +391,7 @@
     <ClInclude Include="SceneMurphy.h" />
     <ClInclude Include="TestMainEvent.h" />
     <ClInclude Include="Validator.h" />
+    <ClInclude Include="versions.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="RngController.h" />
     <ClInclude Include="KeyboardController.h" />

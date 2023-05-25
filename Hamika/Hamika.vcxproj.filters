@@ -408,6 +408,9 @@
     <ClInclude Include="EditorSceneBlock.h">
       <Filter>Editor\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="versions.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
