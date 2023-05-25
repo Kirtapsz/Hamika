@@ -3,7 +3,7 @@
 
 // https://www.allegro.cc/manual/5/al_hold_bitmap_drawing
 
-#include "MapDrawer.h"
+#include "SceneDrawer.h"
 #include "Font.h"
 #include "Tools.h"
 
@@ -13,16 +13,13 @@
 #include <KIR\KIR4_console.h>
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool globalGravity)
+void SceneDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool *globalGravity)
 {
-	if (this->globalGravity != globalGravity)
-	{
-		this->globalGravity = globalGravity;
-	}
+	this->globalGravity = globalGravity;
 }
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
+void SceneDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
 {
 	if (map->Test(coord))
 	{
@@ -31,15 +28,15 @@ void MapDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
 		clog << "GoTo: (" << reach(map)[coord].GoTo.x << ";" << reach(map)[coord].GoTo.y << ")" << KIR4::eol;
 
 		clog << "DrawOptions ( " << reach(map)[coord].DrawType << " ) : ";
-		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::Cleared)
+		if (reach(map)[coord].DrawType & SceneBlock::DrawType::Cleared)
 			clog << "Cleared, ";
-		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::IsMovingObjectDrawned)
+		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsMovingObjectDrawned)
 			clog << "MovObjDraw, ";
-		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::IsNotMovingObjectDrawned)
+		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsNotMovingObjectDrawned)
 			clog << "NotMovObjDraw, ";
-		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::IsNotMovingRemainDrawned)
+		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsNotMovingRemainDrawned)
 			clog << "NotMovRemDraw, ";
-		if (reach(map)[coord].DrawType & ActiveBlock::DrawType::LastDrawned)
+		if (reach(map)[coord].DrawType & SceneBlock::DrawType::LastDrawned)
 			clog << "LastDraw, ";
 		clog << KIR4::eol;
 
@@ -70,69 +67,69 @@ void MapDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
 }
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::Type row, Type::Coord::Type begin, Type::Coord::Type end)
+void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::Type row, Type::Coord::Type begin, Type::Coord::Type end)
 {
 	for (; begin < end; begin++)
 		Redrawn({begin,row});
 }
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::Type col, Type::Coord::Type begin, Type::Coord::Type end)
+void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::Type col, Type::Coord::Type begin, Type::Coord::Type end)
 {
 	for (; begin < end; begin++)
 		Redrawn({col,begin});
 }
 
 template <typename ACTIVE_BLOCK_T>
-Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetDrawBeginSource() const
+Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawBeginSource() const
 {
 	return DrawBeginSource;
 }
 template <typename ACTIVE_BLOCK_T>
-Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetDrawBegin() const
+Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawBegin() const
 {
 	return DrawBegin;
 }
 template <typename ACTIVE_BLOCK_T>
-Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetDrawEnd() const
+Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawEnd() const
 {
 	return DrawEnd;
 }
 template <typename ACTIVE_BLOCK_T>
-Type::Size MapDrawer<ACTIVE_BLOCK_T>::GetBitmapDrawOffset() const
+Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetBitmapDrawOffset() const
 {
 	return {-BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width, -BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height};
 }
 template <typename ACTIVE_BLOCK_T>
-Type::Size MapDrawer<ACTIVE_BLOCK_T>::GetBitmapSize() const
+Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetBitmapSize() const
 {
 	return {BlocksBitmapSize.width * DrawSize.width, BlocksBitmapSize.height * DrawSize.height};
 }
 
 template <typename ACTIVE_BLOCK_T>
-Type::Size MapDrawer<ACTIVE_BLOCK_T>::GetDrawSize() const
+Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetDrawSize() const
 {
 	return DrawSize;
 }
 template <typename ACTIVE_BLOCK_T>
-Type::Size MapDrawer<ACTIVE_BLOCK_T>::GetDrawOffSet() const
+Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetDrawOffSet() const
 {
 	return DrawOffset;
 }
 
 template <typename ACTIVE_BLOCK_T>
-Type::Move MapDrawer<ACTIVE_BLOCK_T>::GetCameraSize() const
+Type::Move SceneDrawer<ACTIVE_BLOCK_T>::GetCameraSize() const
 {
 	return CameraSize;
 }
 
 template <typename ACTIVE_BLOCK_T>
-Type::Move MapDrawer<ACTIVE_BLOCK_T>::GetCamera() const
+Type::Move SceneDrawer<ACTIVE_BLOCK_T>::GetCamera() const
 {
 	return CameraLast;
 }
 
 template <typename ACTIVE_BLOCK_T>
-Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
+Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
 {
 	float x_ = (CameraHcenter ? (x) : (x + BlocksBitmapBufferSize * DrawSize.width + BlocksBitmapDrawOffset.width)) / (float)DrawSize.width;
 	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height + BlocksBitmapDrawOffset.height)) / (float)DrawSize.height;
@@ -145,7 +142,7 @@ Type::Coord MapDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
 
 //kamera k�z�pen van
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
+void SceneDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 {
 	if (CameraLast == camera)
 		return;
@@ -235,7 +232,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 	clog <<"-------------------" <<KIR4::eol;*/
 }
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
+void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
 {
 	if (cameraSizeAdjust.width > 0.f && cameraSizeAdjust.height > 0.f)
 	{
@@ -343,7 +340,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, 
 	//drawStatistics.clear();
 }
 template <typename ACTIVE_BLOCK_T>
-MapDrawer<ACTIVE_BLOCK_T>::MapDrawer()
+SceneDrawer<ACTIVE_BLOCK_T>::SceneDrawer()
 {
 	gravitySlides.initialize(KIR5::Bitmap("Hamika\\Texture\\Block\\gravitation.png"), KIR5::SubBitmap());
 	gravityAnimator.Initialize();
@@ -352,7 +349,7 @@ MapDrawer<ACTIVE_BLOCK_T>::MapDrawer()
 }
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
+void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 {
 	ObjectBase::SObjectDrawCounts = 0;
 	//drawStatistics.start();
@@ -598,7 +595,7 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 				al_clear_to_color(KIR5::Color::_transparent);
 				al_hold_bitmap_drawing(true);
-				if (globalGravity)
+				if (*globalGravity)
 				{
 					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 					{
@@ -642,13 +639,13 @@ void MapDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 }
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map_)
+void SceneDrawer<ACTIVE_BLOCK_T>::SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map_)
 {
 	map = map_;
 }
 
 template <typename ACTIVE_BLOCK_T>
-void MapDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
+void SceneDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 {
 	if (!reach(map)[coord].Redrawn)
 	{
@@ -673,9 +670,9 @@ void MapDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 
 
 template <typename ACTIVE_BLOCK_T>
-Object::Animator::Specific MapDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
+Object::Animator::Specific SceneDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
 
 template <typename ACTIVE_BLOCK_T>
-Res::Slides MapDrawer<ACTIVE_BLOCK_T>::gravitySlides;
+Res::Slides SceneDrawer<ACTIVE_BLOCK_T>::gravitySlides;
 
 #endif

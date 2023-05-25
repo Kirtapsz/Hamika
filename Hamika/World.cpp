@@ -80,6 +80,15 @@ namespace Res
 
 	bool World::initialize(std::uint32_t mode)
 	{
-		return LoadResource(*this);
+		try
+		{
+			LoadResource(*this);
+		}
+		catch (const std::exception &e)
+		{
+			std::cout << "Failed to initialize World: " << path << ", " << e.what() << std::endl;
+			return false;
+		}
+		return true;
 	}
 }

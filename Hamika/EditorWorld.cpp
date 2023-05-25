@@ -57,7 +57,7 @@ namespace UI::Editor
 		editMap->setBitmap(Res::uielements[Res::UIElements::Edit]);
 		editMap->fncPress.push_back([&](FNC_PRESS_PARAMS)
 		{
-			MainEvent::s_object->activeMap->SetMap(this->bluePrint);
+			MainEvent::s_object->scene->SetMap(this->bluePrint);
 		});
 
 
@@ -183,12 +183,10 @@ namespace UI::Editor
 			loadButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				std::string filename;
-				std::cout << KIR5::getCurrentDirectory<>() << std::endl;
 				{
 					KIR5::CurrentDirectoryGuard<> dirGuard;
 					filename = KIR5::browseForFile<>();
 				}
-				std::cout << KIR5::getCurrentDirectory<>() << std::endl;
 				if (filename.length() > 0)
 				{
 					std::shared_ptr<Res::World> world(new Res::World(filename));

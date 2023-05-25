@@ -38,28 +38,28 @@ namespace Object::Editor
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			arrowDown.load("Hamika\\Texture\\editor\\Arrow_down.png");
-			arrowUp.load("Hamika\\Texture\\editor\\Arrow_up.png");
-			arrowLeft.load("Hamika\\Texture\\editor\\Arrow_left.png");
-			arrowRight.load("Hamika\\Texture\\editor\\Arrow_right.png");
-			gravity.load("Hamika\\Texture\\editor\\Grav.png");
-			detonate.load("Hamika\\Texture\\editor\\Detonate.png");
-			spawn.load("Hamika\\Texture\\editor\\SpawnPoint.png");
+			arrowDown = Res::uielements[Res::UIElements::RotationDown];
+			arrowUp = Res::uielements[Res::UIElements::RotationUp];
+			arrowLeft = Res::uielements[Res::UIElements::RotationLeft];
+			arrowRight = Res::uielements[Res::UIElements::RotationRight];
+			gravity = Res::uielements[Res::UIElements::Grav];
+			detonate = Res::uielements[Res::UIElements::Detonate];
+			spawn = Res::uielements[Res::UIElements::SpawnPoint];
 		}
 
 		void Drawner(EditorObjectBase::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
 		{
-			EditorObjectBase *obj = stack->o->ief.GetObject(stack->o->GetCoord());
+			EditorObjectBase *obj = stack->o->scene->GetObject(stack->o->GetCoord());
 
-			if (obj->ief.GetBlockFlags(stack->o->GetCoord()) & GridFlags::SpawnPoint)
+			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::SpawnPoint)
 			{
 				spawn.drawScaled(x, y, w, h);
 			}
-			if (obj->ief.GetBlockFlags(stack->o->GetCoord()) & GridFlags::Detonate)
+			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Detonate)
 			{
 				detonate.drawScaled(x, y, w, h);
 			}
-			if (obj->ief.GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity)
+			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity)
 			{
 				gravity.drawScaled(x, y, w, h);
 			}
@@ -81,10 +81,10 @@ namespace Object::Editor
 				arrowLeft.drawScaled(x, y, w, h);
 			}
 
-			int selectStatus = obj->ief.selectStatus(stack->o->GetCoord());
+			int selectStatus = obj->scene->selectStatus(stack->o->GetCoord());
 			if (selectStatus == 1)
 			{
-				if (obj->ief.isTarget(stack->o->GetCoord()))
+				if (obj->scene->isTarget(stack->o->GetCoord()))
 				{
 					al_draw_filled_rectangle(x, y, x + w, y + h, KIR5::Color(127, 0, 127, 127).getAlphaColored());
 				}
@@ -103,7 +103,7 @@ namespace Object::Editor
 				{
 					al_draw_filled_rectangle(x, y, x + w, y + h, KIR5::Color(255, 255, 255, 127).getAlphaColored());
 				}
-				else if (obj->ief.isTarget(stack->o->GetCoord()))
+				else if (obj->scene->isTarget(stack->o->GetCoord()))
 				{
 					al_draw_filled_rectangle(x, y, x + w, y + h, KIR5::Color(0, 0, 255, 127).getAlphaColored());
 				}

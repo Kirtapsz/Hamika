@@ -1,5 +1,5 @@
-#ifndef __EDITOR_ACTIVE_BLOCK_H__
-#define __EDITOR_ACTIVE_BLOCK_H__
+#ifndef __EDITOR_SCENE_BLOCK_H__
+#define __EDITOR_SCENE_BLOCK_H__
 
 #include "Types.h"
 #include "Objects.h"
@@ -7,7 +7,7 @@
 namespace UI::Editor
 {
 	template <typename OBJECT_T>
-	struct ActiveBlock
+	struct SceneBlock
 	{
 		OBJECT_T *object = nullptr;//jön be, vagy már bent van
 		OBJECT_T *remain = nullptr;//épp eltûnik, kimegy
@@ -30,10 +30,10 @@ namespace UI::Editor
 			LastDrawned = 16,
 		};
 
-		~ActiveBlock();
+		~SceneBlock();
 	};
 }
 
 #endif
 
-#include "EditorActiveBlock.hpp"
+#include "EditorSceneBlock.hpp"

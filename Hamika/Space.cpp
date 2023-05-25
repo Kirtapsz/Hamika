@@ -14,13 +14,13 @@ namespace Object
 		{
 			stack->o->SetFlags(ObjectBase::StepOn | ObjectBase::MurphyStepOn | ObjectBase::CanBeExplosion);
 		}
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Json json;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
-		{
-		}
-		void Tick(OBJECT_TICK_PARAM)
 		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)

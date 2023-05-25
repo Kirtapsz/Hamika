@@ -120,9 +120,9 @@ namespace UI::Editor
 					rotation_Navigation_Buttons[2]->isSelected ? Type::Rotations::Down :
 					Type::Rotations::Left;
 
-				if (MainEvent::s_object->activeMap->isOperationModeAll())
+				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -133,10 +133,10 @@ namespace UI::Editor
 				}
 				else
 				{
-					reach(map)[MainEvent::s_object->activeMap->getTarget()].object->rotation = r;
-					reach(map)[MainEvent::s_object->activeMap->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].object->rotation = r;
+					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*this << rotation_Panel;
@@ -157,7 +157,7 @@ namespace UI::Editor
 				int w, h;
 				if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%d*%d", &w, &h) == 2 && w >= 2 && h >= 2)
 				{
-					Matrix<ActiveBlock<EditorObjectBase>> tmpMap(std::move(*(map.get())));
+					Matrix<SceneBlock<EditorObjectBase>> tmpMap(std::move(*(map.get())));
 					map->resize({w,h});
 
 					int xShift = 0;
@@ -216,7 +216,7 @@ namespace UI::Editor
 						}
 					}
 
-					MainEvent::s_object->activeMap->mapLayoutUpdated();
+					MainEvent::s_object->scene->mapLayoutUpdated();
 				}
 				else
 				{
@@ -353,9 +353,9 @@ namespace UI::Editor
 			s_objectApply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
 			s_objectApply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				if (MainEvent::s_object->activeMap->isOperationModeAll())
+				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -366,10 +366,10 @@ namespace UI::Editor
 				}
 				else
 				{
-					ObjectCreate(reach(map)[MainEvent::s_object->activeMap->getTarget()].object, s_objectID_Panel->id, MainEvent::s_object->activeMap->getTarget());
-					reach(map)[MainEvent::s_object->activeMap->getTarget()].Redrawn = true;
+					ObjectCreate(reach(map)[MainEvent::s_object->scene->getTarget()].object, s_objectID_Panel->id, MainEvent::s_object->scene->getTarget());
+					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 
 				int shiftFrom = prevBlockPickers.size() - 1;
 				for (size_t i = 0; i < prevBlockPickers.size(); ++i)
@@ -394,7 +394,7 @@ namespace UI::Editor
 			{
 				float chancef = std::atof(s_objectRate_TextBox->getText().c_str());
 				int chance = (int)(chancef * 10);
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selected && rand() % 1000 < chance)
 					{
@@ -402,7 +402,7 @@ namespace UI::Editor
 						block.Redrawn = true;
 					}
 				});
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*s_objectPanel << s_objectRate_TextBox;
@@ -418,7 +418,7 @@ namespace UI::Editor
 			s_objectFillFrame_Button->width(120);
 			s_objectFillFrame_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)reach(map)).width - 1 || coord.y == ((Type::Size)reach(map)).height - 1)
 					{
@@ -426,7 +426,7 @@ namespace UI::Editor
 						block.Redrawn = true;
 					}
 				});
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*s_objectPanel << s_objectFillContent_Button;
@@ -434,7 +434,7 @@ namespace UI::Editor
 			s_objectFillContent_Button->width(120);
 			s_objectFillContent_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)reach(map)).width - 1 && coord.y != ((Type::Size)reach(map)).height - 1)
 					{
@@ -442,7 +442,7 @@ namespace UI::Editor
 						block.Redrawn = true;
 					}
 				});
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*s_objectPanel << s_objectselectAllOfThisType_Button;
@@ -450,7 +450,7 @@ namespace UI::Editor
 			s_objectselectAllOfThisType_Button->width(120);
 			s_objectselectAllOfThisType_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.object->id == s_objectID_Panel->id)
 					{
@@ -469,7 +469,7 @@ namespace UI::Editor
 						}
 					}
 				});
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*this << s_objectPanel;
@@ -527,7 +527,7 @@ namespace UI::Editor
 			selectAllButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				bool isNonSelected = false;
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (!block.selected)
 					{
@@ -537,7 +537,7 @@ namespace UI::Editor
 
 				if (isNonSelected)
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (!block.selected)
 						{
@@ -548,7 +548,7 @@ namespace UI::Editor
 				}
 				else
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -564,22 +564,22 @@ namespace UI::Editor
 			gravityTurnOnOffButton->width(gravityTurnOnOffButton->getTextWidth());
 			gravityTurnOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				if (!MainEvent::s_object->activeMap->isOperationModeAll())
+				if (!MainEvent::s_object->scene->isOperationModeAll())
 				{
-					if (reach(map)[MainEvent::s_object->activeMap->getTarget()].grid & GridFlags::Gravity)
+					if (reach(map)[MainEvent::s_object->scene->getTarget()].grid & GridFlags::Gravity)
 					{
-						reach(map)[MainEvent::s_object->activeMap->getTarget()].grid &= ~GridFlags::Gravity;
+						reach(map)[MainEvent::s_object->scene->getTarget()].grid &= ~GridFlags::Gravity;
 					}
 					else
 					{
-						reach(map)[MainEvent::s_object->activeMap->getTarget()].grid |= GridFlags::Gravity;
+						reach(map)[MainEvent::s_object->scene->getTarget()].grid |= GridFlags::Gravity;
 					}
-					reach(map)[MainEvent::s_object->activeMap->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
 				}
 				else
 				{
 					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -592,7 +592,7 @@ namespace UI::Editor
 
 					if (isNew)
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -606,7 +606,7 @@ namespace UI::Editor
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -619,7 +619,7 @@ namespace UI::Editor
 						});
 					}
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*special_Panel << initExplodeButton;
@@ -627,22 +627,22 @@ namespace UI::Editor
 			initExplodeButton->width(initExplodeButton->getTextWidth());
 			initExplodeButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				if (!MainEvent::s_object->activeMap->isOperationModeAll())
+				if (!MainEvent::s_object->scene->isOperationModeAll())
 				{
-					if (reach(map)[MainEvent::s_object->activeMap->getTarget()].grid & GridFlags::Detonate)
+					if (reach(map)[MainEvent::s_object->scene->getTarget()].grid & GridFlags::Detonate)
 					{
-						reach(map)[MainEvent::s_object->activeMap->getTarget()].grid &= ~GridFlags::Detonate;
+						reach(map)[MainEvent::s_object->scene->getTarget()].grid &= ~GridFlags::Detonate;
 					}
 					else
 					{
-						reach(map)[MainEvent::s_object->activeMap->getTarget()].grid |= GridFlags::Detonate;
+						reach(map)[MainEvent::s_object->scene->getTarget()].grid |= GridFlags::Detonate;
 					}
-					reach(map)[MainEvent::s_object->activeMap->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
 				}
 				else
 				{
 					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -655,7 +655,7 @@ namespace UI::Editor
 
 					if (isNew)
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -669,7 +669,7 @@ namespace UI::Editor
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -682,7 +682,7 @@ namespace UI::Editor
 						});
 					}
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*special_Panel << selectFriendlyButton;
@@ -690,7 +690,7 @@ namespace UI::Editor
 			selectFriendlyButton->width(selectFriendlyButton->getTextWidth());
 			selectFriendlyButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selected)
 					{
@@ -699,14 +699,14 @@ namespace UI::Editor
 					}
 				});
 
-				reach(map)[MainEvent::s_object->activeMap->getTarget()].selected = true;
-				Type::ID id = reach(map)[MainEvent::s_object->activeMap->getTarget()].object->id;
+				reach(map)[MainEvent::s_object->scene->getTarget()].selected = true;
+				Type::ID id = reach(map)[MainEvent::s_object->scene->getTarget()].object->id;
 
 				bool isNewSelected = false;
 				do
 				{
 					isNewSelected = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (!block.selected && block.object->id == id &&
 							(
@@ -731,7 +731,7 @@ namespace UI::Editor
 				}
 				while (isNewSelected);
 
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			static constexpr Type::ID ramIDs[] = {
@@ -760,9 +760,9 @@ namespace UI::Editor
 			ramRepairButton->width(ramRepairButton->getTextWidth());
 			ramRepairButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				if (MainEvent::s_object->activeMap->isOperationModeAll())
+				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -820,7 +820,7 @@ namespace UI::Editor
 				}
 				else
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.object->id == ObjectID::RAMChipsRight)
 						{
@@ -873,7 +873,7 @@ namespace UI::Editor
 						}
 					});
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*special_Panel << randomizeRamsButton;
@@ -881,9 +881,9 @@ namespace UI::Editor
 			randomizeRamsButton->width(randomizeRamsButton->getTextWidth());
 			randomizeRamsButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				if (MainEvent::s_object->activeMap->isOperationModeAll())
+				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected && isRam(block.object->id))
 						{
@@ -894,7 +894,7 @@ namespace UI::Editor
 				}
 				else
 				{
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (isRam(block.object->id))
 						{
@@ -903,7 +903,7 @@ namespace UI::Editor
 						}
 					});
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*special_Panel << spawnPointButton;
@@ -911,22 +911,22 @@ namespace UI::Editor
 			spawnPointButton->width(spawnPointButton->getTextWidth());
 			spawnPointButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				if (!MainEvent::s_object->activeMap->isOperationModeAll())
+				if (!MainEvent::s_object->scene->isOperationModeAll())
 				{
-					if (reach(map)[MainEvent::s_object->activeMap->getTarget()].grid & GridFlags::SpawnPoint)
+					if (reach(map)[MainEvent::s_object->scene->getTarget()].grid & GridFlags::SpawnPoint)
 					{
-						reach(map)[MainEvent::s_object->activeMap->getTarget()].grid &= ~GridFlags::SpawnPoint;
+						reach(map)[MainEvent::s_object->scene->getTarget()].grid &= ~GridFlags::SpawnPoint;
 					}
 					else
 					{
-						reach(map)[MainEvent::s_object->activeMap->getTarget()].grid |= GridFlags::SpawnPoint;
+						reach(map)[MainEvent::s_object->scene->getTarget()].grid |= GridFlags::SpawnPoint;
 					}
-					reach(map)[MainEvent::s_object->activeMap->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
 				}
 				else
 				{
 					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (block.selected)
 						{
@@ -939,7 +939,7 @@ namespace UI::Editor
 
 					if (isNew)
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -953,7 +953,7 @@ namespace UI::Editor
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 						{
 							if (block.selected)
 							{
@@ -966,7 +966,7 @@ namespace UI::Editor
 						});
 					}
 				}
-				MainEvent::s_object->activeMap->blocksUpdated();
+				MainEvent::s_object->scene->blocksUpdated();
 			});
 
 			*special_Panel << globalGravityOnOffButton;
@@ -1005,8 +1005,8 @@ namespace UI::Editor
 		this->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
 		{
 			if (
-				eventEngine->getTergetPanel().get() == this ||
-				eventEngine->getTergetPanel().get() == MainEvent::s_object->activeMap.get()
+				eventEngine->getTargetPanel().get() == this ||
+				eventEngine->getTargetPanel().get() == MainEvent::s_object->scene.get()
 				)
 			{
 				if (key_ == ALLEGRO_KEY_ENTER)
@@ -1026,7 +1026,7 @@ namespace UI::Editor
 
 	void ControlPanel::setOperationMode()
 	{
-		KIR5::Color bcolor = MainEvent::s_object->activeMap->isOperationModeAll() ? KIR5::Color(78, 30, 30) : KIR5::Color(30, 30, 78);
+		KIR5::Color bcolor = MainEvent::s_object->scene->isOperationModeAll() ? KIR5::Color(78, 30, 30) : KIR5::Color(30, 30, 78);
 
 		rotation_Apply_Button->setColor(bcolor);
 		s_objectApply_Button->setColor(bcolor);
@@ -1055,7 +1055,7 @@ namespace UI::Editor
 		{
 			it->counter = 0;
 		}
-		this->map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+		this->map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 		{
 			if (block.object->id == s_objectID_Panel->id)
 			{
@@ -1079,7 +1079,7 @@ namespace UI::Editor
 
 	}
 
-	void ControlPanel::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint_, std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map)
+	void ControlPanel::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint_, std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map)
 	{
 		bluePrint = bluePrint_;
 		this->map = map;

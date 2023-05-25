@@ -1,11 +1,11 @@
-#include "EditorActiveMap.h"
+#include "EditorScene.h"
 #include "Tools.h"
 #include "EditorMainEvent.h"
 #include "EditorObjects.h"
 
-namespace UI::Editor::Game
+namespace UI::Editor::Scene
 {
-	ActiveMap::ActiveMap()
+	Edit::Edit()
 	{
 		drawer.blockRefreshActive = false;
 		drawer.layerActive = false;
@@ -101,7 +101,7 @@ namespace UI::Editor::Game
 				MainEvent::s_object->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -120,7 +120,7 @@ namespace UI::Editor::Game
 				isRCtrl = true;
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -145,7 +145,7 @@ namespace UI::Editor::Game
 				MainEvent::s_object->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -164,7 +164,7 @@ namespace UI::Editor::Game
 				isRCtrl = false;
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -212,14 +212,14 @@ namespace UI::Editor::Game
 					Type::Coord lu = {(std::min)(holdCoordBegin.x,holdCoordEnd.x),(std::min)(holdCoordBegin.y,holdCoordEnd.y)};
 					Type::Coord rd = {(std::max)(holdCoordBegin.x,holdCoordEnd.x) + 1,(std::max)(holdCoordBegin.y,holdCoordEnd.y) + 1};
 
-					map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						block.selectTmp2 = block.selectTmp1 || block.deselectTmp1;
 						block.selectTmp1 = false;
 						block.deselectTmp1 = false;
 					});
 
-					map->forrange(lu, rd, [&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->forrange(lu, rd, [&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (isRShift)
 						{
@@ -231,7 +231,7 @@ namespace UI::Editor::Game
 						}
 					});
 
-					map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+					map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 					{
 						if (isRShift)
 						{
@@ -269,7 +269,7 @@ namespace UI::Editor::Game
 			if (mouseSelectHold)
 			{
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -320,11 +320,11 @@ namespace UI::Editor::Game
 			}
 		});
 	}
-	ActiveMap::~ActiveMap()
+	Edit::~Edit()
 	{
 	}
 
-	void ActiveMap::setTarget(Type::Move camera)
+	void Edit::setTarget(Type::Move camera)
 	{
 		if (map->Exists())
 		{
@@ -333,29 +333,29 @@ namespace UI::Editor::Game
 		}
 	}
 
-	bool ActiveMap::isOperationModeAll() const
+	bool Edit::isOperationModeAll() const
 	{
 		return isRShift;
 	}
-	Type::Coord ActiveMap::getTarget() const
+	Type::Coord Edit::getTarget() const
 	{
 		return targetCoord;
 	}
 
-	void ActiveMap::blocksUpdated()
+	void Edit::blocksUpdated()
 	{
 		MainEvent::s_object->miniMap->updateBlocks();
 		MainEvent::s_object->controlPanel->updateBlocks();
 	}
-	void ActiveMap::mapLayoutUpdated()
+	void Edit::mapLayoutUpdated()
 	{
 		targetCoord = {0,0};
-		map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+		map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 		{
 			if (block.object == nullptr)
 			{
-				block.object = new EditorObjectBase(*this);
-				ObjectCreate(block.object, ObjectID::Space, coord);
+				block.object = new EditorObjectBase;
+				ObjectCreate(this, block.object, ObjectID::Space, coord);
 				block.object->rotation = Type::Rotations::Up;
 			}
 			else
@@ -364,8 +364,8 @@ namespace UI::Editor::Game
 			}
 			if (block.remain == nullptr)
 			{
-				block.remain = new EditorObjectBase(*this);
-				ObjectCreate(block.remain, -1, coord);
+				block.remain = new EditorObjectBase;
+				ObjectCreate(this, block.remain, -1, coord);
 				block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
 			}
 			else
@@ -384,18 +384,18 @@ namespace UI::Editor::Game
 		MainEvent::s_object->miniMap->SetMap(map);
 		MainEvent::s_object->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
 	}
-	void ActiveMap::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint)
+	void Edit::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint)
 	{
-		map.reset(new Matrix<ActiveBlock<EditorObjectBase>>(bluePrint->blocks));
+		map.reset(new Matrix<SceneBlock<EditorObjectBase>>(bluePrint->blocks));
 
-		map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+		map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 		{
-			block.object = new EditorObjectBase(*this);
-			ObjectCreate(block.object, (*bluePrint)[coord].id, coord);
+			block.object = new EditorObjectBase;
+			ObjectCreate(this, block.object, (*bluePrint)[coord].id, coord);
 			block.object->rotation = (*bluePrint)[coord].rotation;
 
-			block.remain = new EditorObjectBase(*this);
-			ObjectCreate(block.remain, -1, coord);
+			block.remain = new EditorObjectBase;
+			ObjectCreate(this, block.remain, -1, coord);
 			block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
 
 			block.grid = (*bluePrint)[coord].flags;
@@ -404,25 +404,25 @@ namespace UI::Editor::Game
 		MainEvent::s_object->controlPanel->SetMap(bluePrint, map);
 	}
 
-	Type::Size ActiveMap::GetDrawSize() const
+	Type::Size Edit::GetDrawSize() const
 	{
 		return drawer.GetDrawSize();
 	}
-	Type::Size ActiveMap::GetDrawOffSet() const
+	Type::Size Edit::GetDrawOffSet() const
 	{
 		return drawer.GetDrawOffSet();
 	}
-	EditorObjectBase *ActiveMap::GetObject(Type::Coord coord)
+	EditorObjectBase *Edit::GetObject(Type::Coord coord)
 	{
 		return (*map)[coord].object;
 	}
-	Type::Flags ActiveMap::GetBlockFlags(Type::Coord coord) const
+	Type::Flags Edit::GetBlockFlags(Type::Coord coord) const
 	{
 		if ((*map).Test(coord))
 			return (*map)[coord].grid;
 		return 0;
 	}
-	int ActiveMap::selectStatus(Type::Coord coord) const
+	int Edit::selectStatus(Type::Coord coord) const
 	{
 		int ret = 0;
 		if ((*map)[coord].selected)
@@ -439,7 +439,7 @@ namespace UI::Editor::Game
 		}
 		return ret;
 	}
-	bool ActiveMap::isTarget(Type::Coord coord) const
+	bool Edit::isTarget(Type::Coord coord) const
 	{
 		return targetCoord == coord;
 	}

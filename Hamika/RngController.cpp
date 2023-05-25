@@ -3,6 +3,8 @@
 
 #include <KIR/KIR4_console.h>
 
+#include <tuple>
+
 RngController::RngController(LoopControllerInterface &loopControllerInterface):
 	loopControllerInterface(loopControllerInterface)
 {
@@ -21,7 +23,7 @@ bool RngController::rollTrigger(Type::ID rootID, unsigned __int16 typeID, float 
 	}
 }
 
-RngRecord::RngRecord(LoopControllerInterface &loopControllerInterface, Logger &logger):
+RngRecord::RngRecord(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
 	RngController(loopControllerInterface), logger(logger)
 {
 
@@ -31,24 +33,17 @@ bool RngRecord::rollTrigger(Type::ID rootID, unsigned __int16 typeID, float chan
 	bool ret = RngController::rollTrigger(rootID, typeID, chancePerSec);
 	if (ret)
 	{
-		logger.record<RNGeneratorLog>(RNGeneratorLog_::ACTION_ROLL_TRIGGER, rootID, typeID, chancePerSec);
+		logger.record<Res::Log::RNGenerator>(Res::Log::RNGenerator::ACTION_ROLL_TRIGGER, rootID, typeID, chancePerSec);
 	}
 	return ret;
 }
 
 
 
-RngReplay::RngReplay(LoopControllerInterface &loopControllerInterface, Logger &logger):
+RngReplay::RngReplay(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
 	RngController(loopControllerInterface)
 {
-	auto &rows_ = logger.getLogs(LogID::_RNGenerator);
-	rows.resize(rows_.size());
-
-	for (size_t i = 0; i < rows_.size(); ++i)
-	{
-		rows[i] = static_cast<RNGeneratorLog *>(rows_[i]);
-	}
-
+	rows = logger.getLogs<Res::Log::RNGenerator>();
 	it = rows.begin();
 }
 bool RngReplay::rollTrigger(Type::ID rootID, unsigned __int16 typeID, float chancePerSec)
@@ -57,16 +52,56 @@ bool RngReplay::rollTrigger(Type::ID rootID, unsigned __int16 typeID, float chan
 	{
 		if (it != rows.end())
 		{
-			if ((*it)->loopCounter < loopControllerInterface.loopCounter)
+			auto &loopCounter = std::get<Res::Log::RNGenerator::loopCounter>(**it);
+			if (loopCounter < loopControllerInterface.loopCounter)
 			{
 				++it;
-				clog << KIR4::LRED << "RngReplay loop was jumped!" << KIR4::eol;
+				loopControllerInterface.failure("RngReplay loop was jumped!");
 				continue;
 			}
-			else if ((*it)->loopCounter == loopControllerInterface.loopCounter &&
-					 std::get<RNGeneratorLog_::_rootIdIndex >((*it)->data) == rootID &&
-					 std::get<RNGeneratorLog_::_typeIdIndex >((*it)->data) == typeID &&
-					 std::get<RNGeneratorLog_::_chancePerSecIndex >((*it)->data) == chancePerSec)
+			else if (loopCounter == loopControllerInterface.loopCounter &&
+					 std::get<Res::Log::RNGenerator::rootId>(**it) == rootID &&
+					 std::get<Res::Log::RNGenerator::typeId>(**it) == typeID &&
+					 std::get<Res::Log::RNGenerator::chancePerSec>(**it) == chancePerSec)
+			{
+				++it;
+				return true;
+			}
+		}
+		break;
+	}
+	return false;
+}
+
+
+
+
+RngValidator::RngValidator(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
+	RngController(loopControllerInterface)
+{
+	rows = logger.getLogs<Res::Log::RNGenerator>();
+	it = rows.begin();
+}
+bool RngValidator::rollTrigger(Type::ID rootID, unsigned __int16 typeID, float chancePerSec)
+{
+	while (true)
+	{
+		if (it != rows.end())
+		{
+			auto &loopCounter = std::get<Res::Log::RNGenerator::loopCounter>(**it);
+			if (loopCounter < loopControllerInterface.loopCounter)
+			{
+				++it;
+				loopControllerInterface.failure(concatenate("RngValidator loop was jumped at ", loopCounter, " (",
+												std::get<Res::Log::RNGenerator::rootId>(**it), ", ",
+												std::get<Res::Log::RNGenerator::typeId>(**it), ", ",
+												std::get<Res::Log::RNGenerator::chancePerSec>(**it), ")"));
+				continue;
+			}
+			else if (loopCounter == loopControllerInterface.loopCounter &&
+					 std::get<Res::Log::RNGenerator::rootId>(**it) == rootID &&
+					 std::get<Res::Log::RNGenerator::typeId>(**it) == typeID &&
+					 std::get<Res::Log::RNGenerator::chancePerSec>(**it) == chancePerSec)
 			{
 				++it;
 				return true;

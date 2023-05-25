@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "Types.h"
+#include <KIR/KIR4_console.h>
 
 template<class Data>
 class Matrix
@@ -16,18 +17,18 @@ class Matrix
 	}
 	public: inline Data &operator[](Type::Coord coord)
 	{
-#ifdef DEBUG
+#ifdef _DEBUG
 		if (coord.x >= size.width || coord.y >= size.height || coord.x < 0 || coord.y < 0)
 			clog << KIR4::LRED << "Coord ERROR!: " << coord << KIR4::eol << KIR4::pp;
-#endif // DEBUG
+#endif // _DEBUG
 		return data[coord.x][coord.y];
 	}
 	public: inline const Data &operator[](Type::Coord coord) const
 	{
-#ifdef DEBUG
+#ifdef _DEBUG
 		if (coord.x >= size.width || coord.y >= size.height || coord.x < 0 || coord.y < 0)
 			clog << KIR4::LRED << "Coord ERROR!: " << coord << KIR4::eol << KIR4::pp;
-#endif // DEBUG
+#endif // _DEBUG
 		return data[coord.x][coord.y];
 	}
 
@@ -83,47 +84,55 @@ class Matrix
 	}
 
 
-	public: template<typename F> inline void foreach(F &f)
+	public: template<typename F> constexpr void foreach(F &f)
 	{
 		Type::Coord coord = {0};
-		for (coord.x = 0; coord.x < size.width; ++coord.x)
+		auto x_ = &data.front();
+		for (coord.x = 0; coord.x < size.width; ++coord.x, ++x_)
 		{
-			for (coord.y = 0; coord.y < size.height; ++coord.y)
+			auto y_ = &x_->front();
+			for (coord.y = 0; coord.y < size.height; ++coord.y, ++y_)
 			{
-				f(coord, (*this)[coord]);
+				f(coord, *y_);
 			}
 		}
 	}
-	public: template<typename F> inline void foreach(F &f) const
+	public: template<typename F> constexpr void foreach(F &f) const
 	{
 		Type::Coord coord = {0};
-		for (coord.x = 0; coord.x < size.width; ++coord.x)
+		auto x_ = &data.front();
+		for (coord.x = 0; coord.x < size.width; ++coord.x, ++x_)
 		{
-			for (coord.y = 0; coord.y < size.height; ++coord.y)
+			auto y_ = &x_->front();
+			for (coord.y = 0; coord.y < size.height; ++coord.y, ++y_)
 			{
-				f(coord, (*this)[coord]);
+				f(coord, *y_);
 			}
 		}
 	}
-	public: template<typename F> inline void reverse_foreach(F &f)
+	public: template<typename F> constexpr void reverse_foreach(F &f)
 	{
 		Type::Coord coord = {0};
-		for (coord.x = size.width - 1; coord.x >= 0; --coord.x)
+		auto x_ = &data.back();
+		for (coord.x = size.width - 1; coord.x >= 0; --coord.x, --x_)
 		{
-			for (coord.y = size.height - 1; coord.y >= 0; --coord.y)
+			auto y_ = &x_->back();
+			for (coord.y = size.height - 1; coord.y >= 0; --coord.y, --y_)
 			{
-				f(coord, (*this)[coord]);
+				f(coord, *y_);
 			}
 		}
 	}
-	public: template<typename F> inline void forrange(Type::Coord start, Type::Coord end, F &f)
+	public: template<typename F> constexpr void forrange(Type::Coord start, Type::Coord end, F &f)
 	{
 		Type::Coord coord = {0};
-		for (coord.x = start.x; coord.x < end.x; ++coord.x)
+		auto x_ = &data.front() + start.x;
+		for (coord.x = start.x; coord.x < end.x; ++coord.x, ++x_)
 		{
-			for (coord.y = start.y; coord.y < end.y; ++coord.y)
+			auto y_ = &x_->front() + start.y;
+			for (coord.y = start.y; coord.y < end.y; ++coord.y, ++y_)
 			{
-				f(coord, (*this)[coord]);
+				f(coord, *y_);
 			}
 		}
 	}

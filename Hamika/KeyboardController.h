@@ -4,24 +4,45 @@
 
 #include <KIR/KIR4_console.h>
 
-struct StandardKeyboardLog_
+namespace Res::Log
 {
-	static constexpr size_t _actionKeyIndex = 0;
-	static constexpr size_t _actionStateIndex = 1;
-
-	enum ACTION_KEY: unsigned __int8
+	struct StandardKeyboard: Base, Record<
+		std::uint32_t,
+		std::uint32_t,
+		std::uint8_t,
+		bool
+	>
 	{
-		ACTION_DESTROY_UPDATE = 1,
-		ACTION_SPECIAL_UPDATE = 2,
-		ACTION_UP_UPDATE = 3,
-		ACTION_DOWN_UPDATE = 4,
-		ACTION_LEFT_UPDATE = 5,
-		ACTION_RIGHT_UPDATE = 6,
-	};
+		enum ACTION_KEY: std::uint8_t
+		{
+			ACTION_DESTROY_UPDATE = 1,
+			ACTION_SPECIAL_UPDATE = 2,
+			ACTION_UP_UPDATE = 3,
+			ACTION_DOWN_UPDATE = 4,
+			ACTION_LEFT_UPDATE = 5,
+			ACTION_RIGHT_UPDATE = 6,
+		};
 
-	typedef std::tuple<ACTION_KEY, bool> Type;
-};
-typedef LogBaseData<LogID::_StandardKeyboard, StandardKeyboardLog_::Type> StandardKeyboardLog;
+		constexpr static std::size_t loopCounter = 0;
+		constexpr static std::size_t currentTimeMS = 1;
+		static constexpr size_t actionKey = 2;
+		static constexpr size_t actionState = 3;
+
+		constexpr static std::array<const char *, 4> keys{{"LoopCounter", "CurrentTimeMS", "ActionKey", "ActionState"}};
+
+		inline StandardKeyboard()
+		{
+
+		}
+		inline StandardKeyboard(std::uint32_t loopCounter_, std::uint32_t currentTimeMS_, std::uint8_t actionKey_, bool actionState_)
+		{
+			std::get<loopCounter>(*this) = loopCounter_;
+			std::get<currentTimeMS>(*this) = currentTimeMS_;
+			std::get<actionKey>(*this) = actionKey_;
+			std::get<actionState>(*this) = actionState_;
+		}
+	};
+}
 
 
 struct KeyboardController
@@ -45,7 +66,7 @@ struct KeyboardController
 template <typename L, typename KEYBOARD_CONTROLLER>
 struct KeyboardRecord: KEYBOARD_CONTROLLER
 {
-	Logger &logger;
+	Res::Logger &logger;
 
 	bool actionDestroyPrev;
 	bool actionSpecialPrev;
@@ -54,7 +75,7 @@ struct KeyboardRecord: KEYBOARD_CONTROLLER
 	bool actionLeftPrev;
 	bool actionRightPrev;
 
-	KeyboardRecord(LoopControllerInterface &loopControllerInterface, Logger &logger);
+	KeyboardRecord(LoopControllerInterface &loopControllerInterface, Res::Logger &logger);
 
 	virtual void keyUp(int key);
 	virtual void keyDown(int key);
@@ -70,10 +91,10 @@ struct StandardKeyboard: KeyboardController
 	virtual void keyDown(int key);
 	virtual void loop();
 };
-struct StandardKeyboardRecord: KeyboardRecord<StandardKeyboardLog, StandardKeyboard>
+struct StandardKeyboardRecord: KeyboardRecord<Res::Log::StandardKeyboard, StandardKeyboard>
 {
-	inline StandardKeyboardRecord(LoopControllerInterface &loopControllerInterface, Logger &logger):
-		KeyboardRecord<StandardKeyboardLog, StandardKeyboard>(loopControllerInterface, logger)
+	inline StandardKeyboardRecord(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
+		KeyboardRecord<Res::Log::StandardKeyboard, StandardKeyboard>(loopControllerInterface, logger)
 	{
 
 	}
@@ -82,10 +103,10 @@ struct StandardKeyboardRecord: KeyboardRecord<StandardKeyboardLog, StandardKeybo
 
 struct KeyboardLoopReplay: KeyboardController
 {
-	std::vector<StandardKeyboardLog *> rows;
-	std::vector<StandardKeyboardLog *>::iterator it;
+	std::vector<Res::Log::StandardKeyboard *> rows;
+	std::vector<Res::Log::StandardKeyboard *>::iterator it;
 
-	KeyboardLoopReplay(LoopControllerInterface &loopControllerInterface, Logger &logger);
+	KeyboardLoopReplay(LoopControllerInterface &loopControllerInterface, Res::Logger &logger);
 
 	virtual void keyUp(int key);
 	virtual void keyDown(int key);
@@ -97,7 +118,7 @@ struct KeyboardLoopReplay: KeyboardController
 
 
 template <typename L, typename KEYBOARD_CONTROLLER>
-KeyboardRecord<L, KEYBOARD_CONTROLLER>::KeyboardRecord(LoopControllerInterface &loopControllerInterface, Logger &logger):
+KeyboardRecord<L, KEYBOARD_CONTROLLER>::KeyboardRecord(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
 	KEYBOARD_CONTROLLER(loopControllerInterface),
 	logger(logger),
 	actionSpecialPrev(false), actionUpPrev(false), actionDownPrev(false), actionLeftPrev(false), actionRightPrev(false), actionDestroyPrev(false)
@@ -122,31 +143,31 @@ void KeyboardRecord<L, KEYBOARD_CONTROLLER>::loop()
 	if (actionDestroyPrev != actionDestroy)
 	{
 		actionDestroyPrev = actionDestroy;
-		logger.record<L>(StandardKeyboardLog_::ACTION_DESTROY_UPDATE, actionDestroy);
+		logger.record<L>(Res::Log::StandardKeyboard::ACTION_DESTROY_UPDATE, actionDestroy);
 	}
 	if (actionSpecialPrev != actionSpecial)
 	{
 		actionSpecialPrev = actionSpecial;
-		logger.record<L>(StandardKeyboardLog_::ACTION_SPECIAL_UPDATE, actionSpecial);
+		logger.record<L>(Res::Log::StandardKeyboard::ACTION_SPECIAL_UPDATE, actionSpecial);
 	}
 	if (actionUpPrev != actionUp)
 	{
 		actionUpPrev = actionUp;
-		logger.record<L>(StandardKeyboardLog_::ACTION_UP_UPDATE, actionUp);
+		logger.record<L>(Res::Log::StandardKeyboard::ACTION_UP_UPDATE, actionUp);
 	}
 	if (actionDownPrev != actionDown)
 	{
 		actionDownPrev = actionDown;
-		logger.record<L>(StandardKeyboardLog_::ACTION_DOWN_UPDATE, actionDown);
+		logger.record<L>(Res::Log::StandardKeyboard::ACTION_DOWN_UPDATE, actionDown);
 	}
 	if (actionLeftPrev != actionLeft)
 	{
 		actionLeftPrev = actionLeft;
-		logger.record<L>(StandardKeyboardLog_::ACTION_LEFT_UPDATE, actionLeft);
+		logger.record<L>(Res::Log::StandardKeyboard::ACTION_LEFT_UPDATE, actionLeft);
 	}
 	if (actionRightPrev != actionRight)
 	{
 		actionRightPrev = actionRight;
-		logger.record<L>(StandardKeyboardLog_::ACTION_RIGHT_UPDATE, actionRight);
+		logger.record<L>(Res::Log::StandardKeyboard::ACTION_RIGHT_UPDATE, actionRight);
 	}
 }

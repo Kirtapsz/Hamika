@@ -6,7 +6,7 @@
 #include <KIR\AL\KIR5_button.h>
 #include <KIR/AL/KIR5_panel_control.h>
 
-#include "EditorActiveMap.h"
+#include "EditorScene.h"
 #include "EditorWorld.h"
 #include "EditorMiniMap.h"
 #include "EditorControlPanel.h"
@@ -15,10 +15,10 @@
 
 namespace UI::Editor
 {
-	using namespace Game;
+	using namespace Scene;
 	class MainEvent
 	{
-		friend class ActiveMap;
+		friend class Edit;
 		friend class Worldi;
 		friend class Menu;
 		friend class MiniMap;
@@ -32,7 +32,7 @@ namespace UI::Editor
 		private: KIR5::Shared<KIR5::Column<>> columnControl;
 		private: KIR5::Shared<KIR5::Row<>> rowsControl[3];
 
-		private: KIR5::Shared<ActiveMap> activeMap;
+		private: KIR5::Shared<Edit> scene;
 		private: KIR5::Shared<Worldi> worldi;
 		private: KIR5::Shared<MiniMap> miniMap;
 		public: KIR5::Shared<ControlPanel> controlPanel;

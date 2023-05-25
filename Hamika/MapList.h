@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ActiveMap.h"
-#include "MapDrawer.h"
+#include "SceneConfiguration.h"
+#include "SceneDrawer.h"
 
 #include <KIR\AL\KIR5_event_engine.h>
 #include <KIR/AL/KIR5_text_box.h>

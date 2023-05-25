@@ -84,10 +84,10 @@ namespace UI::Editor
 		mx /= blockDimension;
 		my /= blockDimension;
 
-		MainEvent::s_object->activeMap->setTarget({mx,my});
+		MainEvent::s_object->scene->setTarget({mx,my});
 	}
 
-	void MiniMap::SetMap(std::shared_ptr<Matrix<ActiveBlock<EditorObjectBase>>> &map_)
+	void MiniMap::SetMap(std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map_)
 	{
 		map = map_;
 		std::cout << ((Type::Size)(*map)).width << " - " << ((Type::Size)(*map)).height << std::endl;
@@ -98,7 +98,7 @@ namespace UI::Editor
 	{
 		KIR5::BitmapTarget bt(bitmap);
 		al_clear_to_color(KIR5::Color(0, 0, 0));
-		map->foreach([&](const Type::Coord &coord, ActiveBlock<EditorObjectBase> &block)
+		map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
 		{
 			DrawObject((*map)[coord].object->id, coord.x * blockDimension, coord.y * blockDimension, blockDimension, blockDimension);
 			if (block.selected)

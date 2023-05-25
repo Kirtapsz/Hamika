@@ -68,8 +68,8 @@ namespace Object
 
 			if (s->flag == F_Push)
 			{
-				o->ief.GetObjectOut(o->GetCoord())->SetMove({0,0});
-				o->ief.GetObjectOut(o->GetCoord())->Arrived();
+				o->scene->GetObjectOut(o->GetCoord())->SetMove({0,0});
+				o->scene->GetObjectOut(o->GetCoord())->Arrived();
 				o->DisableLimitSpeed();
 				o->Arrived();
 				s->flag = F_PushRest;
@@ -103,17 +103,17 @@ namespace Object
 			{
 				o->blowUp(o->GetCoord());
 			}
-			if (object->GetFlags() & ObjectBase::Give1Aim)
+			if (object->GetFlags() & ObjectBase::Give1Score)
 			{
-				o->ief.AddAim(1);
-				if (o->ief.GetAimRemaining() == 0)
+				o->scene->addScore(1);
+				if (o->scene->getScoreToCollect() == 0)
 				{
 					Exit_015::Open(o);
 				}
 			}
 			if (object->GetFlags() & ObjectBase::Give1Unity)
 			{
-				o->ief.AddUnity(1);
+				o->scene->addUnity(1);
 			}
 		}
 
@@ -154,38 +154,38 @@ namespace Object
 			{
 				s->flag = F_Move;
 				Eat(stack->o, stack->o->GetObject(to));
-				stack->o->ief.ObjectMove(stack->o->GetCoord(), to, ObjectID::Space);
-				stack->o->ief.murphyMoved(stack->o);
+				stack->o->scene->ObjectMove(stack->o->GetCoord(), to, ObjectID::Space);
+				stack->o->scene->murphyMoved(stack->o);
 				regets(Specific, s);
 				stack->o->SetMove(rotation);
 				stack->o->SetRotation(rotation);
 				return true;
 			}
-			else if (stack->o->GetObject(to)->id == ObjectID::Exit && stack->o->ief.GetAimRemaining() == 0)
+			else if (stack->o->GetObject(to)->id == ObjectID::Exit && stack->o->scene->getScoreToCollect() == 0)
 			{
 				s->DrawNum = 0;
 				s->passageTimer = passageTime;
 				stack->o->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
 				s->flag = F_PassageDisappear;
 				stack->o->requests.draw = true;
-				stack->o->ief.murphyVictory();
+				stack->o->scene->murphyVictory();
 			}
 			else
 			{
 				ObjectBase *toObject = stack->o->GetObject(to);
-				if (toObject->GetFlags() & passage && stack->o->ief.GetSectionFlags(to2) & ObjectBase::StepOn)
+				if (toObject->GetFlags() & passage && stack->o->scene->GetSectionFlags(to2) & ObjectBase::StepOn)
 				{
 					Type::Coord
 						source = stack->o->GetCoord();
 					s->DrawNum = PassOutSlides[Type::Rotations::getIndexOfRotation(rotation)].getCount() - 1;
 					s->flag = F_Passage;
 					Eat(stack->o, stack->o->GetObject(to2));
-					stack->o->ief.ObjectMove(source, to2, ObjectID::MurphyPlus);
-					stack->o->ief.murphyMoved(stack->o);
+					stack->o->scene->ObjectMove(source, to2, ObjectID::MurphyPlus);
+					stack->o->scene->murphyMoved(stack->o);
 					regets(Specific, s);
 					stack->o->SetRotation(rotation);
 					stack->o->SetMoveUnsafe(rotation, {2,2});
-					stack->o->ief.GetObject(source)->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
+					stack->o->scene->GetObject(source)->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
 					s->passageTimer = passageTime;
 					return true;
 				}
@@ -216,9 +216,9 @@ namespace Object
 							else
 								stack->o->EnebleLimitSpeed(stack->o->GetMoveSpeed().y / (Type::Move::Type)(1.5));
 
-							stack->o->ief.ObjectMove(to, to2, ObjectID::Space);
-							stack->o->ief.ObjectMove(stack->o->GetCoord(), to, stack->o->GetObjectIDremain());
-							stack->o->ief.murphyMoved(stack->o);
+							stack->o->scene->ObjectMove(to, to2, ObjectID::Space);
+							stack->o->scene->ObjectMove(stack->o->GetCoord(), to, stack->o->GetObjectIDremain());
+							stack->o->scene->murphyMoved(stack->o);
 							regets(Specific, s);
 						}
 					}
@@ -276,7 +276,7 @@ namespace Object
 					if (s->passageTimer <= 0)
 					{
 						stack->o->SetMoveUnsafe({0,0});
-						stack->o->ief.ObjectArrived(stack->o->GetCoord());
+						stack->o->scene->ObjectArrived(stack->o->GetCoord());
 						s->flag = F_None;
 					}
 					else
@@ -324,8 +324,8 @@ namespace Object
 
 					bool forceFallDown = false;
 					if (
-						(stack->o->ief.IsGlobalGravity() || stack->o->ief.GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity) &&
-						stack->o->CanMoveDown() && stack->o->ief.GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
+						(stack->o->scene->IsGlobalGravity() || stack->o->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity) &&
+						stack->o->CanMoveDown() && stack->o->scene->GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
 					{
 						forceFallDown = true;
 					}
@@ -337,7 +337,7 @@ namespace Object
 							if (s->controller->actionUp && CanSniff(stack->o, stack->o->GetCoordUp()))
 							{
 								Eat(stack->o, stack->o->GetObject(stack->o->GetCoordUp()));
-								stack->o->ief.ObjectDisappear(stack->o->GetCoordUp());
+								stack->o->scene->ObjectDisappear(stack->o->GetCoordUp());
 								stack->o->SetRotation(Type::Rotations::Up);
 								s->EffectTimer = SniffEffectTime;
 								s->flag = F_Sniff;
@@ -346,7 +346,7 @@ namespace Object
 							else if (s->controller->actionDown && CanSniff(stack->o, stack->o->GetCoordDown()))
 							{
 								Eat(stack->o, stack->o->GetObject(stack->o->GetCoordDown()));
-								stack->o->ief.ObjectDisappear(stack->o->GetCoordDown());
+								stack->o->scene->ObjectDisappear(stack->o->GetCoordDown());
 								stack->o->SetRotation(Type::Rotations::Down);
 								s->EffectTimer = SniffEffectTime;
 								s->flag = F_Sniff;
@@ -355,7 +355,7 @@ namespace Object
 							else if (s->controller->actionLeft && CanSniff(stack->o, stack->o->GetCoordLeft()))
 							{
 								Eat(stack->o, stack->o->GetObject(stack->o->GetCoordLeft()));
-								stack->o->ief.ObjectDisappear(stack->o->GetCoordLeft());
+								stack->o->scene->ObjectDisappear(stack->o->GetCoordLeft());
 								stack->o->SetRotation(Type::Rotations::Left);
 								s->EffectTimer = SniffEffectTime;
 								s->flag = F_Sniff;
@@ -364,15 +364,15 @@ namespace Object
 							else if (s->controller->actionRight && CanSniff(stack->o, stack->o->GetCoordRight()))
 							{
 								Eat(stack->o, stack->o->GetObject(stack->o->GetCoordRight()));
-								stack->o->ief.ObjectDisappear(stack->o->GetCoordRight());
+								stack->o->scene->ObjectDisappear(stack->o->GetCoordRight());
 								stack->o->SetRotation(Type::Rotations::Right);
 								s->EffectTimer = SniffEffectTime;
 								s->flag = F_Sniff;
 								stack->o->requests.draw = true;
 							}
-							else if (stack->o->ief.GetUnityCount() > 0)
+							else if (stack->o->scene->getUnity() > 0)
 							{
-								if (s->controller->actionUp && stack->o->ief.GetObject(stack->o->GetCoordUp())->GetFlags() & ObjectBase::StepOn && stack->o->ief.GetGoto(stack->o->GetCoordUp()) == stack->o->GetCoordUp())
+								if (s->controller->actionUp && stack->o->scene->GetObject(stack->o->GetCoordUp())->GetFlags() & ObjectBase::StepOn && stack->o->scene->GetGoto(stack->o->GetCoordUp()) == stack->o->GetCoordUp())
 								{
 									if (s->flag != F_PutUnityU)
 									{
@@ -384,8 +384,8 @@ namespace Object
 										s->PutUnityWaitTimer -= 1 / CPS;
 										if (s->PutUnityWaitTimer <= 0)
 										{
-											stack->o->ief.AddUnity(-1);
-											stack->o->ief.ObjectPut(stack->o->GetCoordUp(), ObjectID::Utility2);
+											stack->o->scene->addUnity(-1);
+											stack->o->scene->ObjectPut(stack->o->GetCoordUp(), ObjectID::Utility2);
 											if (stack->o->GetObject(stack->o->GetCoordUp())->id == ObjectID::Utility2)
 												Utility2_030::Activate(stack->o->GetObject(stack->o->GetCoordUp()));
 
@@ -396,7 +396,7 @@ namespace Object
 										}
 									}
 								}
-								else if (s->controller->actionDown && stack->o->ief.GetObject(stack->o->GetCoordDown())->GetFlags() & ObjectBase::StepOn && stack->o->ief.GetGoto(stack->o->GetCoordDown()) == stack->o->GetCoordDown())
+								else if (s->controller->actionDown && stack->o->scene->GetObject(stack->o->GetCoordDown())->GetFlags() & ObjectBase::StepOn && stack->o->scene->GetGoto(stack->o->GetCoordDown()) == stack->o->GetCoordDown())
 								{
 									if (s->flag != F_PutUnityD)
 									{
@@ -408,8 +408,8 @@ namespace Object
 										s->PutUnityWaitTimer -= 1 / CPS;
 										if (s->PutUnityWaitTimer <= 0)
 										{
-											stack->o->ief.AddUnity(-1);
-											stack->o->ief.ObjectPut(stack->o->GetCoordDown(), ObjectID::Utility2);
+											stack->o->scene->addUnity(-1);
+											stack->o->scene->ObjectPut(stack->o->GetCoordDown(), ObjectID::Utility2);
 											if (stack->o->GetObject(stack->o->GetCoordDown())->id == ObjectID::Utility2)
 												Utility2_030::Activate(stack->o->GetObject(stack->o->GetCoordDown()));
 
@@ -420,7 +420,7 @@ namespace Object
 										}
 									}
 								}
-								else if (s->controller->actionLeft && stack->o->ief.GetObject(stack->o->GetCoordLeft())->GetFlags() & ObjectBase::StepOn && stack->o->ief.GetGoto(stack->o->GetCoordLeft()) == stack->o->GetCoordLeft())
+								else if (s->controller->actionLeft && stack->o->scene->GetObject(stack->o->GetCoordLeft())->GetFlags() & ObjectBase::StepOn && stack->o->scene->GetGoto(stack->o->GetCoordLeft()) == stack->o->GetCoordLeft())
 								{
 									if (s->flag != F_PutUnityL)
 									{
@@ -432,8 +432,8 @@ namespace Object
 										s->PutUnityWaitTimer -= 1 / CPS;
 										if (s->PutUnityWaitTimer <= 0)
 										{
-											stack->o->ief.AddUnity(-1);
-											stack->o->ief.ObjectPut(stack->o->GetCoordLeft(), ObjectID::Utility2);
+											stack->o->scene->addUnity(-1);
+											stack->o->scene->ObjectPut(stack->o->GetCoordLeft(), ObjectID::Utility2);
 											if (stack->o->GetObject(stack->o->GetCoordLeft())->id == ObjectID::Utility2)
 												Utility2_030::Activate(stack->o->GetObject(stack->o->GetCoordLeft()));
 
@@ -444,7 +444,7 @@ namespace Object
 										}
 									}
 								}
-								else if (s->controller->actionRight && stack->o->ief.GetObject(stack->o->GetCoordRight())->GetFlags() & ObjectBase::StepOn && stack->o->ief.GetGoto(stack->o->GetCoordRight()) == stack->o->GetCoordRight())
+								else if (s->controller->actionRight && stack->o->scene->GetObject(stack->o->GetCoordRight())->GetFlags() & ObjectBase::StepOn && stack->o->scene->GetGoto(stack->o->GetCoordRight()) == stack->o->GetCoordRight())
 								{
 									if (s->flag != F_PutUnityR)
 									{
@@ -456,8 +456,8 @@ namespace Object
 										s->PutUnityWaitTimer -= 1 / CPS;
 										if (s->PutUnityWaitTimer <= 0)
 										{
-											stack->o->ief.AddUnity(-1);
-											stack->o->ief.ObjectPut(stack->o->GetCoordRight(), ObjectID::Utility2);
+											stack->o->scene->addUnity(-1);
+											stack->o->scene->ObjectPut(stack->o->GetCoordRight(), ObjectID::Utility2);
 											if (stack->o->GetObject(stack->o->GetCoordRight())->id == ObjectID::Utility2)
 												Utility2_030::Activate(stack->o->GetObject(stack->o->GetCoordRight()));
 
@@ -504,8 +504,8 @@ namespace Object
 						{
 							s->flag = F_Move;
 							Eat(stack->o, stack->o->GetObject(stack->o->GetCoordDown()));
-							stack->o->ief.ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), ObjectID::Space);
-							stack->o->ief.murphyMoved(stack->o);
+							stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), ObjectID::Space);
+							stack->o->scene->murphyMoved(stack->o);
 							regets(Specific, s);
 							stack->o->SetMove({stack->o->GetMove().x,-1});
 							//o->SetRotation(rotation);
@@ -619,17 +619,18 @@ namespace Object
 			stack->o->events.topDraw = true;
 		}
 
-		void Print(OBJECT_PRINTER_PARAM)
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			gets(Specific, s);
-			clog << "Flag: " << s->flag << "\n";
-			clog << "s->EffectTimer: " << s->EffectTimer << "\n";
-			clog << "passageTimer: " << s->passageTimer << "\n";
-			clog << "PutUnityWaitTimer: " << s->PutUnityWaitTimer << "\n";
-			clog << "(BITMAP)Base Is Loaded: " << Base << "\n";
+			pops(Specific, s);
+			Json json;
 
-			clog << "(BITMAP)Push Is Loaded: " << Push.getCount() << "\n";
-			clog << "(BITMAP)Sniff Is Loaded: " << Sniff.getCount() << "\n";
+			json["PutUnityWaitTimer"] = s->PutUnityWaitTimer;
+			json["EffectTimer"] = s->EffectTimer;
+			json["DrawNum"] = s->DrawNum;
+			json["flag"] = s->flag;
+			json["passageTimer"] = s->passageTimer;
+
+			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
@@ -645,7 +646,7 @@ namespace Object
 				s->passageTimer -= CA;
 				if (s->passageTimer <= 0)
 				{
-					stack->o->ief.ObjectDisappear(stack->o->GetCoord());
+					stack->o->scene->ObjectDisappear(stack->o->GetCoord());
 					stack->o->events.timer = true;
 				}
 				else
@@ -660,9 +661,6 @@ namespace Object
 					s->DrawNum = DrawNum;
 				}
 			}
-		}
-		void Tick(OBJECT_TICK_PARAM)
-		{
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{

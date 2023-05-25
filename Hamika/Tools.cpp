@@ -91,3 +91,32 @@ bool ReadFile(const std::string &filename, KIR5::DynamicStream &stream)
 		return false;
 	}
 }
+std::string uuid()
+{
+	static std::size_t counter = 0;
+	srand((unsigned int)time(NULL));
+
+	char FileCode[20];
+
+	//A:
+	KIR4::to_num_sys(KIR4::time().get(), sizeof(KIR4::AsciiCodesBig) / sizeof(KIR4::AsciiCodesBig[0]), KIR4::AsciiCodesBig, &FileCode[0], 7, KIR4::AsciiCodesBig[0], true);
+
+	//D:
+	FileCode[7] = KIR4::AsciiCodesBig[rand() % sizeof(KIR4::AsciiCodesBig)];
+	for (int i = 11; i < 20; i++)
+		FileCode[i] = KIR4::AsciiCodesBig[rand() % sizeof(KIR4::AsciiCodesBig)];
+
+	//C:
+	FileCode[8] = 'L';
+
+	//B:
+	KIR4::to_num_sys(counter, sizeof(KIR4::AsciiCodesBig) / sizeof(KIR4::AsciiCodesBig[0]), KIR4::AsciiCodesBig, &FileCode[9], 2, KIR4::AsciiCodesBig[0], true);
+	if (++counter >= 1296)
+	{
+		counter = 0;
+	}
+
+
+	FileCode[19] = '\0';
+	return FileCode;
+}

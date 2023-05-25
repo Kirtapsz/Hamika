@@ -19,6 +19,8 @@ namespace Res
 		{
 			constexpr static std::size_t title = 0;
 			constexpr static std::size_t blueprints = 1;
+
+			constexpr static std::array<const char *, 2> keys{{"title","blueprints"}};
 		};
 		void operator=(const IO_HamSt1 &record);
 		operator IO_HamSt1() const;
@@ -28,6 +30,8 @@ namespace Res
 		>
 		{
 			constexpr static std::size_t blueprints = 0;
+
+			constexpr static std::array<const char *, 1> keys{{"blueprints"}};
 		};
 		void operator=(const IO_HamBC &record);
 		operator IO_HamBC() const;
@@ -37,6 +41,8 @@ namespace Res
 		>
 		{
 			constexpr static std::size_t blueprints = 0;
+
+			constexpr static std::array<const char *, 1> keys{{"blueprints"}};
 		};
 		void operator=(const IO_Orig &record);
 		operator IO_Orig() const;
