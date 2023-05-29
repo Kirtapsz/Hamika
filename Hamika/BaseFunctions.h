@@ -126,7 +126,6 @@ namespace Object
 		{
 			int active;
 			bool PriorityStep;
-			int myNumber;
 		};
 
 		void Create(OBJECT_CREATER_PARAM);

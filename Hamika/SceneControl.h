@@ -79,6 +79,7 @@ namespace UI::Scene::Module::Contol
 				loopRoll();
 				keyboardController->loop();
 				actionRun();
+				statusbar->updateLoopCounter(loopCounter);
 			};
 
 			*drawnerBarDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET

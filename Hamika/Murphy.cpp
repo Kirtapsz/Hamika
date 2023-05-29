@@ -158,6 +158,7 @@ namespace Object
 				stack->o->scene->murphyMoved(stack->o);
 				regets(Specific, s);
 				stack->o->SetMove(rotation);
+				stack->o->carryStep();
 				stack->o->SetRotation(rotation);
 				return true;
 			}
@@ -185,6 +186,7 @@ namespace Object
 					regets(Specific, s);
 					stack->o->SetRotation(rotation);
 					stack->o->SetMoveUnsafe(rotation, {2,2});
+					stack->o->carryStep();
 					stack->o->scene->GetObject(source)->SetRotation(stack->o->GetRoundRotation(stack->o->GetRealRotation(rotation + Type::Rotations::_180)));
 					s->passageTimer = passageTime;
 					return true;
@@ -508,6 +510,7 @@ namespace Object
 							stack->o->scene->murphyMoved(stack->o);
 							regets(Specific, s);
 							stack->o->SetMove({stack->o->GetMove().x,-1});
+							stack->o->carryStepDown();
 							//o->SetRotation(rotation);
 							return;
 						}

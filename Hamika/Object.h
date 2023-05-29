@@ -562,9 +562,8 @@ struct ObjectFlagsModule:
 		ExplosionType3 = 1 << 20 | ExplosionType1,//3*3-as újrarobbanás
 		ExplosionType5 = 1 << 21 | ExplosionType3,//5*5-ös újrarobbanás
 		CanBeExplosion = 1 << 22,//fel lehet robbantani
-		LimitSpeed = 1 << 23,//egy megadott sebességgel mozog
+		LimitSpeed = 1 << 23,//limited fix speed regardles of other speed oprtions, like a rock movement during a push action
 		PhysicsSpeed = 1 << 24,//gyorsuló mozgás
-		InstantSpeed = 1 << 25,//azonnal a maximum sebességre ugrik
 		MurphyCanSniff = 1 << 26,//a játékos fel tudja szedni rálépés nélkül "szippantással"
 		CanBeKilled = 1 << 27,//meg lehet ölni
 		GiveGravityDelay = 1 << 28,//nem esik vissza azonnal
@@ -783,15 +782,23 @@ struct ObjectBase:
 		RotationSpeed = 1;
 		TranslationTo = ObjectID::Space;
 		ObjectIDremain = ObjectID::Space;
-		currentspeed = 0;
+
+		accelaratePercent_ = 0.f;
+		limitSpeed_ = 0.f;
+		currentSpeed_ = 0.f;
+		carrySpeed_ = 0.f;
+
+		Type::Move::Type limitSpeed_ = 0.f;
+		Type::Move::Type currentSpeed_ = 0.f;
 		hitactive = false;
 	}
 	inline Json print()
 	{
 		Json json;
 
-		json["currentspeed"] = currentspeed;
-		json["limitspeed"] = limitspeed;
+		json["accelaratePercent"] = accelaratePercent_;
+		json["limitSpeed"] = limitSpeed_;
+		json["currentSpeed"] = currentSpeed_;
 		json["MoveSpeed.x"] = MoveSpeed.x;
 		json["MoveSpeed.y"] = MoveSpeed.y;
 		json["RotationSpeed"] = RotationSpeed;
@@ -958,9 +965,11 @@ struct ObjectBase:
 
 	//AUTOMOVE
 	private:
-	Type::Move::Type currentspeed = 0;
-	Type::Move::Type limitspeed;
-	void IncreaseSpeed(Type::Move::Type max);
+	float accelaratePercent_ = 0;
+	Type::Move::Type limitSpeed_ = 0.f; // this speed cannot be stepped over, it is a fix speed
+	Type::Move::Type currentSpeed_ = 0.f; // this amout will be stepped down
+	Type::Move::Type carrySpeed_ = 0.f; // when a step does not cost currentSpeed_, it will be added to the next preiod
+	void calculateSpeed(Type::Move::Type _baseSpeed);
 	bool CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation);
 	public:
 	bool CanMovePos(Type::Coord to, Type::Rotation rotation);
@@ -983,6 +992,11 @@ struct ObjectBase:
 	void StepLeft();
 	void StepRight();
 	void Step();
+	void carryStepUp();
+	void carryStepDown();
+	void carryStepLeft();
+	void carryStepRight();
+	void carryStep();
 
 	//nem érkezett meg, hanme utolérte az elötte lévõt
 	bool hitactive = false;

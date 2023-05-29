@@ -13,7 +13,7 @@ void ObjectBase::PrintFlags(Type::Flags flags_)
 		{PassageFromTop,"PassageFromTop"},{PassageFromBottom,"PassageFromBottom"},{PassageVertical,"PassageVertical"},
 		{PassageHorizontal,"PassageHorizontal"},{Passage,"Passage"},{FallOnExplosion,"FallOnExplosion"},
 		{ExplosionType1,"ExplosionType1"},{ExplosionType3,"ExplosionType3"},{ExplosionType5,"ExplosionType5"},
-		{CanBeExplosion,"CanBeExplosion"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},{InstantSpeed,"InstantSpeed"},
+		{CanBeExplosion,"CanBeExplosion"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},
 		{MurphyCanSniff,"MurphyCanSniff"},{CanBeKilled,"CanBeKilled"},{GiveGravityDelay,"GiveGravityDelay"},{ButtonPush,"ButtonPush"},
 		{Give1Score,"Give1Score"},{Give1Unity,"Give1Unity"},
 	};
@@ -266,19 +266,21 @@ void ObjectBase::Initialize()
 {
 }
 
-void ObjectBase::IncreaseSpeed(Type::Move::Type max)
+void ObjectBase::calculateSpeed(Type::Move::Type _baseSpeed)
 {
 	if (GetFlags() & LimitSpeed)
-		max = limitspeed;
-
-	if (GetFlags() & PhysicsSpeed)
 	{
-		currentspeed += 0.1f;
-		if (currentspeed >= max)
-			currentspeed = max;
+		currentSpeed_ = limitSpeed_;
 	}
-	else if (GetFlags() & InstantSpeed)
-		currentspeed = max;
+	else if (GetFlags() & PhysicsSpeed)
+	{
+		accelaratePercent_ = std::min(1.f, accelaratePercent_ + 0.15f);
+		currentSpeed_ = _baseSpeed * accelaratePercent_;
+	}
+	else
+	{
+		currentSpeed_ = _baseSpeed;
+	}
 }
 bool ObjectBase::CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation)
 {
@@ -365,24 +367,22 @@ bool ObjectBase::CanMoveRight()
 //akkor kell megh�vni ha nicns tov�bbi l�p�s, azaz meg�ll az object
 void ObjectBase::StopStep()
 {
-	currentspeed = 0;
 	hitactive = false;
+	carrySpeed_ = 0.f;
 	AutoStepHit();
 }
 void ObjectBase::DisablePhysics()
 {
 	RemoveFlags(PhysicsSpeed);
-	AddFlags(InstantSpeed);
 }
 void ObjectBase::EnablePhysics()
 {
 	AddFlags(PhysicsSpeed);
-	RemoveFlags(InstantSpeed);
 }
 void ObjectBase::EnebleLimitSpeed(Type::Move::Type max)
 {
 	AddFlags(LimitSpeed);
-	limitspeed = max;
+	limitSpeed_ = max;
 }
 void ObjectBase::DisableLimitSpeed()
 {
@@ -391,12 +391,12 @@ void ObjectBase::DisableLimitSpeed()
 
 void ObjectBase::StepUp()
 {
-	IncreaseSpeed(GetMoveSpeed().y);
-	SetMove({GetMove().x,GetMove().y - Type::Move::Type(currentspeed / CPS)});
+	calculateSpeed(GetMoveSpeed().y);
+	SetMove({GetMove().x,GetMove().y - Type::Move::Type(currentSpeed_ / CPS)});
 	if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y > GetMove().y)
 	{
-		if (currentspeed > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
-			currentspeed = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
+		if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
+			currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
 		SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
 		if (!hitactive)
 		{
@@ -408,7 +408,7 @@ void ObjectBase::StepUp()
 		hitactive = false;
 	if (GetMove().y <= 0)
 	{
-		//hitactive = false;
+		carrySpeed_ = std::abs(GetMove().y);
 		SetMove({GetMove().x,0});
 		scene->ObjectArrived(GetCoord());
 		ObjectArrived();
@@ -416,12 +416,12 @@ void ObjectBase::StepUp()
 }
 void ObjectBase::StepDown()
 {
-	IncreaseSpeed(GetMoveSpeed().y);
-	SetMove({GetMove().x,GetMove().y + Type::Move::Type(currentspeed / CPS)});
+	calculateSpeed(GetMoveSpeed().y);
+	SetMove({GetMove().x,GetMove().y + Type::Move::Type(currentSpeed_ / CPS)});
 	if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y < GetMove().y)
 	{
-		if (currentspeed > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
-			currentspeed = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
+		if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
+			currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
 		SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
 		if (!hitactive)
 		{
@@ -433,7 +433,7 @@ void ObjectBase::StepDown()
 		hitactive = false;
 	if (GetMove().y >= 0)
 	{
-		//hitactive = false;
+		carrySpeed_ = std::abs(GetMove().y);
 		SetMove({GetMove().x,0});
 		scene->ObjectArrived(GetCoord());
 		ObjectArrived();
@@ -441,12 +441,12 @@ void ObjectBase::StepDown()
 }
 void ObjectBase::StepLeft()
 {
-	IncreaseSpeed(GetMoveSpeed().x);
-	SetMove({GetMove().x - Type::Move::Type(currentspeed / CPS),GetMove().y});
+	calculateSpeed(GetMoveSpeed().x);
+	SetMove({GetMove().x - Type::Move::Type(currentSpeed_ / CPS),GetMove().y});
 	if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x > GetMove().x)
 	{
-		if (currentspeed > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
-			currentspeed = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
+		if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
+			currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
 		SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
 		if (!hitactive)
 		{
@@ -458,7 +458,7 @@ void ObjectBase::StepLeft()
 		hitactive = false;
 	if (GetMove().x <= 0)
 	{
-		//hitactive = false;
+		carrySpeed_ = std::abs(GetMove().x);
 		SetMove({0,GetMove().y});
 		scene->ObjectArrived(GetCoord());
 		ObjectArrived();
@@ -466,12 +466,12 @@ void ObjectBase::StepLeft()
 }
 void ObjectBase::StepRight()
 {
-	IncreaseSpeed(GetMoveSpeed().x);
-	SetMove({GetMove().x + Type::Move::Type(currentspeed / CPS),GetMove().y});
+	calculateSpeed(GetMoveSpeed().x);
+	SetMove({GetMove().x + Type::Move::Type(currentSpeed_ / CPS),GetMove().y});
 	if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x < GetMove().x)
 	{
-		if (currentspeed > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
-			currentspeed = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
+		if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
+			currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
 		SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
 		if (!hitactive)
 		{
@@ -483,7 +483,7 @@ void ObjectBase::StepRight()
 		hitactive = false;
 	if (GetMove().x >= 0)
 	{
-		//hitactive = false;
+		carrySpeed_ = std::abs(GetMove().x);
 		SetMove({0,GetMove().y});
 		scene->ObjectArrived(GetCoord());
 		ObjectArrived();
@@ -499,6 +499,92 @@ void ObjectBase::Step()
 		StepUp();
 	else if (GetMove().y < 0)
 		StepDown();
+}
+
+void ObjectBase::carryStepUp()
+{
+	if (carrySpeed_ > 0.f)
+	{
+		SetMove({GetMove().x,GetMove().y - carrySpeed_});
+		if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y > GetMove().y)
+		{
+			SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
+			if (!hitactive)
+			{
+				AutoStepHit();
+				hitactive = true;
+			}
+		}
+		carrySpeed_ = 0.f;
+	}
+}
+void ObjectBase::carryStepDown()
+{
+	if (carrySpeed_ > 0.f)
+	{
+		SetMove({GetMove().x,GetMove().y + carrySpeed_});
+		if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y < GetMove().y)
+		{
+			if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
+				currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
+			SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
+			if (!hitactive)
+			{
+				AutoStepHit();
+				hitactive = true;
+			}
+		}
+		carrySpeed_ = 0.f;
+	}
+}
+void ObjectBase::carryStepLeft()
+{
+	if (carrySpeed_ > 0.f)
+	{
+		SetMove({GetMove().x - carrySpeed_,GetMove().y});
+		if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x > GetMove().x)
+		{
+			if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
+				currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
+			SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
+			if (!hitactive)
+			{
+				AutoStepHit();
+				hitactive = true;
+			}
+		}
+		carrySpeed_ = 0.f;
+	}
+}
+void ObjectBase::carryStepRight()
+{
+	if (carrySpeed_ > 0.f)
+	{
+		SetMove({GetMove().x + carrySpeed_,GetMove().y});
+		if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x < GetMove().x)
+		{
+			if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
+				currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
+			SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
+			if (!hitactive)
+			{
+				AutoStepHit();
+				hitactive = true;
+			}
+		}
+		carrySpeed_ = 0.f;
+	}
+}
+void ObjectBase::carryStep()
+{
+	if (GetMove().x > 0)
+		carryStepLeft();
+	else if (GetMove().x < 0)
+		carryStepRight();
+	else if (GetMove().y > 0)
+		carryStepUp();
+	else if (GetMove().y < 0)
+		carryStepDown();
 }
 
 bool isExists = false;

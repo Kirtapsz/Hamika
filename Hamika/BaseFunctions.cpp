@@ -148,6 +148,7 @@ namespace Object
 						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), 0);
 						regets(Specific, s);
 						stack->o->SetMove({stack->o->GetMove().x,-1});
+						stack->o->carryStepDown();
 					}
 					else if (!stack->o->scene->EnableUpdateSkip())
 					{
@@ -262,7 +263,6 @@ namespace Object
 
 			json["active"] = s->active;
 			json["PriorityStep"] = s->PriorityStep;
-			json["myNumber"] = s->myNumber;
 
 			return json;
 		}
@@ -299,7 +299,6 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			pops(Specific, s);
-			s->myNumber = 123456789;
 			if (s->active == 0 && !stack->o->IsMoving() && !stack->o->IsRotating())
 			{
 				if (s->PriorityStep)
@@ -316,6 +315,7 @@ namespace Object
 						stack->o->scene->ObjectMove(stack->o->GetCoord(), to, 0);
 						regets(Specific, s);
 						stack->o->SetMove(stack->o->GetRotation());
+						stack->o->carryStep();
 						s->PriorityStep = false;
 					}
 					else if (stack->o->scene->EnableUpdateSkip())
@@ -352,6 +352,7 @@ namespace Object
 							stack->o->scene->ObjectMove(stack->o->GetCoord(), to, 0);
 							regets(Specific, s);
 							stack->o->SetMove(stack->o->GetRotation());
+							stack->o->carryStep();
 							s->PriorityStep = false;
 						}
 						else if (stack->o->scene->EnableUpdateSkip())
@@ -482,6 +483,7 @@ namespace Object
 						s->active = 1;
 						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
 						stack->o->SetMove({1,stack->o->GetMove().y});
+						stack->o->carryStepLeft();
 						if (s->rollCounter >= 0)
 						{
 							s->rollCounter = -1;
@@ -496,6 +498,7 @@ namespace Object
 						s->active = 1;
 						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordRight(), 0);
 						stack->o->SetMove({-1,stack->o->GetMove().y});
+						stack->o->carryStepRight();
 						if (s->rollCounter <= 0)
 						{
 							s->rollCounter = 1;
@@ -514,6 +517,7 @@ namespace Object
 						s->active = 1;
 						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
 						stack->o->SetMove({1,stack->o->GetMove().y});
+						stack->o->carryStepLeft();
 						if (s->rollCounter >= 0)
 						{
 							s->rollCounter = -1;
