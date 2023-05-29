@@ -49,7 +49,7 @@ namespace Res
 			constexpr static std::size_t rotation = 1;
 			constexpr static std::size_t flags = 2;
 
-			constexpr static std::array<const char*, 3> keys{{"BlockID", "Rotation", "Flags"}};
+			constexpr static std::array<const char *, 3> keys{{"BlockID", "Rotation", "Flags"}};
 		};
 
 		struct IO_HamSt1: HashRecord <
@@ -301,13 +301,13 @@ namespace Res
 				ObjectID::HardwareBlueLed,
 				ObjectID::HardwareRedLed,
 				ObjectID::HardwareStripLine,
-				ObjectID::RAMChipsTop,
-				ObjectID::RAMChipsBottom,
 				ObjectID::HardwareResource,
 				ObjectID::HardwareRedCapacitor,
 				ObjectID::HardwareResistance,
 				ObjectID::HardwareBlueResistance,
 				ObjectID::HardwareYellowResistance,
+				ObjectID::RAMChipsTop,
+				ObjectID::RAMChipsBottom,
 			};
 			inline static Type::ID transition(std::uint8_t idx)
 			{

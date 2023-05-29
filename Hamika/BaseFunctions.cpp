@@ -327,7 +327,7 @@ namespace Object
 					{
 						stack->o->StartRotation();
 						s->active = F_TurnRight;
-						s->PriorityStep = false;
+						s->PriorityStep = true;
 					}
 				}
 				else
@@ -364,7 +364,7 @@ namespace Object
 						{
 							stack->o->StartRotation();
 							s->active = F_TurnRight;
-							s->PriorityStep = false;
+							s->PriorityStep = true;
 						}
 					}
 				}
