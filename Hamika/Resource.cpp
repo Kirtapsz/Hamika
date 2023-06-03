@@ -40,7 +40,11 @@ namespace Res
 		{&accounts, GAME},
 
 		{&worlds, GAME | ITEST | TEST},
-		{&testWorlds, ITEST | TEST},
+		{&testWorlds, ITEST | TEST
+#ifdef _DEBUG 
+		| GAME
+#endif
+	},
 
 		{&objects, GAME | EDITOR | ITEST}
 	}};

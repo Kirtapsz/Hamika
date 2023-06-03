@@ -55,43 +55,43 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{eba58788-6e07-4b82-bc5e-975a9a053925}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene\Objects">
-      <UniqueIdentifier>{0d116c3f-2883-4b16-bf4e-86f117a69e07}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene\Module">
       <UniqueIdentifier>{9fcba180-6f41-4a8f-9b82-ec4fd72fdc09}</UniqueIdentifier>
     </Filter>
     <Filter Include="Editor\Scene">
       <UniqueIdentifier>{8e4dc34f-f4df-41f8-a800-abaabaa0c7ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{0d116c3f-2883-4b16-bf4e-86f117a69e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Object">
+      <UniqueIdentifier>{235e98bc-5612-44bb-9918-495c76559440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Object\Module">
+      <UniqueIdentifier>{260c4458-3d36-4744-8e22-4d01544c6823}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneDrawer.hpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Scene\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="StatusBar.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="BaseFunctions.cpp">
-      <Filter>Scene\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="OriginalObjects.cpp">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Bedrock.cpp">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Space.cpp">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects.cpp">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="Murphy.cpp">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="EditorMainEvent.cpp">
       <Filter>Editor</Filter>
@@ -253,16 +253,58 @@
     <ClCompile Include="EditorScene.cpp">
       <Filter>Editor\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Objects\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectActions.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectEvents.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectRequests.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectBase.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectHitAction.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectStack.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectExecute.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectMove.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectRotate.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectCoord.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectFlags.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDraw.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="OriginalObjects.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bedrock.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Space.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Murphy.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="StatusBar.h">
       <Filter>Scene</Filter>
@@ -274,16 +316,13 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Objects.h">
-      <Filter>Scene\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="BaseFunctions.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="OriginalObjects.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>Tools</Filter>
@@ -295,7 +334,7 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="IDreg.h">
-      <Filter>Scene\Objects</Filter>
+      <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="SceneBlock.h">
       <Filter>Scene</Filter>
@@ -410,6 +449,45 @@
     </ClInclude>
     <ClInclude Include="versions.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Objects\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectActions.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectEvents.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRequests.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectBase.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectHitAction.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectStack.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectExecute.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectMove.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRotate.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectCoord.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFlags.h">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectDraw.h">
+      <Filter>Objects\Object\Module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

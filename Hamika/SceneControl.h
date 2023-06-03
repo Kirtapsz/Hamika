@@ -44,7 +44,7 @@ namespace UI::Scene::Module::Contol
 	class Func:
 		public virtual Panel,
 		public virtual LoopControllerInterface,
-		public virtual ObjectBase::Interface,
+		public virtual Object::Brick::Interface,
 		public virtual DATA
 	{
 		protected: void initialize()
@@ -80,6 +80,7 @@ namespace UI::Scene::Module::Contol
 				keyboardController->loop();
 				actionRun();
 				statusbar->updateLoopCounter(loopCounter);
+				keyboardController->finalize();
 			};
 
 			*drawnerBarDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
@@ -110,7 +111,7 @@ namespace UI::Scene::Module::Contol
 		template <typename DATA>
 		class Func:
 			public virtual LoopControllerInterface,
-			public virtual ObjectBase::Interface,
+			public virtual Object::Brick::Interface,
 			public virtual DATA
 		{
 			protected: void initialize()
@@ -120,6 +121,7 @@ namespace UI::Scene::Module::Contol
 					loopRoll();
 					keyboardController->loop();
 					actionRun();
+					keyboardController->finalize();
 				};
 			}
 		};

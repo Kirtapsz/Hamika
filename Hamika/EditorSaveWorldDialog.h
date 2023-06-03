@@ -19,8 +19,9 @@
 
 #include <memory>
 
-namespace UI::Editor
+namespace Editor::UI
 {
+	using namespace ::UI;
 	class SaveWorldDialog: public Panel
 	{
 		friend class MainEvent;

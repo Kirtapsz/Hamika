@@ -17,9 +17,11 @@
 #include "EditorSceneBlock.h"
 
 
-namespace UI::Editor::Scene
+namespace Editor::UI::Scene
 {
-	class Edit:public Panel, public EditorObjectBase::Interface
+	using namespace ::UI;
+
+	class Edit:public Panel, public Object::Brick::Interface
 	{
 		private: Type::Coord targetCoord;
 
@@ -36,8 +38,8 @@ namespace UI::Editor::Scene
 		private: bool mouseMoveHold;
 		private: bool mouseAxe;
 
-		private: std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> map = std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>>(new Matrix<SceneBlock<EditorObjectBase>>());
-		private: SceneDrawer<SceneBlock<EditorObjectBase>> drawer;
+		private: std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> map = std::shared_ptr<Matrix<SceneBlock<Object::Brick>>>(new Matrix<SceneBlock<Object::Brick>>());
+		private: SceneDrawer<SceneBlock<Object::Brick>> drawer;
 
 		public: Edit();
 		public: ~Edit();
@@ -52,7 +54,7 @@ namespace UI::Editor::Scene
 
 		public: virtual Type::Size GetDrawSize() const;
 		public: virtual Type::Size GetDrawOffSet() const;
-		public: virtual EditorObjectBase *GetObject(Type::Coord);
+		public: virtual Object::Brick *GetObject(Type::Coord);
 		public: virtual Type::Flags GetBlockFlags(Type::Coord) const;
 		public: virtual int selectStatus(Type::Coord) const;
 		public: virtual bool isTarget(Type::Coord) const;

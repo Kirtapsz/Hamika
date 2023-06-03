@@ -5,7 +5,7 @@
 #include "EditorMainEvent.h"
 #include <KIR/AL/KIR5_panel_control.h>
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	const std::string ControlPanel::GLOBAL_GRAVITY_ON = "Global gravity is ON";
 	const std::string ControlPanel::GLOBAL_GRAVITY_OFF = "Global gravity is OFF";
@@ -122,7 +122,7 @@ namespace UI::Editor
 
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -157,7 +157,7 @@ namespace UI::Editor
 				int w, h;
 				if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%d*%d", &w, &h) == 2 && w >= 2 && h >= 2)
 				{
-					Matrix<SceneBlock<EditorObjectBase>> tmpMap(std::move(*(map.get())));
+					Matrix<SceneBlock<Object::Brick>> tmpMap(std::move(*(map.get())));
 					map->resize({w,h});
 
 					int xShift = 0;
@@ -205,7 +205,7 @@ namespace UI::Editor
 						xShift = 0;
 					}
 
-					Type::Coord coord = {0};
+					Type::Coord coord;
 					for (coord.x = 0; coord.x < (std::min)(((Type::Size)(*map)).width, ((Type::Size)(tmpMap)).width - xShift); ++coord.x)
 					{
 						for (coord.y = 0; coord.y < (std::min)(((Type::Size)(*map)).height, ((Type::Size)(tmpMap)).height - yShift); ++coord.y)
@@ -355,7 +355,7 @@ namespace UI::Editor
 			{
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -394,7 +394,7 @@ namespace UI::Editor
 			{
 				float chancef = std::atof(s_objectRate_TextBox->getText().c_str());
 				int chance = (int)(chancef * 10);
-				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selected && rand() % 1000 < chance)
 					{
@@ -418,7 +418,7 @@ namespace UI::Editor
 			s_objectFillFrame_Button->width(120);
 			s_objectFillFrame_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)reach(map)).width - 1 || coord.y == ((Type::Size)reach(map)).height - 1)
 					{
@@ -434,7 +434,7 @@ namespace UI::Editor
 			s_objectFillContent_Button->width(120);
 			s_objectFillContent_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)reach(map)).width - 1 && coord.y != ((Type::Size)reach(map)).height - 1)
 					{
@@ -450,7 +450,7 @@ namespace UI::Editor
 			s_objectselectAllOfThisType_Button->width(120);
 			s_objectselectAllOfThisType_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.object->id == s_objectID_Panel->id)
 					{
@@ -527,7 +527,7 @@ namespace UI::Editor
 			selectAllButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
 				bool isNonSelected = false;
-				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (!block.selected)
 					{
@@ -537,7 +537,7 @@ namespace UI::Editor
 
 				if (isNonSelected)
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (!block.selected)
 						{
@@ -548,7 +548,7 @@ namespace UI::Editor
 				}
 				else
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -579,7 +579,7 @@ namespace UI::Editor
 				else
 				{
 					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -592,7 +592,7 @@ namespace UI::Editor
 
 					if (isNew)
 					{
-						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 						{
 							if (block.selected)
 							{
@@ -606,7 +606,7 @@ namespace UI::Editor
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 						{
 							if (block.selected)
 							{
@@ -642,7 +642,7 @@ namespace UI::Editor
 				else
 				{
 					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -655,7 +655,7 @@ namespace UI::Editor
 
 					if (isNew)
 					{
-						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 						{
 							if (block.selected)
 							{
@@ -669,7 +669,7 @@ namespace UI::Editor
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 						{
 							if (block.selected)
 							{
@@ -690,7 +690,7 @@ namespace UI::Editor
 			selectFriendlyButton->width(selectFriendlyButton->getTextWidth());
 			selectFriendlyButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
 			{
-				map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selected)
 					{
@@ -706,7 +706,7 @@ namespace UI::Editor
 				do
 				{
 					isNewSelected = false;
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (!block.selected && block.object->id == id &&
 							(
@@ -762,7 +762,7 @@ namespace UI::Editor
 			{
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -820,7 +820,7 @@ namespace UI::Editor
 				}
 				else
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.object->id == ObjectID::RAMChipsRight)
 						{
@@ -883,7 +883,7 @@ namespace UI::Editor
 			{
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected && isRam(block.object->id))
 						{
@@ -894,7 +894,7 @@ namespace UI::Editor
 				}
 				else
 				{
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (isRam(block.object->id))
 						{
@@ -926,7 +926,7 @@ namespace UI::Editor
 				else
 				{
 					bool isNew = false;
-					map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (block.selected)
 						{
@@ -939,7 +939,7 @@ namespace UI::Editor
 
 					if (isNew)
 					{
-						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 						{
 							if (block.selected)
 							{
@@ -953,7 +953,7 @@ namespace UI::Editor
 					}
 					else
 					{
-						map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+						map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 						{
 							if (block.selected)
 							{
@@ -1055,7 +1055,7 @@ namespace UI::Editor
 		{
 			it->counter = 0;
 		}
-		this->map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+		this->map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 		{
 			if (block.object->id == s_objectID_Panel->id)
 			{
@@ -1079,7 +1079,7 @@ namespace UI::Editor
 
 	}
 
-	void ControlPanel::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint_, std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map)
+	void ControlPanel::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint_, std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> &map)
 	{
 		bluePrint = bluePrint_;
 		this->map = map;

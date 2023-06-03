@@ -86,7 +86,7 @@ class Matrix
 
 	public: template<typename F> constexpr void foreach(F &f)
 	{
-		Type::Coord coord = {0};
+		Type::Coord coord;
 		auto x_ = &data.front();
 		for (coord.x = 0; coord.x < size.width; ++coord.x, ++x_)
 		{
@@ -99,7 +99,7 @@ class Matrix
 	}
 	public: template<typename F> constexpr void foreach(F &f) const
 	{
-		Type::Coord coord = {0};
+		Type::Coord coord;
 		auto x_ = &data.front();
 		for (coord.x = 0; coord.x < size.width; ++coord.x, ++x_)
 		{
@@ -112,7 +112,7 @@ class Matrix
 	}
 	public: template<typename F> constexpr void reverse_foreach(F &f)
 	{
-		Type::Coord coord = {0};
+		Type::Coord coord;
 		auto x_ = &data.back();
 		for (coord.x = size.width - 1; coord.x >= 0; --coord.x, --x_)
 		{
@@ -125,7 +125,7 @@ class Matrix
 	}
 	public: template<typename F> constexpr void forrange(Type::Coord start, Type::Coord end, F &f)
 	{
-		Type::Coord coord = {0};
+		Type::Coord coord;
 		auto x_ = &data.front() + start.x;
 		for (coord.x = start.x; coord.x < end.x; ++coord.x, ++x_)
 		{

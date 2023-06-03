@@ -13,7 +13,7 @@
 #include "EditorSaveWorldDialog.h"
 #include "UItools.h"
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	using namespace Scene;
 	class MainEvent

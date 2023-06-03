@@ -7,13 +7,13 @@
 namespace Object
 {
 	constexpr float ACTION_TIMER_START = -1.0f;
-	inline bool ACTION_TIMER(float &timer,
-							 const float &duration,
-							 ObjectBase *obj,
-							 std::function<bool()> triggerEvent,
-							 std::function<bool()> timerStarted,
-							 std::function<bool()> timerRunning,
-							 std::function<bool()> timerExpired)
+	constexpr bool ACTION_TIMER(float &timer,
+								const float &duration,
+								Brick *obj,
+								const std::function<bool()> &triggerEvent,
+								const std::function<bool()> &timerStarted,
+								const std::function<bool()> &timerRunning,
+								const std::function<bool()> &timerExpired)
 	{
 		if (timer > 0)
 		{
@@ -41,23 +41,38 @@ namespace Object
 		return false;
 	}
 
-	inline void DRAW_NUMBER(float timer, const float duration, int &drawNumber, ObjectBase *obj, const Res::Slides &bmp)
+	typedef std::uint8_t DRAW_NUMBER_T;
+
+	inline void DRAW_NUMBER_INVALIDATE(DRAW_NUMBER_T &_draw_number)
 	{
-		int drawNumber_ = bmp.getDrawNumber(1 - (timer / duration));
-		if (drawNumber != drawNumber_)
+		_draw_number = std::numeric_limits<DRAW_NUMBER_T>::max();
+	}
+	inline void DRAW_NUMBER_ASC_INIT(DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
+	{
+		_draw_number = 0;
+		obj->requests.draw = true;
+	}
+	inline void DRAW_NUMBER_ASC(float timer, const float duration, DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
+	{
+		DRAW_NUMBER_T draw_number = static_cast<DRAW_NUMBER_T>(bmp.getDrawNumber(1 - (timer / duration)));
+		if (_draw_number != draw_number)
 		{
 			obj->requests.draw = true;
-			drawNumber = drawNumber_;
+			_draw_number = draw_number;
 		}
 	}
-
-	inline void DRAW_NUMBER_R(float timer, const float duration, int &drawNumber, ObjectBase *obj, const Res::Slides &bmp)
+	inline void DRAW_NUMBER_DESC_INIT(DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
 	{
-		int drawNumber_ = bmp.getDrawNumber(timer / duration);
-		if (drawNumber != drawNumber_)
+		_draw_number = bmp.getCount() - 1;
+		obj->requests.draw = true;
+	}
+	inline void DRAW_NUMBER_DESC(float timer, const float duration, DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
+	{
+		DRAW_NUMBER_T draw_number = static_cast<DRAW_NUMBER_T>(bmp.getDrawNumber(timer / duration));
+		if (_draw_number != draw_number)
 		{
 			obj->requests.draw = true;
-			drawNumber = drawNumber_;
+			_draw_number = draw_number;
 		}
 	}
 
@@ -68,7 +83,7 @@ namespace Object
 			std::float_t time;
 			std::float_t timer;
 			std::int8_t numberOfFrames;
-			std::int8_t drawNumber;
+			DRAW_NUMBER_T draw_number_;
 
 			void Initialize();
 			void SetAnimationTime(std::float_t AnimationTime);
@@ -84,23 +99,29 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 	}
 
-
-	namespace MoveDown
+	namespace Fall
 	{
 		struct Specific
 		{
-			int active;
+			bool heavy_object_;
 		};
+
+		void setHeavy(Specific *spec, bool _heavy_object);
 
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Timer(OBJECT_TIMER_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 	}
-
-	namespace MoveDownHeavy
+	namespace FallAndRoll
 	{
-		void Blasting(ObjectBase *o);
+		struct Specific
+		{
+			bool heavy_object_;
+			std::int8_t roll_preference_;
+		};
+
+		void setHeavy(Specific *spec, bool _heavy_object);
 
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -110,41 +131,15 @@ namespace Object
 
 	namespace MoveLeftWay
 	{
-		void Blasting(Type::Coord coord, ObjectBase *o);
-		bool CanMoveForward(Type::Coord to, ObjectBase *o);
-		bool CanExlosive(Type::Coord coord, ObjectBase *o);
-		bool CanTurnLeft(ObjectBase *o);
-
-		enum TypeActive
-		{
-			F_Step = 1,
-			F_TurnLeft,
-			F_TurnRight,
-		};
+		void Blasting(Type::Coord coord, Brick *o);
+		bool CanMoveForward(Type::Coord to, Brick *o);
+		bool CanExlosive(Type::Coord coord, Brick *o);
+		bool CanTurnLeft(Brick *o);
 
 		struct Specific
 		{
-			int active;
 			bool PriorityStep;
 		};
-
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
-	}
-
-	namespace RollDown
-	{
-		struct Specific
-		{
-			int active;
-			int rollCounter;
-		};
-
-		bool CanRollAffect(ObjectBase *o, Type::Coord coord1);
-		bool CanRoll(ObjectBase *o, Type::Coord coord1, Type::Coord coord2);
-		bool CanRollOff(ObjectBase *o);
 
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);

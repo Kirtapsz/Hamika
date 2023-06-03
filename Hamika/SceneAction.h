@@ -28,15 +28,14 @@ namespace UI::Scene::Module::Action
 {
 	class Data
 	{
-		protected: std::vector<ObjectBase *> objects;
-		protected: std::vector<ObjectBase *> remains;
-		protected: bool enableupdateskip;
+		protected: std::vector<Object::Brick *> objects;
+		protected: std::vector<Object::Brick *> remains;
 
 		protected: virtual void Redrawn(Type::Coord coord) = 0;
 	};
 
 	template <typename DATA>
-	class Func: public virtual ObjectBase::Interface, public virtual DATA
+	class Func: public virtual Object::Brick::Interface, public virtual DATA
 	{
 		protected: void initialize()
 		{
@@ -45,10 +44,10 @@ namespace UI::Scene::Module::Action
 		}
 		protected: void buildObjectsHolder()
 		{
-			ObjectBase **o = objects.data();
-			ObjectBase **r = remains.data();
+			Object::Brick **o = objects.data();
+			Object::Brick **r = remains.data();
 
-			map->foreach([&](const Type::Coord &coord, SceneBlock<ObjectBase> &block)
+			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
 				*o++ = block.object;
 				*r++ = block.remain;
@@ -57,7 +56,13 @@ namespace UI::Scene::Module::Action
 		protected: void actionRun()
 		{
 			buildObjectsHolder();
-			constexpr auto &fnc = [](ObjectBase *o)
+
+			if (murphy)
+			{
+				murphy->RunTimer();
+			}
+
+			constexpr auto &fnc = [](Object::Brick *o)
 			{
 				if (o->isExists && o->events.timer && o->requests.timer)
 				{
@@ -69,7 +74,7 @@ namespace UI::Scene::Module::Action
 
 			UpdateRun();
 
-			map->foreach([&](const Type::Coord &coord, SceneBlock<ObjectBase> &block)
+			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
 				if (block.remain->isExists && block.remain->requests.remove)
 					DeleteRemain(coord);
@@ -77,8 +82,16 @@ namespace UI::Scene::Module::Action
 				{
 					if (block.object->requests.remove)
 						DeleteObject(coord);
-					else if (block.object->requests.blowUp && block.object->GetFlags() & ObjectBase::Flags::ExplosionType1)
+					else if (block.object->requests.blowUp && block.object->GetFlags() & Object::Brick::Flags::ExplosionType1)
 					{
+						block.object->requests.blowUp = false;
+						Blasting(coord);
+					}
+					else if (block.remain->requests.blowUp && block.remain->GetFlags() & Object::Brick::Flags::ExplosionType1)
+					{
+						Object::Brick *tmp = block.remain;
+						block.remain = block.object;
+						block.object = tmp;
 						block.object->requests.blowUp = false;
 						Blasting(coord);
 					}
@@ -90,7 +103,7 @@ namespace UI::Scene::Module::Action
 		{
 			if (map->Test(coordDst) && map->Test(coordSrc))
 			{
-				ObjectBase *objTmp = reach(map)[coordDst].object;
+				Object::Brick *objTmp = reach(map)[coordDst].object;
 				reach(map)[coordDst].object = reach(map)[coordSrc].object;
 				reach(map)[coordSrc].object = objTmp;
 
@@ -102,7 +115,7 @@ namespace UI::Scene::Module::Action
 		{
 			if (map->Test(coordDst) && map->Test(coordSrc))
 			{
-				ObjectBase *objTmp = reach(map)[coordDst].remain;
+				Object::Brick *objTmp = reach(map)[coordDst].remain;
 				reach(map)[coordDst].remain = reach(map)[coordSrc].remain;
 				reach(map)[coordSrc].remain = objTmp;
 
@@ -114,7 +127,7 @@ namespace UI::Scene::Module::Action
 		{
 			if (map->Test(coordDst) && map->Test(coordSrc))
 			{
-				ObjectBase *objTmp = reach(map)[coordDst].remain;
+				Object::Brick *objTmp = reach(map)[coordDst].remain;
 				reach(map)[coordDst].remain = reach(map)[coordSrc].object;
 				reach(map)[coordSrc].object = objTmp;
 
@@ -126,7 +139,7 @@ namespace UI::Scene::Module::Action
 		{
 			if (map->Test(coordDst) && map->Test(coordSrc))
 			{
-				ObjectBase *objTmp = reach(map)[coordDst].object;
+				Object::Brick *objTmp = reach(map)[coordDst].object;
 				reach(map)[coordDst].object = reach(map)[coordSrc].remain;
 				reach(map)[coordSrc].remain = objTmp;
 
@@ -144,7 +157,7 @@ namespace UI::Scene::Module::Action
 				}
 
 				DeleteRemain(coord);
-				if (reach(map)[coord].object->GetFlags() & ObjectBase::Flags::CanBeExplosion)
+				if (reach(map)[coord].object->GetFlags() & Object::Brick::Flags::CanBeExplosion)
 				{
 					ObjectCreate(reach(map)[coord].remain, ObjectID::ExplosionExpansive, coord);
 					reach(map)[coord].remain->SetObjectIDremain(IDto);
@@ -169,7 +182,7 @@ namespace UI::Scene::Module::Action
 				Type::ID IDto = reach(map)[coord].object->GetTranslationTo();
 				Type::Coord center = reach(map)[coord].object->GetHitCoord();
 
-				reach(map)[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType1);
+				reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType1);
 				reach(map)[coord].object->SetTranslationID(ObjectID::Space);
 
 				//bool
@@ -186,9 +199,9 @@ namespace UI::Scene::Module::Action
 				//	reach(map)[coord].object->SetTranslationID(remainID);
 				//}
 
-				if (flag & ObjectBase::ExplosionType3)
+				if (flag & Object::Brick::ExplosionType3)
 				{
-					reach(map)[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType3);
+					reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType3);
 					ExplosionPut({center.x + 1,center.y + 1}, IDto);
 					ExplosionPut({center.x,center.y + 1}, IDto);
 					ExplosionPut({center.x - 1,center.y + 1}, IDto);
@@ -200,9 +213,9 @@ namespace UI::Scene::Module::Action
 					ExplosionPut({center.x,center.y - 1}, IDto);
 					ExplosionPut({center.x - 1,center.y - 1}, IDto);
 				}
-				if (flag & ObjectBase::ExplosionType5)
+				if (flag & Object::Brick::ExplosionType5)
 				{
-					reach(map)[coord].object->RemoveFlags(ObjectBase::Flags::ExplosionType5);
+					reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType5);
 				}
 
 				if (reach(map)[coord].remain->id != ObjectID::Explosion &&
@@ -247,7 +260,7 @@ namespace UI::Scene::Module::Action
 				reach(map)[coord].object->isExists = false;
 			}
 		}
-				 //protected: void SetObject(Type::Coord coord, ObjectBase *object)
+				 //protected: void SetObject(Type::Coord coord, Object::Brick *object)
 				 //{
 				 //	//reach(map)[coord].object->isExists=false;
 				 //	CopyObject
@@ -281,32 +294,32 @@ namespace UI::Scene::Module::Action
 
 
 
-		protected:  void UpdateRun()
+		protected: void UpdateRun()
 		{
-			std::function<void(const Type::Coord &, SceneBlock<ObjectBase> &)> fncPre = [&](const Type::Coord &coord, SceneBlock<ObjectBase> &block)
+			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
-				if (block.object->isExists && GetObject(coord)->events.update && GetObject(coord)->requests.update && !block.object->IsMoving())
+				if (block.object->isExists && GetObject(coord)->events.update && GetObject(coord)->requests.update)
 				{
-					GetObject(coord)->Update();
+					GetObject(coord)->RunUpdate(Object::Brick::UPDATE_ASC);
 				}
-			};
-			std::function<void(const Type::Coord &, SceneBlock<ObjectBase> &)> fncPost = [&](const Type::Coord &coord, SceneBlock<ObjectBase> &block)
+			});
+
+			map->reverse_foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
-				if (block.object->isExists && block.object->events.update && block.object->requests.update && !block.object->IsMoving())
+				if (block.object->isExists && block.object->events.update && block.object->requests.update)
 				{
-					block.object->Update();
+					block.object->RunUpdate(Object::Brick::UPDATE_DESC);
 				}
-				if (block.remain->isExists && block.remain->events.update && block.remain->requests.update && !block.remain->IsMoving())
+				if (block.remain->isExists && block.remain->events.update && block.remain->requests.update)
 				{
-					block.remain->Update();
+					block.remain->RunUpdate(Object::Brick::UPDATE_DESC);
 				}
-			};
+			});
 
-			enableupdateskip = true;
-			map->foreach(fncPre);
-
-			enableupdateskip = false;
-			map->reverse_foreach(fncPost);
+			if (murphy)
+			{
+				murphy->RunUpdate(Object::Brick::UPDATE_MURPHY);
+			}
 		}
 
 		protected: void UpdateBlock(Type::Coord coord)
@@ -363,7 +376,7 @@ namespace UI::Scene::Module::Action
 		public: virtual void BlowUpBlock(Type::Coord coord)
 		{
 			auto object = GetObject(coord);
-			if (object->GetFlags() & ObjectBase::Flags::ExplosionType1)
+			if (object->GetFlags() & Object::Brick::Flags::ExplosionType1)
 			{
 				if (object->GetAbsMove() > 0.5f)
 				{
@@ -376,7 +389,7 @@ namespace UI::Scene::Module::Action
 			}
 
 			object = GetObjectOut(coord);
-			if (object->GetFlags() & ObjectBase::Flags::ExplosionType1)
+			if (object->GetFlags() & Object::Brick::Flags::ExplosionType1)
 			{
 				if (object->GetAbsMove() < 0.5f)
 				{
@@ -401,7 +414,6 @@ namespace UI::Scene::Module::Action
 				reach(map)[from].GoTo = to;
 
 				reach(map)[to].object->SetCoord(to);
-				reach(map)[to].object->actions.move = true;
 
 				UpdateSquare33(from);
 				UpdateSquare33(to);
@@ -441,8 +453,6 @@ namespace UI::Scene::Module::Action
 
 				DeleteRemain(coord);
 
-				reach(map)[coord].object->actions.move = false;
-
 				UpdateSquare33(ComeFrom);
 			}
 			UpdateSquare33(coord);//bel�lr�l ki lett szedve, ugyanis mas okokbol is ezkezhet meg, pl ollo mozgasa fordulasbol
@@ -456,14 +466,12 @@ namespace UI::Scene::Module::Action
 				reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
 				reach(map)[coord].ComeFrom = coord;
 
-				reach(map)[coord].object->actions.move = false;
-
 				UpdateSquare33(coord);
 			}
 		}
 		public: virtual void ObjectDisappear(Type::Coord coord)
 		{
-			if (TestObject(coord) && !reach(map)[coord].object->IsMoving())
+			if (TestObject(coord) && !reach(map)[coord].object->isActionMove())
 			{
 				CopyObjectToRemain(coord, coord);
 				//(*reach(map)[coord].remain) = reach(map)[coord].object;
@@ -474,11 +482,7 @@ namespace UI::Scene::Module::Action
 				UpdateSquare33(coord);
 			}
 		}
-		public: virtual bool EnableUpdateSkip()
-		{
-			return enableupdateskip;
-		}
-		public: virtual bool rollTrigger(ObjectBase *obj_, unsigned __int16 typeID, float chancePerSec)
+		public: virtual bool rollTrigger(Object::Brick *obj_, unsigned __int16 typeID, float chancePerSec)
 		{
 			return rngController->rollTrigger(obj_->rootId, typeID, chancePerSec);
 		}

@@ -161,25 +161,25 @@ std::string hourStopper(T value)
 }
 
 template <typename T>
-inline T &reach(std::shared_ptr<T> &map)
+constexpr T &reach(std::shared_ptr<T> &map)
 {
 	return *map;
 }
 
 template <typename T>
-inline const T &reach(const std::shared_ptr<T> &map)
+constexpr const T &reach(const std::shared_ptr<T> &map)
 {
 	return *map;
 }
 
 template <typename T>
-inline T CPStime(T _value, T _cps, T _base)
+constexpr T CPStime(T _value, T _cps, T _base)
 {
 	return _value * (_base / _cps);
 }
 
 template <typename T, typename F>
-inline T ifSync(T &original, const F &checkVal)
+constexpr T ifSync(T &original, const F &checkVal)
 {
 	if (original != static_cast<T>(checkVal))
 	{

@@ -19,6 +19,12 @@ namespace UI
 		{
 			(*this)->pushBack(KIR5::Shared<WorldButton>(it));
 		}
+#ifdef _DEBUG 
+		for (auto &it : Res::testWorlds)
+		{
+			(*this)->pushBack(KIR5::Shared<WorldButton>(it));
+		}
+#endif
 
 		get()->fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{

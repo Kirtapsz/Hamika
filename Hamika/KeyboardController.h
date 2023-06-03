@@ -49,31 +49,59 @@ struct KeyboardController
 {
 	LoopControllerInterface &loopControllerInterface;
 
-	bool actionDestroy;
-	bool actionSpecial;
-	bool actionUp;
-	bool actionDown;
-	bool actionLeft;
-	bool actionRight;
+	struct STATE
+	{
+		static constexpr std::uint8_t RELEASED = 1 << 0;
+		static constexpr std::uint8_t LOCKED = 1 << 1;
+		static constexpr std::uint8_t UPDATED = 1 << 2;
+
+		std::uint8_t state_ = RELEASED;
+
+		inline constexpr void operator=(bool _state)
+		{
+			state_ = (_state ? LOCKED : RELEASED) | UPDATED;
+		}
+		inline constexpr bool isUpdated() const
+		{
+			return state_ & UPDATED;
+		}
+		inline constexpr bool isLocked() const
+		{
+			return state_ & LOCKED;
+		}
+		inline constexpr bool isReleased() const
+		{
+			return state_ & RELEASED;
+		}
+		inline constexpr void clearUpdate()
+		{
+			state_ &= ~UPDATED;
+		}
+		inline constexpr operator bool() const
+		{
+			return isLocked();
+		}
+	};
+
+	STATE actionDestroy;
+	STATE actionSpecial;
+	STATE actionUp;
+	STATE actionDown;
+	STATE actionLeft;
+	STATE actionRight;
 
 	KeyboardController(LoopControllerInterface &loopControllerInterface);
 
 	virtual void keyUp(int key) = 0;
 	virtual void keyDown(int key) = 0;
 	virtual void loop() = 0;
+	void finalize();
 };
 
 template <typename L, typename KEYBOARD_CONTROLLER>
 struct KeyboardRecord: KEYBOARD_CONTROLLER
 {
 	Res::Logger &logger;
-
-	bool actionDestroyPrev;
-	bool actionSpecialPrev;
-	bool actionUpPrev;
-	bool actionDownPrev;
-	bool actionLeftPrev;
-	bool actionRightPrev;
 
 	KeyboardRecord(LoopControllerInterface &loopControllerInterface, Res::Logger &logger);
 
@@ -120,8 +148,7 @@ struct KeyboardLoopReplay: KeyboardController
 template <typename L, typename KEYBOARD_CONTROLLER>
 KeyboardRecord<L, KEYBOARD_CONTROLLER>::KeyboardRecord(LoopControllerInterface &loopControllerInterface, Res::Logger &logger):
 	KEYBOARD_CONTROLLER(loopControllerInterface),
-	logger(logger),
-	actionSpecialPrev(false), actionUpPrev(false), actionDownPrev(false), actionLeftPrev(false), actionRightPrev(false), actionDestroyPrev(false)
+	logger(logger)
 {
 
 }
@@ -140,34 +167,28 @@ template <typename L, typename KEYBOARD_CONTROLLER>
 void KeyboardRecord<L, KEYBOARD_CONTROLLER>::loop()
 {
 	KEYBOARD_CONTROLLER::loop();
-	if (actionDestroyPrev != actionDestroy)
+	if (actionDestroy.isUpdated())
 	{
-		actionDestroyPrev = actionDestroy;
 		logger.record<L>(Res::Log::StandardKeyboard::ACTION_DESTROY_UPDATE, actionDestroy);
 	}
-	if (actionSpecialPrev != actionSpecial)
+	if (actionSpecial.isUpdated())
 	{
-		actionSpecialPrev = actionSpecial;
 		logger.record<L>(Res::Log::StandardKeyboard::ACTION_SPECIAL_UPDATE, actionSpecial);
 	}
-	if (actionUpPrev != actionUp)
+	if (actionUp.isUpdated())
 	{
-		actionUpPrev = actionUp;
 		logger.record<L>(Res::Log::StandardKeyboard::ACTION_UP_UPDATE, actionUp);
 	}
-	if (actionDownPrev != actionDown)
+	if (actionDown.isUpdated())
 	{
-		actionDownPrev = actionDown;
 		logger.record<L>(Res::Log::StandardKeyboard::ACTION_DOWN_UPDATE, actionDown);
 	}
-	if (actionLeftPrev != actionLeft)
+	if (actionLeft.isUpdated())
 	{
-		actionLeftPrev = actionLeft;
 		logger.record<L>(Res::Log::StandardKeyboard::ACTION_LEFT_UPDATE, actionLeft);
 	}
-	if (actionRightPrev != actionRight)
+	if (actionRight.isUpdated())
 	{
-		actionRightPrev = actionRight;
 		logger.record<L>(Res::Log::StandardKeyboard::ACTION_RIGHT_UPDATE, actionRight);
 	}
 }

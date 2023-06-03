@@ -1,0 +1,265 @@
+{
+    "BlueprintHash": [
+        123,
+        106,
+        246,
+        26,
+        87,
+        160,
+        247,
+        62,
+        231,
+        182,
+        132,
+        54,
+        254,
+        27,
+        159,
+        135,
+        129,
+        219,
+        238,
+        181,
+        33,
+        220,
+        99,
+        110,
+        93,
+        106,
+        249,
+        117,
+        233,
+        121,
+        162,
+        131,
+        66,
+        125,
+        101,
+        47,
+        188,
+        174,
+        82,
+        116,
+        46,
+        119,
+        113,
+        43,
+        94,
+        248,
+        74,
+        212,
+        134,
+        53,
+        7,
+        41,
+        214,
+        87,
+        27,
+        77,
+        134,
+        35,
+        99,
+        133,
+        15,
+        42,
+        42,
+        168
+    ],
+    "Comment": "3 zonks are stacked, checking if those are fall right in a line to the floor",
+    "Commit": "34f987cb99c326317f72fd1efb3e169c1d718e91",
+    "Records": [
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 1021,
+            "LoopCounter": 1,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": true,
+            "CurrentTimeMS": 3628,
+            "LoopCounter": 12,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 3628,
+            "LoopCounter": 12,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 3628,
+            "LoopCounter": 12,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 5091,
+            "LoopCounter": 15,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": false,
+            "CurrentTimeMS": 9073,
+            "LoopCounter": 27,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 9073,
+            "LoopCounter": 27,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 9073,
+            "LoopCounter": 27,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 12527,
+            "LoopCounter": 40,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 17236,
+            "LoopCounter": 66,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 24001,
+            "LoopCounter": 104,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 2
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 24001,
+            "LoopCounter": 104,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 2,
+                    "coord.y": 2
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ActionState": true,
+            "CurrentTimeMS": 29160,
+            "LoopCounter": 105,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 29160,
+            "LoopCounter": 105,
+            "ObjectProperties": {
+                "victory": false
+            },
+            "ObjectType": 2,
+            "ValidateType": 5
+        },
+        {
+            "CurrentTimeMS": 29160,
+            "LoopCounter": 105,
+            "ObjectProperties": null,
+            "ObjectType": 2,
+            "ValidateType": 4
+        }
+    ],
+    "UserHash": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}

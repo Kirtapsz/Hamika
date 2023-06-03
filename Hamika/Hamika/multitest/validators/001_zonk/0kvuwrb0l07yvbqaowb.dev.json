@@ -1,0 +1,229 @@
+{
+    "BlueprintHash": [
+        72,
+        6,
+        29,
+        86,
+        64,
+        154,
+        37,
+        113,
+        141,
+        221,
+        19,
+        222,
+        96,
+        164,
+        58,
+        38,
+        28,
+        58,
+        103,
+        125,
+        61,
+        107,
+        205,
+        205,
+        177,
+        85,
+        25,
+        40,
+        168,
+        61,
+        8,
+        189,
+        42,
+        144,
+        115,
+        158,
+        246,
+        233,
+        14,
+        52,
+        174,
+        163,
+        42,
+        87,
+        159,
+        8,
+        248,
+        52,
+        53,
+        106,
+        132,
+        61,
+        249,
+        216,
+        194,
+        102,
+        241,
+        107,
+        123,
+        166,
+        216,
+        90,
+        249,
+        58
+    ],
+    "Comment": "Zonk fall and roll speed test",
+    "Commit": "34f987cb99c326317f72fd1efb3e169c1d718e91",
+    "Records": [
+        {
+            "CurrentTimeMS": 6416,
+            "LoopCounter": 280,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 4,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 15370,
+            "LoopCounter": 300,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 4,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 22146,
+            "LoopCounter": 431,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 26622,
+            "LoopCounter": 457,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ActionState": true,
+            "CurrentTimeMS": 29200,
+            "LoopCounter": 458,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 29200,
+            "LoopCounter": 458,
+            "ObjectProperties": {
+                "victory": false
+            },
+            "ObjectType": 2,
+            "ValidateType": 5
+        },
+        {
+            "CurrentTimeMS": 29200,
+            "LoopCounter": 458,
+            "ObjectProperties": null,
+            "ObjectType": 2,
+            "ValidateType": 4
+        }
+    ],
+    "UserHash": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}

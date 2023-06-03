@@ -20,15 +20,17 @@
 
 #include <memory>
 
-namespace UI::Editor
+namespace Editor::UI
 {
+	using namespace ::UI;
+
 	class ControlPanel: public AdjusterPanel<Panel, 647, 270>
 	{
 		private: static const std::string GLOBAL_GRAVITY_ON;
 		private: static const std::string GLOBAL_GRAVITY_OFF;
 
 		private: std::shared_ptr<Res::BluePrint> bluePrint;
-		private: std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> map;
+		private: std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> map;
 
 		private: class ResizeButtonClass:public BmpButton
 		{
@@ -130,7 +132,7 @@ namespace UI::Editor
 		public: void pickID(Type::ID id);
 		public: void setOperationMode();
 		public: void updateBlocks();
-		public: void SetMap(std::shared_ptr<Res::BluePrint> &bluePrint, std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map);
+		public: void SetMap(std::shared_ptr<Res::BluePrint> &bluePrint, std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> &map);
 
 		public: ControlPanel();
 		public: ~ControlPanel();

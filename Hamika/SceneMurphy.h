@@ -29,21 +29,21 @@ namespace UI::Scene::Module::Murphy
 	class Data
 	{
 		protected: std::shared_ptr<Res::Account> _account;
-		protected: ObjectBase *murphy = nullptr;
+		protected: Object::Brick *murphy = nullptr;
 		protected: bool victory = false;
 
 		protected: virtual void signGame() = 0;
 	};
 
 	template <typename DATA>
-	class Func: public virtual ObjectBase::Interface, public virtual DATA, public virtual Validator::Interface
+	class Func: public virtual Object::Brick::Interface, public virtual DATA, public virtual Validator::Interface
 	{
 		protected: void initialize(const std::shared_ptr<Res::Account> &account_)
 		{
 			_account = account_;
 
 			std::vector<Type::Coord> spawns;
-			map->foreach([&](const Type::Coord &coord, SceneBlock<ObjectBase> &block)
+			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
 				if (block.grid & GridFlags::SpawnPoint)
 				{
@@ -67,14 +67,14 @@ namespace UI::Scene::Module::Murphy
 			murphyDead(murphy);
 		}
 
-		public: virtual void murphyMoved(ObjectBase *object)
+		public: virtual void murphyMoved(Object::Brick *object)
 		{
 			if (murphy)
 			{
 				murphy = object;
 			}
 		}
-		public: virtual void murphyDead(ObjectBase *omurphy)
+		public: virtual void murphyDead(Object::Brick *omurphy)
 		{
 			if (murphy)
 			{

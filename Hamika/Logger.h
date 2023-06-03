@@ -9,6 +9,7 @@
 
 #include "Account.h"
 #include "BluePrint.h"
+#include "versions.h"
 
 namespace Res
 {
@@ -24,17 +25,19 @@ namespace Res
 		struct ObjectValidator;
 
 		struct Container: Record <
-			FixedVectorRecord<std::uint8_t, 7>,
+			TerminatedStringRecord<64>,
+			TerminatedStringRecord<1024>,
 			KIR5::sha512digest,
 			KIR5::sha512digest,
 			SwitchVectorRecord<Base, std::uint32_t, RNGenerator, StandardKeyboard, ObjectValidator>>
 		{
 			static constexpr std::size_t commit = 0;
-			static constexpr std::size_t blueprintHash = 1;
-			static constexpr std::size_t userHash = 2;
-			static constexpr std::size_t records = 3;
+			static constexpr std::size_t comment = 2;
+			static constexpr std::size_t blueprintHash = 2;
+			static constexpr std::size_t userHash = 3;
+			static constexpr std::size_t records = 4;
 
-			constexpr static std::array<const char *, 4> keys{{"Commit", "BlueprintHash", "UserHash", "Records"}};
+			constexpr static std::array<const char *, 5> keys{{"Commit", "Comment", "BlueprintHash", "UserHash", "Records"}};
 		};
 	}
 
@@ -49,7 +52,8 @@ namespace Res
 		inline Logger(LoopControllerInterface &loopController, const std::shared_ptr<BluePrint> &bluePrint, const std::shared_ptr<Account> &account):
 			loopController(loopController), bluePrint(bluePrint), account(account)
 		{
-			//std::get<logContainer.commit>(logContainer) = ;
+
+			std::get<logContainer.commit>(logContainer) = Versions::ApplicationCommitID;
 			if (bluePrint)
 			{
 				std::get<logContainer.blueprintHash>(logContainer) = bluePrint->hash;

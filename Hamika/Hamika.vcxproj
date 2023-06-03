@@ -308,6 +308,18 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_blender.cpp" />
+    <ClCompile Include="ObjectActions.hpp" />
+    <ClCompile Include="ObjectBase.hpp" />
+    <ClCompile Include="ObjectCoord.hpp" />
+    <ClCompile Include="ObjectDraw.hpp" />
+    <ClCompile Include="ObjectEvents.hpp" />
+    <ClCompile Include="ObjectExecute.hpp" />
+    <ClCompile Include="ObjectFlags.hpp" />
+    <ClCompile Include="ObjectHitAction.hpp" />
+    <ClCompile Include="ObjectMove.hpp" />
+    <ClCompile Include="ObjectRequests.hpp" />
+    <ClCompile Include="ObjectRotate.hpp" />
+    <ClCompile Include="ObjectStack.hpp" />
     <ClCompile Include="SceneConfiguration.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
     <ClCompile Include="Bedrock.cpp" />
@@ -351,6 +363,18 @@
     <ClCompile Include="Worlds.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ObjectActions.h" />
+    <ClInclude Include="ObjectBase.h" />
+    <ClInclude Include="ObjectCoord.h" />
+    <ClInclude Include="ObjectDraw.h" />
+    <ClInclude Include="ObjectEvents.h" />
+    <ClInclude Include="ObjectExecute.h" />
+    <ClInclude Include="ObjectFlags.h" />
+    <ClInclude Include="ObjectHitAction.h" />
+    <ClInclude Include="ObjectMove.h" />
+    <ClInclude Include="ObjectRequests.h" />
+    <ClInclude Include="ObjectRotate.h" />
+    <ClInclude Include="ObjectStack.h" />
     <ClInclude Include="SceneConfiguration.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="MapList.h" />

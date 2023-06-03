@@ -13,998 +13,277 @@
 #include "Tools.h"
 #include "Bitmap.h"
 
+#include "ObjectActions.h"
+#include "ObjectBase.h"
+#include "ObjectCoord.h"
+#include "ObjectDraw.h"
+#include "ObjectEvents.h"
+#include "ObjectExecute.h"
+#include "ObjectFlags.h"
+#include "ObjectHitAction.h"
+#include "ObjectMove.h"
+#include "ObjectRequests.h"
+#include "ObjectRotate.h"
+#include "ObjectStack.h"
+
 #undef GetObject
 
 #define OBJECT_SIMPLE_DRAWNER_PARAM Type::Coord::Type x,Type::Coord::Type y,Type::Coord::Type w,Type::Coord::Type h
 #define OBJECT_SIMPLE_DRAWNER_CALL x, y, w, h
 typedef void(*SIMPLE_DRAWNER)(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-/*enum ObjectEvent:Type::Flags
+
+namespace Editor
 {
-	Timer = 1 <<1, //events->timer
-	Tick = 1 <<2, //events->tick
-	Update = 1 <<3, //events->update
-	HightLayer = 1 <<8, //events->topDraw
-
-
-	Remove = 1 <<5, //requests->remove
-	Blasting = 1 <<6, //requests->blowUp
-	UpdateRequest = 1 <<9, //requests->update
-	Draw = 1 <<4, //requests->draw
-
-	Moving = 1 <<12, //actions->move
-	Rotating = 1 <<13, //actions->rotate
-
-	TimerDone = 1 <<10, // remove
-	TickDone = 1 <<11, // remove
-
-	UpdateEnable = UpdateRequest | Update, //remove
-
-	DrawScreen = 1 <<14 | Draw, //remove
-};*/
-
-template<typename OBJECT_HANDLER>
-struct ObjectActionsModule
-{
-	struct ActionsType
+	namespace Object
 	{
-		bool move;
-		bool rotate;
-	} actions = {0};
+		using namespace ::Object;
 
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		actions.move = false;
-		actions.rotate = false;
-	}
-	Json print()
-	{
-		Json json;
-
-		json["actions.move"] = actions.move;
-		json["actions.rotate"] = actions.rotate;
-
-		return json;
-	}
-};
-
-template<typename OBJECT_HANDLER>
-struct ObjectEventsModule
-{
-	struct EventsType
-	{
-		bool timer;
-		bool tick;
-		bool update;
-
-		bool topDraw;
-
-		inline void clear()
+		template <typename OBJECT>
+		struct DataCo:
+			virtual Module::Base::Data<OBJECT>,
+			virtual Module::Execute::Data<OBJECT>,
+			virtual Module::Move::Data<OBJECT>,
+			virtual Module::Stack::Data<OBJECT>,
+			virtual Module::Rotate::Data<OBJECT>,
+			virtual Module::Events::Data<OBJECT>,
+			virtual Module::Actions::Data<OBJECT>,
+			virtual Module::Draw::Data<OBJECT>,
+			virtual Module::Coord::Data<OBJECT>,
+			virtual Module::Requests::Data<OBJECT>
 		{
-			timer = false;
-			tick = false;
-			update = false;
-		}
-
-	} events = {0};
-
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		events.clear();
-		events.topDraw = false;
-	}
-	Json print()
-	{
-		Json json;
-
-		json["events.timer"] = events.timer;
-		json["events.tick"] = events.tick;
-		json["events.update"] = events.update;
-		json["events.topDraw"] = events.topDraw;
-
-		return json;
-	}
-};
-
-
-template<typename OBJECT_HANDLER>
-struct ObjectBase_
-{
-	Type::ID rootId = Type::INVALID_ID;
-	Type::ID id = Type::INVALID_ID;
-	const char *name = nullptr;
-	bool isExists = false;
-
-	virtual ~ObjectBase_()
-	{
-
-	}
-
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		this->id = id;
-		name = nullptr;
-		isExists = false;
-	}
-	Json print()
-	{
-		Json json;
-
-		json["rootId"] = rootId;
-		json["id"] = id;
-		json["name"] = name == nullptr ? "nullptr" : name;
-		json["isExists"] = isExists;
-
-		return json;
-	}
-};
-
-template<typename OBJECT_HANDLER>
-struct ObjectHitActionModule:
-	virtual ObjectBase_<OBJECT_HANDLER>
-{
-	Type::Coord hitCoord = {0,0};
-
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		hitCoord = coord;
-	}
-	Json print()
-	{
-		Json json;
-
-		json["hitCoord.x"] = hitCoord.x;
-		json["hitCoord.y"] = hitCoord.y;
-
-		return json;
-	}
-
-	void SetHitCoord(Type::Coord coord_)
-	{
-		hitCoord = coord_;
-	}
-	Type::Coord GetHitCoord() const
-	{
-		return hitCoord;
-	}
-};
-
-template<typename OBJECT_HANDLER>
-struct ObjectRequestsModule:
-	virtual ObjectHitActionModule<OBJECT_HANDLER>
-{
-	struct RequestsType
-	{
-		bool timer;
-		bool tick;
-		bool update;
-		bool draw;
-
-		bool remove;
-		bool blowUp;
-
-		inline void clear()
+			struct Interface:
+				Module::Draw::Data<OBJECT>::Interface
+			{
+				virtual OBJECT *GetObject(Type::Coord) = 0;
+				virtual Type::Flags GetBlockFlags(Type::Coord) const = 0;
+				virtual int selectStatus(Type::Coord) const = 0;
+				virtual bool isTarget(Type::Coord) const = 0;
+			};
+			Interface *scene;
+			inline void setScene(Interface *scene_)
+			{
+				scene = scene_;
+			}
+		};
+		struct Brick:
+			virtual DataCo<Brick>,
+			virtual Module::Base::Func<DataCo<Brick>>,
+			virtual Module::Execute::Func<DataCo<Brick>>,
+			virtual Module::Move::Func<DataCo<Brick>>,
+			virtual Module::Stack::Func<DataCo<Brick>>,
+			virtual Module::Rotate::Func<DataCo<Brick>>,
+			virtual Module::Actions::Func<DataCo<Brick>>,
+			virtual Module::Events::Func<DataCo<Brick>>,
+			virtual Module::Draw::Func<DataCo<Brick>>,
+			virtual Module::Coord::Func<DataCo<Brick>>
 		{
-			timer = false;
-			tick = false;
-			update = false;
-			draw = false;
 
-			remove = false;
-			blowUp = false;
-		}
-
-	} requests = {0};
-
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		requests.clear();
+		};
 	}
-	Json print()
-	{
-		Json json;
+}
 
-		json["requests.timer"] = requests.timer;
-		json["requests.tick"] = requests.tick;
-		json["requests.update"] = requests.update;
-		json["requests.draw"] = requests.draw;
-		json["requests.remove"] = requests.remove;
-		json["requests.blowUp"] = requests.blowUp;
-
-		return json;
-	}
-
-	inline void blowUp(Type::Coord coord)
-	{
-		requests.blowUp = true;
-		hitCoord = coord;
-	}
-};
-
-template<typename OBJECT_HANDLER>
-struct ObjectStackModule:
-	virtual ObjectBase_<OBJECT_HANDLER>
+namespace Object
 {
-	struct Stack
+	template <typename OBJECT>
+	struct DataCo:
+		virtual Module::Base::Data<OBJECT>,
+		virtual Module::Execute::Data<OBJECT>,
+		virtual Module::Move::Data<OBJECT>,
+		virtual Module::Stack::Data<OBJECT>,
+		virtual Module::Rotate::Data<OBJECT>,
+		virtual Module::Events::Data<OBJECT>,
+		virtual Module::Draw::Data<OBJECT>,
+		virtual Module::Coord::Data<OBJECT>,
+		virtual Module::Requests::Data<OBJECT>,
+		virtual Module::Actions::Data<OBJECT>,
+		virtual Module::HitAction::Data<OBJECT>,
+		virtual Module::Flags::Data<OBJECT>
 	{
-		OBJECT_HANDLER *o = nullptr;
-		unsigned char *specific = nullptr;
-		unsigned int pos = 0;
+		struct Interface:
+			Module::Draw::Data<OBJECT>::Interface
+		{
+			// murphy
+			virtual void murphyMoved(OBJECT *object) = 0;
+			virtual void murphyDead(OBJECT *) = 0;
+			virtual void murphyVictory() = 0;
+
+			// art
+			virtual void addUnity(int) = 0;
+			virtual void addScore(int) = 0;
+			virtual int getUnity() const = 0;
+			virtual int getScoreToCollect() const = 0;
+
+			// field
+			virtual Type::Flags GetBlockFlags(Type::Coord) = 0;
+			virtual OBJECT *GetObject(Type::Coord) = 0;
+			virtual OBJECT *GetObjectOut(Type::Coord) = 0;
+			virtual OBJECT *GetObjectOutU(Type::Coord) = 0;
+			virtual OBJECT *GetRemain(Type::Coord) = 0;
+			virtual Type::Flags GetUnionFlags(Type::Coord) = 0;
+			virtual Type::Flags GetSectionFlags(Type::Coord) = 0;
+			virtual Type::Coord GetGoto(Type::Coord) = 0;
+			virtual Type::Coord GetComefrom(Type::Coord) = 0;
+			virtual bool IsObjectOut(Type::Coord) = 0;
+			virtual bool IsGlobalGravity() const = 0;
+			virtual void switchGravity() = 0;
+			virtual bool IamRemain(OBJECT *) = 0;
+			virtual Type::Size MapSize() = 0;
+			virtual OBJECT *GetObjectU(Type::Coord) = 0;
+
+			// action
+			virtual void BlowUpBlock(Type::Coord coord) = 0;
+			virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
+			virtual void ObjectPut(Type::Coord, Type::ID) = 0;
+			virtual void RemainPut(Type::Coord, Type::ID) = 0;
+			virtual void ObjectArrived(Type::Coord) = 0;
+			virtual void ObjectVirtualArrived(Type::Coord) = 0;
+			virtual void ObjectDisappear(Type::Coord) = 0;
+			virtual bool rollTrigger(OBJECT *obj_, unsigned __int16 typeID, float chancePerSec) = 0;
+		};
+		Interface *scene;
+		inline void setScene(Interface *scene_)
+		{
+			scene = scene_;
+		}
 	};
-
-#define pops(Specific,name) \
-unsigned int pos=stack->pos; \
-stack->pos+=sizeof(Specific); \
-Specific *name=(Specific*)(&stack->specific[pos]);
-
-#define gets(Specific,name) \
-unsigned int pos=stack->pos; \
-Specific *name=(Specific*)(&stack->specific[stack->pos]);
-
-#define regets(Specific,name) \
-name=(Specific*)(&stack->specific[pos]); 
-
-#define maks(object) \
-ObjectBase::Stack stack_; \
-ObjectBase::Stack *stack=&stack_; \
-stack->o=object; \
-stack->specific=object->specific; 
-
-	//OBJECT SPECIFIC
-	unsigned char specific[256] = {0};
-
-	inline void __init__(Type::ID id, Type::Coord coord)
+	struct Brick:
+		virtual DataCo<Brick>,
+		virtual Module::Base::Func<DataCo<Brick>>,
+		virtual Module::Execute::Func<DataCo<Brick>>,
+		virtual Module::Move::Func<DataCo<Brick>>,
+		virtual Module::Stack::Func<DataCo<Brick>>,
+		virtual Module::Rotate::Func<DataCo<Brick>>,
+		virtual Module::Events::Func<DataCo<Brick>>,
+		virtual Module::Draw::Func<DataCo<Brick>>,
+		virtual Module::Coord::Func<DataCo<Brick>>,
+		virtual Module::Requests::Func<DataCo<Brick>>,
+		virtual Module::Actions::Func<DataCo<Brick>>,
+		virtual Module::HitAction::Func<DataCo<Brick>>,
+		virtual Module::Flags::Func<DataCo<Brick>>
 	{
-		memset(specific, 0, sizeof(specific));
-	}
-#define OBJECT_PRINTER_PARAM ObjectBase::Stack *stack
-#define OBJECT_PRINTER_CALL stack
-#define OBJECT_PRINTER_RET Json
-	typedef Json(*PRINT)(Stack *);
-	PRINT printFnc = nullptr;
-	Json print()
-	{
-		if (printFnc)
+		inline void __init__(Type::ID id, Type::Coord coord)
 		{
-			Stack stack;
-			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
-			stack.specific = this->specific;
-			return printFnc(&stack);
+			Module::Requests::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Actions::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Events::Func<DataCo<Brick>>::__init__(id, coord);
+
+			Module::Base::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::HitAction::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Stack::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Execute::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Move::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Rotate::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Coord::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Flags::Func<DataCo<Brick>>::__init__(id, coord);
+			Module::Draw::Func<DataCo<Brick>>::__init__(id, coord);
+
+			TranslationTo = ObjectID::Space;
+			ObjectIDremain = ObjectID::Space;
 		}
-		else
+		inline Json print()
 		{
-			return Json();
+			Json json;
+
+			json["TranslationTo"] = TranslationTo;
+			json["ObjectIDremain"] = ObjectIDremain;
+
+			json["\\ObjectRequestsModule"] = Module::Requests::Func<DataCo<Brick>>::print();
+			json["\\ObjectActionsModule"] = Module::Actions::Func<DataCo<Brick>>::print();
+			json["\\ObjectEventsModule"] = Module::Events::Func<DataCo<Brick>>::print();
+
+			json["\\Object_"] = Module::Base::Func<DataCo<Brick>>::print();
+			json["\\ObjectHitActionModule"] = Module::HitAction::Func<DataCo<Brick>>::print();
+			json["\\ObjectStackModule"] = Module::Stack::Func<DataCo<Brick>>::print();
+			json["\\ObjectEventModule"] = Module::Execute::Func<DataCo<Brick>>::print();
+			json["\\ObjectMoveModule"] = Module::Move::Func<DataCo<Brick>>::print();
+			json["\\ObjectRotationModule"] = Module::Rotate::Func<DataCo<Brick>>::print();
+			json["\\ObjectCoordModule"] = Module::Coord::Func<DataCo<Brick>>::print();
+			json["\\ObjectFlagsModule"] = Module::Flags::Func<DataCo<Brick>>::print();
+			json["\\ObjectDrawModule"] = Module::Draw::Func<DataCo<Brick>>::print();
+
+			return json;
 		}
-	}
-};
 
-template<typename OBJECT_HANDLER>
-struct ObjectEventModule:
-	virtual ObjectBase_<OBJECT_HANDLER>,
-	virtual ObjectRequestsModule<OBJECT_HANDLER>,
-	virtual ObjectStackModule<OBJECT_HANDLER>,
-	virtual ObjectHitActionModule<OBJECT_HANDLER>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		printFnc = nullptr;
-		updaterFnc = nullptr;
-		timerFnc = nullptr;
-	}
-	Json print()
-	{
-		Json json;
 
-		return json;
-	}
+		public:
 
-	//LÉTRHOZÁS #####################################################################################
-#define OBJECT_CREATER_PARAM ObjectBase::Stack *stack
-#define OBJECT_CREATER_CALL stack
-	typedef void(*CREATER)(Stack *);
-	void RunCreate(CREATER creater = nullptr);
-
-	//INICIALIZÁLÓ
-#define OBJECT_INITIALIZER_PARAM
-	typedef void(*INITIALIZER)(OBJECT_INITIALIZER_PARAM);
-
-	//UPDATE #####################################################################################
-#define OBJECT_UPDATE_PARAM ObjectBase::Stack *stack
-#define OBJECT_UPDATE_CALL stack
-	typedef void(*UPDATE)(Stack *);
-	UPDATE updaterFnc = nullptr;
-	unsigned long long updateNumber = 0;
-	unsigned long long totalUpdateNumber = 0;
-
-	void RunUpdate()
-	{
-		requests.update = false;
-		updateNumber = totalUpdateNumber++;
-		if (updaterFnc)
+		static void PrintFlags(Type::Flags flags);
+		public:
+		typedef void(*InitializeType)();
+		//scene easy
+		inline auto Move(Type::Coord from, Type::Coord to, Type::ID remain)
 		{
-			Stack stack;
-			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
-			stack.specific = this->specific;
-			updaterFnc(&stack);
+			return scene->ObjectMove(from, to, remain);
 		}
-	}
-
-
-	//TIMER EVENT #####################################################################################
-#define OBJECT_TIMER_PARAM ObjectBase::Stack *stack
-#define OBJECT_TIMER_CALL stack
-	typedef void(*TIMER)(Stack *);
-	TIMER timerFnc = nullptr;
-	void RunTimer()
-	{
-		requests.timer = false;
-		if (timerFnc)
+		inline auto Arrived()
 		{
-			Stack stack;
-			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
-			stack.specific = this->specific;
-			timerFnc(&stack);
+			return scene->ObjectArrived(coord);
 		}
-	}
-};
+		inline auto Disappear()
+		{
+			return scene->ObjectDisappear(coord);
+		}
+		inline auto GetObject(Type::Coord coord)
+		{
+			return scene->GetObject(coord);
+		}
+		inline auto GetObjectOut(Type::Coord coord)
+		{
+			return scene->GetObjectOut(coord);
+		}
+		inline auto GetRemain(Type::Coord coord)
+		{
+			return scene->GetRemain(coord);
+		}
 
-template<typename OBJECT_HANDLER>
-struct ObjectMoveModule:
-	virtual ObjectBase_<OBJECT_HANDLER>,
-	virtual ObjectActionsModule<OBJECT_HANDLER>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		move = {0,0};
-	}
-	Json print()
-	{
-		Json json;
 
-		json["move.x"] = move.x;
-		json["move.y"] = move.y;
+		public:
+		Type::ID TranslationTo = ObjectID::Space;
+		Type::ID ObjectIDremain = ObjectID::Space;
 
-		return json;
-	}
 
-	Type::Move move = {0,0};
+		public:
 
-	void SetMoveUnsafe(Type::Move move_ = {0,0})
-	{
-		move = move_;
-	}
-	void SetMove(Type::Move move_ = {0,0})
-	{
-		move = move_;
-		SetDrawCoord();
-	}
-	Type::Move GetMove()
-	{
-		return move;
-	}
-	bool IsMove()
-	{
-		return move.x != 0 || move.y != 0;
-	}
-	bool IsMoveHorizontal()
-	{
-		return move.x != 0;
-	}
-	bool IsMoveVertical()
-	{
-		return move.y != 0;
-	}
-	bool IsMoving()
-	{
-		return actions.move;
-	}
-	bool IsMoveLeft()
-	{
-		return move.x > 0;
-	}
-	bool IsMoveRight()
-	{
-		return move.x < 0;
-	}
-	bool IsMoveDown()
-	{
-		return move.y < 0;
-	}
-	bool IsMoveUp()
-	{
-		return move.y > 0;
-	}
-	/*
-	beállítja autómatikusan a movet a rotation alapján
+		bool Roll(double PpM);
+		public:
+		public:
+		/*
+		csakis külsõ hívás szabad! rekurzív nem
 
-	a move paraméter adja meg a move x vagy y-t, pozitív egész számnak kell lennie
-	*/
-	void SetMove(Type::Rotation rotation, Type::Move move = {1,1})
-	{
-		if (rotation == Type::Rotations::Up)
-			SetMove({this->move.x,move.y});
-		else if (rotation == Type::Rotations::Down)
-			SetMove({this->move.x,-move.y});
-		else if (rotation == Type::Rotations::Left)
-			SetMove({move.x,this->move.y});
-		else if (rotation == Type::Rotations::Right)
-			SetMove({-move.x,this->move.y});
-	}
-	void SetMoveUnsafe(Type::Rotation rotation, Type::Move move = {1,1})
-	{
-		if (rotation == Type::Rotations::Up)
-			SetMoveUnsafe({this->move.x,move.y});
-		else if (rotation == Type::Rotations::Down)
-			SetMoveUnsafe({this->move.x,-move.y});
-		else if (rotation == Type::Rotations::Left)
-			SetMoveUnsafe({move.x,this->move.y});
-		else if (rotation == Type::Rotations::Right)
-			SetMoveUnsafe({-move.x,this->move.y});
-	}
+		visszatérési érték, sikeres lefutás true
+		*/
 
-	virtual void SetDrawCoord() = 0;
-};
 
-template<typename OBJECT_HANDLER>
-struct ObjectRotationModule:
-	virtual ObjectBase_<OBJECT_HANDLER>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		rotation = 0;
-	}
-	Json print()
-	{
-		Json json;
+		void SetTranslationID(Type::ID id);
+		void SetObjectIDremain(Type::ID id);
 
-		json["rotation"] = rotation;
 
-		return json;
-	}
+		virtual void SetCoord(Type::Coord coord);
 
-	Type::Rotation rotation = 0;
 
-	static Type::Rotation GetRealRotation(Type::Rotation rotation)
-	{
-		if (rotation < 0)
-			rotation += (int)(rotation / Type::Rotations::_360) * Type::Rotations::_360 + Type::Rotations::_360;
-		else if (rotation > Type::Rotations::_360)
-			rotation -= (int)(rotation / Type::Rotations::_360) * Type::Rotations::_360;
-		return rotation;
-	}
-	Type::Rotation GetRotation() const
-	{
-		return rotation;
-	}
-};
+		//GET
+		//1 másik oldalon még teljesen  0 nyugalmi állapot
+		float GetAbsMove();
+		Type::Coord GetForwardCoord();
+		Type::Coord GetForwardCoord(Type::Rotation rotation);
 
-template<typename OBJECT_HANDLER>
-struct ObjectCoordModule:
-	virtual ObjectBase_<OBJECT_HANDLER>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		this->coord = coord;
-	}
-	Json print()
-	{
-		Json json;
+		Type::ID GetTranslationTo();
+		Type::ID GetObjectIDremain();
+		static void Initialize();
 
-		json["coord.x"] = coord.x;
-		json["coord.y"] = coord.y;
 
-		return json;
-	}
 
-	Type::Coord coord = Type::Coord::Invalid;
-
-	Type::Coord GetCoord() const
-	{
-		return coord;
-	}
-	Type::Coord GetCoordLeft() const
-	{
-		return{coord.x - 1,coord.y};
-	}
-	Type::Coord GetCoordRight() const
-	{
-		return{coord.x + 1,coord.y};
-	}
-	Type::Coord GetCoordUp() const
-	{
-		return{coord.x,coord.y - 1};
-	}
-	Type::Coord GetCoordDown() const
-	{
-		return{coord.x,coord.y + 1};
-	}
-};
-
-template<typename OBJECT_HANDLER>
-struct ObjectFlagsModule:
-	virtual ObjectBase_<OBJECT_HANDLER>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		flags = 0;
-	}
-	Json print()
-	{
-		Json json;
-
-		json["flags"] = flags;
-
-		return json;
-	}
-
-	enum Flags:Type::Flags
-	{
-		StepOn = 1 << 0,//ráléphet, megeheti
-		MurphyDies = 1 << 1,//ha megeszi belehal
-		CanPushUp = 1 << 2,//el lehet felfelé tolni
-		CanPushDown = 1 << 3,//el lehet lefelé tolni
-		CanPushRight = 1 << 4,//el lehet jobbra tolni
-		CanPushLeft = 1 << 5,//el lehet balra tolni
-		CanPush = CanPushUp | CanPushDown | CanPushRight | CanPushLeft,//bármely irányba el lehet tolni
-		MurphyStepOn = (1 << 6),//a murphy és más rá tud lépni
-		RollOffTop = 1 << 7,//a tetejérõl legurul
-		RollOffBottom = 1 << 8,//az aljáról legurul
-		RollOff = RollOffTop | RollOffBottom,//tetejérõl és aljáról is le lehet gurulni
-		PassageFromRight = 1 << 9,//átlehet rajta bújni jobbról
-		PassageFromLeft = 1 << 10,//átlehet rajta bújni balról
-		PassageFromTop = 1 << 11,//átlehet rajta bújni fentrõl
-		PassageFromBottom = 1 << 12,//átlehet rajta bújni lentrõl
-		PassageVertical = PassageFromTop | PassageFromBottom,//átlehet rajta bújni jobbról és balról
-		PassageHorizontal = PassageFromLeft | PassageFromRight,//átlehet rajta bújni fentrõl és lentrõl
-		Passage = PassageVertical | PassageHorizontal,//átlehet rajta bújni minden irányból
-		FallOnExplosion = 1 << 18,//ha ráesik valami felrobban
-		ExplosionType1 = 1 << 19,//1*1-es újrarobbanás
-		ExplosionType3 = 1 << 20 | ExplosionType1,//3*3-as újrarobbanás
-		ExplosionType5 = 1 << 21 | ExplosionType3,//5*5-ös újrarobbanás
-		CanBeExplosion = 1 << 22,//fel lehet robbantani
-		LimitSpeed = 1 << 23,//limited fix speed regardles of other speed oprtions, like a rock movement during a push action
-		PhysicsSpeed = 1 << 24,//gyorsuló mozgás
-		MurphyCanSniff = 1 << 26,//a játékos fel tudja szedni rálépés nélkül "szippantással"
-		CanBeKilled = 1 << 27,//meg lehet ölni
-		GiveGravityDelay = 1 << 28,//nem esik vissza azonnal
-		ButtonPush = 1 << 29,//megnyomható, pl egy terminal, hozzá tartozó függvény: virtual void ButtonPushed()
-		Give1Score = 1 << 30,//a célhoz hozzátesz 1-et
-		Give1Unity = 1 << 31,//1 bombát ad
+		//AUTOMOVE
+		private:
+		bool CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation);
+		public:
+		bool CanMovePos(Type::Coord to, Type::Rotation rotation);
+		bool CanMoveDown();
+		bool CanMoveUp();
+		bool CanMoveLeft();
+		bool CanMoveRight();
 	};
-
-	Type::Flags flags = 0;
-
-	void SetFlags(Type::Flags flags_)
-	{
-		flags = flags_;
-	}
-	Type::Flags GetFlags()
-	{
-		return flags;
-	}
-	void AddFlags(Type::Flags flags_)
-	{
-		flags |= flags_;
-	}
-	void RemoveFlags(Type::Flags flags_)
-	{
-		flags &= ~flags_;
-	}
-};
-
-template<typename OBJECT_HANDLER>
-struct ObjectDrawModule:
-	virtual ObjectRequestsModule<OBJECT_HANDLER>,
-	virtual ObjectActionsModule<OBJECT_HANDLER>,
-	virtual ObjectEventsModule<OBJECT_HANDLER>,
-	virtual ObjectBase_<OBJECT_HANDLER>,
-	virtual ObjectHitActionModule<OBJECT_HANDLER>,
-	virtual ObjectStackModule<OBJECT_HANDLER>,
-	virtual ObjectEventModule<OBJECT_HANDLER>,
-	virtual ObjectMoveModule<OBJECT_HANDLER>,
-	virtual ObjectRotationModule<OBJECT_HANDLER>,
-	virtual ObjectCoordModule<OBJECT_HANDLER>,
-	virtual ObjectFlagsModule<OBJECT_HANDLER>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		drawnerFnc = nullptr;
-		configureDrawOptions();
-	}
-	Json print()
-	{
-		Json json;
-
-		json["DrawCoord.x"] = DrawCoord.x;
-		json["DrawCoord.y"] = DrawCoord.y;
-
-		return json;
-	}
-
-	inline void configureDrawOptions()
-	{
-		DrawCoord.x = coord.x * DrawSize().width;
-		DrawCoord.y = coord.y * DrawSize().height;
-	}
-
-	unsigned long long int DrawNumber = 0;
-	static unsigned long long int SObjectDrawCounts;
-	unsigned long long int DrawnedCount = 0;
-	typedef void(*StatisDrawType)(int, int, int, int);
-
-	struct Interface
-	{
-		virtual Type::Size GetDrawSize() const = 0;
-		virtual Type::Size GetDrawOffSet() const = 0;
-	} *drawIef;
-
-	Type::Coord DrawCoord = {0,0};
-
-	virtual void Draw()
-	{
-		if (drawnerFnc)
-		{
-			Stack stack;
-			stack.o = dynamic_cast<OBJECT_HANDLER *>(this);
-			stack.specific = this->specific;
-			drawnerFnc(&stack, this->GetDrawCoord().x, this->GetDrawCoord().y, DrawSize().width, DrawSize().height);
-		}
-		else
-		{
-			static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(this->GetDrawCoord().x, this->GetDrawCoord().y, DrawSize().width, DrawSize().height);
-		}
-	}
-	virtual void SDraw()//teszteés céljából hogy a conter mûködjön
-	{
-		DrawnedCount++;
-		if (DrawnedCount >= 2)
-		{
-			clog << "WARNING! An object has been drawned two times (" << GetCoord().x << "," << GetCoord().y << "):" << KIR4::eol;
-		}
-		SObjectDrawCounts++;
-		Draw();
-	}
-	void SetDrawCoord()
-	{
-		Type::Coord
-			NewDrawCoord = {Type::Coord::Type((coord.x + move.x) * Type::Move::Type(DrawSize().width)), Type::Coord::Type((coord.y + move.y) * Type::Move::Type(DrawSize().height))};
-
-		if (NewDrawCoord != DrawCoord)
-		{
-			DrawCoord = NewDrawCoord;
-			requests.draw = true;
-			//scene->Redrawn(coord);
-		}
-	}
-	Type::Coord GetDrawCoord()
-	{
-		return{DrawCoord.x - DrawOffSet().width,DrawCoord.y - DrawOffSet().height};
-	}
-
-	inline auto DrawSize()
-	{
-		return drawIef->GetDrawSize();
-	}
-	inline auto DrawOffSet()
-	{
-		return drawIef->GetDrawOffSet();
-	}
-
-	inline void setIef(Interface *drawIef_)
-	{
-		drawIef = drawIef_;
-	}
-
-	//DRAW #####################################################################################
-#define OBJECT_DRAWNER_PARAM ObjectBase::Stack *stack, Type::Coord::Type x,Type::Coord::Type y,Type::Coord::Type w,Type::Coord::Type h
-#define OBJECT_DRAWNER_CALL stack, x, y, w, h
-	typedef void(*DRAWNER)(Stack *, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h);
-	unsigned long long int drawCounter = 0;//ez az objektum hányszor lett eddig újrarajzolva
-	unsigned long long int drawAtOnceCounter = 0;//ez az objektum hányszor lett újrarajzolva egy ciklus alatt
-	unsigned long long int drawCounterID = 0;//az objektum hányadikként lett rajzolva az összesbõl
-	static unsigned long long int totalDrawCounter;//az összes objektum eddigi újrarajzolása
-	DRAWNER drawnerFnc = nullptr;
-	void RunSDraw()//teszteés céljából hogy a conter mûködjön
-	{
-		drawCounter++;
-		drawAtOnceCounter++;
-		if (drawAtOnceCounter >= 2)
-		{
-			clog << "WARNING! An object has been drawned two times (" << GetCoord().x << "," << GetCoord().y << "):" << KIR4::eol;
-			Print();
-		}
-		drawCounterID = ++totalDrawCounter;
-		Stack stack;
-		stack.o = this;
-		stack.specific = this->specific;
-		drawnerFnc(&stack, this->GetDrawCoord().x, this->GetDrawCoord().y, DrawSize().width, DrawSize().height);
-	}
-
-};
-
-template<typename OBJECT_HANDLER>
-unsigned long long int ObjectDrawModule<OBJECT_HANDLER>::SObjectDrawCounts = 0;
-
-template<typename OBJECT_HANDLER>
-unsigned long long int ObjectDrawModule<OBJECT_HANDLER>::totalDrawCounter = 0;
-
-struct EditorObjectBase:
-	virtual ObjectDrawModule<EditorObjectBase>
-{
-	struct Interface:
-		ObjectDrawModule<EditorObjectBase>::Interface
-	{
-		virtual EditorObjectBase *GetObject(Type::Coord) = 0;
-		virtual Type::Flags GetBlockFlags(Type::Coord) const = 0;
-		virtual int selectStatus(Type::Coord) const = 0;
-		virtual bool isTarget(Type::Coord) const = 0;
-	};
-	Interface *scene;
-
-	inline void setIef(Interface *scene_)
-	{
-		scene = scene_;
-		ObjectDrawModule<EditorObjectBase>::setIef(scene_);
-	}
-};
-
-struct ObjectBase:
-	virtual ObjectRequestsModule<ObjectBase>,
-	virtual ObjectActionsModule<ObjectBase>,
-	virtual ObjectEventsModule<ObjectBase>,
-	virtual ObjectBase_<ObjectBase>,
-	virtual ObjectHitActionModule<ObjectBase>,
-	virtual ObjectStackModule<ObjectBase>,
-	virtual ObjectEventModule<ObjectBase>,
-	virtual ObjectMoveModule<ObjectBase>,
-	virtual ObjectRotationModule<ObjectBase>,
-	virtual ObjectCoordModule<ObjectBase>,
-	virtual ObjectFlagsModule<ObjectBase>,
-	virtual ObjectDrawModule<ObjectBase>
-{
-	inline void __init__(Type::ID id, Type::Coord coord)
-	{
-		ObjectRequestsModule<ObjectBase>::__init__(id, coord);
-		ObjectActionsModule<ObjectBase>::__init__(id, coord);
-		ObjectEventsModule<ObjectBase>::__init__(id, coord);
-
-		ObjectBase_<ObjectBase>::__init__(id, coord);
-		ObjectHitActionModule<ObjectBase>::__init__(id, coord);
-		ObjectStackModule<ObjectBase>::__init__(id, coord);
-		ObjectEventModule<ObjectBase>::__init__(id, coord);
-		ObjectMoveModule<ObjectBase>::__init__(id, coord);
-		ObjectRotationModule<ObjectBase>::__init__(id, coord);
-		ObjectCoordModule<ObjectBase>::__init__(id, coord);
-		ObjectFlagsModule<ObjectBase>::__init__(id, coord);
-		ObjectDrawModule<ObjectBase>::__init__(id, coord);
-
-		MoveSpeed = {1,1};
-		RotationSpeed = 1;
-		TranslationTo = ObjectID::Space;
-		ObjectIDremain = ObjectID::Space;
-
-		accelaratePercent_ = 0.f;
-		limitSpeed_ = 0.f;
-		currentSpeed_ = 0.f;
-		carrySpeed_ = 0.f;
-
-		Type::Move::Type limitSpeed_ = 0.f;
-		Type::Move::Type currentSpeed_ = 0.f;
-		hitactive = false;
-	}
-	inline Json print()
-	{
-		Json json;
-
-		json["accelaratePercent"] = accelaratePercent_;
-		json["limitSpeed"] = limitSpeed_;
-		json["currentSpeed"] = currentSpeed_;
-		json["MoveSpeed.x"] = MoveSpeed.x;
-		json["MoveSpeed.y"] = MoveSpeed.y;
-		json["RotationSpeed"] = RotationSpeed;
-		json["TranslationTo"] = TranslationTo;
-		json["ObjectIDremain"] = ObjectIDremain;
-
-		json["\\ObjectRequestsModule"] = ObjectRequestsModule<ObjectBase>::print();
-		json["\\ObjectActionsModule"] = ObjectActionsModule<ObjectBase>::print();
-		json["\\ObjectEventsModule"] = ObjectEventsModule<ObjectBase>::print();
-
-		json["\\ObjectBase_"] = ObjectBase_<ObjectBase>::print();
-		json["\\ObjectHitActionModule"] = ObjectHitActionModule<ObjectBase>::print();
-		json["\\ObjectStackModule"] = ObjectStackModule<ObjectBase>::print();
-		json["\\ObjectEventModule"] = ObjectEventModule<ObjectBase>::print();
-		json["\\ObjectMoveModule"] = ObjectMoveModule<ObjectBase>::print();
-		json["\\ObjectRotationModule"] = ObjectRotationModule<ObjectBase>::print();
-		json["\\ObjectCoordModule"] = ObjectCoordModule<ObjectBase>::print();
-		json["\\ObjectFlagsModule"] = ObjectFlagsModule<ObjectBase>::print();
-		json["\\ObjectDrawModule"] = ObjectDrawModule<ObjectBase>::print();
-
-		return json;
-	}
-
-	public:
-
-	static void PrintFlags(Type::Flags flags);
-	unsigned long long int UpdateNumber = 0;
-	static unsigned long long int SUpdateNumber;
-	public:
-	typedef void(*InitializeType)();
-	struct Interface:
-		ObjectDrawModule<ObjectBase>::Interface
-	{
-		// murphy
-		virtual void murphyMoved(ObjectBase *object) = 0;
-		virtual void murphyDead(ObjectBase *) = 0;
-		virtual void murphyVictory() = 0;
-
-		// art
-		virtual void addUnity(int) = 0;
-		virtual void addScore(int) = 0;
-		virtual int getUnity() const = 0;
-		virtual int getScoreToCollect() const = 0;
-
-		// field
-		virtual Type::Flags GetBlockFlags(Type::Coord) = 0;
-		virtual ObjectBase *GetObject(Type::Coord) = 0;
-		virtual ObjectBase *GetObjectOut(Type::Coord) = 0;
-		virtual ObjectBase *GetRemain(Type::Coord) = 0;
-		virtual Type::Flags GetUnionFlags(Type::Coord) = 0;
-		virtual Type::Flags GetSectionFlags(Type::Coord) = 0;
-		virtual Type::Coord GetGoto(Type::Coord) = 0;
-		virtual Type::Coord GetComefrom(Type::Coord) = 0;
-		virtual bool IsObjectOut(Type::Coord) = 0;
-		virtual bool IsGlobalGravity() const = 0;
-		virtual void switchGravity() = 0;
-		virtual bool IamRemain(ObjectBase *) = 0;
-		virtual Type::Size MapSize() = 0;
-		virtual ObjectBase *GetObjectU(Type::Coord) = 0;
-
-		// action
-		virtual void BlowUpBlock(Type::Coord coord) = 0;
-		virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
-		virtual void ObjectPut(Type::Coord, Type::ID) = 0;
-		virtual void RemainPut(Type::Coord, Type::ID) = 0;
-		virtual void ObjectArrived(Type::Coord) = 0;
-		virtual void ObjectVirtualArrived(Type::Coord) = 0;
-		virtual void ObjectDisappear(Type::Coord) = 0;
-		virtual bool EnableUpdateSkip() = 0;
-		virtual bool rollTrigger(ObjectBase *obj_, unsigned __int16 typeID, float chancePerSec) = 0;
-	};
-	//scene easy
-	inline auto ObjectBase::Move(Type::Coord from, Type::Coord to, Type::ID remain)
-	{
-		return scene->ObjectMove(from, to, remain);
-	}
-	inline auto ObjectBase::Arrived()
-	{
-		return scene->ObjectArrived(coord);
-	}
-	inline auto ObjectBase::Disappear()
-	{
-		return scene->ObjectDisappear(coord);
-	}
-	inline auto ObjectBase::GetObject(Type::Coord coord)
-	{
-		return scene->GetObject(coord);
-	}
-	inline auto ObjectBase::GetObjectOut(Type::Coord coord)
-	{
-		return scene->GetObjectOut(coord);
-	}
-	inline auto ObjectBase::GetRemain(Type::Coord coord)
-	{
-		return scene->GetRemain(coord);
-	}
-
-
-	public:
-	Type::Move MoveSpeed = {1,1};
-	Type::Speed RotationSpeed = 1;
-	Type::ID TranslationTo = ObjectID::Space;
-	Type::ID ObjectIDremain = ObjectID::Space;
-
-
-	public:
-	Interface *scene;
-	inline void setIef(Interface *scene_)
-	{
-		scene = scene_;
-		ObjectDrawModule<ObjectBase>::setIef(scene_);
-	}
-
-	virtual ~ObjectBase();
-	bool Roll(double PpM);
-	public:
-	public:
-	/*
-	csakis külsõ hívás szabad! rekurzív nem
-
-	visszatérési érték, sikeres lefutás true
-	*/
-
-	virtual void Update();
-	//autómatikusan a megfelelõ irányba lépteti, true visszatérés ha megérkezett
-	//akkor kell meghívni amikor a fordást el akarjuk kezdeni, még a léptetés elött
-	void StartRotation();
-	bool RotationLeft();
-	bool RotationRight();
-
-	//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
-	void SetMoveSpeed(Type::Move::Type speed);
-	//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
-	void SetMoveSpeed(Type::Move speed);
-	//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 360 egy teljes körbefordulás 1másodperc alatt...
-	void SetRotationSpeed(Type::Speed speed);
-	void SetTranslationID(Type::ID id);
-	void SetObjectIDremain(Type::ID id);
-
-
-	virtual void SetCoord(Type::Coord coord);
-
-
-	void SetRotation(Type::Rotation rotation);
-
-	//GET
-	//1 másik oldalon még teljesen  0 nyugalmi állapot
-	float GetAbsMove();
-	bool IsRotating();
-	Type::Coord GetForwardCoord();
-	Type::Coord GetForwardCoord(Type::Rotation rotation);
-	Type::Rotation GetRoundRotation(Type::Rotation rotation);
-
-	Type::Move GetMoveSpeed();
-	Type::Move::Type GetMoveSpeedVertical();
-	Type::Move::Type GetMoveSpeedHorizontal();
-	Type::Speed GetRotationSpeed();
-	Type::ID GetTranslationTo();
-	Type::ID GetObjectIDremain();
-	Type::Rotation GetAngel();
-	static void Initialize();
-
-
-
-	//AUTOMOVE
-	private:
-	float accelaratePercent_ = 0;
-	Type::Move::Type limitSpeed_ = 0.f; // this speed cannot be stepped over, it is a fix speed
-	Type::Move::Type currentSpeed_ = 0.f; // this amout will be stepped down
-	Type::Move::Type carrySpeed_ = 0.f; // when a step does not cost currentSpeed_, it will be added to the next preiod
-	void calculateSpeed(Type::Move::Type _baseSpeed);
-	bool CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation);
-	public:
-	bool CanMovePos(Type::Coord to, Type::Rotation rotation);
-	bool CanMoveDown();
-	bool CanMoveUp();
-	bool CanMoveLeft();
-	bool CanMoveRight();
-
-
-
-	//akkor kell meghívni ha nicns további lépés, azaz megáll az object
-	void StopStep();
-	void DisablePhysics();
-	void EnablePhysics();
-	void EnebleLimitSpeed(Type::Move::Type max);
-	void DisableLimitSpeed();
-
-	void StepUp();
-	void StepDown();
-	void StepLeft();
-	void StepRight();
-	void Step();
-	void carryStepUp();
-	void carryStepDown();
-	void carryStepLeft();
-	void carryStepRight();
-	void carryStep();
-
-	//nem érkezett meg, hanme utolérte az elötte lévõt
-	bool hitactive = false;
-	virtual void AutoStepHit();
-	virtual void ObjectArrived();
-	//AUTOMOVE END
-
-
-};
+}
 
 #pragma warning( pop )

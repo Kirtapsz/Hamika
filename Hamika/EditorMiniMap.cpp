@@ -1,7 +1,7 @@
 #include "EditorMiniMap.h"
 #include "EditorMainEvent.h"
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	MiniMap::MiniMap()
 	{
@@ -87,10 +87,9 @@ namespace UI::Editor
 		MainEvent::s_object->scene->setTarget({mx,my});
 	}
 
-	void MiniMap::SetMap(std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map_)
+	void MiniMap::SetMap(std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> &map_)
 	{
 		map = map_;
-		std::cout << ((Type::Size)(*map)).width << " - " << ((Type::Size)(*map)).height << std::endl;
 		bitmap = al_create_bitmap(((Type::Size)*map).width * blockDimension, ((Type::Size)*map).height * blockDimension);
 		updateBlocks();
 	}
@@ -98,7 +97,7 @@ namespace UI::Editor
 	{
 		KIR5::BitmapTarget bt(bitmap);
 		al_clear_to_color(KIR5::Color(0, 0, 0));
-		map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+		map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 		{
 			DrawObject((*map)[coord].object->id, coord.x * blockDimension, coord.y * blockDimension, blockDimension, blockDimension);
 			if (block.selected)

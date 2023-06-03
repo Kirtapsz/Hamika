@@ -351,7 +351,7 @@ SceneDrawer<ACTIVE_BLOCK_T>::SceneDrawer()
 template <typename ACTIVE_BLOCK_T>
 void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 {
-	ObjectBase::SObjectDrawCounts = 0;
+	Object::Brick::SObjectDrawCounts = 0;
 	//drawStatistics.start();
 
 	int cx, cy, cw, ch;
@@ -652,7 +652,7 @@ void SceneDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 		reach(map)[coord].Redrawn = true;
 		if (reach(map)[coord].ComeFrom != coord)
 			Redrawn(reach(map)[coord].ComeFrom);
-		else if (/*reach(map)[coord].object->isExists &&*/ reach(map)[coord].object->IsMoving())
+		else if (/*reach(map)[coord].object->isExists &&*/ reach(map)[coord].object->isActionMove())
 		{
 			if (reach(map)[coord].object->IsMoveLeft())
 				Redrawn({coord.x + 1,coord.y});

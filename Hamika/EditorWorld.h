@@ -19,8 +19,10 @@
 
 #include <memory>
 
-namespace UI::Editor
+namespace Editor::UI
 {
+	using namespace ::UI;
+
 	enum
 	{
 		DELETE_ITEM = 300,
