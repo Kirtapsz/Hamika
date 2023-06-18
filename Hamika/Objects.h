@@ -20,17 +20,21 @@ namespace Objects
 __int32 GetObjectNumber();
 
 void DrawObject(int id, int x, int y, int w, int h);
-
 const char *GetObjectName(int id);
-void ObjectCreate(ObjectBase *object, Type::ID id, Type::Coord coord, ObjectBase::CREATER creater = nullptr);
-inline void ObjectCreate(ObjectBase::Interface *scene, ObjectBase *object, Type::ID id, Type::Coord coord, ObjectBase::CREATER creater = nullptr)
+
+void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr);
+inline void ObjectCreate(Object::Brick::Interface *scene, Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr)
 {
-	object->setIef(scene);
+	object->setScene(scene);
 	ObjectCreate(object, id, coord, creater);
 }
-void ObjectCreate(EditorObjectBase *object, Type::ID id, Type::Coord coord, EditorObjectBase::CREATER creater = nullptr);
-inline void ObjectCreate(EditorObjectBase::Interface *scene, EditorObjectBase *object, Type::ID id, Type::Coord coord, EditorObjectBase::CREATER creater = nullptr)
+
+namespace Editor
 {
-	object->setIef(scene);
-	ObjectCreate(object, id, coord, creater);
+	void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr);
+	inline void ObjectCreate(Object::Brick::Interface *scene, Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr)
+	{
+		object->setScene(scene);
+		ObjectCreate(object, id, coord, creater);
+	}
 }

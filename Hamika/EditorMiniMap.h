@@ -17,8 +17,9 @@
 
 #include <memory>
 
-namespace UI::Editor
+namespace Editor::UI
 {
+	using namespace ::UI;
 	class MiniMap: public Panel
 	{
 		private: static constexpr int blockDimension = 5;
@@ -28,14 +29,14 @@ namespace UI::Editor
 		private: Type::Move camera{};
 		private: Type::Move cameraSize{};
 
-		private: std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> map;
+		private: std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> map;
 		private: KIR5::Bitmap bitmap;
 
 		public: MiniMap();
 		public: ~MiniMap();
 
 		private: void setCameraToClick(int x, int y);
-		public: void SetMap(std::shared_ptr<Matrix<SceneBlock<EditorObjectBase>>> &map);
+		public: void SetMap(std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> &map);
 		public: void updateBlocks();
 		public: void updatePosition(Type::Move center, Type::Move size);
 	};

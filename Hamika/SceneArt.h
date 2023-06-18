@@ -28,14 +28,14 @@ namespace UI::Scene::Module::Art
 {
 	class Data
 	{
-		protected: SceneDrawer<SceneBlock<ObjectBase>> drawer;
+		protected: SceneDrawer<SceneBlock<Object::Brick>> drawer;
 		protected: KIR5::Shared<StatusBar> statusbar;
 		protected: KIR5::Shared<Panel> drawnerBar;
 		protected: Type::CameraSize cameraSize;
 	};
 
 	template <typename DATA>
-	class Func: public virtual ObjectBase::Interface, public virtual DATA, public virtual Validator::Interface
+	class Func: public virtual Object::Brick::Interface, public virtual DATA, public virtual Validator::Interface
 	{
 		protected: void initialize()
 		{
@@ -102,7 +102,7 @@ namespace UI::Scene::Module::Art
 		};
 
 		template <typename DATA>
-		class Func: public virtual ObjectBase::Interface, public virtual DATA, public virtual Validator::Interface
+		class Func: public virtual Object::Brick::Interface, public virtual DATA, public virtual Validator::Interface
 		{
 			protected: void initialize()
 			{

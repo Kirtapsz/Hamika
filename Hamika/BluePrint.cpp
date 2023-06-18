@@ -140,7 +140,7 @@ namespace Res
 
 		const std::uint8_t *id = std::get<IO_Orig::id>(record).data();
 		blocks.resize({IO_Orig::FIX_WIDTH, IO_Orig::FIX_HEIGHT});
-		Type::Coord coord = {0};
+		Type::Coord coord;
 		for (coord.y = 0; coord.y < ((Type::Size)blocks).height; ++coord.y)
 		{
 			for (coord.x = 0; coord.x < ((Type::Size)blocks).width; ++coord.x)
@@ -162,7 +162,7 @@ namespace Res
 		std::get<IO_Orig::globalGravity>(record) = globalGravity;
 
 		std::uint8_t *id = const_cast<std::uint8_t *>(std::get<IO_Orig::id>(record).data());
-		Type::Coord coord = {0};
+		Type::Coord coord;
 		for (coord.y = 0; coord.y < ((Type::Size)blocks).height; ++coord.y)
 		{
 			for (coord.x = 0; coord.x < ((Type::Size)blocks).width; ++coord.x)

@@ -7,7 +7,7 @@
 #include <KIR/sys/KIR5_system.h>
 #include <KIR/AL/KIR5_panel_control.h>
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	SaveWorldDialog::SaveWorldDialog()
 	{

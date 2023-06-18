@@ -47,5 +47,5 @@ enum ObjectID
 	OneWayPortRightGrav = 40,
 	OneWayPortUpGrav = 41,
 	Murphy = 42,
-	MurphyPlus = 43,
+	MurphyCrawlTail = 43,
 };

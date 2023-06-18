@@ -1,0 +1,841 @@
+{
+    "BlueprintHash": [
+        96,
+        153,
+        1,
+        195,
+        124,
+        199,
+        217,
+        74,
+        91,
+        144,
+        71,
+        108,
+        45,
+        250,
+        134,
+        39,
+        129,
+        130,
+        246,
+        63,
+        213,
+        196,
+        127,
+        52,
+        239,
+        9,
+        185,
+        255,
+        141,
+        183,
+        76,
+        114,
+        228,
+        232,
+        87,
+        21,
+        122,
+        233,
+        164,
+        28,
+        228,
+        70,
+        46,
+        249,
+        165,
+        76,
+        216,
+        137,
+        24,
+        31,
+        55,
+        203,
+        21,
+        10,
+        159,
+        41,
+        92,
+        79,
+        191,
+        218,
+        216,
+        202,
+        92,
+        162
+    ],
+    "Comment": "Check if zonk van roll off from different objects",
+    "Commit": "34f987cb99c326317f72fd1efb3e169c1d718e91",
+    "Records": [
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 3,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 4,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 6,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 8,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 10,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 12,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 14,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 16,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 18,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 20,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 22,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 24,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 26,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 28,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 30,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 32,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 34,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 36,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 38,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 40,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 42,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 44,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 46,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 48,
+                    "coord.y": 25
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 0,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 2,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 4,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 6,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 8,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 10,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 12,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 14,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 16,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 18,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 20,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 22,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 24,
+                    "coord.y": 22
+                },
+                "\\Object_": {
+                    "id": 0,
+                    "isExists": true,
+                    "name": "000 - Space"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 1,
+                    "coord.y": 7
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "CurrentTimeMS": 8972,
+            "LoopCounter": 41,
+            "ObjectProperties": {
+                "\\ObjectCoordModule": {
+                    "coord.x": 5,
+                    "coord.y": 7
+                },
+                "\\Object_": {
+                    "id": 1,
+                    "isExists": true,
+                    "name": "001 - Zonk"
+                }
+            },
+            "ObjectType": 2,
+            "ValidateType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ActionState": true,
+            "CurrentTimeMS": 68231,
+            "LoopCounter": 42,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 68231,
+            "LoopCounter": 42,
+            "ObjectProperties": {
+                "victory": false
+            },
+            "ObjectType": 2,
+            "ValidateType": 5
+        },
+        {
+            "CurrentTimeMS": 68231,
+            "LoopCounter": 42,
+            "ObjectProperties": null,
+            "ObjectType": 2,
+            "ValidateType": 4
+        }
+    ],
+    "UserHash": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}

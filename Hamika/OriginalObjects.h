@@ -254,7 +254,7 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-		void Open(ObjectBase *o);
+		void Open(Brick *o);
 	}
 
 	//CrossPort 016
@@ -438,7 +438,7 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-		void Pushed(ObjectBase *o);
+		void Pushed(Brick *o);
 	}
 
 	//Utility1 029
@@ -468,7 +468,7 @@ namespace Object
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-		void Activate(ObjectBase *o);
+		void Activate(Brick *o);
 	}
 
 	//Utility3 031

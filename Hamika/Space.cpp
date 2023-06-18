@@ -12,7 +12,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::StepOn | ObjectBase::MurphyStepOn | ObjectBase::CanBeExplosion);
+			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExplosion);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{

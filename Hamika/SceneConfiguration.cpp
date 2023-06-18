@@ -431,7 +431,14 @@ namespace UI::Scene
 	{
 		if (ifSync(finished, true))
 		{
-			eventEngine->sendEvent((void *)ACTIVE_MAP_FINISHED, (void *)(0), (void *)0, (void *)0);
+			deplayTimer = 2 * CPS;
+			fncTimer.push_back([&](FNC_TIMER_PARAMS)
+			{
+				if (deplayTimer-- == 0)
+				{
+					eventEngine->sendEvent((void *)ACTIVE_MAP_FINISHED, (void *)(0), (void *)0, (void *)0);
+				}
+			});
 		}
 	}
 	void InteractiveMultitest::failure(const std::string &msg)

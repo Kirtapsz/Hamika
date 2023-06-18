@@ -2,7 +2,7 @@
 
 #include <KIR/sys/KIR5_files.h>
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	std::shared_ptr<MainEvent> MainEvent::s_object;
 

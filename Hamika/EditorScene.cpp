@@ -3,7 +3,7 @@
 #include "EditorMainEvent.h"
 #include "EditorObjects.h"
 
-namespace UI::Editor::Scene
+namespace Editor::UI::Scene
 {
 	Edit::Edit()
 	{
@@ -101,7 +101,7 @@ namespace UI::Editor::Scene
 				MainEvent::s_object->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -120,7 +120,7 @@ namespace UI::Editor::Scene
 				isRCtrl = true;
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -145,7 +145,7 @@ namespace UI::Editor::Scene
 				MainEvent::s_object->controlPanel->setOperationMode();
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -164,7 +164,7 @@ namespace UI::Editor::Scene
 				isRCtrl = false;
 				mouseMoveHold = false;
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -212,14 +212,14 @@ namespace UI::Editor::Scene
 					Type::Coord lu = {(std::min)(holdCoordBegin.x,holdCoordEnd.x),(std::min)(holdCoordBegin.y,holdCoordEnd.y)};
 					Type::Coord rd = {(std::max)(holdCoordBegin.x,holdCoordEnd.x) + 1,(std::max)(holdCoordBegin.y,holdCoordEnd.y) + 1};
 
-					map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						block.selectTmp2 = block.selectTmp1 || block.deselectTmp1;
 						block.selectTmp1 = false;
 						block.deselectTmp1 = false;
 					});
 
-					map->forrange(lu, rd, [&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->forrange(lu, rd, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (isRShift)
 						{
@@ -231,7 +231,7 @@ namespace UI::Editor::Scene
 						}
 					});
 
-					map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+					map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
 						if (isRShift)
 						{
@@ -269,7 +269,7 @@ namespace UI::Editor::Scene
 			if (mouseSelectHold)
 			{
 				mouseSelectHold = false;
-				map->foreach([&](Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+				map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					if (block.selectTmp1)
 					{
@@ -350,11 +350,11 @@ namespace UI::Editor::Scene
 	void Edit::mapLayoutUpdated()
 	{
 		targetCoord = {0,0};
-		map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+		map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 		{
 			if (block.object == nullptr)
 			{
-				block.object = new EditorObjectBase;
+				block.object = new Object::Brick;
 				ObjectCreate(this, block.object, ObjectID::Space, coord);
 				block.object->rotation = Type::Rotations::Up;
 			}
@@ -364,14 +364,14 @@ namespace UI::Editor::Scene
 			}
 			if (block.remain == nullptr)
 			{
-				block.remain = new EditorObjectBase;
+				block.remain = new Object::Brick;
 				ObjectCreate(this, block.remain, -1, coord);
-				block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
+				block.remain->drawnerFnc = Object::Front::Drawner;
 			}
 			else
 			{
 				ObjectCreate(block.remain, block.remain->id, coord);
-				block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
+				block.remain->drawnerFnc = Object::Front::Drawner;
 			}
 
 			block.GoTo = coord;
@@ -386,17 +386,17 @@ namespace UI::Editor::Scene
 	}
 	void Edit::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint)
 	{
-		map.reset(new Matrix<SceneBlock<EditorObjectBase>>(bluePrint->blocks));
+		map.reset(new Matrix<SceneBlock<Object::Brick>>(bluePrint->blocks));
 
-		map->foreach([&](const Type::Coord &coord, SceneBlock<EditorObjectBase> &block)
+		map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 		{
-			block.object = new EditorObjectBase;
+			block.object = new Object::Brick;
 			ObjectCreate(this, block.object, (*bluePrint)[coord].id, coord);
 			block.object->rotation = (*bluePrint)[coord].rotation;
 
-			block.remain = new EditorObjectBase;
+			block.remain = new Object::Brick;
 			ObjectCreate(this, block.remain, -1, coord);
-			block.remain->drawnerFnc = Object::Editor::Remain::Drawner;
+			block.remain->drawnerFnc = Object::Front::Drawner;
 
 			block.grid = (*bluePrint)[coord].flags;
 		});
@@ -412,7 +412,7 @@ namespace UI::Editor::Scene
 	{
 		return drawer.GetDrawOffSet();
 	}
-	EditorObjectBase *Edit::GetObject(Type::Coord coord)
+	Object::Brick *Edit::GetObject(Type::Coord coord)
 	{
 		return (*map)[coord].object;
 	}

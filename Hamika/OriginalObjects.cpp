@@ -54,12 +54,12 @@ namespace Object
 
 		Res::Slides ZonkMoveHorizontal;
 
-		const float moveSpeed = 4.401544f;
-		const float rollSpeed = 4.401544f;
+		constexpr float moveSpeed = CPS / 13.99f;
+		constexpr float rollSpeed = moveSpeed;
 
 		struct Specific
 		{
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -68,60 +68,63 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->drawNumber = 0;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->draw_number_ = 0;
 
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::CanPushLeft | ObjectBase::CanPushRight);
-			stack->o->EnablePhysics();
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff | Brick::CanPushLeft | Brick::CanPushRight);
+			stack->o->enablePhysics();
 
-			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
-			RollDown::Create(OBJECT_CREATER_CALL);
+			FallAndRoll::Specific *fall_and_roll_spec = *stack;
+			FallAndRoll::Create(OBJECT_CREATER_CALL);
+			FallAndRoll::setHeavy(fall_and_roll_spec, true);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["drawNumber"] = s->drawNumber;
+			json["draw_number"] = spec->draw_number_;
 
-			json["\\MoveDownHeavy"] = MoveDownHeavy::Print(OBJECT_PRINTER_CALL);
-			json["\\RollDown"] = RollDown::Print(OBJECT_PRINTER_CALL);
+			json["\\FallAndRoll"] = FallAndRoll::Print(OBJECT_PRINTER_CALL);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
-			MoveDownHeavy::Timer(OBJECT_TIMER_CALL);
-			RollDown::Timer(OBJECT_TIMER_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			FallAndRoll::Timer(OBJECT_TIMER_CALL);
 			if (stack->o->IsMoveLeft())
 			{
-				DRAW_NUMBER_R(stack->o->move.x, 1.f, s->drawNumber, stack->o, ZonkMoveHorizontal);
+				DRAW_NUMBER_DESC(stack->o->move.x, 1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
 			}
 			else if (stack->o->IsMoveRight())
 			{
-				DRAW_NUMBER(stack->o->move.x, -1.f, s->drawNumber, stack->o, ZonkMoveHorizontal);
+				DRAW_NUMBER_ASC(stack->o->move.x, -1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
 			}
 			else
 			{
-				if (s->drawNumber != 0)
+				if (spec->draw_number_ != 0)
 				{
-					s->drawNumber = 0;
+					spec->draw_number_ = 0;
 					stack->o->requests.draw = true;
 				}
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
-			MoveDownHeavy::Update(OBJECT_UPDATE_CALL);
-			RollDown::Update(OBJECT_UPDATE_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			FallAndRoll::Update(OBJECT_UPDATE_CALL);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
-			ZonkMoveHorizontal[s->drawNumber].drawScaled(x, y, w, h);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			ZonkMoveHorizontal[spec->draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -138,12 +141,12 @@ namespace Object
 		KIR5::SubBitmap BaseX;
 		Res::Slides BaseLineDisappear;
 
-		const float disappearTime = 0.23f;
+		constexpr float disappearTime = 0.23f;
 
 		struct Specific
 		{
 			float disappearTimer;
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -153,52 +156,55 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->disappearTimer = 0;
-			s->drawNumber = 0;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->disappearTimer = 0;
+			spec->draw_number_ = 0;
 
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::GiveGravityDelay);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay);
 
 			stack->o->events.update = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["disappearTimer"] = s->disappearTimer;
-			json["drawNumber"] = s->drawNumber;
+			json["disappearTimer"] = spec->disappearTimer;
+			json["draw_number"] = spec->draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (ACTION_TIMER(s->disappearTimer,
+			if (ACTION_TIMER(spec->disappearTimer,
 							 disappearTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->disappearTimer == ACTION_TIMER_START;
+				return spec->disappearTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
+				spec->draw_number_ = 0;
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
 				stack->o->requests.remove = false;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->disappearTimer,
+				DRAW_NUMBER_ASC(spec->disappearTimer,
 				disappearTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, BaseLineDisappear);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
 				stack->o->requests.remove = true;
@@ -210,21 +216,22 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			gets(Specific, s);
+			Specific *spec = *stack;
 
 			if (stack->o->requests.remove)
 			{
-				s->disappearTimer = ACTION_TIMER_START;
+				spec->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (s->disappearTimer > 0)
+			if (spec->disappearTimer > 0)
 			{
-				BaseLineDisappear[s->drawNumber].drawScaled(x, y, w, h);
+				BaseLineDisappear[spec->draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
@@ -665,7 +672,7 @@ namespace Object
 			float electricDelayTimer;
 			float electricTimer;
 			float disappearTimer;
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -674,12 +681,13 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->electricDelayTimer = 0;
-			s->electricTimer = ACTION_TIMER_START;
-			s->disappearTimer = 0;
-			s->drawNumber = 0;
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::GiveGravityDelay | ObjectBase::MurphyDies);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->electricDelayTimer = 0;
+			spec->electricTimer = ACTION_TIMER_START;
+			spec->disappearTimer = 0;
+			spec->draw_number_ = 0;
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay | Brick::MurphyDies);
 
 			stack->o->events.timer = true;
 			stack->o->events.update = true;
@@ -688,46 +696,48 @@ namespace Object
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["electricDelayTimer"] = s->electricDelayTimer;
-			json["electricTimer"] = s->electricTimer;
-			json["disappearTimer"] = s->disappearTimer;
-			json["drawNumber"] = s->drawNumber;
+			json["electricDelayTimer"] = spec->electricDelayTimer;
+			json["electricTimer"] = spec->electricTimer;
+			json["disappearTimer"] = spec->disappearTimer;
+			json["draw_number"] = spec->draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
 			stack->o->requests.timer = true;
 
-			if (ACTION_TIMER(s->disappearTimer,
+			if (ACTION_TIMER(spec->disappearTimer,
 							 disappearTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->disappearTimer == ACTION_TIMER_START;
+				return spec->disappearTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
+				spec->draw_number_ = 0;
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
 				stack->o->requests.remove = false;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->disappearTimer,
+				DRAW_NUMBER_ASC(spec->disappearTimer,
 				disappearTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, BaseX_002::BaseLineDisappear);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
 				stack->o->requests.remove = true;
@@ -738,22 +748,22 @@ namespace Object
 			}
 
 
-			if (ACTION_TIMER(s->electricDelayTimer,
+			if (ACTION_TIMER(spec->electricDelayTimer,
 							 electricDelayTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->electricDelayTimer == ACTION_TIMER_START;
+				return spec->electricDelayTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
-			{
-				return true;
-			},
-				[&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
+			{
+				return true;
+			},
+				[&stack, &spec]()->bool
 			{
 				return true;
 			}))
@@ -761,33 +771,33 @@ namespace Object
 				return;
 			}
 
-			if (ACTION_TIMER(s->electricTimer,
+			if (ACTION_TIMER(spec->electricTimer,
 							 electricTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return stack->o->scene->rollTrigger(stack->o, 1300, triggerChance) || s->electricTimer == ACTION_TIMER_START;
+				return stack->o->scene->rollTrigger(stack->o, 1300, triggerChance) || spec->electricTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
+				spec->draw_number_ = 0;
 
-				stack->o->AddFlags(ObjectBase::Flags::MurphyDies);
+				stack->o->AddFlags(Brick::Flags::MurphyDies);
 				stack->o->requests.draw = true;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->electricTimer,
+				DRAW_NUMBER_ASC(spec->electricTimer,
 				electricTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, Bug);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				s->electricDelayTimer = ACTION_TIMER_START;
-				stack->o->RemoveFlags(ObjectBase::Flags::MurphyDies);
+				spec->electricDelayTimer = ACTION_TIMER_START;
+				stack->o->RemoveFlags(Brick::Flags::MurphyDies);
 				stack->o->requests.draw = true;
 				return true;
 			}))
@@ -797,25 +807,26 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			gets(Specific, s);
+			Specific *spec = *stack;
 
 			if (stack->o->requests.remove)
 			{
-				s->disappearTimer = ACTION_TIMER_START;
+				spec->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (s->disappearTimer > 0)
+			if (spec->disappearTimer > 0)
 			{
-				BaseX_002::BaseLineDisappear[s->drawNumber].drawScaled(x, y, w, h);
+				BaseX_002::BaseLineDisappear[spec->draw_number_].drawScaled(x, y, w, h);
 			}
-			else if (s->electricTimer > 0)
+			else if (spec->electricTimer > 0)
 			{
-				Bug[s->drawNumber].drawScaled(x, y, w, h);
+				Bug[spec->draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
@@ -836,14 +847,14 @@ namespace Object
 		Res::Slides InfotronDisappear;
 		Res::Slides InfotronMoveHorizontal;
 
-		const float moveSpeed = 4.401544f;
-		const float rollSpeed = 4.401544f;
-		const float disappearTime = 0.23f;
+		constexpr float moveSpeed = CPS / 13.99f;
+		constexpr float rollSpeed = moveSpeed;
+		constexpr float disappearTime = 0.23f;
 
 		struct Specific
 		{
 			float disappearTimer;
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -853,57 +864,60 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->disappearTimer = 0;
-			s->drawNumber = 0;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->disappearTimer = 0;
+			spec->draw_number_ = 0;
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff | ObjectBase::MurphyStepOn | ObjectBase::MurphyCanSniff | ObjectBase::Give1Score);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::Give1Score);
 
-			MoveDownHeavy::Create(OBJECT_CREATER_CALL);
-			RollDown::Create(OBJECT_CREATER_CALL);
+			FallAndRoll::Specific *fall_and_roll_spec = *stack;
+			FallAndRoll::Create(OBJECT_CREATER_CALL);
+			FallAndRoll::setHeavy(fall_and_roll_spec, true);
 
 			stack->o->events.update = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["disappearTimer"] = s->disappearTimer;
-			json["drawNumber"] = s->drawNumber;
-			json["\\MoveDownHeavy"] = MoveDownHeavy::Print(OBJECT_PRINTER_CALL);
-			json["\\RollDown"] = RollDown::Print(OBJECT_PRINTER_CALL);
+			json["disappearTimer"] = spec->disappearTimer;
+			json["draw_number"] = spec->draw_number_;
+			json["\\FallAndRoll"] = FallAndRoll::Print(OBJECT_PRINTER_CALL);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (ACTION_TIMER(s->disappearTimer,
+			if (ACTION_TIMER(spec->disappearTimer,
 							 disappearTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->disappearTimer == ACTION_TIMER_START;
+				return spec->disappearTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
+				spec->draw_number_ = 0;
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
 				stack->o->requests.remove = false;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->disappearTimer,
+				DRAW_NUMBER_ASC(spec->disappearTimer,
 				disappearTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, InfotronDisappear);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
 				stack->o->requests.remove = true;
@@ -913,53 +927,53 @@ namespace Object
 				return;
 			}
 
-			MoveDownHeavy::Timer(OBJECT_TIMER_CALL);
-			RollDown::Timer(OBJECT_TIMER_CALL);
+			FallAndRoll::Timer(OBJECT_TIMER_CALL);
 			if (stack->o->IsMoveLeft())
 			{
-				DRAW_NUMBER_R(stack->o->move.x, 1.f, s->drawNumber, stack->o, InfotronMoveHorizontal);
+				DRAW_NUMBER_DESC(stack->o->move.x, 1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
 			}
 			else if (stack->o->IsMoveRight())
 			{
-				DRAW_NUMBER(stack->o->move.x, -1.f, s->drawNumber, stack->o, InfotronMoveHorizontal);
+				DRAW_NUMBER_ASC(stack->o->move.x, -1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
 			}
 			else
 			{
-				if (s->drawNumber != 0)
+				if (spec->draw_number_ != 0)
 				{
-					s->drawNumber = 0;
+					spec->draw_number_ = 0;
 					stack->o->requests.draw = true;
 				}
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			gets(Specific, s);
+			Specific *spec = *stack;
 
 			if (stack->o->requests.remove)
 			{
-				s->disappearTimer = ACTION_TIMER_START;
+				spec->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 
 			if (!stack->o->scene->IamRemain(stack->o))
 			{
-				pops(Specific, s);
-				MoveDownHeavy::Update(OBJECT_UPDATE_CALL);
-				RollDown::Update(OBJECT_UPDATE_CALL);
+				Object::Brick::Stack::Handler<Specific> sHandler(stack);
+				Specific *spec = sHandler;
+				FallAndRoll::Update(OBJECT_UPDATE_CALL);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (s->disappearTimer > 0)
+			if (spec->disappearTimer > 0)
 			{
-				InfotronDisappear[s->drawNumber].drawScaled(x, y, w, h);
+				InfotronDisappear[spec->draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
-				InfotronMoveHorizontal[s->drawNumber].drawScaled(x, y, w, h);
+				InfotronMoveHorizontal[spec->draw_number_].drawScaled(x, y, w, h);
 			}
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -979,7 +993,7 @@ namespace Object
 
 		struct Specific
 		{
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 			float animateTimer;
 		};
 
@@ -989,50 +1003,54 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			gets(Specific, s);
+			Specific *spec = *stack;
 
-			s->drawNumber = 0;
-			s->animateTimer = stack->o->scene->getScoreToCollect() > 0 ? 0.f : ACTION_TIMER_START;
+			DRAW_NUMBER_ASC_INIT(spec->draw_number_, stack->o, Exit);
 
-			stack->o->SetFlags(ObjectBase::CanBeExplosion);
-			Timer(stack);
+			spec->draw_number_ = 0;
+			spec->animateTimer = 0.f;
+
+			stack->o->events.update = true;
+			stack->o->requests.update = true;
+
+			stack->o->SetFlags(Brick::CanBeExplosion);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Specific *spec = *stack;
 			Json json;
 
-			json["drawNumber"] = s->drawNumber;
-			json["animateTimer"] = s->animateTimer;
+			json["draw_number"] = spec->draw_number_;
+			json["animateTimer"] = spec->animateTimer;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Specific *spec = *stack;
 
-			if (ACTION_TIMER(s->animateTimer,
+			if (ACTION_TIMER(spec->animateTimer,
 							 animateTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->animateTimer == ACTION_TIMER_START;
+				return spec->animateTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
+				spec->draw_number_ = 0;
 				stack->o->events.timer = true;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->animateTimer,
+				DRAW_NUMBER_ASC(spec->animateTimer,
 				animateTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, Exit);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
 				stack->o->requests.clear();
@@ -1045,32 +1063,38 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			Specific *spec = *stack;
+
+			spec->animateTimer = stack->o->scene->getScoreToCollect() > 0 ? 0.f : ACTION_TIMER_START;
+			stack->o->events.update = false;
+
+			Timer(stack);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
-			Exit[s->drawNumber].drawScaled(x, y, w, h);
+			Specific *spec = *stack;
+
+			Exit[spec->draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			Exit[Exit.getCount() - 1].drawScaled(x, y, w, h);
 		}
 
-		void Open(ObjectBase *o)
+		void Open(Brick *o)
 		{
 			Type::Coord coord{};
 			for (coord.x = 0; coord.x < o->scene->MapSize().width; coord.x++)
 			{
 				for (coord.y = 0; coord.y < o->scene->MapSize().height; coord.y++)
 				{
-					ObjectBase *oe = o->scene->GetObjectU(coord);
+					Brick *oe = o->scene->GetObjectU(coord);
 					if (oe->id == ObjectID::Exit)
 					{
-						maks(oe);
-						gets(Specific, s);
-						s->animateTimer = ACTION_TIMER_START;
-						Timer(stack);
+						Brick::Stack stack(oe);
+						Specific *spec = stack;
+						spec->animateTimer = ACTION_TIMER_START;
+						Timer(&stack);
 					}
 				}
 			}
@@ -1090,7 +1114,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::Passage);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::Passage);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1127,7 +1151,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageHorizontal);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageHorizontal);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1164,7 +1188,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageVertical);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageVertical);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1201,7 +1225,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromTop);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromTop);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1238,7 +1262,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromRight);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromRight);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1275,7 +1299,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromLeft);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromLeft);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1312,7 +1336,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::PassageFromBottom);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromBottom);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1349,7 +1373,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1386,7 +1410,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1423,7 +1447,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1452,8 +1476,8 @@ namespace Object
 	{
 		const char *name = "026 - Electrons";
 
-		const float moveSpeed = 4.401544f;
-		const float rotateSpeed = 492.156863f;
+		constexpr float moveSpeed = CPS / 13.99f;
+		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
 		Res::Slides Electrons;
 
@@ -1466,13 +1490,13 @@ namespace Object
 			stack->o->SetRotationSpeed(rotateSpeed);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Infotron);
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3);
 
 			{
-				gets(Animator::Specific, s);
+				Animator::Specific *spec = *stack;
 				Animator::Create(OBJECT_CREATER_CALL);
-				s->SetNumberOfFrames(Electrons.getCount());
-				s->SetAnimationTime(0.8f);
+				spec->SetNumberOfFrames(Electrons.getCount());
+				spec->SetAnimationTime(0.8f);
 			}
 
 			MoveLeftWay::Create(OBJECT_CREATER_CALL);
@@ -1498,8 +1522,8 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			gets(Animator::Specific, s);
-			Electrons[s->GetDrawNumber()].drawScaled(x, y, w, h);
+			Animator::Specific *spec = *stack;
+			Electrons[spec->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1512,111 +1536,85 @@ namespace Object
 	{
 		const char *name = "027 - SnikSnakMove";
 
-		Res::Slides SnikSnakMoveUp;
-		Res::Slides SnikSnakMoveRight;
-		Res::Slides SnikSnakMoveDown;
-		Res::Slides SnikSnakMoveLeft;
+		std::array<Res::Slides, 4>SnikSnakMove;
 		Res::Slides SnikSnakRotate;
 
-		const float moveSpeed = 4.401544f;
-		const float rotateSpeed = 492.156863f;
+		constexpr float moveSpeed = CPS / 13.99f;
+		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
 		struct Specific
 		{
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
-			SnikSnakMoveUp.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveUp], Res::tiles[Res::BitmapPool::Fallback]);
-			SnikSnakMoveRight.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveRight], Res::tiles[Res::BitmapPool::Fallback]);
-			SnikSnakMoveDown.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveDown], Res::tiles[Res::BitmapPool::Fallback]);
-			SnikSnakMoveLeft.initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveLeft], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMove[Type::Directions::up].initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveUp], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMove[Type::Directions::right].initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveRight], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMove[Type::Directions::down].initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveDown], Res::tiles[Res::BitmapPool::Fallback]);
+			SnikSnakMove[Type::Directions::left].initialize(Res::tiles[Res::Tiles::_027_SnikSnakMoveLeft], Res::tiles[Res::BitmapPool::Fallback]);
 			SnikSnakRotate.initialize(Res::tiles[Res::Tiles::_027_SnikSnakRotate], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->drawNumber = 0;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->draw_number_ = 0;
 
 			stack->o->SetRotationSpeed(rotateSpeed);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3);
 			stack->o->SetTranslationID(ObjectID::Space);
 
 			MoveLeftWay::Create(OBJECT_CREATER_CALL);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["drawNumber"] = s->drawNumber;
+			json["draw_number"] = spec->draw_number_;
 			json["\\MoveLeftWay"] = MoveLeftWay::Print(OBJECT_PRINTER_CALL);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
 			MoveLeftWay::Timer(OBJECT_TIMER_CALL);
 
-			if (stack->o->IsMoveUp())
+			if (stack->o->isActionMove())
 			{
-				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveUp);
-			}
-			else if (stack->o->IsMoveRight())
-			{
-				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveRight);
-			}
-			else if (stack->o->IsMoveDown())
-			{
-				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveDown);
-			}
-			else if (stack->o->IsMoveLeft())
-			{
-				DRAW_NUMBER(stack->o->GetAbsMove(), 1.f, s->drawNumber, stack->o, SnikSnakMoveLeft);
+				DRAW_NUMBER_ASC(stack->o->GetAbsMove(), 1.f, spec->draw_number_, stack->o, SnikSnakMove[stack->o->getMoveDirection()]);
 			}
 			else
 			{
-				DRAW_NUMBER_R(
-					ObjectRotationModule<float>::GetRealRotation(
-						stack->o->rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
-					Type::Rotations::_360, s->drawNumber, stack->o, SnikSnakRotate);
+				DRAW_NUMBER_DESC(Brick::GetRealRotation(
+					stack->o->rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
+					Type::Rotations::_360, spec->draw_number_, stack->o, SnikSnakRotate);
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			MoveLeftWay::Update(OBJECT_UPDATE_CALL);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (stack->o->IsMoving())
+			if (stack->o->isActionMove())
 			{
-				if (stack->o->IsMoveUp())
-				{
-					SnikSnakMoveUp[s->drawNumber].drawScaled(x, y, w, h);
-				}
-				else if (stack->o->IsMoveRight())
-				{
-					SnikSnakMoveRight[s->drawNumber].drawScaled(x, y, w, h);
-				}
-				else if (stack->o->IsMoveDown())
-				{
-					SnikSnakMoveDown[s->drawNumber].drawScaled(x, y, w, h);
-				}
-				else
-				{
-					SnikSnakMoveLeft[s->drawNumber].drawScaled(x, y, w, h);
-				}
+				SnikSnakMove[stack->o->getMoveDirection()][spec->draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
-				SnikSnakRotate[s->drawNumber].drawScaled(x, y, w, h);
+				SnikSnakRotate[spec->draw_number_].drawScaled(x, y, w, h);
 			}
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1632,8 +1630,8 @@ namespace Object
 
 		Res::Slides Terminal;
 
-		const float activatedAnimateTime = 0.7f;
-		const float animateTime = 3.f;
+		constexpr float activatedAnimateTime = 0.7f;
+		constexpr float animateTime = 3.f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1641,12 +1639,13 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			gets(Animator::Specific, s);
-			Animator::Create(OBJECT_CREATER_CALL);
-			s->SetNumberOfFrames(Terminal.getCount());
-			s->SetAnimationTime(animateTime);
 
-			stack->o->SetFlags(ObjectBase::ButtonPush);
+			Animator::Specific *spec = *stack;
+			Animator::Create(OBJECT_CREATER_CALL);
+			spec->SetNumberOfFrames(Terminal.getCount());
+			spec->SetAnimationTime(animateTime);
+
+			stack->o->SetFlags(Brick::ButtonPush | Brick::CanBeExplosion);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1666,26 +1665,26 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			gets(Animator::Specific, s);
-			Terminal[s->GetDrawNumber()].drawScaled(x, y, w, h);
+			Animator::Specific *spec = *stack;
+			Terminal[spec->GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			Terminal[0].drawScaled(x, y, w, h);
 		}
 
-		void speedUpTerminalSpeed(ObjectBase *o)
+		void speedUpTerminalSpeed(Brick *o)
 		{
-			maks(o);
-			gets(Animator::Specific, s);
-			s->SetAnimationTime(activatedAnimateTime);
+			Brick::Stack stack(o);
+			Animator::Specific *spec = stack;
+			spec->SetAnimationTime(activatedAnimateTime);
 		}
 
-		void Pushed(ObjectBase *o)
+		void Pushed(Brick *o)
 		{
-			maks(o);
-			gets(Animator::Specific, s);
-			if (s->time != activatedAnimateTime)
+			Brick::Stack stack(o);
+			Animator::Specific *spec = stack;
+			if (spec->time != activatedAnimateTime)
 			{
 				Type::Coord coord;
 				for (coord.x = 0; coord.x < o->scene->MapSize().width; coord.x++)
@@ -1716,7 +1715,7 @@ namespace Object
 
 		KIR5::SubBitmap Utility1;
 
-		const float moveSpeed = 4.401544f;
+		constexpr float moveSpeed = CPS / 13.99f;
 
 		struct Specific
 		{
@@ -1729,40 +1728,44 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->active = false;
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3 | ObjectBase::CanPushLeft | ObjectBase::CanPushRight);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->active = false;
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3 | Brick::CanPushLeft | Brick::CanPushRight);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Space);
 
-			MoveDown::Create(OBJECT_CREATER_CALL);
+			Fall::Create(OBJECT_CREATER_CALL);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["active"] = s->active;
-			json["\\MoveDown"] = MoveDown::Print(OBJECT_PRINTER_CALL);
+			json["active"] = spec->active;
+			json["\\Fall"] = Fall::Print(OBJECT_PRINTER_CALL);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
-			MoveDown::Timer(OBJECT_TIMER_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			Fall::Timer(OBJECT_TIMER_CALL);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
-			MoveDown::Update(OBJECT_UPDATE_CALL);
-			regets(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			Fall::Update(OBJECT_UPDATE_CALL);
+			spec = sHandler;
 
-			if (stack->o->IsMoving())
+			if (stack->o->isActionMove())
 			{
-				s->active = true;
+				spec->active = true;
 			}
-			else if (s->active)
+			else if (spec->active)
 			{
 				stack->o->scene->ObjectArrived(stack->o->GetCoord());
 				stack->o->blowUp(stack->o->GetCoord());
@@ -1770,7 +1773,8 @@ namespace Object
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Utility1.drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1787,14 +1791,14 @@ namespace Object
 		Res::Slides Utility2;
 		KIR5::SubBitmap Utility2Activated;
 
-		const float activateTime = 1.8f;
-		const float disappearTime = 0.23f;
+		constexpr float activateTime = 1.8f;
+		constexpr float disappearTime = 0.23f;
 
 		struct Specific
 		{
 			float activateTimer;
 			float disappearTimer;
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -1804,53 +1808,56 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->activateTimer = 0.f;
-			s->disappearTimer = 0.f;
-			s->drawNumber = 0;
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::MurphyCanSniff | ObjectBase::Give1Unity | ObjectBase::MurphyStepOn);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->activateTimer = 0.f;
+			spec->disappearTimer = 0.f;
+			spec->draw_number_ = 0;
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::MurphyCanSuck | Brick::Give1Unity | Brick::MurphyStepOn);
 
 			stack->o->events.update = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["activateTimer"] = s->activateTimer;
-			json["disappearTimer"] = s->disappearTimer;
-			json["drawNumber"] = s->drawNumber;
+			json["activateTimer"] = spec->activateTimer;
+			json["disappearTimer"] = spec->disappearTimer;
+			json["draw_number"] = spec->draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (ACTION_TIMER(s->disappearTimer,
+			if (ACTION_TIMER(spec->disappearTimer,
 							 disappearTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->disappearTimer == ACTION_TIMER_START;
+				return spec->disappearTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
+				spec->draw_number_ = 0;
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
 				stack->o->requests.remove = false;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->disappearTimer,
+				DRAW_NUMBER_ASC(spec->disappearTimer,
 				disappearTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, Utility2);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
 				stack->o->requests.remove = true;
@@ -1860,33 +1867,33 @@ namespace Object
 				return;
 			}
 
-			if (ACTION_TIMER(s->activateTimer,
+			if (ACTION_TIMER(spec->activateTimer,
 							 activateTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				return s->activateTimer == ACTION_TIMER_START;
+				return spec->activateTimer == ACTION_TIMER_START;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
-				s->drawNumber = 0;
-				stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3);
+				spec->draw_number_ = 0;
+				stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3);
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
 				stack->o->requests.remove = false;
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				int drawNumber = (int(s->activateTimer * 10)) % 2;
-				if (s->drawNumber != drawNumber)
+				DRAW_NUMBER_T draw_number = (DRAW_NUMBER_T(spec->activateTimer * 10)) % 2;
+				if (spec->draw_number_ != draw_number)
 				{
-					s->drawNumber = drawNumber;
+					spec->draw_number_ = draw_number;
 					stack->o->requests.draw = true;
 				}
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
 				stack->o->blowUp(stack->o->GetCoord());
@@ -1898,25 +1905,26 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			gets(Specific, s);
+			Specific *spec = *stack;
 
 			if (stack->o->requests.remove)
 			{
-				s->disappearTimer = ACTION_TIMER_START;
+				spec->disappearTimer = ACTION_TIMER_START;
 				Timer(stack);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (s->activateTimer > 0 && s->drawNumber == 1)
+			if (spec->activateTimer > 0 && spec->draw_number_ == 1)
 			{
 				Utility2Activated.drawScaled(x, y, w, h);
 			}
 			else
 			{
-				Utility2[s->drawNumber].drawScaled(x, y, w, h);
+				Utility2[spec->draw_number_].drawScaled(x, y, w, h);
 			}
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1924,13 +1932,13 @@ namespace Object
 			Utility2[0].drawScaled(x, y, w, h);
 		}
 
-		void Activate(ObjectBase *o)
+		void Activate(Brick *o)
 		{
-			maks(o);
-			gets(Specific, s);
+			Object::Brick::Stack stack(o);
+			Specific *spec = stack;
 
-			s->activateTimer = ACTION_TIMER_START;
-			Timer(stack);
+			spec->activateTimer = ACTION_TIMER_START;
+			Timer(&stack);
 		}
 	}
 
@@ -1947,7 +1955,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::ExplosionType3 | ObjectBase::CanPush);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3 | Brick::CanPush);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1978,12 +1986,12 @@ namespace Object
 
 		Res::Slides Blasting;
 
-		const float explosionTime = 0.6f;
+		constexpr float explosionTime = 0.6f;
 
 		struct Specific
 		{
 			float explosionTimer;
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -1992,9 +2000,10 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->explosionTimer = explosionTime;
-			s->drawNumber = 0;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->explosionTimer = explosionTime;
+			spec->draw_number_ = 0;
 
 			stack->o->events.timer = true;
 			stack->o->events.topDraw = true;
@@ -2003,37 +2012,39 @@ namespace Object
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["explosionTimer"] = s->explosionTimer;
-			json["drawNumber"] = s->drawNumber;
+			json["explosionTimer"] = spec->explosionTimer;
+			json["draw_number"] = spec->draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
-			if (ACTION_TIMER(s->explosionTimer,
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			if (ACTION_TIMER(spec->explosionTimer,
 							 explosionTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
 				return false;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				DRAW_NUMBER(s->explosionTimer,
+				DRAW_NUMBER_ASC(spec->explosionTimer,
 				explosionTime,
-				s->drawNumber,
+				spec->draw_number_,
 				stack->o, ExplosionEffect_032::Blasting);
 			return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->requests.remove = true;
 				return true;
@@ -2044,12 +2055,14 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
-			Blasting[s->drawNumber].drawScaled(x, y, w, h);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			Blasting[spec->draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -2062,12 +2075,12 @@ namespace Object
 	{
 		const char *name = "033 - Explosion";
 
-		const float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
+		constexpr float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
 
 		struct Specific
 		{
 			float explosionTimer;
-			int drawNumber;
+			DRAW_NUMBER_T draw_number_;
 			bool rmobj;
 		};
 
@@ -2076,12 +2089,13 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->explosionTimer = ExplosionEffect_032::explosionTime;
-			s->drawNumber = 0;
-			s->rmobj = false;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->explosionTimer = ExplosionEffect_032::explosionTime;
+			spec->draw_number_ = 0;
+			spec->rmobj = false;
 
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 
 			stack->o->events.timer = true;
 			stack->o->events.topDraw = true;
@@ -2090,39 +2104,41 @@ namespace Object
 
 			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
 			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
-			stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(ObjectBase::Flags::CanBeKilled);
+			stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["explosionTimer"] = s->explosionTimer;
-			json["drawNumber"] = s->drawNumber;
-			json["rmobj"] = s->rmobj;
+			json["explosionTimer"] = spec->explosionTimer;
+			json["draw_number"] = spec->draw_number_;
+			json["rmobj"] = spec->rmobj;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (ACTION_TIMER(s->explosionTimer,
+			if (ACTION_TIMER(spec->explosionTimer,
 							 ExplosionEffect_032::explosionTime,
 							 stack->o,
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
 				return false;
 			},
-							 [&stack, &s]()->bool
+							 [&stack, &spec]()->bool
 			{
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
-				if (!s->rmobj && s->explosionTimer <= blastingTime)
+				if (!spec->rmobj && spec->explosionTimer <= blastingTime)
 				{
-					if (stack->o->scene->GetObject(stack->o->GetCoord())->GetFlags() & ObjectBase::ExplosionType1)
+					if (stack->o->scene->GetObject(stack->o->GetCoord())->GetFlags() & Brick::ExplosionType1)
 					{
 						stack->o->scene->BlowUpBlock(stack->o->GetCoord());
 					}
@@ -2131,16 +2147,16 @@ namespace Object
 						stack->o->scene->ObjectVirtualArrived(stack->o->GetCoord());
 						stack->o->scene->ObjectPut(stack->o->GetCoord(), stack->o->GetObjectIDremain());
 					}
-					s->rmobj = true;
+					spec->rmobj = true;
 				}
 
-				DRAW_NUMBER(s->explosionTimer,
-							ExplosionEffect_032::explosionTime,
-							s->drawNumber,
-							stack->o, ExplosionEffect_032::Blasting);
+				DRAW_NUMBER_ASC(spec->explosionTimer,
+								ExplosionEffect_032::explosionTime,
+								spec->draw_number_,
+								stack->o, ExplosionEffect_032::Blasting);
 				return true;
 			},
-				[&stack, &s]()->bool
+				[&stack, &spec]()->bool
 			{
 				stack->o->requests.remove = true;
 				return true;
@@ -2151,12 +2167,14 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			pops(Specific, s);
-			ExplosionEffect_032::Blasting[s->drawNumber].drawScaled(x, y, w, h);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			ExplosionEffect_032::Blasting[spec->draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -2175,7 +2193,7 @@ namespace Object
 		void Create(OBJECT_CREATER_PARAM)
 		{
 			Explosion_033::Create(OBJECT_CREATER_CALL);
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 
 			stack->o->events.timer = true;
 			stack->o->events.topDraw = true;
@@ -2224,7 +2242,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion | ObjectBase::RollOff);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2261,7 +2279,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(ObjectBase::CanBeExplosion);
+			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{

@@ -29,14 +29,14 @@ namespace UI::Scene::Module::Field
 	class Data
 	{
 		protected: std::shared_ptr<Res::BluePrint> _bluePrint;
-		protected: KIR5::Shared<Matrix<SceneBlock<ObjectBase>>> map;
-		protected: ObjectBase bedrock;
-		protected: ObjectBase space;
+		protected: KIR5::Shared<Matrix<SceneBlock<Object::Brick>>> map;
+		protected: Object::Brick bedrock;
+		protected: Object::Brick space;
 		protected: bool globalGravity;
 	};
 
 	template <typename DATA>
-	class Func: public virtual ObjectBase::Interface, public virtual DATA
+	class Func: public virtual Object::Brick::Interface, public virtual DATA
 	{
 		protected: void initialize(const std::shared_ptr<Res::BluePrint> &bluePrint_)
 		{
@@ -47,17 +47,17 @@ namespace UI::Scene::Module::Field
 
 			globalGravity = _bluePrint->globalGravity;
 
-			map.reset(new Matrix<SceneBlock<ObjectBase>>(_bluePrint->blocks));
+			map.reset(new Matrix<SceneBlock<Object::Brick>>(_bluePrint->blocks));
 			objects.resize(((Type::Size)*map).width * ((Type::Size)*map).height);
 			remains.resize(objects.size());
-			map->foreach([&](const Type::Coord &coord, SceneBlock<ObjectBase> &block)
+			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
-				block.object = new ObjectBase;
+				block.object = new Object::Brick;
 				ObjectCreate(this, block.object, (*_bluePrint)[coord].id, coord);
 				block.object->rotation = (*_bluePrint)[coord].rotation;
-				block.remain = new ObjectBase;
+				block.remain = new Object::Brick;
 				block.remain->isExists = false;
-				block.remain->setIef(this);
+				block.remain->setScene(this);
 
 				block.GoTo = coord;
 				block.ComeFrom = coord;
@@ -67,7 +67,7 @@ namespace UI::Scene::Module::Field
 			});
 
 			Type::ID rootId = 1;
-			map->foreach([&](const Type::Coord &, SceneBlock<ObjectBase> &block)
+			map->foreach([&](const Type::Coord &, SceneBlock<Object::Brick> &block)
 			{
 				block.object->rootId = rootId++;
 				block.remain->rootId = rootId++;
@@ -82,7 +82,7 @@ namespace UI::Scene::Module::Field
 				return reach(map)[coord].grid;
 			return 0;
 		}
-		public: virtual ObjectBase *GetObject(Type::Coord coord)
+		public: virtual Object::Brick *GetObject(Type::Coord coord)
 		{
 			if (map->Test(coord))
 			{
@@ -93,7 +93,7 @@ namespace UI::Scene::Module::Field
 			}
 			return &bedrock;
 		}
-		public: virtual ObjectBase *GetObjectOut(Type::Coord coord)
+		public: virtual Object::Brick *GetObjectOut(Type::Coord coord)
 		{
 			if (map->Test(coord))
 			{
@@ -103,7 +103,16 @@ namespace UI::Scene::Module::Field
 			}
 			return &bedrock;
 		}
-		public: virtual ObjectBase *GetRemain(Type::Coord coord)
+		public: virtual Object::Brick *GetObjectOutU(Type::Coord coord)
+		{
+			if (map->Test(coord))
+			{
+				if (reach(map)[coord].GoTo != coord && reach(map)[reach(map)[coord].GoTo].object->isExists)
+					return reach(map)[reach(map)[coord].GoTo].object;
+			}
+			return nullptr;
+		}
+		public: virtual Object::Brick *GetRemain(Type::Coord coord)
 		{
 			if (map->Test(coord))
 			{
@@ -156,7 +165,7 @@ namespace UI::Scene::Module::Field
 		{
 			globalGravity = !globalGravity;
 		}
-		public: virtual bool IamRemain(ObjectBase *o)
+		public: virtual bool IamRemain(Object::Brick *o)
 		{
 			if (map->Test(o->GetCoord()))
 			{
@@ -171,7 +180,7 @@ namespace UI::Scene::Module::Field
 		{
 			return (Type::Size)(reach(map));
 		}
-		public: virtual ObjectBase *GetObjectU(Type::Coord coord)
+		public: virtual Object::Brick *GetObjectU(Type::Coord coord)
 		{
 			return reach(map)[coord].object;
 		}

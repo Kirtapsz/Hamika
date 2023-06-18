@@ -4,7 +4,7 @@
 #include "Types.h"
 #include "Objects.h"
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	template <typename OBJECT_T>
 	struct SceneBlock

@@ -25,7 +25,7 @@ namespace UI::Scene
 			};
 
 			template <typename DATA>
-			class Func: public virtual ObjectBase::Interface,
+			class Func: public virtual Object::Brick::Interface,
 				public virtual Module::Field::Func<DATA>,
 				public virtual Module::Murphy::Func<DATA>,
 				public virtual Module::Art::Func<DATA>,
@@ -59,7 +59,7 @@ namespace UI::Scene
 			};
 
 			template <typename DATA>
-			class Func: public virtual ObjectBase::Interface,
+			class Func: public virtual Object::Brick::Interface,
 				public virtual Module::Field::Func<DATA>,
 				public virtual Module::Murphy::Func<DATA>,
 				public virtual Module::Art::Mock::Func<DATA>,
@@ -149,6 +149,7 @@ namespace UI::Scene
 
 	class InteractiveMultitest: public Base::Standard::Type
 	{
+		private: std::int32_t deplayTimer;
 		private: std::int8_t speed;
 		private: std::shared_ptr<Res::Logger> logger;
 		protected: std::shared_ptr<ValidatorReplay> validator;

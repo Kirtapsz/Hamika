@@ -16,6 +16,7 @@ std::random_device rd;
 std::default_random_engine generator(rd());
 int processRet = 0;
 
+
 int main(int argc, char *argv[])
 {
 	if (argc >= 2 && strcmp("--info", argv[1]) == 0)
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
 	{
 		if (Res::initialize(Res::TEST))
 		{
-			for (std::size_t i = 2; i < argc; ++i)
+			for (int i = 2; i < argc; ++i)
 			{
 				if (!UI::Scene::Multitest(argv[i]).isPassed())
 				{
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
 			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Hamika Builder", 1340, 480, ALLEGRO_RESIZABLE));
 			if (Res::initialize(Res::EDITOR))
 			{
-				UI::Editor::MainEvent::initialize(display);
+				Editor::UI::MainEvent::initialize(display);
 			}
 			else
 			{
@@ -90,13 +91,13 @@ int main(int argc, char *argv[])
 		{
 			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Interactive multitest", 640, 480 + 83, ALLEGRO_RESIZABLE | ALLEGRO_OPENGL));
 			std::list<std::string> replayPaths;
-			for (std::size_t i = 4; i < argc; ++i)
+			for (int i = 4; i < argc; ++i)
 			{
 				replayPaths.push_back(argv[i]);
 			}
 			if (Res::initialize(Res::ITEST))
 			{
-				UI::Multitest::MainEvent::initialize(display, replayPaths, std::atol(argv[3]));
+				UI::Multitest::MainEvent::initialize(display, replayPaths, range(1l, 16l, std::atol(argv[3])));
 			}
 			else
 			{
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
 
 	cursor = nullptr;
 	eventEngine = nullptr;
-	UI::Editor::MainEvent::shutdown();
+	Editor::UI::MainEvent::shutdown();
 	UI::Multitest::MainEvent::shutdown();
 	UI::MainEvent::shutdown();
 	display = nullptr;

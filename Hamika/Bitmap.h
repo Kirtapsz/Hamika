@@ -126,7 +126,8 @@ namespace Res
 		public: virtual bool initialize(std::uint32_t mode);
 
 		public: static constexpr char *_Player_Base = "Player-Base";
-		public: static constexpr char *_Player_Sniff = "Player-Sniff";
+		public: static constexpr char *_Player_PlaceBase = "Player-BasePlace";
+		public: static constexpr char *_Player_Suck = "Player-Suck";
 		public: static constexpr char *_Player_Push = "Player-Push";
 		public: static constexpr char *_Player_MovingUp = "Player-MovingUp";
 		public: static constexpr char *_Player_MovingRight = "Player-MovingRight";

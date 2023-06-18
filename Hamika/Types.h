@@ -12,6 +12,16 @@ namespace Type
 	typedef unsigned __int64 Flags64;
 	typedef Flags64 Flags;
 
+
+	typedef std::uint8_t Direction;
+	namespace Directions
+	{
+		constexpr Direction up = 0;
+		constexpr Direction right = 1;
+		constexpr Direction down = 2;
+		constexpr Direction left = 3;
+	}
+
 	typedef float Rotation;
 	namespace Rotations
 	{
@@ -85,6 +95,15 @@ namespace Type
 		typedef typename T base;
 		Type width;
 		Type height;
+		inline _Dim(Type _width, Type _height):
+			width(_width), height(_height)
+		{
+
+		}
+		inline _Dim()
+		{
+
+		}
 		inline bool operator==(const _Dim &size) const
 		{
 			return width == size.width && height == size.height;
@@ -111,6 +130,15 @@ namespace Type
 		typedef typename T base;
 		Type x;
 		Type y;
+		inline _Pos()
+		{
+
+		}
+		inline _Pos(Type _x, Type _y):
+			x(_x), y(_y)
+		{
+
+		}
 		inline bool operator==(const _Pos &pos) const
 		{
 			return x == pos.x && y == pos.y;

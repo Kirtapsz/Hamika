@@ -7,7 +7,7 @@
 #include <KIR/sys/KIR5_system.h>
 #include <KIR/AL/KIR5_panel_control.h>
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	Worldi::Item::Item(Worldi &mapList, int ID_, const std::shared_ptr<Res::BluePrint> &bluePrint_):
 		bluePrint(bluePrint_)

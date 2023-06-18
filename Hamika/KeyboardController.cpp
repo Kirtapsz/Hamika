@@ -7,10 +7,19 @@
 
 
 KeyboardController::KeyboardController(LoopControllerInterface &loopControllerInterface):
-	loopControllerInterface(loopControllerInterface),
-	actionSpecial(false), actionUp(false), actionDown(false), actionLeft(false), actionRight(false), actionDestroy(false)
+	loopControllerInterface(loopControllerInterface)
 {
 
+}
+
+void KeyboardController::finalize()
+{
+	actionDestroy.clearUpdate();
+	actionSpecial.clearUpdate();
+	actionUp.clearUpdate();
+	actionDown.clearUpdate();
+	actionLeft.clearUpdate();
+	actionRight.clearUpdate();
 }
 
 
@@ -54,7 +63,6 @@ void StandardKeyboard::keyDown(int key)
 }
 void StandardKeyboard::loop()
 {
-
 }
 
 

@@ -11,7 +11,7 @@ namespace Object
 			timer = 0.f;
 			time = 0.f;
 			numberOfFrames = 0;
-			drawNumber = 0;
+			draw_number_ = 0;
 		}
 		void Specific::SetAnimationTime(std::float_t _time)
 		{
@@ -27,15 +27,15 @@ namespace Object
 		}
 		std::int8_t Specific::GetDrawNumber()
 		{
-			return drawNumber;
+			return draw_number_;
 		}
 		bool Specific::UpdateDrawNumber()
 		{
-			std::int8_t drawNumber_ = limiter<std::int8_t>(0, numberOfFrames - 1,
-														   static_cast<std::int8_t>((timer / time) * numberOfFrames));
-			if (drawNumber != drawNumber_)
+			DRAW_NUMBER_T _draw_number = limiter<std::int8_t>(0, numberOfFrames - 1,
+															  static_cast<std::int8_t>((timer / time) * numberOfFrames));
+			if (draw_number_ != _draw_number)
 			{
-				drawNumber = drawNumber_;
+				draw_number_ = _draw_number;
 				return true;
 			}
 			return false;
@@ -51,8 +51,9 @@ namespace Object
 
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->Initialize();
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->Initialize();
 
 			stack->o->events.timer = true;
 
@@ -60,22 +61,24 @@ namespace Object
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["timer"] = s->timer;
-			json["time"] = s->time;
-			json["numberOfFrames"] = s->numberOfFrames;
-			json["drawNumber"] = s->drawNumber;
+			json["timer"] = spec->timer;
+			json["time"] = spec->time;
+			json["numberOfFrames"] = spec->numberOfFrames;
+			json["draw_number"] = spec->draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			s->UpdateTimer();
-			if (s->UpdateDrawNumber())
+			spec->UpdateTimer();
+			if (spec->UpdateDrawNumber())
 			{
 				stack->o->requests.draw = true;
 			}
@@ -84,18 +87,25 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 		}
 	}
 
 
-	namespace MoveDown
+	namespace Fall
 	{
+		void setHeavy(Specific *spec, bool _heavy_object)
+		{
+			spec->heavy_object_ = _heavy_object;
+		}
+
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->active = 0;
-			stack->o->EnablePhysics();
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->heavy_object_ = false;
+			stack->o->enablePhysics();
 
 			stack->o->events.timer = true;
 			stack->o->events.update = true;
@@ -105,275 +115,62 @@ namespace Object
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["active"] = s->active;
+			json["heavy_object"] = spec->heavy_object_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
-
-			if (s->active)
+			if (stack->o->isActionMove())
 			{
-				if (s->active == 1)
-				{
-					stack->o->StepDown();
-					if (!stack->o->IsMove())
-						s->active = -1;
-				}
-				else if (s->active == -1)
-				{
-					s->active = 0;
-					if (!stack->o->IsMoving())
-						stack->o->StopStep();
-				}
+				stack->o->StepDown();
+				stack->o->requests.timer = true;
 			}
-			stack->o->requests.timer = true;
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
-
-			if (s->active <= 0 && !stack->o->IsMoving())
+			if (!stack->o->IsMove())
 			{
 				if (stack->o->CanMoveDown())
 				{
-					//clog <<scene->GetObjectOut(GetCoordDown())->GetAbsMove() <<KIR4::eol;
 					if (stack->o->scene->GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
 					{
-						s->active = 1;
-						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordDown(), 0);
-						regets(Specific, s);
-						stack->o->SetMove({stack->o->GetMove().x,-1});
-					}
-					else if (!stack->o->scene->EnableUpdateSkip())
-					{
-						stack->o->requests.update = true;
+						stack->o->doMove(Brick::MOVE_DOWN, ObjectID::Space);
+						stack->o->requests.timer = true;
 						return;
 					}
 				}
-			}
-		}
-	}
-
-	namespace MoveDownHeavy
-	{
-		void Blasting(ObjectBase *o)
-		{
-			o->scene->BlowUpBlock(o->GetCoordDown());
-		}
-
-		void Create(OBJECT_CREATER_PARAM)
-		{
-			MoveDown::Create(OBJECT_CREATER_CALL);
-		}
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
-		{
-			Json json;
-
-			json["\\MoveDown"] = MoveDown::Print(OBJECT_PRINTER_CALL);
-
-			return json;
-		}
-		void Timer(OBJECT_TIMER_PARAM)
-		{
-			pops(MoveDown::Specific, s);
-
-			if (s->active)
-			{
-				if (s->active == 1)
+				if (updateType == Brick::UPDATE_ASC)
 				{
-					stack->o->StepDown();
-					if (!stack->o->IsMove())
-						s->active = -1;
+					stack->o->requests.update = true;
+					return;
 				}
-				else if (s->active == -1)
+				if (stack->o->isActionMove())
 				{
-					Blasting(stack->o);
-					s->active = 0;
-					if (!stack->o->IsMoving())
-						stack->o->StopStep();
-				}
-			}
-		}
-		void Update(OBJECT_UPDATE_PARAM)
-		{
-			MoveDown::Update(OBJECT_UPDATE_CALL);
-		}
-	}
+					Object::Brick::Stack::Handler<Specific> sHandler(stack);
+					Specific *spec = sHandler;
 
-
-	namespace MoveLeftWay
-	{
-		void Blasting(Type::Coord coord, ObjectBase *o)
-		{
-			o->scene->BlowUpBlock(coord);
-		}
-		bool CanMoveForward(Type::Coord to, ObjectBase *o)
-		{
-			return
-				o->scene->GetObject(to)->GetFlags() & ObjectBase::Flags::StepOn
-				&&
-				o->scene->GetRemain(to)->GetFlags() & ObjectBase::Flags::StepOn
-				&&
-				o->scene->GetObjectOut(to)->GetFlags() & ObjectBase::Flags::StepOn
-				;
-		}
-		bool CanExlosive(Type::Coord coord, ObjectBase *o)
-		{
-			ObjectBase *object;
-
-			object = o->scene->GetObject(coord);
-			if (object->GetFlags() & ObjectBase::Flags::CanBeKilled)
-				return true;
-
-			object = o->scene->GetObjectOut(coord);
-			if (object->GetFlags() & ObjectBase::Flags::CanBeKilled && object->GetAbsMove() > 0.5f)
-				return true;
-			return false;
-		}
-		bool CanTurnLeft(ObjectBase *o)
-		{
-			Type::Coord
-				CoordLeft = o->GetForwardCoord(o->GetRealRotation(o->GetRotation() - Type::Rotations::_90));
-			return o->CanMovePos(CoordLeft, o->GetRealRotation(o->GetRotation() - Type::Rotations::_90)) || CanExlosive(CoordLeft, o);
-		}
-
-		void Create(OBJECT_CREATER_PARAM)
-		{
-			pops(Specific, s);
-			s->active = 0;
-			s->PriorityStep = false;
-			stack->o->DisablePhysics();
-
-			stack->o->events.timer = true;
-			stack->o->events.update = true;
-
-			stack->o->requests.timer = true;
-			stack->o->requests.update = true;
-		}
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
-		{
-			pops(Specific, s);
-			Json json;
-
-			json["active"] = s->active;
-			json["PriorityStep"] = s->PriorityStep;
-			json["myNumber"] = s->myNumber;
-
-			return json;
-		}
-		void Timer(OBJECT_TIMER_PARAM)
-		{
-			pops(Specific, s);
-			if (s->active == F_Step)
-			{
-				stack->o->Step();
-				if (!stack->o->IsMove())
-				{
-					s->active = 0;
-					stack->o->scene->ObjectArrived(stack->o->GetCoord());
-				}
-			}
-			else if (s->active == F_TurnLeft)
-			{
-				if (stack->o->RotationLeft())
-				{
-					s->active = 0;
-					stack->o->scene->ObjectArrived(stack->o->GetCoord());
-				}
-			}
-			else if (s->active == F_TurnRight)
-			{
-				if (stack->o->RotationRight())
-				{
-					s->active = 0;
-					stack->o->scene->ObjectArrived(stack->o->GetCoord());
-				}
-			}
-			stack->o->requests.timer = true;
-		}
-		void Update(OBJECT_UPDATE_PARAM)
-		{
-			pops(Specific, s);
-			s->myNumber = 123456789;
-			if (s->active == 0 && !stack->o->IsMoving() && !stack->o->IsRotating())
-			{
-				if (s->PriorityStep)
-				{
-					Type::Coord
-						to = stack->o->GetForwardCoord();
-					if (CanExlosive(to, stack->o))
+					stack->o->finishMove();
+					if (spec->heavy_object_)
 					{
-						Blasting(to, stack->o);
-					}
-					else if (CanMoveForward(to, stack->o))
-					{
-						s->active = F_Step;
-						stack->o->scene->ObjectMove(stack->o->GetCoord(), to, 0);
-						regets(Specific, s);
-						stack->o->SetMove(stack->o->GetRotation());
-						s->PriorityStep = false;
-					}
-					else if (stack->o->scene->EnableUpdateSkip())
-					{
-						stack->o->requests.update = true;
-						return;
-					}
-					else
-					{
-						stack->o->StartRotation();
-						s->active = F_TurnRight;
-						s->PriorityStep = false;
-					}
-				}
-				else
-				{
-					if (CanTurnLeft(stack->o))
-					{
-						stack->o->StartRotation();
-						s->active = F_TurnLeft;
-						s->PriorityStep = true;
-					}
-					else
-					{
-						Type::Coord
-							to = stack->o->GetForwardCoord();
-						if (CanExlosive(to, stack->o))
-						{
-							Blasting(to, stack->o);
-						}
-						else if (CanMoveForward(to, stack->o))
-						{
-							s->active = F_Step;
-							stack->o->scene->ObjectMove(stack->o->GetCoord(), to, 0);
-							regets(Specific, s);
-							stack->o->SetMove(stack->o->GetRotation());
-							s->PriorityStep = false;
-						}
-						else if (stack->o->scene->EnableUpdateSkip())
-						{
-							stack->o->requests.update = true;
-							return;
-						}
-						else
-						{
-							stack->o->StartRotation();
-							s->active = F_TurnRight;
-							s->PriorityStep = false;
-						}
+						stack->o->scene->BlowUpBlock(stack->o->GetCoordDown());
 					}
 				}
 			}
 		}
 	}
-
-	namespace RollDown
+	namespace FallAndRoll
 	{
-		bool CanRollAffect(ObjectBase *o, Type::Coord coord1)
+		void setHeavy(Specific *spec, bool _heavy_object)
+		{
+			spec->heavy_object_ = _heavy_object;
+		}
+
+		bool CanRollAffect(Brick *o, Type::Coord coord1)
 		{
 			return
 				!o->scene->IsObjectOut(o->GetCoordUp())
@@ -383,37 +180,37 @@ namespace Object
 				o->scene->GetGoto({o->GetCoord().x, o->GetCoord().y - 2}).x != coord1.x
 				;
 		}
-		bool CanRoll(ObjectBase *o, Type::Coord coordNeighbor, Type::Coord coordDiagonal)
+		bool CanRoll(Brick *o, Type::Coord coordNeighbor, Type::Coord coordDiagonal)
 		{
 			return
 				(
 					(
-						o->scene->GetObject(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� object-re r� tud l�pni
+						o->scene->GetObject(coordNeighbor)->GetFlags() & Brick::StepOn//a mellette l�v� object-re r� tud l�pni
 						&&
-						o->scene->GetRemain(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� remain-re r� tud l�pni
+						o->scene->GetRemain(coordNeighbor)->GetFlags() & Brick::StepOn//a mellette l�v� remain-re r� tud l�pni
 						&&
 						(
 							!o->scene->IsObjectOut(coordNeighbor)
 							||
 							(
-								o->scene->GetObjectOut(coordNeighbor)->GetFlags() & ObjectBase::StepOn//a mellette l�v� kimen� object-ra r� tud l�pni
+								o->scene->GetObjectOut(coordNeighbor)->GetFlags() & Brick::StepOn//a mellette l�v� kimen� object-ra r� tud l�pni
 								||
 								o->scene->GetObjectOut(coordNeighbor)->GetCoord().x != coordNeighbor.x//a mellette l�v� kimen� object horizont�lisan t�vozik
 								)
 							)
 						&&
 						(
-							o->scene->GetObject(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s object-re r� tud l�pni
+							o->scene->GetObject(coordDiagonal)->GetFlags() & Brick::StepOn//�tl�s object-re r� tud l�pni
 							&&
-							o->scene->GetRemain(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s remain-re r� tud l�pni
+							o->scene->GetRemain(coordDiagonal)->GetFlags() & Brick::StepOn//�tl�s remain-re r� tud l�pni
 							&&
 							(
 								!o->scene->IsObjectOut(coordDiagonal)
 								||
 								(
-									o->scene->GetObjectOut(coordDiagonal)->GetFlags() & ObjectBase::StepOn//�tl�s kimen� object-ra r� tud l�pni
+									o->scene->GetObjectOut(coordDiagonal)->GetFlags() & Brick::StepOn//�tl�s kimen� object-ra r� tud l�pni
 									||
-									o->scene->GetObjectOut(coordDiagonal)->IsMoving()//�tl�s kimen� object t�vozik
+									o->scene->GetObjectOut(coordDiagonal)->isActionMove()//�tl�s kimen� object t�vozik
 									//GetObjectOut(coord2)->GetCoord().y > GetCoord().y//�tl�s kimen� object lefel� t�vozik
 									)
 								)
@@ -422,17 +219,46 @@ namespace Object
 					)
 				;
 		}
-		bool CanRollOff(ObjectBase *o)
+		bool CanRollOff(Brick *o)
 		{
 			return
-				o->scene->GetSectionFlags(o->GetCoordDown()) & ObjectBase::RollOffTop;
+				o->scene->GetSectionFlags(o->GetCoordDown()) & Brick::RollOffTop;
+		}
+		void finishAction(Brick *o, Specific *spec)
+		{
+			if (o->isAction())
+			{
+				if (o->isAction(Brick::MOVE_DOWN))
+				{
+					if (spec->heavy_object_)
+					{
+						o->scene->BlowUpBlock(o->GetCoordDown());
+					}
+				}
+				spec->roll_preference_ = 0;
+				o->finishMove();
+			}
+		}
+		void changeAction(Brick *o, Specific *spec, Brick::ACTION_T _new_action)
+		{
+			if (o->action != _new_action)
+			{
+				if (o->isAction(Brick::MOVE_DOWN))
+				{
+					if (spec->heavy_object_)
+					{
+						o->scene->BlowUpBlock(o->GetCoordDown());
+					}
+				}
+			}
 		}
 
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			pops(Specific, s);
-			s->active = 0;
-			s->rollCounter = 0;
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->heavy_object_ = false;
+			stack->o->enablePhysics();
 
 			stack->o->events.timer = true;
 			stack->o->events.update = true;
@@ -442,91 +268,224 @@ namespace Object
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 			Json json;
 
-			json["active"] = s->active;
-			json["rollCounter"] = s->rollCounter;
+			json["heavy_object"] = spec->heavy_object_;
+			json["roll_preference"] = spec->roll_preference_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			pops(Specific, s);
-			if (s->active == 1)
+			if (stack->o->isActionMove())
 			{
 				stack->o->Step();
-				if (!stack->o->IsMove())
-					s->active = -1;
+				stack->o->requests.timer = true;
 			}
-			else if (s->active == -1)
+		}
+		void Update(OBJECT_UPDATE_PARAM)
+		{
+			if (!stack->o->IsMove())
 			{
-				s->active = 0;
-				s->rollCounter = 0;
-				if (!stack->o->IsMoving())
-					stack->o->StopStep();
+				Object::Brick::Stack::Handler<Specific> sHandler(stack);
+				Specific *spec = sHandler;
+
+				if (stack->o->CanMoveDown())
+				{
+					if (stack->o->scene->GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
+					{
+						changeAction(stack->o, spec, Brick::MOVE_DOWN);
+						stack->o->doMove(Brick::MOVE_DOWN, ObjectID::Space);
+						stack->o->requests.timer = true;
+						return;
+					}
+				}
+
+				if (CanRollOff(stack->o))
+				{
+					bool can_roll_left = CanRoll(stack->o, stack->o->GetCoordLeft(), {stack->o->GetCoord().x - 1,stack->o->GetCoord().y + 1});
+					if (spec->roll_preference_ == -1 && can_roll_left && CanRollAffect(stack->o, stack->o->GetCoordLeft()))
+					{
+						changeAction(stack->o, spec, Brick::MOVE_LEFT);
+						spec->roll_preference_ = -1;
+						stack->o->doMove(Brick::MOVE_LEFT, ObjectID::Space);
+						stack->o->requests.timer = true;
+						return;
+					}
+					else if ((spec->roll_preference_ == 1 || !can_roll_left) &&
+							 CanRoll(stack->o, stack->o->GetCoordRight(), {stack->o->GetCoord().x + 1,stack->o->GetCoord().y + 1}) &&
+							 CanRollAffect(stack->o, stack->o->GetCoordRight()))
+					{
+						changeAction(stack->o, spec, Brick::MOVE_RIGHT);
+						spec->roll_preference_ = 1;
+						stack->o->doMove(Brick::MOVE_RIGHT, ObjectID::Space);
+						stack->o->requests.timer = true;
+						return;
+					}
+					else if (can_roll_left)
+					{
+						changeAction(stack->o, spec, Brick::MOVE_LEFT);
+						spec->roll_preference_ = -1;
+						stack->o->doMove(Brick::MOVE_LEFT, ObjectID::Space);
+						stack->o->requests.timer = true;
+						return;
+					}
+				}
+
+				if (updateType == Brick::UPDATE_ASC)
+				{
+					stack->o->requests.update = true;
+					return;
+				}
+
+				finishAction(stack->o, spec);
+			}
+		}
+	}
+
+
+	namespace MoveLeftWay
+	{
+		void Blasting(Type::Coord coord, Brick *o)
+		{
+			o->scene->BlowUpBlock(coord);
+		}
+		bool CanMoveForward(Type::Coord to, Brick *o)
+		{
+			return
+				o->scene->GetObject(to)->GetFlags() & Brick::Flags::StepOn
+				&&
+				o->scene->GetRemain(to)->GetFlags() & Brick::Flags::StepOn
+				&&
+				o->scene->GetObjectOut(to)->GetFlags() & Brick::Flags::StepOn
+				;
+		}
+		bool CanExlosive(Type::Coord coord, Brick *o)
+		{
+			Brick *object;
+
+			object = o->scene->GetObject(coord);
+			if (object->GetFlags() & Brick::Flags::CanBeKilled)
+				return true;
+
+			object = o->scene->GetObjectOut(coord);
+			if (object->GetFlags() & Brick::Flags::CanBeKilled && object->GetAbsMove() > 0.5f)
+				return true;
+			return false;
+		}
+		bool CanTurnLeft(Brick *o)
+		{
+			Type::Coord
+				CoordLeft = o->GetForwardCoord(o->GetRealRotation(o->GetRotation() - Type::Rotations::_90));
+			return o->CanMovePos(CoordLeft, o->GetRealRotation(o->GetRotation() - Type::Rotations::_90)) || CanExlosive(CoordLeft, o);
+		}
+		void finishAction(Brick *o)
+		{
+			if (o->isActionMove())
+			{
+				o->finishMove();
+			}
+			else if (o->isActionRotate())
+			{
+				o->finishMove();
+			}
+		}
+		void finishAction(Brick *o, Brick::ACTION_T _new_action)
+		{
+			if (o->action != _new_action)
+			{
+				finishAction(o);
+			}
+		}
+
+		void Create(OBJECT_CREATER_PARAM)
+		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			spec->PriorityStep = false;
+			stack->o->disablePhysics();
+
+			stack->o->events.timer = true;
+			stack->o->events.update = true;
+
+			stack->o->requests.timer = true;
+			stack->o->requests.update = true;
+		}
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
+		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			Json json;
+
+			json["PriorityStep"] = spec->PriorityStep;
+
+			return json;
+		}
+		void Timer(OBJECT_TIMER_PARAM)
+		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+			if (stack->o->isActionMove())
+			{
+				stack->o->Step();
+			}
+			else if (stack->o->isActionRotate())
+			{
+				if (stack->o->isAction(Brick::ROTATE_LEFT))
+				{
+					stack->o->RotationLeft();
+				}
+				else
+				{
+					stack->o->RotationRight();
+				}
 			}
 			stack->o->requests.timer = true;
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			pops(Specific, s);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			if (s->active <= 0 && !stack->o->IsMoving())
+			if (!stack->o->IsMove() && !stack->o->isRotate())
 			{
-				if (CanRollOff(stack->o))
+				if (!spec->PriorityStep)
 				{
-					bool left = CanRoll(stack->o, stack->o->GetCoordLeft(), {stack->o->GetCoord().x - 1,stack->o->GetCoord().y + 1});
-					if (s->rollCounter <= 0 && left && CanRollAffect(stack->o, stack->o->GetCoordLeft()))
+					if (CanTurnLeft(stack->o))
 					{
-						s->active = 1;
-						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
-						stack->o->SetMove({1,stack->o->GetMove().y});
-						if (s->rollCounter >= 0)
-						{
-							s->rollCounter = -1;
-						}
-						else
-						{
-							--s->rollCounter;
-						}
+						spec->PriorityStep = true;
+						finishAction(stack->o, Brick::ROTATE_LEFT);
+						stack->o->doRotate(Brick::ROTATE_LEFT);
+						return;
 					}
-					else if (s->rollCounter >= 0 && CanRoll(stack->o, stack->o->GetCoordRight(), {stack->o->GetCoord().x + 1,stack->o->GetCoord().y + 1}) && CanRollAffect(stack->o, stack->o->GetCoordRight()))
-					{
-						s->active = 1;
-						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordRight(), 0);
-						stack->o->SetMove({-1,stack->o->GetMove().y});
-						if (s->rollCounter <= 0)
-						{
-							s->rollCounter = 1;
-						}
-						else
-						{
-							++s->rollCounter;
-						}
-					}
-					else if (stack->o->scene->EnableUpdateSkip())
-					{
-						stack->o->requests.update = true;
-					}
-					else if (s->rollCounter <= 0 && left)
-					{
-						s->active = 1;
-						stack->o->scene->ObjectMove(stack->o->GetCoord(), stack->o->GetCoordLeft(), 0);
-						stack->o->SetMove({1,stack->o->GetMove().y});
-						if (s->rollCounter >= 0)
-						{
-							s->rollCounter = -1;
-						}
-						else
-						{
-							--s->rollCounter;
-						}
-					}
-					else
-					{
-						s->rollCounter = 0;
-					}
+				}
+				Type::Coord to = stack->o->GetForwardCoord();
+				if (CanExlosive(to, stack->o))
+				{
+					Blasting(to, stack->o);
+					return;
+				}
+				else if (CanMoveForward(to, stack->o))
+				{
+					spec->PriorityStep = false;
+					Brick::ACTION_T new_action = Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())];
+					finishAction(stack->o, new_action);
+					stack->o->doMove(new_action, ObjectID::Space);
+					return;
+				}
+				else if (updateType == Brick::UPDATE_ASC)
+				{
+					stack->o->requests.update = true;
+					return;
+				}
+				else
+				{
+					spec->PriorityStep = true;
+					finishAction(stack->o, Brick::ROTATE_RIGHT);
+					stack->o->doRotate(Brick::ROTATE_RIGHT);
+					return;
 				}
 			}
 		}

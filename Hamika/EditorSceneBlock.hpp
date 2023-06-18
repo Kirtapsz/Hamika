@@ -3,7 +3,7 @@
 
 #include "EditorSceneBlock.h"
 
-namespace UI::Editor
+namespace Editor::UI
 {
 	template <typename OBJECT_T>
 	SceneBlock<OBJECT_T>::~SceneBlock()

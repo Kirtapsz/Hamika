@@ -8,23 +8,23 @@
 
 #include <KIR/KIR4_console.h>
 
-namespace Object::Editor
+namespace Editor::Object
 {
-	namespace Object
+	namespace Back
 	{
-		const char *name = "EditorObject";
+		const char *name = "EditorBack";
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
 
 		}
 
-		void Drawner(EditorObjectBase::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
+		void Drawner(Brick::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
 		{
 			DrawObject(stack->o->id, x, y, w, h);
 		}
 	}
-	namespace Remain
+	namespace Front
 	{
 		KIR5::Bitmap arrowDown;
 		KIR5::Bitmap arrowUp;
@@ -34,7 +34,7 @@ namespace Object::Editor
 		KIR5::Bitmap detonate;
 		KIR5::Bitmap spawn;
 
-		const char *name = "EditorRemain";
+		const char *name = "EditorFront";
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -47,9 +47,9 @@ namespace Object::Editor
 			spawn = Res::uielements[Res::UIElements::SpawnPoint];
 		}
 
-		void Drawner(EditorObjectBase::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
+		void Drawner(Brick::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
 		{
-			EditorObjectBase *obj = stack->o->scene->GetObject(stack->o->GetCoord());
+			Brick *obj = stack->o->scene->GetObject(stack->o->GetCoord());
 
 			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::SpawnPoint)
 			{
@@ -117,14 +117,14 @@ namespace Object::Editor
 
 			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x, stack->o->GetCoord().y);
 
-			KIR5::Font font = Res::Consolas[stack->o->DrawSize().height / 6];
+			KIR5::Font font = Res::Consolas[stack->o->scene->GetDrawSize().height / 6];
 
 			font.draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
 			font.draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 
 			sprintf_s(buffer, "(%03d)", obj->id);
-			font.draw(x + 1, y + 1 + (stack->o->DrawSize().height / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			font.draw(x, y + (stack->o->DrawSize().height / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+			font.draw(x + 1, y + 1 + (stack->o->scene->GetDrawSize().height / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(x, y + (stack->o->scene->GetDrawSize().height / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 		}
 	}
 }

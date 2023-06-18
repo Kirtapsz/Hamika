@@ -359,7 +359,8 @@ namespace Res
 		// Murphy
 		tmp.load(KIR5::pathCombine(basePath, "Murphy\\MurphyBase.png"));
 		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 0, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4))), _Player_Base);
-		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 1, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4) * 4)), _Player_Sniff);
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 0, (tmp.height() / 4) * 1, (tmp.width() / 3), (tmp.height() / 4))), _Player_PlaceBase);
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 1, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4) * 4)), _Player_Suck);
 		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 2, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4) * 4)), _Player_Push);
 
 		tmp.load(KIR5::pathCombine(basePath, "Murphy\\MurphyMove.png"));
