@@ -150,6 +150,7 @@ namespace Object
 			spec->_effect_type = EFFECTS::EXIT;
 			spec->_effect_timer = ExitEffectTime;
 			_object->SetRotation(Type::Rotations::getRotationOfIndex(direction));
+			_object->SetTranslationID(ObjectID::Infotron);
 
 			_object->events.timer = true;
 			_object->requests.timer = true;
@@ -163,6 +164,7 @@ namespace Object
 
 			spec->_effect_type = EFFECTS::CRAWL;
 			_tail->SetRotation(Type::Rotations::getRotationOfIndex(direction));
+			_tail->SetTranslationID(ObjectID::Space);
 			DRAW_NUMBER_ASC_INIT(spec->draw_number_, _tail, PassInSlides[_tail->getMoveDirection()]);
 		}
 

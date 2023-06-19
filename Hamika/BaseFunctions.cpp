@@ -180,40 +180,57 @@ namespace Object
 				o->scene->GetGoto({o->GetCoord().x, o->GetCoord().y - 2}).x != coord1.x
 				;
 		}
-		bool CanRoll(Brick *o, Type::Coord coordNeighbor, Type::Coord coordDiagonal)
+		bool CanRoll(Brick *object, Type::Direction _direction)
 		{
+			Type::Coord coord = object->GetCoord();
+			Type::Coord coord_bottom = object->GetCoordDown();
+			Type::Coord coord_up = object->GetCoordUp();
+			Type::Coord coord_next = object->GetCoord(_direction);
+			Type::Coord coord_diagonal = object->scene->GetObject(coord_next)->GetCoordDown();
+
 			return
 				(
+					object->scene->GetObject(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (object)
+					&&
+					object->scene->GetRemain(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (remain)
+					&&
 					(
-						o->scene->GetObject(coordNeighbor)->GetFlags() & Brick::StepOn//a mellette l�v� object-re r� tud l�pni
+						!object->scene->IsObjectOut(coord_next)
+						||
+						(
+							object->scene->GetObjectOut(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (leaving)
+							||
+							object->scene->GetObjectOut(coord_next)->GetCoord().x != coord_next.x // the leaving one moving away on the X
+							)
+						)
+					&&
+					(
+						object->scene->GetObject(coord_diagonal)->GetFlags() & Brick::StepOn // it can step to the diagonal place (object)
 						&&
-						o->scene->GetRemain(coordNeighbor)->GetFlags() & Brick::StepOn//a mellette l�v� remain-re r� tud l�pni
+						object->scene->GetRemain(coord_diagonal)->GetFlags() & Brick::StepOn // it can step to the diagonal place (remain)
 						&&
 						(
-							!o->scene->IsObjectOut(coordNeighbor)
+							!object->scene->IsObjectOut(coord_diagonal) // there is no leaving object in the diagonal
 							||
 							(
-								o->scene->GetObjectOut(coordNeighbor)->GetFlags() & Brick::StepOn//a mellette l�v� kimen� object-ra r� tud l�pni
-								||
-								o->scene->GetObjectOut(coordNeighbor)->GetCoord().x != coordNeighbor.x//a mellette l�v� kimen� object horizont�lisan t�vozik
-								)
-							)
-						&&
-						(
-							o->scene->GetObject(coordDiagonal)->GetFlags() & Brick::StepOn//�tl�s object-re r� tud l�pni
-							&&
-							o->scene->GetRemain(coordDiagonal)->GetFlags() & Brick::StepOn//�tl�s remain-re r� tud l�pni
-							&&
-							(
-								!o->scene->IsObjectOut(coordDiagonal)
+								object->scene->GetObjectOut(coord_diagonal)->GetFlags() & Brick::StepOn // it can step to the next place (leaving)
 								||
 								(
-									o->scene->GetObjectOut(coordDiagonal)->GetFlags() & Brick::StepOn//�tl�s kimen� object-ra r� tud l�pni
-									||
-									o->scene->GetObjectOut(coordDiagonal)->isActionMove()//�tl�s kimen� object t�vozik
-									//GetObjectOut(coord2)->GetCoord().y > GetCoord().y//�tl�s kimen� object lefel� t�vozik
+									object->scene->GetObjectOut(coord_diagonal)->isActionMove() // the leaving one moving away
+									&&
+									object->scene->GetObjectOut(coord_diagonal)->GetCoord().x != coord.x // the leaving one is not moving under it
 									)
 								)
+							)
+						)
+					&&
+					(
+						!object->scene->IsObjectOut(coord_up) // there is no leaving object on the top
+						||
+						(
+							object->scene->GetObjectOut(coord_up)->GetCoord().x != coord_next.x // the leaving object on the top moving different direction
+							||
+							object->scene->GetObjectOut(coord_up)->GetAbsMove() >= 0.9f // the leaving object on the top at the beginning of it's move
 							)
 						)
 					)
@@ -224,17 +241,22 @@ namespace Object
 			return
 				o->scene->GetSectionFlags(o->GetCoordDown()) & Brick::RollOffTop;
 		}
+		void heavyAction(Brick *o, Specific *spec)
+		{
+			if (o->isAction(Brick::MOVE_DOWN))
+			{
+				if (spec->heavy_object_)
+				{
+					if ()
+					o->scene->BlowUpBlock(o->GetCoordDown());
+				}
+			}
+		}
 		void finishAction(Brick *o, Specific *spec)
 		{
 			if (o->isAction())
 			{
-				if (o->isAction(Brick::MOVE_DOWN))
-				{
-					if (spec->heavy_object_)
-					{
-						o->scene->BlowUpBlock(o->GetCoordDown());
-					}
-				}
+				heavyAction(o, spec);
 				spec->roll_preference_ = 0;
 				o->finishMove();
 			}
@@ -243,13 +265,7 @@ namespace Object
 		{
 			if (o->action != _new_action)
 			{
-				if (o->isAction(Brick::MOVE_DOWN))
-				{
-					if (spec->heavy_object_)
-					{
-						o->scene->BlowUpBlock(o->GetCoordDown());
-					}
-				}
+				heavyAction(o, spec);
 			}
 		}
 
@@ -305,7 +321,7 @@ namespace Object
 
 				if (CanRollOff(stack->o))
 				{
-					bool can_roll_left = CanRoll(stack->o, stack->o->GetCoordLeft(), {stack->o->GetCoord().x - 1,stack->o->GetCoord().y + 1});
+					bool can_roll_left = CanRoll(stack->o, Type::Directions::left);
 					if (spec->roll_preference_ == -1 && can_roll_left && CanRollAffect(stack->o, stack->o->GetCoordLeft()))
 					{
 						changeAction(stack->o, spec, Brick::MOVE_LEFT);
@@ -315,7 +331,7 @@ namespace Object
 						return;
 					}
 					else if ((spec->roll_preference_ == 1 || !can_roll_left) &&
-							 CanRoll(stack->o, stack->o->GetCoordRight(), {stack->o->GetCoord().x + 1,stack->o->GetCoord().y + 1}) &&
+							 CanRoll(stack->o, Type::Directions::right) &&
 							 CanRollAffect(stack->o, stack->o->GetCoordRight()))
 					{
 						changeAction(stack->o, spec, Brick::MOVE_RIGHT);
