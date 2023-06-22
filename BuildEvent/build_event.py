@@ -21,6 +21,7 @@ project_dir = sys.argv[2]
 
 kirlib = os.environ['KIRLIB']
 RELEASE_BUILD = sys.argv[3] == "Release"
+MULTITEST_BUILD = sys.argv[3] == "Multitest"
 
 if (POST_BUILD):
     out_dir = sys.argv[4]
@@ -66,6 +67,7 @@ if (POST_BUILD and RELEASE_BUILD):
         raise Exception("Hamika Changes are not commited")
     if (kirlib_commited == False):
         raise Exception("KIRLIB changes are not commited")
+if (POST_BUILD and (RELEASE_BUILD or MULTITEST_BUILD)):
     validators = "Hamika\\multitest\\validators"
     ext = ('.json')
     for file in os.listdir(validators):

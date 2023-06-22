@@ -9,6 +9,7 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		DebugEditor|x86 = DebugEditor|x86
+		Multitest|x86 = Multitest|x86
 		MultitestFile|x86 = MultitestFile|x86
 		MultitestInline|x86 = MultitestInline|x86
 		MultitestInteractive|x86 = MultitestInteractive|x86
@@ -19,6 +20,8 @@ Global
 		{967C196D-41FE-44E4-9777-3C509325C422}.Debug|x86.Build.0 = Debug|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.DebugEditor|x86.ActiveCfg = DebugEditor|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.DebugEditor|x86.Build.0 = DebugEditor|Win32
+		{967C196D-41FE-44E4-9777-3C509325C422}.Multitest|x86.ActiveCfg = Multitest|Win32
+		{967C196D-41FE-44E4-9777-3C509325C422}.Multitest|x86.Build.0 = Multitest|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.MultitestFile|x86.ActiveCfg = MultitestFile|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.MultitestFile|x86.Build.0 = MultitestFile|Win32
 		{967C196D-41FE-44E4-9777-3C509325C422}.MultitestInline|x86.ActiveCfg = MultitestInline|Win32
