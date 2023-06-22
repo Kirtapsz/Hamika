@@ -73,7 +73,7 @@ namespace Object
 			spec->draw_number_ = 0;
 
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff | Brick::CanPushLeft | Brick::CanPushRight);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::CanPushLeft | Brick::CanPushRight);
 			stack->o->enablePhysics();
 
 			FallAndRoll::Specific *fall_and_roll_spec = *stack;
@@ -161,7 +161,7 @@ namespace Object
 			spec->disappearTimer = 0;
 			spec->draw_number_ = 0;
 
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay);
 
 			stack->o->events.update = true;
 		}
@@ -687,7 +687,7 @@ namespace Object
 			spec->electricTimer = ACTION_TIMER_START;
 			spec->disappearTimer = 0;
 			spec->draw_number_ = 0;
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay | Brick::MurphyDies);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay | Brick::MurphyDies);
 
 			stack->o->events.timer = true;
 			stack->o->events.update = true;
@@ -869,7 +869,7 @@ namespace Object
 			spec->disappearTimer = 0;
 			spec->draw_number_ = 0;
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::Give1Score);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::Give1Score);
 
 			FallAndRoll::Specific *fall_and_roll_spec = *stack;
 			FallAndRoll::Create(OBJECT_CREATER_CALL);
@@ -1013,7 +1013,7 @@ namespace Object
 			stack->o->events.update = true;
 			stack->o->requests.update = true;
 
-			stack->o->SetFlags(Brick::CanBeExplosion);
+			stack->o->SetFlags(Brick::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1114,7 +1114,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::Passage);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::Passage);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1151,7 +1151,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageHorizontal);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::PassageHorizontal);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1188,7 +1188,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageVertical);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::PassageVertical);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1225,7 +1225,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromTop);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::PassageFromTop);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1262,7 +1262,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromRight);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::PassageFromRight);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1299,7 +1299,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromLeft);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::PassageFromLeft);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1336,7 +1336,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::PassageFromBottom);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::PassageFromBottom);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1373,7 +1373,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1410,7 +1410,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1447,7 +1447,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1490,7 +1490,7 @@ namespace Object
 			stack->o->SetRotationSpeed(rotateSpeed);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Infotron);
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 
 			{
 				Animator::Specific *spec = *stack;
@@ -1563,7 +1563,7 @@ namespace Object
 
 			stack->o->SetRotationSpeed(rotateSpeed);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 			stack->o->SetTranslationID(ObjectID::Space);
 
 			MoveLeftWay::Create(OBJECT_CREATER_CALL);
@@ -1645,7 +1645,7 @@ namespace Object
 			spec->SetNumberOfFrames(Terminal.getCount());
 			spec->SetAnimationTime(animateTime);
 
-			stack->o->SetFlags(Brick::ButtonPush | Brick::CanBeExplosion);
+			stack->o->SetFlags(Brick::ButtonPush | Brick::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1695,7 +1695,7 @@ namespace Object
 						{
 							if (o->scene->GetObjectU(coord)->id == ObjectID::Utility3)
 							{
-								o->scene->GetObjectU(coord)->blowUp(coord);
+								o->scene->blowup(o->scene->GetObjectU(coord));
 							}
 							else if (o->scene->GetObjectU(coord)->id == o->id)
 							{
@@ -1731,7 +1731,7 @@ namespace Object
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
 			spec->active = false;
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3 | Brick::CanPushLeft | Brick::CanPushRight);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3 | Brick::CanPushLeft | Brick::CanPushRight);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Space);
 
@@ -1768,7 +1768,7 @@ namespace Object
 			else if (spec->active)
 			{
 				stack->o->scene->ObjectArrived(stack->o->GetCoord());
-				stack->o->blowUp(stack->o->GetCoord());
+				stack->o->scene->blowup(stack->o);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
@@ -1813,7 +1813,7 @@ namespace Object
 			spec->activateTimer = 0.f;
 			spec->disappearTimer = 0.f;
 			spec->draw_number_ = 0;
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::MurphyCanSuck | Brick::Give1Unity | Brick::MurphyStepOn);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::MurphyCanSuck | Brick::Give1Unity | Brick::MurphyStepOn);
 
 			stack->o->events.update = true;
 		}
@@ -1877,7 +1877,7 @@ namespace Object
 							 [&stack, &spec]()->bool
 			{
 				spec->draw_number_ = 0;
-				stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3);
+				stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 				stack->o->events.timer = true;
 				stack->o->events.update = false;
 				stack->o->requests.remove = false;
@@ -1896,7 +1896,7 @@ namespace Object
 				[&stack, &spec]()->bool
 			{
 				stack->o->events.clear();
-				stack->o->blowUp(stack->o->GetCoord());
+				stack->o->scene->blowup(stack->o);
 				return true;
 			}))
 			{
@@ -1955,7 +1955,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::ExplosionType3 | Brick::CanPush);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3 | Brick::CanPush);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2005,10 +2005,12 @@ namespace Object
 			spec->explosionTimer = explosionTime;
 			spec->draw_number_ = 0;
 
-			stack->o->events.timer = true;
+			stack->o->events.update = true;
 			stack->o->events.topDraw = true;
 
-			stack->o->requests.timer = true;
+			stack->o->requests.update = true;
+
+			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2057,6 +2059,10 @@ namespace Object
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
+
+			stack->o->events.timer = true;
+			stack->o->requests.timer = true;
+			stack->o->events.update = false;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2080,8 +2086,8 @@ namespace Object
 		struct Specific
 		{
 			float explosionTimer;
+			float blastingTimer;
 			DRAW_NUMBER_T draw_number_;
-			bool rmobj;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
@@ -2092,19 +2098,42 @@ namespace Object
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
 			spec->explosionTimer = ExplosionEffect_032::explosionTime;
+			spec->blastingTimer = blastingTime;
 			spec->draw_number_ = 0;
-			spec->rmobj = false;
 
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 
-			stack->o->events.timer = true;
+			stack->o->events.update = true;
 			stack->o->events.topDraw = true;
 
-			stack->o->requests.timer = true;
+			stack->o->requests.update = true;
 
 			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
 			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
 			stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
+		}
+		void ReCreate(OBJECT_CREATER_PARAM)
+		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			spec->explosionTimer = ExplosionEffect_032::explosionTime;
+			spec->draw_number_ = 0;
+
+			if (spec->blastingTimer == 0)
+			{
+				spec->blastingTimer = blastingTime;
+
+				stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
+				stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
+				stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
+			}
+
+			stack->o->events.update = true;
+			stack->o->requests.update = true;
+
+			stack->o->events.timer = false;
+			stack->o->requests.timer = false;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2113,8 +2142,8 @@ namespace Object
 			Json json;
 
 			json["explosionTimer"] = spec->explosionTimer;
+			json["blastingTimer"] = spec->blastingTimer;
 			json["draw_number"] = spec->draw_number_;
-			json["rmobj"] = spec->rmobj;
 
 			return json;
 		}
@@ -2123,52 +2152,69 @@ namespace Object
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
 
-			if (ACTION_TIMER(spec->explosionTimer,
-							 ExplosionEffect_032::explosionTime,
-							 stack->o,
-							 [&stack, &spec]()->bool
+			ACTION_TIMER(spec->blastingTimer,
+						 blastingTime,
+						 stack->o,
+						 [&stack, &spec]()->bool
 			{
 				return false;
 			},
-							 [&stack, &spec]()->bool
+						 [&stack, &spec]()->bool
 			{
 				return true;
 			},
 				[&stack, &spec]()->bool
 			{
-				if (!spec->rmobj && spec->explosionTimer <= blastingTime)
-				{
-					if (stack->o->scene->GetObject(stack->o->GetCoord())->GetFlags() & Brick::ExplosionType1)
-					{
-						stack->o->scene->BlowUpBlock(stack->o->GetCoord());
-					}
-					else
-					{
-						stack->o->scene->ObjectVirtualArrived(stack->o->GetCoord());
-						stack->o->scene->ObjectPut(stack->o->GetCoord(), stack->o->GetObjectIDremain());
-					}
-					spec->rmobj = true;
-				}
-
-				DRAW_NUMBER_ASC(spec->explosionTimer,
-								ExplosionEffect_032::explosionTime,
-								spec->draw_number_,
-								stack->o, ExplosionEffect_032::Blasting);
 				return true;
+			},
+				[&stack, &spec]()->bool
+			{
+				Brick *object = stack->o->scene->GetObject(stack->o->GetCoord());
+				if (object->GetFlags() & Brick::ExplosionType)
+				{
+					stack->o->scene->blowup(object);
+				}
+				else
+				{
+					stack->o->scene->ObjectVirtualArrived(stack->o->GetCoord());
+					stack->o->scene->ObjectPut(stack->o->GetCoord(), stack->o->GetObjectIDremain());
+				}
+				return true;
+			});
+
+			ACTION_TIMER(spec->explosionTimer,
+						 ExplosionEffect_032::explosionTime,
+						 stack->o,
+						 [&stack, &spec]()->bool
+			{
+				return false;
+			},
+						 [&stack, &spec]()->bool
+			{
+				return true;
+			},
+				[&stack, &spec]()->bool
+			{
+				DRAW_NUMBER_ASC(spec->explosionTimer,
+				ExplosionEffect_032::explosionTime,
+				spec->draw_number_,
+				stack->o, ExplosionEffect_032::Blasting);
+			return true;
 			},
 				[&stack, &spec]()->bool
 			{
 				stack->o->requests.remove = true;
 				return true;
-			}))
-			{
-				return;
-			}
+			});
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
+
+			stack->o->events.timer = true;
+			stack->o->requests.timer = true;
+			stack->o->events.update = false;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2182,52 +2228,52 @@ namespace Object
 		}
 	}
 
-	//ExplosionExpand 034
-	namespace ExplosionExpand_034
-	{
-		const char *name = "034 - Explosion";
+	////ExplosionExpand 034
+	//namespace ExplosionExpand_034
+	//{
+	//	const char *name = "034 - Explosion";
 
-		void Initializer(OBJECT_INITIALIZER_PARAM)
-		{
-		}
-		void Create(OBJECT_CREATER_PARAM)
-		{
-			Explosion_033::Create(OBJECT_CREATER_CALL);
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+	//	void Initializer(OBJECT_INITIALIZER_PARAM)
+	//	{
+	//	}
+	//	void Create(OBJECT_CREATER_PARAM)
+	//	{
+	//		Explosion_033::Create(OBJECT_CREATER_CALL);
+	//		stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 
-			stack->o->events.timer = true;
-			stack->o->events.topDraw = true;
+	//		stack->o->events.timer = true;
+	//		stack->o->events.topDraw = true;
 
-			stack->o->requests.timer = true;
+	//		stack->o->requests.timer = true;
 
-			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
-			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
-		}
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
-		{
-			Json json;
+	//		stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
+	//		stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
+	//	}
+	//	OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
+	//	{
+	//		Json json;
 
-			json["\\Explosion_033"] = Explosion_033::Print(OBJECT_PRINTER_CALL);
+	//		json["\\Explosion_033"] = Explosion_033::Print(OBJECT_PRINTER_CALL);
 
-			return json;
-		}
-		void Timer(OBJECT_TIMER_PARAM)
-		{
-			Explosion_033::Timer(OBJECT_TIMER_CALL);
-		}
-		void Update(OBJECT_UPDATE_PARAM)
-		{
-			Explosion_033::Update(OBJECT_UPDATE_CALL);
-		}
-		void Drawner(OBJECT_DRAWNER_PARAM)
-		{
-			Explosion_033::Drawner(OBJECT_DRAWNER_CALL);
-		}
-		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
-		{
-			Explosion_033::simpleDraw(OBJECT_SIMPLE_DRAWNER_CALL);
-		}
-	}
+	//		return json;
+	//	}
+	//	void Timer(OBJECT_TIMER_PARAM)
+	//	{
+	//		Explosion_033::Timer(OBJECT_TIMER_CALL);
+	//	}
+	//	void Update(OBJECT_UPDATE_PARAM)
+	//	{
+	//		Explosion_033::Update(OBJECT_UPDATE_CALL);
+	//	}
+	//	void Drawner(OBJECT_DRAWNER_PARAM)
+	//	{
+	//		Explosion_033::Drawner(OBJECT_DRAWNER_CALL);
+	//	}
+	//	void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
+	//	{
+	//		Explosion_033::simpleDraw(OBJECT_SIMPLE_DRAWNER_CALL);
+	//	}
+	//}
 
 	//RAMChipsTop 035
 	namespace RAMChipsTop_035
@@ -2242,7 +2288,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2279,7 +2325,7 @@ namespace Object
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::RollOff);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{

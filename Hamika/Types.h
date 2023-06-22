@@ -139,6 +139,14 @@ namespace Type
 		{
 
 		}
+		inline _Pos operator+(base i)
+		{
+			return {x + i, y + i};
+		}
+		inline _Pos operator-(base i)
+		{
+			return {x - i, y - i};
+		}
 		inline bool operator==(const _Pos &pos) const
 		{
 			return x == pos.x && y == pos.y;
@@ -153,6 +161,11 @@ namespace Type
 			std::ostringstream os;
 			os << "( " << x << " * " << y << " )";
 			return os;
+		}
+		inline void limiter(const _Pos &_min, const _Pos &_max)
+		{
+			x = std::max(_min.x, std::min(_max.x, x));
+			y = std::max(_min.y, std::min(_max.y, y));
 		}
 	};
 	template<typename T>

@@ -95,6 +95,30 @@ namespace Object
 
 	namespace Fall
 	{
+		template<typename SPECIFIC>
+		void heavyAction(Brick *o, SPECIFIC *spec)
+		{
+			if (o->isAction(Brick::MOVE_DOWN))
+			{
+				if (spec->heavy_object_)
+				{
+					Type::Coord coord_down = o->GetCoordDown();
+					Brick *object = o->scene->GetObject(coord_down);
+					if (o->scene->getMoveProgress(object) >= 0.3f)
+					{
+						o->scene->blowup(object);
+					}
+					if (o->scene->IsObjectOut(coord_down))
+					{
+						Brick *object = o->scene->GetObjectOut(coord_down);
+						if (o->scene->getMoveProgress(object) < 0.5f)
+						{
+							o->scene->blowup(object);
+						}
+					}
+				}
+			}
+		}
 		void setHeavy(Specific *spec, bool _heavy_object)
 		{
 			spec->heavy_object_ = _heavy_object;
@@ -133,6 +157,12 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
+			if (updateType == Brick::UPDATE_ASC)
+			{
+				stack->o->requests.update = true;
+				return;
+			}
+
 			if (!stack->o->IsMove())
 			{
 				if (stack->o->CanMoveDown())
@@ -144,21 +174,13 @@ namespace Object
 						return;
 					}
 				}
-				if (updateType == Brick::UPDATE_ASC)
-				{
-					stack->o->requests.update = true;
-					return;
-				}
 				if (stack->o->isActionMove())
 				{
 					Object::Brick::Stack::Handler<Specific> sHandler(stack);
 					Specific *spec = sHandler;
 
 					stack->o->finishMove();
-					if (spec->heavy_object_)
-					{
-						stack->o->scene->BlowUpBlock(stack->o->GetCoordDown());
-					}
+					heavyAction(stack->o, spec);
 				}
 			}
 		}
@@ -241,22 +263,11 @@ namespace Object
 			return
 				o->scene->GetSectionFlags(o->GetCoordDown()) & Brick::RollOffTop;
 		}
-		void heavyAction(Brick *o, Specific *spec)
-		{
-			if (o->isAction(Brick::MOVE_DOWN))
-			{
-				if (spec->heavy_object_)
-				{
-					if ()
-					o->scene->BlowUpBlock(o->GetCoordDown());
-				}
-			}
-		}
 		void finishAction(Brick *o, Specific *spec)
 		{
 			if (o->isAction())
 			{
-				heavyAction(o, spec);
+				Fall::heavyAction(o, spec);
 				spec->roll_preference_ = 0;
 				o->finishMove();
 			}
@@ -265,7 +276,7 @@ namespace Object
 		{
 			if (o->action != _new_action)
 			{
-				heavyAction(o, spec);
+				Fall::heavyAction(o, spec);
 			}
 		}
 
@@ -308,7 +319,7 @@ namespace Object
 				Object::Brick::Stack::Handler<Specific> sHandler(stack);
 				Specific *spec = sHandler;
 
-				if (stack->o->CanMoveDown())
+				if (updateType == Brick::UPDATE_DESC && stack->o->CanMoveDown())
 				{
 					if (stack->o->scene->GetObjectOut(stack->o->GetCoordDown())->GetAbsMove() <= 0.5f)
 					{
@@ -364,10 +375,6 @@ namespace Object
 
 	namespace MoveLeftWay
 	{
-		void Blasting(Type::Coord coord, Brick *o)
-		{
-			o->scene->BlowUpBlock(coord);
-		}
 		bool CanMoveForward(Type::Coord to, Brick *o)
 		{
 			return
@@ -383,12 +390,20 @@ namespace Object
 			Brick *object;
 
 			object = o->scene->GetObject(coord);
-			if (object->GetFlags() & Brick::Flags::CanBeKilled)
+			if (object->GetFlags() & Brick::Flags::CanBeKilled &&
+				o->scene->getMoveProgress(object) > 0.7f)
+			{
+				o->scene->blowup(object);
 				return true;
+			}
 
 			object = o->scene->GetObjectOut(coord);
-			if (object->GetFlags() & Brick::Flags::CanBeKilled && object->GetAbsMove() > 0.5f)
+			if (object->GetFlags() & Brick::Flags::CanBeKilled &&
+				o->scene->getMoveProgress(object) < 0.5f)
+			{
+				o->scene->blowup(object);
 				return true;
+			}
 			return false;
 		}
 		bool CanTurnLeft(Brick *o)
@@ -480,7 +495,7 @@ namespace Object
 				Type::Coord to = stack->o->GetForwardCoord();
 				if (CanExlosive(to, stack->o))
 				{
-					Blasting(to, stack->o);
+					stack->o->scene->blowup(stack->o);
 					return;
 				}
 				else if (CanMoveForward(to, stack->o))

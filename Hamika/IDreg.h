@@ -38,7 +38,7 @@ enum ObjectID
 	Utility3 = 31,
 	ExplosionEffect = 32,
 	Explosion = 33,
-	ExplosionExpansive = 34,
+	// ExplosionExpansive = 34,
 	RAMChipsTop = 35,
 	RAMChipsBottom = 36,
 	HardwareSwitch = 37,

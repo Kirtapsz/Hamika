@@ -39,7 +39,8 @@ namespace Object
 					ExplosionType1 = 1 << 19,//1*1-es újrarobbanás
 					ExplosionType3 = 1 << 20 | ExplosionType1,//3*3-as újrarobbanás
 					ExplosionType5 = 1 << 21 | ExplosionType3,//5*5-ös újrarobbanás
-					CanBeExplosion = 1 << 22,//fel lehet robbantani
+					ExplosionType = ExplosionType1 | ExplosionType3 | ExplosionType5,
+					CanBeExploded = 1 << 22,//fel lehet robbantani
 					LimitSpeed = 1 << 23,//limited fix speed regardles of other speed oprtions, like a rock movement during a push action
 					PhysicsSpeed = 1 << 24,//gyorsuló mozgás
 					MurphyCanSuck = 1 << 26,//a játékos fel tudja szedni rálépés nélkül "szippantással"

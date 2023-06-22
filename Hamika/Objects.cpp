@@ -53,7 +53,7 @@ namespace Objects
 		{Utility3_031::name, Utility3_031::Print, Utility3_031::Initializer, Utility3_031::Drawner, Utility3_031::Create, Utility3_031::Timer, Utility3_031::Update, Utility3_031::simpleDraw},
 		{ExplosionEffect_032::name, ExplosionEffect_032::Print, ExplosionEffect_032::Initializer, ExplosionEffect_032::Drawner, ExplosionEffect_032::Create, ExplosionEffect_032::Timer, ExplosionEffect_032::Update, ExplosionEffect_032::simpleDraw},
 		{Explosion_033::name, Explosion_033::Print, Explosion_033::Initializer, Explosion_033::Drawner, Explosion_033::Create, Explosion_033::Timer, Explosion_033::Update, Explosion_033::simpleDraw},
-		{ExplosionExpand_034::name, ExplosionExpand_034::Print, ExplosionExpand_034::Initializer, ExplosionExpand_034::Drawner, ExplosionExpand_034::Create, ExplosionExpand_034::Timer, ExplosionExpand_034::Update, ExplosionExpand_034::simpleDraw},
+		{Unknown::name, Unknown::Print, Unknown::Initializer, Unknown::Drawner, Unknown::Create, Unknown::Timer, Unknown::Update, Unknown::simpleDraw},
 		{RAMChipsTop_035::name, RAMChipsTop_035::Print, RAMChipsTop_035::Initializer, RAMChipsTop_035::Drawner, RAMChipsTop_035::Create, RAMChipsTop_035::Timer, RAMChipsTop_035::Update, RAMChipsTop_035::simpleDraw},
 		{RAMChipsBottom_036::name, RAMChipsBottom_036::Print, RAMChipsBottom_036::Initializer, RAMChipsBottom_036::Drawner, RAMChipsBottom_036::Create, RAMChipsBottom_036::Timer, RAMChipsBottom_036::Update, RAMChipsBottom_036::simpleDraw},
 		{HardwareSwitch_037::name, HardwareSwitch_037::Print, HardwareSwitch_037::Initializer, HardwareSwitch_037::Drawner, HardwareSwitch_037::Create, HardwareSwitch_037::Timer, HardwareSwitch_037::Update, HardwareSwitch_037::simpleDraw},

@@ -231,13 +231,16 @@ namespace UI::Scene
 
 		*delayTimerStop = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
 		{
-			if (--delayLoop == 0)
+			if (!paused)
 			{
-				finishGame();
-			}
-			else
-			{
-				delayAlpha = 255 - (255 * (delayLoop / (float)stopDelay));
+				if (--delayLoop == 0)
+				{
+					finishGame();
+				}
+				else
+				{
+					delayAlpha = 255 - (255 * (delayLoop / (float)stopDelay));
+				}
 			}
 		};
 

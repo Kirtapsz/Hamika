@@ -74,7 +74,7 @@ namespace Object
 		{
 			if (object->GetFlags() & Brick::MurphyDies)
 			{
-				murphy->blowUp(murphy->GetCoord());
+				murphy->scene->blowup(murphy);
 			}
 			if (object->GetFlags() & Brick::Give1Score)
 			{
@@ -176,7 +176,7 @@ namespace Object
 		{
 			Specific *spec = *stack;
 
-			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExplosion);
+			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded);
 			stack->o->events.topDraw = true;
 		}
 		void TimerCrawlTail(OBJECT_TIMER_PARAM)
@@ -599,7 +599,7 @@ namespace Object
 		{
 			Specific *spec = *stack;
 
-			stack->o->SetFlags(Brick::CanBeExplosion | Brick::CanBeKilled | Brick::ExplosionType3);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
 			stack->o->disablePhysics();
 
 			stack->o->events.timer = false;
@@ -694,7 +694,7 @@ namespace Object
 
 			if (spec->controller->actionDestroy)
 			{
-				stack->o->blowUp(stack->o->GetCoord());
+				stack->o->scene->blowup(stack->o);
 				return;
 			}
 			if (!stack->o->IsMove())

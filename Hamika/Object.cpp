@@ -15,7 +15,7 @@ namespace Object
 			{PassageFromTop,"PassageFromTop"},{PassageFromBottom,"PassageFromBottom"},{PassageVertical,"PassageVertical"},
 			{PassageHorizontal,"PassageHorizontal"},{Passage,"Passage"},{FallOnExplosion,"FallOnExplosion"},
 			{ExplosionType1,"ExplosionType1"},{ExplosionType3,"ExplosionType3"},{ExplosionType5,"ExplosionType5"},
-			{CanBeExplosion,"CanBeExplosion"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},
+			{CanBeExploded,"CanBeExploded"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},
 			{MurphyCanSuck,"MurphyCanSuck"},{CanBeKilled,"CanBeKilled"},{GiveGravityDelay,"GiveGravityDelay"},{ButtonPush,"ButtonPush"},
 			{Give1Score,"Give1Score"},{Give1Unity,"Give1Unity"},
 		};
@@ -184,5 +184,40 @@ namespace Object
 				||
 				scene->GetObjectOut(GetCoordRight())->IsMoveRight()
 				);
+	}
+
+
+	namespace Unknown
+	{
+		extern const char *name="Unknown/Empty";
+
+		void Initializer(OBJECT_INITIALIZER_PARAM)
+		{
+
+		}
+		void Create(OBJECT_CREATER_PARAM)
+		{
+
+		}
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
+		{
+			return Json();
+		}
+		void Timer(OBJECT_TIMER_PARAM)
+		{
+
+		}
+		void Update(OBJECT_UPDATE_PARAM)
+		{
+
+		}
+		void Drawner(OBJECT_DRAWNER_PARAM)
+		{
+
+		}
+		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
+		{
+
+		}
 	}
 }

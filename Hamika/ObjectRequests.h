@@ -23,9 +23,7 @@ namespace Object
 					bool tick;
 					bool update;
 					bool draw;
-
 					bool remove;
-					bool blowUp;
 
 					void clear();
 
@@ -36,8 +34,6 @@ namespace Object
 			{
 				void __init__(Type::ID id, Type::Coord coord);
 				Json print();
-
-				void blowUp(Type::Coord coord);
 			};
 		}
 	}

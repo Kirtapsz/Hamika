@@ -16,9 +16,7 @@ namespace Object
 				tick = false;
 				update = false;
 				draw = false;
-
 				remove = false;
-				blowUp = false;
 			}
 
 			template <typename DATA>
@@ -36,16 +34,8 @@ namespace Object
 				json["requests.update"] = requests.update;
 				json["requests.draw"] = requests.draw;
 				json["requests.remove"] = requests.remove;
-				json["requests.blowUp"] = requests.blowUp;
 
 				return json;
-			}
-
-			template <typename DATA>
-			void Func<DATA>::blowUp(Type::Coord coord)
-			{
-				requests.blowUp = true;
-				hitCoord = coord;
 			}
 		}
 	}

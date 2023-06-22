@@ -20,7 +20,6 @@
 #include "ObjectEvents.h"
 #include "ObjectExecute.h"
 #include "ObjectFlags.h"
-#include "ObjectHitAction.h"
 #include "ObjectMove.h"
 #include "ObjectRequests.h"
 #include "ObjectRotate.h"
@@ -97,7 +96,6 @@ namespace Object
 		virtual Module::Coord::Data<OBJECT>,
 		virtual Module::Requests::Data<OBJECT>,
 		virtual Module::Actions::Data<OBJECT>,
-		virtual Module::HitAction::Data<OBJECT>,
 		virtual Module::Flags::Data<OBJECT>
 	{
 		struct Interface:
@@ -132,7 +130,8 @@ namespace Object
 			virtual OBJECT *GetObjectU(Type::Coord) = 0;
 
 			// action
-			virtual void BlowUpBlock(Type::Coord coord) = 0;
+			virtual float getMoveProgress(OBJECT *_object) const = 0;
+			virtual void blowup(OBJECT *_object) = 0;
 			virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
 			virtual void ObjectPut(Type::Coord, Type::ID) = 0;
 			virtual void RemainPut(Type::Coord, Type::ID) = 0;
@@ -159,7 +158,6 @@ namespace Object
 		virtual Module::Coord::Func<DataCo<Brick>>,
 		virtual Module::Requests::Func<DataCo<Brick>>,
 		virtual Module::Actions::Func<DataCo<Brick>>,
-		virtual Module::HitAction::Func<DataCo<Brick>>,
 		virtual Module::Flags::Func<DataCo<Brick>>
 	{
 		inline void __init__(Type::ID id, Type::Coord coord)
@@ -169,7 +167,6 @@ namespace Object
 			Module::Events::Func<DataCo<Brick>>::__init__(id, coord);
 
 			Module::Base::Func<DataCo<Brick>>::__init__(id, coord);
-			Module::HitAction::Func<DataCo<Brick>>::__init__(id, coord);
 			Module::Stack::Func<DataCo<Brick>>::__init__(id, coord);
 			Module::Execute::Func<DataCo<Brick>>::__init__(id, coord);
 			Module::Move::Func<DataCo<Brick>>::__init__(id, coord);
@@ -193,7 +190,6 @@ namespace Object
 			json["\\ObjectEventsModule"] = Module::Events::Func<DataCo<Brick>>::print();
 
 			json["\\Object_"] = Module::Base::Func<DataCo<Brick>>::print();
-			json["\\ObjectHitActionModule"] = Module::HitAction::Func<DataCo<Brick>>::print();
 			json["\\ObjectStackModule"] = Module::Stack::Func<DataCo<Brick>>::print();
 			json["\\ObjectEventModule"] = Module::Execute::Func<DataCo<Brick>>::print();
 			json["\\ObjectMoveModule"] = Module::Move::Func<DataCo<Brick>>::print();
@@ -284,6 +280,21 @@ namespace Object
 		bool CanMoveLeft();
 		bool CanMoveRight();
 	};
+
+
+	//Unknown/empty object
+	namespace Unknown
+	{
+		extern const char *name;
+
+		void Initializer(OBJECT_INITIALIZER_PARAM);
+		void Create(OBJECT_CREATER_PARAM);
+		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
+		void Timer(OBJECT_TIMER_PARAM);
+		void Update(OBJECT_UPDATE_PARAM);
+		void Drawner(OBJECT_DRAWNER_PARAM);
+		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+	}
 }
 
 #pragma warning( pop )
