@@ -2005,6 +2005,7 @@ namespace Object
 			spec->explosionTimer = explosionTime;
 			spec->draw_number_ = 0;
 
+			stack->o->events.timer = false;
 			stack->o->events.update = true;
 			stack->o->events.topDraw = true;
 
@@ -2103,6 +2104,7 @@ namespace Object
 
 			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
 
+			stack->o->events.timer = false;
 			stack->o->events.update = true;
 			stack->o->events.topDraw = true;
 
@@ -2129,11 +2131,10 @@ namespace Object
 				stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
 			}
 
-			stack->o->events.update = true;
-			stack->o->requests.update = true;
-
 			stack->o->events.timer = false;
-			stack->o->requests.timer = false;
+			stack->o->events.update = true;
+
+			stack->o->requests.update = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2227,53 +2228,6 @@ namespace Object
 			ExplosionEffect_032::Blasting[0].drawScaled(x, y, w, h);
 		}
 	}
-
-	////ExplosionExpand 034
-	//namespace ExplosionExpand_034
-	//{
-	//	const char *name = "034 - Explosion";
-
-	//	void Initializer(OBJECT_INITIALIZER_PARAM)
-	//	{
-	//	}
-	//	void Create(OBJECT_CREATER_PARAM)
-	//	{
-	//		Explosion_033::Create(OBJECT_CREATER_CALL);
-	//		stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
-
-	//		stack->o->events.timer = true;
-	//		stack->o->events.topDraw = true;
-
-	//		stack->o->requests.timer = true;
-
-	//		stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
-	//		stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
-	//	}
-	//	OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
-	//	{
-	//		Json json;
-
-	//		json["\\Explosion_033"] = Explosion_033::Print(OBJECT_PRINTER_CALL);
-
-	//		return json;
-	//	}
-	//	void Timer(OBJECT_TIMER_PARAM)
-	//	{
-	//		Explosion_033::Timer(OBJECT_TIMER_CALL);
-	//	}
-	//	void Update(OBJECT_UPDATE_PARAM)
-	//	{
-	//		Explosion_033::Update(OBJECT_UPDATE_CALL);
-	//	}
-	//	void Drawner(OBJECT_DRAWNER_PARAM)
-	//	{
-	//		Explosion_033::Drawner(OBJECT_DRAWNER_CALL);
-	//	}
-	//	void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
-	//	{
-	//		Explosion_033::simpleDraw(OBJECT_SIMPLE_DRAWNER_CALL);
-	//	}
-	//}
 
 	//RAMChipsTop 035
 	namespace RAMChipsTop_035

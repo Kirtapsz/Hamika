@@ -15,7 +15,7 @@ namespace Res
 			Type::Flags flags = 0;
 		};
 
-		static constexpr Type::Move::Type cameraSize1to1 = 0.f;
+		static constexpr Type::Move::base cameraSize1to1 = 0.f;
 		Type::CameraSize cameraSize = {cameraSize1to1, cameraSize1to1}; // number of blocks visible
 		KIR5::sha512digest hash{};
 		Matrix<Block> blocks;

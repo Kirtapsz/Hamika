@@ -356,6 +356,9 @@ namespace Res
 		KIR5::Bitmap squareDisappearV4(KIR5::pathCombine(basePath, "Original\\RectangleDisappear_v4.png"));
 		KIR5::Bitmap tmp;
 
+		// Gravitation
+		addBitmap(KIR5::Bitmap(KIR5::pathCombine(basePath, "gravitation.png")), _Gravitation);
+
 		// Murphy
 		tmp.load(KIR5::pathCombine(basePath, "Murphy\\MurphyBase.png"));
 		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(tmp, (tmp.width() / 3) * 0, (tmp.height() / 4) * 0, (tmp.width() / 3), (tmp.height() / 4))), _Player_Base);

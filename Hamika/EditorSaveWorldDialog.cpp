@@ -27,7 +27,7 @@ namespace Editor::UI
 			directoryLabel->height(26);
 			directoryLabel->width((std::max)(wordNameDirectoryLabel->getTextWidth(), directoryLabel->getTextWidth()));
 			row->pushBack(directoryLabel);
-			directoryLabel->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			directoryLabel->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				std::string directory_;
 				{
@@ -101,7 +101,7 @@ namespace Editor::UI
 			saveButton->setText("Save");
 			saveButton->height(26);
 			saveButton->width(saveButton->getTextWidth() + 16);
-			saveButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			saveButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				std::apply([&](auto&&... args)
 				{
@@ -163,7 +163,7 @@ namespace Editor::UI
 			cancelButton->setText("Cancel");
 			cancelButton->height(26);
 			cancelButton->width(cancelButton->getTextWidth() + 16);
-			cancelButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			cancelButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				hide();
 			});

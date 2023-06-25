@@ -10,7 +10,7 @@ namespace Editor::UI::Scene
 		drawer.blockRefreshActive = false;
 		drawer.layerActive = false;
 
-		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
 		{
 			if (button_ == 2)
 			{
@@ -32,7 +32,7 @@ namespace Editor::UI::Scene
 
 				if (targetCoord.x == 0)
 				{
-					targetCoord.x = ((Type::Size)reach(map)).width - 1;
+					targetCoord.x = map->size().width - 1;
 				}
 				else
 				{
@@ -47,7 +47,7 @@ namespace Editor::UI::Scene
 			{
 				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.x == ((Type::Size)reach(map)).width - 1)
+				if (targetCoord.x == map->size().width - 1)
 				{
 					targetCoord.x = 0;
 				}
@@ -66,7 +66,7 @@ namespace Editor::UI::Scene
 
 				if (targetCoord.y == 0)
 				{
-					targetCoord.y = ((Type::Size)reach(map)).height - 1;
+					targetCoord.y = map->size().height - 1;
 				}
 				else
 				{
@@ -81,7 +81,7 @@ namespace Editor::UI::Scene
 			{
 				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.y == ((Type::Size)reach(map)).height - 1)
+				if (targetCoord.y == map->size().height - 1)
 				{
 					targetCoord.y = 0;
 				}
@@ -181,7 +181,7 @@ namespace Editor::UI::Scene
 			return false;
 		});
 
-		fncLock.push_back([&](FNC_LOCK_PARAMS)->FNC_LOCK_RET
+		fncLock.push_back([&](FNC_LOCK_PARAMS) -> FNC_LOCK_RET
 		{
 			if (map->Exists())
 			{
@@ -202,7 +202,7 @@ namespace Editor::UI::Scene
 			}
 		});
 
-		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
+		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS) -> FNC_MOUSE_AXES_RET
 		{
 			if (map->Exists())
 			{
@@ -256,15 +256,15 @@ namespace Editor::UI::Scene
 				{
 					mouseAxe = true;
 					Type::Move camera = {
-						holdCamera.x + ((mouseHoldx - x_) / (Type::Move::Type)drawer.GetDrawSize().width),
-						holdCamera.y + ((mouseHoldy - y_) / (Type::Move::Type)drawer.GetDrawSize().height)
+						holdCamera.x + ((mouseHoldx - x_) / (Type::Move::base)drawer.GetDrawSize().width),
+						holdCamera.y + ((mouseHoldy - y_) / (Type::Move::base)drawer.GetDrawSize().height)
 					};
 					setTarget(camera);
 				}
 			}
 		});
 
-		fncUnlock.push_back([&](FNC_UNLOCK_PARAMS)->FNC_UNLOCK_RET
+		fncUnlock.push_back([&](FNC_UNLOCK_PARAMS) -> FNC_UNLOCK_RET
 		{
 			if (mouseSelectHold)
 			{
@@ -310,7 +310,7 @@ namespace Editor::UI::Scene
 			}
 		}));
 
-		fncMoved.push_back([&](FNC_MOVED_PARAMS) ->FNC_MOVED_RET
+		fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
 			if (map->Exists())
 			{

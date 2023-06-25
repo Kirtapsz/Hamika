@@ -5,7 +5,7 @@ namespace Editor::UI
 {
 	MiniMap::MiniMap()
 	{
-		fncLock.push_back([&](FNC_LOCK_PARAMS)->FNC_LOCK_RET
+		fncLock.push_back([&](FNC_LOCK_PARAMS) -> FNC_LOCK_RET
 		{
 			if (map && map->Exists())
 			{
@@ -14,7 +14,7 @@ namespace Editor::UI
 			}
 		});
 
-		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
+		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS) -> FNC_MOUSE_AXES_RET
 		{
 			if (map && map->Exists())
 			{
@@ -25,7 +25,7 @@ namespace Editor::UI
 			}
 		});
 
-		fncUnlock.push_back([&](FNC_UNLOCK_PARAMS)->FNC_UNLOCK_RET
+		fncUnlock.push_back([&](FNC_UNLOCK_PARAMS) -> FNC_UNLOCK_RET
 		{
 			if (mouseHold)
 			{

@@ -136,7 +136,7 @@ namespace Object
 			void Func<DATA>::StepUp()
 			{
 				calculateSpeed(GetMoveSpeed().y);
-				SetMove({GetMove().x,GetMove().y - Type::Move::Type(currentSpeed_ / CPS)});
+				SetMove({GetMove().x,GetMove().y - Type::Move::base(currentSpeed_ / CPS)});
 				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y > GetMove().y)
 				{
 					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
@@ -154,7 +154,7 @@ namespace Object
 			void Func<DATA>::StepDown()
 			{
 				calculateSpeed(GetMoveSpeed().y);
-				SetMove({GetMove().x,GetMove().y + Type::Move::Type(currentSpeed_ / CPS)});
+				SetMove({GetMove().x,GetMove().y + Type::Move::base(currentSpeed_ / CPS)});
 				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y < GetMove().y)
 				{
 					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
@@ -172,7 +172,7 @@ namespace Object
 			void Func<DATA>::StepLeft()
 			{
 				calculateSpeed(GetMoveSpeed().x);
-				SetMove({GetMove().x - Type::Move::Type(currentSpeed_ / CPS),GetMove().y});
+				SetMove({GetMove().x - Type::Move::base(currentSpeed_ / CPS),GetMove().y});
 				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x > GetMove().x)
 				{
 					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
@@ -190,7 +190,7 @@ namespace Object
 			void Func<DATA>::StepRight()
 			{
 				calculateSpeed(GetMoveSpeed().x);
-				SetMove({GetMove().x + Type::Move::Type(currentSpeed_ / CPS),GetMove().y});
+				SetMove({GetMove().x + Type::Move::base(currentSpeed_ / CPS),GetMove().y});
 				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x < GetMove().x)
 				{
 					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
@@ -295,19 +295,19 @@ namespace Object
 				return MoveSpeed;
 			}
 			template <typename DATA>
-			Type::Move::Type Func<DATA>::GetMoveSpeedVertical()
+			Type::Move::base Func<DATA>::GetMoveSpeedVertical()
 			{
 				return MoveSpeed.y;
 			}
 			template <typename DATA>
-			Type::Move::Type Func<DATA>::GetMoveSpeedHorizontal()
+			Type::Move::base Func<DATA>::GetMoveSpeedHorizontal()
 			{
 				return MoveSpeed.x;
 			}
 
 			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
 			template <typename DATA>
-			void Func<DATA>::SetMoveSpeed(Type::Move::Type speed)
+			void Func<DATA>::SetMoveSpeed(Type::Move::base speed)
 			{
 				MoveSpeed = {speed,speed};
 			}

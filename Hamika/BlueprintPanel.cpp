@@ -20,7 +20,7 @@ namespace UI
 
 	BlueprintPanel::BlueprintPanel()
 	{
-		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 		{
 			if (_redrawn && _bluePrint)
 			{

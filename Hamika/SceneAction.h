@@ -139,9 +139,10 @@ namespace UI::Scene::Module::Action
 						}
 						else
 						{
+							Type::ID id_to = reach(map)[block.GoTo].object->GetTranslationTo();
 							DeleteRemain(block.GoTo);
 							ObjectCreate(remain, ObjectID::Explosion, block.GoTo);
-							remain->SetObjectIDremain(IDto);
+							remain->SetObjectIDremain(std::max(id_to, remain->GetObjectIDremain()));
 						}
 					}
 				}
@@ -181,8 +182,8 @@ namespace UI::Scene::Module::Action
 				Type::Coord begin = center - d;
 				Type::Coord end = center + 1 + d;
 
-				begin.limiter({0,0}, {((Type::Size)*map).width, ((Type::Size)*map).height});
-				end.limiter({0,0}, {((Type::Size)*map).width, ((Type::Size)*map).height});
+				begin.limiter({0,0}, {map->size().width, map->size().height});
+				end.limiter({0,0}, {map->size().width, map->size().height});
 
 				map->forrange(begin, end, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{

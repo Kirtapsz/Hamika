@@ -27,7 +27,7 @@
 
 #undef GetObject
 
-#define OBJECT_SIMPLE_DRAWNER_PARAM Type::Coord::Type x,Type::Coord::Type y,Type::Coord::Type w,Type::Coord::Type h
+#define OBJECT_SIMPLE_DRAWNER_PARAM Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
 #define OBJECT_SIMPLE_DRAWNER_CALL x, y, w, h
 typedef void(*SIMPLE_DRAWNER)(OBJECT_SIMPLE_DRAWNER_PARAM);
 

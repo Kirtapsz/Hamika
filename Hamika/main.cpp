@@ -7,6 +7,7 @@
 #include "Cursor.h"
 #include "Resource.h"
 #include "versions.h"
+#include "SceneBackground.h"
 
 std::shared_ptr<KIR5::Display> display;
 std::shared_ptr<KIR5::EventEngine> eventEngine;
@@ -19,6 +20,11 @@ int processRet = 0;
 
 int main(int argc, char *argv[])
 {
+	Type::_Dim<float> A{0.5,0.5};
+	Type::_Dim<int> B{1,1};
+	Type::_Dim<float> C = A - B;
+	Type::_Dim<float> D = B - A;
+
 	if (argc >= 2 && strcmp("--info", argv[1]) == 0)
 	{
 		clog << "KIR LIB commit ID: " << Versions::ApplicationCommitID << KIR4::eol;
@@ -110,6 +116,7 @@ int main(int argc, char *argv[])
 			if (Res::initialize(Res::GAME))
 			{
 				UI::MainEvent::initialize(display);
+
 			}
 			else
 			{

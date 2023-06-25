@@ -19,7 +19,7 @@ namespace Editor::Object
 
 		}
 
-		void Drawner(Brick::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
+		void Drawner(Brick::Stack *stack, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
 		{
 			DrawObject(stack->o->id, x, y, w, h);
 		}
@@ -47,7 +47,7 @@ namespace Editor::Object
 			spawn = Res::uielements[Res::UIElements::SpawnPoint];
 		}
 
-		void Drawner(Brick::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
+		void Drawner(Brick::Stack *stack, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
 		{
 			Brick *obj = stack->o->scene->GetObject(stack->o->GetCoord());
 

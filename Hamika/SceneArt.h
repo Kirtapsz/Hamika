@@ -21,6 +21,7 @@
 #include "KeyboardController.h"
 #include "RngController.h"
 #include "Validator.h"
+#include "SceneBackground.h"
 
 #pragma warning(disable: 4250)
 
@@ -29,6 +30,7 @@ namespace UI::Scene::Module::Art
 	class Data
 	{
 		protected: SceneDrawer<SceneBlock<Object::Brick>> drawer;
+		protected: std::shared_ptr<BackgoundInterface> background;
 		protected: KIR5::Shared<StatusBar> statusbar;
 		protected: KIR5::Shared<Panel> drawnerBar;
 		protected: Type::CameraSize cameraSize;
@@ -48,6 +50,11 @@ namespace UI::Scene::Module::Art
 			drawer.SetMap(map);
 			drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 			drawer.setGlobalGravity(&globalGravity);
+
+			std::shared_ptr<SingleSeamlessBackground> single_seamless_background = std::shared_ptr<SingleSeamlessBackground>(new SingleSeamlessBackground());
+			single_seamless_background->setBitmap(Res::uielements[Res::UIElements::GameBackground]);
+			background = single_seamless_background;
+			background->setCameraScale(-drawer.GetDrawSize().width/* / 1.5f*/);
 		}
 
 		protected: virtual void Redrawn(Type::Coord coord)
@@ -63,7 +70,7 @@ namespace UI::Scene::Module::Art
 			return json;
 		}
 
-				 // OBJECT INTERFACE
+			  // OBJECT INTERFACE
 
 		public: virtual Type::Size GetDrawSize() const
 		{

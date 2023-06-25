@@ -118,7 +118,7 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
-    <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
+    <Allegro_LibraryType>DynamicRelease</Allegro_LibraryType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MultitestInteractive|Win32'">
     <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
@@ -133,7 +133,7 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
-    <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
+    <Allegro_LibraryType>DynamicRelease</Allegro_LibraryType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MultitestInline|Win32'">
     <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
@@ -148,7 +148,7 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
-    <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
+    <Allegro_LibraryType>DynamicRelease</Allegro_LibraryType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MultitestFile|Win32'">
     <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
@@ -163,7 +163,7 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
-    <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
+    <Allegro_LibraryType>DynamicRelease</Allegro_LibraryType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">
     <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
@@ -178,7 +178,7 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
     <Allegro_AddonVideo>true</Allegro_AddonVideo>
-    <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
+    <Allegro_LibraryType>DynamicRelease</Allegro_LibraryType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(KIRLIB)\KIR4\include;$(KIRLIB)\KIR5\include;$(IncludePath)</IncludePath>
@@ -376,6 +376,8 @@
     <ClCompile Include="ObjectRequests.hpp" />
     <ClCompile Include="ObjectRotate.hpp" />
     <ClCompile Include="ObjectStack.hpp" />
+    <ClCompile Include="SceneBackground.cpp" />
+    <ClCompile Include="SceneBackground.hpp" />
     <ClCompile Include="SceneConfiguration.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
     <ClCompile Include="Bedrock.cpp" />
@@ -431,6 +433,7 @@
     <ClInclude Include="ObjectRequests.h" />
     <ClInclude Include="ObjectRotate.h" />
     <ClInclude Include="ObjectStack.h" />
+    <ClInclude Include="SceneBackground.h" />
     <ClInclude Include="SceneConfiguration.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="MapList.h" />

@@ -70,8 +70,8 @@ namespace Object
 			void Func<DATA>::setOddDrawCoord()
 			{
 				Type::Coord draw_coord = {
-					Type::Coord::Type((coord.x + move.x) * Type::Move::Type(scene->GetDrawSize().width)),
-					Type::Coord::Type((coord.y + move.y) * Type::Move::Type(scene->GetDrawSize().height))
+					Type::Coord::base((coord.x + move.x) * Type::Move::base(scene->GetDrawSize().width)),
+					Type::Coord::base((coord.y + move.y) * Type::Move::base(scene->GetDrawSize().height))
 				};
 
 				if (draw_coord != DrawCoord)

@@ -23,7 +23,7 @@ namespace Object
 
 		constexpr float PlaceUnityTime = 0.4f;
 		constexpr float PlaceFaceUnityTime = 0.4f;
-		constexpr float PushEffectTime = 0.15f;
+		constexpr float PushEffectTime = 0.08325f;
 		constexpr float SuckEffectTime = 0.15f;
 		constexpr float ExitEffectTime = 0.8f;
 		constexpr float pushSpeed = CPS / 21.99f;

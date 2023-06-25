@@ -19,61 +19,13 @@ void SceneDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool *globalGravity)
 }
 
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
-{
-	if (map->Test(coord))
-	{
-		clog << "====== (" << coord.x << ";" << coord.y << ")" << KIR4::eol;
-		clog << "ComeFrom: (" << reach(map)[coord].ComeFrom.x << ";" << reach(map)[coord].ComeFrom.y << ")" << KIR4::eol;
-		clog << "GoTo: (" << reach(map)[coord].GoTo.x << ";" << reach(map)[coord].GoTo.y << ")" << KIR4::eol;
-
-		clog << "DrawOptions ( " << reach(map)[coord].DrawType << " ) : ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::Cleared)
-			clog << "Cleared, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsMovingObjectDrawned)
-			clog << "MovObjDraw, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsNotMovingObjectDrawned)
-			clog << "NotMovObjDraw, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsNotMovingRemainDrawned)
-			clog << "NotMovRemDraw, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::LastDrawned)
-			clog << "LastDraw, ";
-		clog << KIR4::eol;
-
-		clog << "PointDrawNumber: " << reach(map)[coord].DrawNumber << KIR4::eol;
-		clog << "UnionFlags: ";
-		//Object::PrintFlags(GetUnionFlags(coord));
-		clog << "\n";
-		clog << "SectionFlags: ";
-		//Object::PrintFlags(GetSectionFlags(coord));
-		clog << "\n";
-		if (reach(map)[coord].object->isExists)
-		{
-			clog << "Object: " << KIR4::eol;
-			reach(map)[coord].object->Print();
-			clog.color();
-		}
-		else
-			clog << "Object: nil" << KIR4::eol;
-		if (reach(map)[coord].remain->isExists)
-		{
-			clog << "Remain: " << KIR4::eol;
-			reach(map)[coord].remain->Print();
-			clog.color();
-		}
-		else
-			clog << "Remain: nil" << KIR4::eol;
-	}
-}
-
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::Type row, Type::Coord::Type begin, Type::Coord::Type end)
+void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end)
 {
 	for (; begin < end; begin++)
 		Redrawn({begin,row});
 }
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::Type col, Type::Coord::Type begin, Type::Coord::Type end)
+void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end)
 {
 	for (; begin < end; begin++)
 		Redrawn({col,begin});
@@ -135,8 +87,8 @@ Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
 	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height + BlocksBitmapDrawOffset.height)) / (float)DrawSize.height;
 
 	return {
-		limiter<Type::Coord::Type>(0,((Type::Size)reach(map)).width - 1,CameraBegin.x + x_),
-		limiter<Type::Coord::Type>(0,((Type::Size)reach(map)).height - 1,CameraBegin.y + y_)
+		limiter<Type::Coord::base>(0,((Type::Size)reach(map)).width - 1,CameraBegin.x + x_),
+		limiter<Type::Coord::base>(0,((Type::Size)reach(map)).height - 1,CameraBegin.y + y_)
 	};
 }
 
@@ -219,17 +171,6 @@ void SceneDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 			BlocksBitmapDrawOffset.height = (CameraBegin.y - (DrawBeginSource.y + BlocksBitmapBufferSize)) * DrawSize.height;
 		}
 	}
-	/*clog <<"Camera: " <<camera <<KIR4::eol;
-	clog <<"CameraBegin: " <<CameraBegin <<KIR4::eol;
-	clog <<"CameraEnd: " <<CameraEnd <<KIR4::eol;
-	clog <<"CameraBox: " <<CameraX1 <<"*" <<CameraY1 <<"  " <<CameraX2 <<"*" <<CameraY2 <<KIR4::eol;
-	clog <<"BlocksBitmapCounts: " <<BlocksBitmapCounts <<KIR4::eol;
-	clog <<"CameraCounts: " <<CameraCounts <<KIR4::eol;
-	clog <<"DrawBegin: " <<DrawBegin <<KIR4::eol;
-	clog <<"DrawEnd: " <<DrawEnd <<KIR4::eol;
-	clog <<"DrawOffset: " <<DrawOffset <<KIR4::eol;
-	clog <<"BlocksBitmapDrawOffset: " <<BlocksBitmapDrawOffset <<KIR4::eol;
-	clog <<"-------------------" <<KIR4::eol;*/
 }
 template <typename ACTIVE_BLOCK_T>
 void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
@@ -237,8 +178,8 @@ void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize
 	if (cameraSizeAdjust.width > 0.f && cameraSizeAdjust.height > 0.f)
 	{
 		Type::CameraSize sizeDim = {cameraPhySize.width / cameraSizeAdjust.width, cameraPhySize.height / cameraSizeAdjust.height};
-		Type::CameraSize::Type sizeAdjust = (std::max)(sizeDim.width, sizeDim.height);
-		DrawSize = {(Type::Size::Type)sizeAdjust,(Type::Size::Type)sizeAdjust};
+		Type::CameraSize::base sizeAdjust = (std::max)(sizeDim.width, sizeDim.height);
+		DrawSize = {(Type::Size::base)sizeAdjust,(Type::Size::base)sizeAdjust};
 	}
 	else
 	{
@@ -342,7 +283,7 @@ void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize
 template <typename ACTIVE_BLOCK_T>
 SceneDrawer<ACTIVE_BLOCK_T>::SceneDrawer()
 {
-	gravitySlides.initialize(KIR5::Bitmap("Hamika\\Texture\\Block\\gravitation.png"), KIR5::SubBitmap());
+	gravitySlides.initialize(Res::tiles[Res::Tiles::_Gravitation], Res::tiles[Res::BitmapPool::Fallback]);
 	gravityAnimator.Initialize();
 	gravityAnimator.SetNumberOfFrames(gravitySlides.getCount());
 	gravityAnimator.SetAnimationTime(1.0f);

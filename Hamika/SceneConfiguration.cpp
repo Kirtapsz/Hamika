@@ -42,6 +42,7 @@ namespace UI::Scene
 
 		*activeMoved = [&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
+			background->move(0, 0, width(), height());
 			drawnerBar->move(0, 0, width(), height());
 			drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 		};
@@ -50,7 +51,7 @@ namespace UI::Scene
 
 		al_hide_mouse_cursor(*display);
 
-		*delayTimerStart = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		*delayTimerStart = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			if (--delayLoop == 0)
 			{
@@ -66,7 +67,7 @@ namespace UI::Scene
 		delayLoop = startDelay;
 		fncTimer.push_back(delayTimerStart);
 
-		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 		{
 			if (key_ == ALLEGRO_KEY_ESCAPE)
 			{
@@ -77,7 +78,7 @@ namespace UI::Scene
 		}
 		);
 
-		*delayTimerStop = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		*delayTimerStop = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			if (--delayLoop == 0)
 			{
@@ -89,7 +90,7 @@ namespace UI::Scene
 			}
 		};
 
-		*delayDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		*delayDraw = [&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 		{
 			al_draw_filled_rectangle(x_, y_, x_ + w_, y_ + h_, KIR5::Color(0, 0, 0, delayAlpha).getAlphaColored());
 		};
@@ -129,7 +130,7 @@ namespace UI::Scene
 
 		al_hide_mouse_cursor(*display);
 
-		*delayTimerStart = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		*delayTimerStart = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			if (--delayLoop == 0)
 			{
@@ -145,7 +146,7 @@ namespace UI::Scene
 		delayLoop = startDelay;
 		fncTimer.push_back(delayTimerStart);
 
-		*delayTimerStop = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		*delayTimerStop = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			if (--delayLoop == 0)
 			{
@@ -157,7 +158,7 @@ namespace UI::Scene
 			}
 		};
 
-		*delayDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		*delayDraw = [&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 		{
 			al_draw_filled_rectangle(x_, y_, x_ + w_, y_ + h_, KIR5::Color(0, 0, 0, delayAlpha).getAlphaColored());
 		};
@@ -210,7 +211,7 @@ namespace UI::Scene
 		fncKeyDown.push_back(activeKeyDown);
 		fncKeyUp.push_back(activeKeyUp);
 
-		*delayTimerStart = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		*delayTimerStart = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			if (--delayLoop == 0)
 			{
@@ -229,7 +230,7 @@ namespace UI::Scene
 		delayLoop = startDelay;
 		fncTimer.push_back(delayTimerStart);
 
-		*delayTimerStop = [&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		*delayTimerStop = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			if (!paused)
 			{
@@ -244,7 +245,7 @@ namespace UI::Scene
 			}
 		};
 
-		*delayDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		*delayDraw = [&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 		{
 			al_draw_filled_rectangle(x_, y_, x_ + w_, y_ + h_, KIR5::Color(0, 0, 0, delayAlpha).getAlphaColored());
 		};
@@ -252,7 +253,7 @@ namespace UI::Scene
 		drawnerBar->fncDraw.push_back(delayDraw);
 
 
-		fncKeyChar.push_back([&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
+		fncKeyChar.push_back([&](FNC_KEY_CHAR_PARAMS) -> FNC_KEY_CHAR_RET
 		{
 			if (key_ == 'p')
 			{
@@ -396,6 +397,7 @@ namespace UI::Scene
 
 		*activeMoved = [&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
+			background->move(0, 0, width(), height());
 			drawnerBar->move(0, 0, width(), height());
 			drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 		};
@@ -411,7 +413,7 @@ namespace UI::Scene
 			}
 		});
 
-		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 		{
 			if (key_ == ALLEGRO_KEY_ESCAPE)
 			{
