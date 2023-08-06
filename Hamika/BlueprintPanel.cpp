@@ -26,10 +26,10 @@ namespace UI
 			{
 				_redrawn = false;
 
-				int smax = (std::max)(((Type::Size)(_bluePrint->blocks)).width, ((Type::Size)(_bluePrint->blocks)).height);
+				int smax = (std::max)(((Type::Size)(_bluePrint->blocks)).width(), ((Type::Size)(_bluePrint->blocks)).height());
 				_drawSize = {400 / smax, 400 / smax};
 
-				_disp_bmp = al_create_bitmap(_drawSize.width * ((Type::Size)(_bluePrint->blocks)).width, _drawSize.height * ((Type::Size)(_bluePrint->blocks)).height);
+				_disp_bmp = al_create_bitmap(_drawSize.width() * ((Type::Size)(_bluePrint->blocks)).width(), _drawSize.height() * ((Type::Size)(_bluePrint->blocks)).height());
 
 				KIR5::BitmapTarget target(_disp_bmp);
 
@@ -37,7 +37,7 @@ namespace UI
 
 				_bluePrint->blocks.foreach([&](const Type::Coord &coord, Res::BluePrint::Block &object)
 				{
-					DrawObject(object.id, coord.x * _drawSize.width, coord.y * _drawSize.height, _drawSize.width, _drawSize.height);
+					DrawObject(object.id, coord.x() * _drawSize.width(), coord.y() * _drawSize.height(), _drawSize.width(), _drawSize.height());
 				});
 			}
 			{

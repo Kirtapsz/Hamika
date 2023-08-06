@@ -88,444 +88,286 @@ namespace Type
 	typedef float Speed;
 	typedef __int8 Code;
 
+	template<class T>
+	struct ModuloType;
+	
+	template<>
+	struct ModuloType<float>
+	{
+		typedef typename __int32 TYPE;
+	};
+
+	template<class T>
+	struct ModuloType
+	{
+		typedef typename T TYPE;
+	};
+
 	template<typename T, typename U>
 	struct ArithmeticType
 	{
-		using ADDITION = decltype(std::declval<T>() / std::declval<U>());
-		using SUBTRACTION = decltype(std::declval<T>() / std::declval<U>());
-		using MULTIPLICATION = decltype(std::declval<T>() / std::declval<U>());
+		using ADDITION = decltype(std::declval<T>() + std::declval<U>());
+		using SUBTRACTION = decltype(std::declval<T>() - std::declval<U>());
+		using MULTIPLICATION = decltype(std::declval<T>() * std::declval<U>());
 		using DIVISION = decltype(std::declval<T>() / std::declval<U>());
-		using MODULO = decltype(std::declval<T>() / std::declval<U>());
+
+		using MODULO = decltype(std::declval<typename ModuloType<T>::TYPE>() % std::declval<typename ModuloType<U>::TYPE>());
 	};
 
 	template<typename T>
-	struct _Dim
+	struct var2D
 	{
 		typedef typename T base;
 
-		base width;
-		base height;
+		base valuel;
+		base valuer;
 
-		inline _Dim()
+		inline base &x()
 		{
-
+			return valuel;
 		}
-
-		template<typename F>
-		inline _Dim(_Dim<F> _dim):
-			width((T)_dim.width), height((T)_dim.height)
+		inline base &y()
 		{
-
+			return valuer;
 		}
-		template<typename F>
-		inline auto operator+(_Dim<F> _dim) const
+		inline base &width()
 		{
-			return _Dim<
-				typename ArithmeticType<T, F>::ADDITION
-			>(width + _dim.width, height + _dim.height);
+			return valuel;
 		}
-		template<typename F>
-		inline auto operator-(_Dim<F> _dim) const
+		inline base &height()
 		{
-			return _Dim<
-				typename ArithmeticType<T, F>::SUBTRACTION
-			>(width - _dim.width, height - _dim.height);
-		}
-		template<typename F>
-		inline _Dim<F> operator*(_Dim<F> _dim) const
-		{
-			return _Dim<
-				typename ArithmeticType<T, F>::MULTIPLICATION
-			>(width * _dim.width, height * _dim.height);
-		}
-		template<typename F>
-		inline _Dim<F> operator/(_Dim<F> _dim) const
-		{
-			return _Dim<
-				typename ArithmeticType<T, F>::DIVISION
-			>(width / _dim.width, height / _dim.height);
-		}
-		template<typename F>
-		inline _Dim<F> operator%(_Dim<F> _dim) const
-		{
-			return _Dim<
-				typename ArithmeticType<T, F>::MODULO
-			>(width % _dim.width, height % _dim.height);
-		}
-		template<typename F>
-		inline void operator+=(_Dim<F> _dim)
-		{
-			width += _dim.width;
-			height += _dim.height;
-		}
-		template<typename F>
-		inline void operator-=(_Dim<F> _dim)
-		{
-			width -= _dim.width;
-			height -= _dim.height;
-		}
-		template<typename F>
-		inline void operator*=(_Dim<F> _dim)
-		{
-			width *= _dim.width;
-			height *= _dim.height;
-		}
-		template<typename F>
-		inline void operator/=(_Dim<F> _dim)
-		{
-			width /= _dim.width;
-			height /= _dim.height;
-		}
-		template<typename F>
-		inline void operator%=(_Dim<F> _dim)
-		{
-			width %= _dim.width;
-			height %= _dim.height;
-		}
-		template<typename F>
-		inline bool operator==(_Dim<F> _dim) const
-		{
-			return width == (T)_dim.width && height == (T)_dim.height;
-		}
-		template<typename F>
-		inline bool operator!=(_Dim<F> _dim) const
-		{
-			return width != (T)_dim.width || height != (T)_dim.height;
-		}
-		template<typename F>
-		inline bool operator<(_Dim<F> _dim) const
-		{
-			return width < (T)_dim.width && height < (T)_dim.height;
-		}
-		template<typename F>
-		inline bool operator>(_Dim<F> _dim) const
-		{
-			return width > (T)_dim.width && height > (T)_dim.height;
+			return valuer;
 		}
 
+		inline const base &x() const
+		{
+			return valuel;
+		}
+		inline const base &y() const
+		{
+			return valuer;
+		}
+		inline const base &width() const
+		{
+			return valuel;
+		}
+		inline const base &height() const
+		{
+			return valuer;
+		}
+
+		inline var2D()
+		{
+
+		}
 
 		template<typename F>
-		inline _Dim(F _width, F _height):
-			width((T)_width), height((T)_height)
+		inline var2D(F _valuel, F _valuer):
+			valuel((T)_valuel), valuer((T)_valuer)
 		{
 
 		}
 		template<typename F>
 		inline auto operator+(F _b) const
 		{
-			return _Dim<
+			return var2D<
 				typename ArithmeticType<T, F>::ADDITION
-			>(width + _b, height + _b);
+			>(valuel + _b, valuer + _b);
 		}
 		template<typename F>
 		inline auto operator-(F _b) const
 		{
-			return _Dim<
+			return var2D<
 				typename ArithmeticType<T, F>::SUBTRACTION
-			>(width - _b, height - _b);
+			>(valuel - _b, valuer - _b);
 		}
 		template<typename F>
-		inline _Dim<F> operator*(F _b) const
+		inline var2D<F> operator*(F _b) const
 		{
-			return _Dim<
+			return var2D<
 				typename ArithmeticType<T, F>::MULTIPLICATION
-			>(width * _b, height * _b);
+			>(valuel * _b, valuer * _b);
 		}
 		template<typename F>
-		inline _Dim<F> operator/(F _b) const
+		inline var2D<F> operator/(F _b) const
 		{
-			return _Dim<
+			return var2D<
 				typename ArithmeticType<T, F>::DIVISION
-			>(width / _b, height / _b);
+			>(valuel / _b, valuer / _b);
 		}
 		template<typename F>
-		inline _Dim<F> operator%(F _b) const
+		inline var2D<F> operator%(F _b) const
 		{
-			return _Dim<
+			return var2D<
 				typename ArithmeticType<T, F>::MODULO
-			>(width % _b, height % _b);
+			>(valuel % _b, valuer % _b);
 		}
 		template<typename F>
 		inline void operator+=(F _b)
 		{
-			width += _b;
-			height += _b;
+			valuel += _b;
+			valuer += _b;
 		}
 		template<typename F>
 		inline void operator-=(F _b)
 		{
-			width -= _b;
-			height -= _b;
+			valuel -= _b;
+			valuer -= _b;
 		}
 		template<typename F>
 		inline void operator*=(F _b)
 		{
-			width *= _b;
-			height *= _b;
+			valuel *= _b;
+			valuer *= _b;
 		}
 		template<typename F>
 		inline void operator/=(F _b)
 		{
-			width /= _b;
-			height /= _b;
+			valuel /= _b;
+			valuer /= _b;
 		}
 		template<typename F>
 		inline void operator%=(F _b)
 		{
-			width %= _b;
-			height %= _b;
+			valuel %= _b;
+			valuer %= _b;
 		}
 		template<typename F>
 		inline bool operator==(F _b) const
 		{
-			return width == (T)_b && height == (T)_b;
+			return valuel == (T)_b && valuer == (T)_b;
 		}
 		template<typename F>
 		inline bool operator!=(F _b) const
 		{
-			return width != (T)_b || height != (T)_b;
+			return valuel != (T)_b || valuer != (T)_b;
 		}
 		template<typename F>
 		inline bool operator<(F _b) const
 		{
-			return width < (T)_b && height < (T)_b;
+			return valuel < (T)_b && valuer < (T)_b;
 		}
 		template<typename F>
 		inline bool operator>(F _b) const
 		{
-			return width > (T)_b && height > (T)_b;
+			return valuel > (T)_b && valuer > (T)_b;
 		}
 
-		static const _Dim<T> Invalid;
+		template<typename F>
+		inline var2D(const var2D<F> &_val):
+			valuel((T)_val.valuel), valuer((T)_val.valuer)
+		{
+
+		}
+		template<typename F>
+		inline auto operator+(const var2D<F> &_val) const
+		{
+			return var2D<
+				typename ArithmeticType<T, F>::ADDITION
+			>(valuel + _val.valuel, valuer + _val.valuer);
+		}
+		template<typename F>
+		inline auto operator-(const var2D<F> &_val) const
+		{
+			return var2D<
+				typename ArithmeticType<T, F>::SUBTRACTION
+			>(valuel - _val.valuel, valuer - _val.valuer);
+		}
+		template<typename F>
+		inline auto operator*(const var2D<F> &_val) const
+		{
+			return var2D<
+				typename ArithmeticType<T, F>::MULTIPLICATION
+			>(valuel * _val.valuel, valuer * _val.valuer);
+		}
+		template<typename F>
+		inline auto operator/(const var2D<F> &_val) const
+		{
+			return var2D<
+				typename ArithmeticType<T, F>::DIVISION
+			>(valuel / _val.valuel, valuer / _val.valuer);
+		}
+		template<typename F>
+		inline auto operator%(const var2D<F> &_val) const
+		{
+			return var2D<
+				typename ArithmeticType<T, F>::MODULO
+			>(valuel % _val.valuel, valuer % _val.valuer);
+		}
+		template<typename F>
+		inline void operator+=(const var2D<F> &_val)
+		{
+			valuel += _val.valuel;
+			valuer += _val.valuer;
+		}
+		template<typename F>
+		inline void operator-=(const var2D<F> &_val)
+		{
+			valuel -= _val.valuel;
+			valuer -= _val.valuer;
+		}
+		template<typename F>
+		inline void operator*=(const var2D<F> &_val)
+		{
+			valuel *= _val.valuel;
+			valuer *= _val.valuer;
+		}
+		template<typename F>
+		inline void operator/=(const var2D<F> &_val)
+		{
+			valuel /= _val.valuel;
+			valuer /= _val.valuer;
+		}
+		template<typename F>
+		inline void operator%=(const var2D<F> &_val)
+		{
+			valuel %= _val.valuel;
+			valuer %= _val.valuer;
+		}
+		template<typename F>
+		inline bool operator==(const var2D<F> &_val) const
+		{
+			return valuel == (T)_val.valuel && valuer == (T)_val.valuer;
+		}
+		template<typename F>
+		inline bool operator!=(const var2D<F> &_val) const
+		{
+			return valuel != (T)_val.valuel || valuer != (T)_val.valuer;
+		}
+		template<typename F>
+		inline bool operator<(const var2D<F> &_val) const
+		{
+			return valuel < (T)_val.valuel && valuer < (T)_val.valuer;
+		}
+		template<typename F>
+		inline bool operator>(const var2D<F> &_val) const
+		{
+			return valuel > (T)_val.valuel && valuer > (T)_val.valuer;
+		}
+
+		template<typename F>
+		inline void limiter(const var2D<F> &_min, const var2D<F> &_max)
+		{
+			valuel = std::max((T)_min.valuel, std::min((T)_max.valuel, valuel));
+			valuer = std::max((T)_min.valuer, std::min((T)_max.valuer, valuer));
+		}
+
+		static const var2D<T> Invalid;
 		inline operator std::ostringstream() const
 		{
 			std::ostringstream os;
-			os << "( " << width << " * " << height << " )";
+			os << "( " << valuel << " * " << valuer << " )";
 			return os;
 		}
 	};
 	template<typename T>
-	const _Dim<T> _Dim<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
+	const var2D<T> var2D<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
 
-	template<typename T>
-	struct _Pos
-	{
-		typedef typename T base;
-
-		base x;
-		base y;
-
-		inline _Pos()
-		{
-
-		}
-
-		template<typename F>
-		inline _Pos(_Pos<F> _pos):
-			x((T)_pos.x), y((T)_pos.y)
-		{
-
-		}
-		template<typename F>
-		inline auto operator+(_Pos<F> _pos) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::ADDITION
-			>(x + _pos.x, y + _pos.y);
-		}
-		template<typename F>
-		inline auto operator-(_Pos<F> _pos) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::SUBTRACTION
-			>(x - _pos.x, y - _pos.y);
-		}
-		template<typename F>
-		inline _Pos<F> operator*(_Pos<F> _pos) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::MULTIPLICATION
-			>(x * _pos.x, y * _pos.y);
-		}
-		template<typename F>
-		inline _Pos<F> operator/(_Pos<F> _pos) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::DIVISION
-			>(x / _pos.x, y / _pos.y);
-		}
-		template<typename F>
-		inline _Pos<F> operator%(_Pos<F> _pos) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::MODULO
-			>(x % _pos.x, y % _pos.y);
-		}
-		template<typename F>
-		inline void operator+=(_Pos<F> _pos)
-		{
-			x += _pos.x;
-			y += _pos.y;
-		}
-		template<typename F>
-		inline void operator-=(_Pos<F> _pos)
-		{
-			x -= _pos.x;
-			y -= _pos.y;
-		}
-		template<typename F>
-		inline void operator*=(_Pos<F> _pos)
-		{
-			x *= _pos.x;
-			y *= _pos.y;
-		}
-		template<typename F>
-		inline void operator/=(_Pos<F> _pos)
-		{
-			x /= _pos.x;
-			y /= _pos.y;
-		}
-		template<typename F>
-		inline void operator%=(_Pos<F> _pos)
-		{
-			x %= _pos.x;
-			y %= _pos.y;
-		}
-		template<typename F>
-		inline bool operator==(_Pos<F> _pos) const
-		{
-			return x == (T)_pos.x && y == (T)_pos.y;
-		}
-		template<typename F>
-		inline bool operator!=(_Pos<F> _pos) const
-		{
-			return x != (T)_pos.x || y != (T)_pos.y;
-		}
-		template<typename F>
-		inline bool operator<(_Pos<F> _pos) const
-		{
-			return x < (T)_pos.x && y < (T)_pos.y;
-		}
-		template<typename F>
-		inline bool operator>(_Pos<F> _pos) const
-		{
-			return x > (T)_pos.x && y > (T)_pos.y;
-		}
-
-
-		template<typename F>
-		inline _Pos(F _x, F _y):
-			x((T)_x), y((T)_y)
-		{
-
-		}
-		template<typename F>
-		inline auto operator+(F _b) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::ADDITION
-			>(x + _b, y + _b);
-		}
-		template<typename F>
-		inline auto operator-(F _b) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::SUBTRACTION
-			>(x - _b, y - _b);
-		}
-		template<typename F>
-		inline _Pos<F> operator*(F _b) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::MULTIPLICATION
-			>(x * _b, y * _b);
-		}
-		template<typename F>
-		inline _Pos<F> operator/(F _b) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::DIVISION
-			>(x / _b, y / _b);
-		}
-		template<typename F>
-		inline _Pos<F> operator%(F _b) const
-		{
-			return _Pos<
-				typename ArithmeticType<T, F>::MODULO
-			>(x % _b, y % _b);
-		}
-		template<typename F>
-		inline void operator+=(F _b)
-		{
-			x += _b;
-			y += _b;
-		}
-		template<typename F>
-		inline void operator-=(F _b)
-		{
-			x -= _b;
-			y -= _b;
-		}
-		template<typename F>
-		inline void operator*=(F _b)
-		{
-			x *= _b;
-			y *= _b;
-		}
-		template<typename F>
-		inline void operator/=(F _b)
-		{
-			x /= _b;
-			y /= _b;
-		}
-		template<typename F>
-		inline void operator%=(F _b)
-		{
-			x %= _b;
-			y %= _b;
-		}
-		template<typename F>
-		inline bool operator==(F _b) const
-		{
-			return x == (T)_b && y == (T)_b;
-		}
-		template<typename F>
-		inline bool operator!=(F _b) const
-		{
-			return x != (T)_b || y != (T)_b;
-		}
-		template<typename F>
-		inline bool operator<(F _b) const
-		{
-			return x < (T)_b && y < (T)_b;
-		}
-		template<typename F>
-		inline bool operator>(F _b) const
-		{
-			return x > (T)_b && y > (T)_b;
-		}
-
-		static const _Pos<T> Invalid;
-		inline operator std::ostringstream() const
-		{
-			std::ostringstream os;
-			os << "( " << x << " * " << y << " )";
-			return os;
-		}
-		inline void limiter(const _Pos &_min, const _Pos &_max)
-		{
-			x = std::max(_min.x, std::min(_max.x, x));
-			y = std::max(_min.y, std::min(_max.y, y));
-		}
-	};
-	template<typename T>
-	const _Pos<T> _Pos<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
-
-	typedef _Dim<__int32> Size;
-	typedef _Pos<__int32> Coord;
-	typedef _Pos<float> Move;
-	typedef _Pos<float> Camera;
-	typedef _Dim<float> CameraSize;
+	typedef var2D<__int32> Size;
+	typedef var2D<__int32> Coord;
+	typedef var2D<float> Move;
+	typedef var2D<float> Camera;
+	typedef var2D<float> CameraSize;
 }
 
 enum GridFlags: Type::Flags8

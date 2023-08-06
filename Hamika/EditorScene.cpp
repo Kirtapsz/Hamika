@@ -30,68 +30,68 @@ namespace Editor::UI::Scene
 			{
 				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.x == 0)
+				if (targetCoord.x() == 0)
 				{
-					targetCoord.x = map->size().width - 1;
+					targetCoord.x() = map->size().width() - 1;
 				}
 				else
 				{
-					targetCoord.x -= 1;
+					targetCoord.x() -= 1;
 				}
 				reach(map)[targetCoord].Redrawn = true;
 
-				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
+				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_RIGHT)
 			{
 				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.x == map->size().width - 1)
+				if (targetCoord.x() == map->size().width() - 1)
 				{
-					targetCoord.x = 0;
+					targetCoord.x() = 0;
 				}
 				else
 				{
-					targetCoord.x += 1;
+					targetCoord.x() += 1;
 				}
 				reach(map)[targetCoord].Redrawn = true;
 
-				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
+				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_UP)
 			{
 				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.y == 0)
+				if (targetCoord.y() == 0)
 				{
-					targetCoord.y = map->size().height - 1;
+					targetCoord.y() = map->size().height() - 1;
 				}
 				else
 				{
-					targetCoord.y -= 1;
+					targetCoord.y() -= 1;
 				}
 				reach(map)[targetCoord].Redrawn = true;
 
-				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
+				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_DOWN)
 			{
 				reach(map)[targetCoord].Redrawn = true;
 
-				if (targetCoord.y == map->size().height - 1)
+				if (targetCoord.y() == map->size().height() - 1)
 				{
-					targetCoord.y = 0;
+					targetCoord.y() = 0;
 				}
 				else
 				{
-					targetCoord.y += 1;
+					targetCoord.y() += 1;
 				}
 				reach(map)[targetCoord].Redrawn = true;
 
-				drawer.MoveCameraTo({(float)targetCoord.x,(float)targetCoord.y});
+				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 
@@ -209,8 +209,8 @@ namespace Editor::UI::Scene
 				if (mouseSelectHold)
 				{
 					holdCoordEnd = drawer.GetFromCursor(x_ - x(), y_ - y());
-					Type::Coord lu = {(std::min)(holdCoordBegin.x,holdCoordEnd.x),(std::min)(holdCoordBegin.y,holdCoordEnd.y)};
-					Type::Coord rd = {(std::max)(holdCoordBegin.x,holdCoordEnd.x) + 1,(std::max)(holdCoordBegin.y,holdCoordEnd.y) + 1};
+					Type::Coord lu = {(std::min)(holdCoordBegin.x(),holdCoordEnd.x()),(std::min)(holdCoordBegin.y(),holdCoordEnd.y())};
+					Type::Coord rd = {(std::max)(holdCoordBegin.x(),holdCoordEnd.x()) + 1,(std::max)(holdCoordBegin.y(),holdCoordEnd.y()) + 1};
 
 					map->foreach([&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 					{
@@ -256,8 +256,8 @@ namespace Editor::UI::Scene
 				{
 					mouseAxe = true;
 					Type::Move camera = {
-						holdCamera.x + ((mouseHoldx - x_) / (Type::Move::base)drawer.GetDrawSize().width),
-						holdCamera.y + ((mouseHoldy - y_) / (Type::Move::base)drawer.GetDrawSize().height)
+						holdCamera.x() + ((mouseHoldx - x_) / (Type::Move::base)drawer.GetDrawSize().width()),
+						holdCamera.y() + ((mouseHoldy - y_) / (Type::Move::base)drawer.GetDrawSize().height())
 					};
 					setTarget(camera);
 				}

@@ -40,7 +40,7 @@ namespace UI::Scene::Module::Action
 	{
 		protected: void initialize()
 		{
-			objects.resize(((Type::Size)*map).width * ((Type::Size)*map).height);
+			objects.resize(((Type::Size)*map).width() * ((Type::Size)*map).height());
 			remains.resize(objects.size());
 		}
 		protected: void buildObjectsHolder()
@@ -65,7 +65,7 @@ namespace UI::Scene::Module::Action
 				Type::Coord from_coord = reach(map)[coord].ComeFrom;
 				if (coord != from_coord)
 				{
-					Type::Coord::base move_distance = std::abs((coord.x - from_coord.x) + (coord.y - from_coord.y));
+					Type::Coord::base move_distance = std::abs((coord.x() - from_coord.x()) + (coord.y() - from_coord.y()));
 					Type::Move::base move = _object->GetAbsMove();
 					return 1.f - (move / (float)move_distance);
 				}
@@ -182,8 +182,8 @@ namespace UI::Scene::Module::Action
 				Type::Coord begin = center - d;
 				Type::Coord end = center + 1 + d;
 
-				begin.limiter({0,0}, {map->size().width, map->size().height});
-				end.limiter({0,0}, {map->size().width, map->size().height});
+				begin.limiter({0,0}, map->size());
+				end.limiter({0,0}, map->size());
 
 				map->forrange(begin, end, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
@@ -298,16 +298,16 @@ namespace UI::Scene::Module::Action
 				if (flag & Object::Brick::ExplosionType3)
 				{
 					reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType3);
-					ExplosionPut({center.x + 1,center.y + 1}, IDto);
-					ExplosionPut({center.x,center.y + 1}, IDto);
-					ExplosionPut({center.x - 1,center.y + 1}, IDto);
+					ExplosionPut({center.x() + 1,center.y() + 1}, IDto);
+					ExplosionPut({center.x(),center.y() + 1}, IDto);
+					ExplosionPut({center.x() - 1,center.y() + 1}, IDto);
 
-					ExplosionPut({center.x + 1,center.y}, IDto);
-					ExplosionPut({center.x - 1,center.y}, IDto);
+					ExplosionPut({center.x() + 1,center.y()}, IDto);
+					ExplosionPut({center.x() - 1,center.y()}, IDto);
 
-					ExplosionPut({center.x + 1,center.y - 1}, IDto);
-					ExplosionPut({center.x,center.y - 1}, IDto);
-					ExplosionPut({center.x - 1,center.y - 1}, IDto);
+					ExplosionPut({center.x() + 1,center.y() - 1}, IDto);
+					ExplosionPut({center.x(),center.y() - 1}, IDto);
+					ExplosionPut({center.x() - 1,center.y() - 1}, IDto);
 				}
 				if (flag & Object::Brick::ExplosionType5)
 				{
@@ -329,10 +329,10 @@ namespace UI::Scene::Module::Action
 					Redrawn(coord);
 				}
 
-				UpdateSquare33({center.x + 1,center.y + 1});
-				UpdateSquare33({center.x - 1,center.y + 1});
-				UpdateSquare33({center.x + 1,center.y - 1});
-				UpdateSquare33({center.x - 1,center.y - 1});
+				UpdateSquare33({center.x() + 1,center.y() + 1});
+				UpdateSquare33({center.x() - 1,center.y() + 1});
+				UpdateSquare33({center.x() + 1,center.y() - 1});
+				UpdateSquare33({center.x() - 1,center.y() - 1});
 			}
 		}
 		protected: void StepDisappear(Type::Coord coord)
@@ -435,28 +435,28 @@ namespace UI::Scene::Module::Action
 
 		protected:  void UpdateSquare33(Type::Coord coord)
 		{
-			UpdateBlock({coord.x,coord.y});
-			UpdateBlock({coord.x - 1,coord.y});
-			UpdateBlock({coord.x,coord.y - 1});
-			UpdateBlock({coord.x + 1,coord.y});
-			UpdateBlock({coord.x,coord.y + 1});
+			UpdateBlock({coord.x(),coord.y()});
+			UpdateBlock({coord.x() - 1,coord.y()});
+			UpdateBlock({coord.x(),coord.y() - 1});
+			UpdateBlock({coord.x() + 1,coord.y()});
+			UpdateBlock({coord.x(),coord.y() + 1});
 
-			UpdateBlock({coord.x - 1,coord.y - 1});
-			UpdateBlock({coord.x + 1,coord.y - 1});
-			UpdateBlock({coord.x + 1,coord.y + 1});
-			UpdateBlock({coord.x - 1,coord.y + 1});
+			UpdateBlock({coord.x() - 1,coord.y() - 1});
+			UpdateBlock({coord.x() + 1,coord.y() - 1});
+			UpdateBlock({coord.x() + 1,coord.y() + 1});
+			UpdateBlock({coord.x() - 1,coord.y() + 1});
 		}
 		protected:  void UpdateVertical3(Type::Coord coord)
 		{
-			UpdateBlock({coord.x,coord.y});
-			UpdateBlock({coord.x,coord.y - 1});
-			UpdateBlock({coord.x,coord.y + 1});
+			UpdateBlock({coord.x(),coord.y()});
+			UpdateBlock({coord.x(),coord.y() - 1});
+			UpdateBlock({coord.x(),coord.y() + 1});
 		}
 		protected: void UpdateHorizontal3(Type::Coord coord)
 		{
-			UpdateBlock({coord.x,coord.y});
-			UpdateBlock({coord.x - 1,coord.y});
-			UpdateBlock({coord.x + 1,coord.y});
+			UpdateBlock({coord.x(),coord.y()});
+			UpdateBlock({coord.x() - 1,coord.y()});
+			UpdateBlock({coord.x() + 1,coord.y()});
 		}
 		protected: bool TestObject(Type::Coord coord) const
 		{

@@ -20,10 +20,10 @@ int processRet = 0;
 
 int main(int argc, char *argv[])
 {
-	Type::_Dim<float> A{0.5,0.5};
-	Type::_Dim<int> B{1,1};
-	Type::_Dim<float> C = A - B;
-	Type::_Dim<float> D = B - A;
+	Type::var2D<float> A{0.5,0.5};
+	Type::var2D<int> B{1,1};
+	Type::var2D<float> C = A - B;
+	Type::var2D<float> D = B - A;
 
 	if (argc >= 2 && strcmp("--info", argv[1]) == 0)
 	{

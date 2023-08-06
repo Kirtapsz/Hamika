@@ -25,11 +25,11 @@ namespace Object
 			{
 				Json json;
 
-				json["move.x"] = move.x;
-				json["move.y"] = move.y;
+				json["move.x"] = move.x();
+				json["move.y"] = move.y();
 
-				json["MoveSpeed.x"] = MoveSpeed.x;
-				json["MoveSpeed.y"] = MoveSpeed.y;
+				json["MoveSpeed.x"] = MoveSpeed.x();
+				json["MoveSpeed.y"] = MoveSpeed.y();
 
 				json["accelaratePercent"] = accelaratePercent_;
 				json["limitSpeed"] = limitSpeed_;
@@ -135,17 +135,17 @@ namespace Object
 			template <typename DATA>
 			void Func<DATA>::StepUp()
 			{
-				calculateSpeed(GetMoveSpeed().y);
-				SetMove({GetMove().x,GetMove().y - Type::Move::base(currentSpeed_ / CPS)});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y > GetMove().y)
+				calculateSpeed(GetMoveSpeed().y());
+				SetMove({GetMove().x(),GetMove().y() - Type::Move::base(currentSpeed_ / CPS)});
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() > GetMove().y())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
-					SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
+						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
+					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
 				}
-				if (GetMove().y <= 0)
+				if (GetMove().y() <= 0)
 				{
-					carryMove_ = std::abs(GetMove().y);
+					carryMove_ = std::abs(GetMove().y());
 					SetMove({0,0});
 					scene->ObjectArrived(GetCoord());
 				}
@@ -153,17 +153,17 @@ namespace Object
 			template <typename DATA>
 			void Func<DATA>::StepDown()
 			{
-				calculateSpeed(GetMoveSpeed().y);
-				SetMove({GetMove().x,GetMove().y + Type::Move::base(currentSpeed_ / CPS)});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y < GetMove().y)
+				calculateSpeed(GetMoveSpeed().y());
+				SetMove({GetMove().x(),GetMove().y() + Type::Move::base(currentSpeed_ / CPS)});
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() < GetMove().y())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
-					SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
+						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
+					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
 				}
-				if (GetMove().y >= 0)
+				if (GetMove().y() >= 0)
 				{
-					carryMove_ = std::abs(GetMove().y);
+					carryMove_ = std::abs(GetMove().y());
 					SetMove({0,0});
 					scene->ObjectArrived(GetCoord());
 				}
@@ -171,17 +171,17 @@ namespace Object
 			template <typename DATA>
 			void Func<DATA>::StepLeft()
 			{
-				calculateSpeed(GetMoveSpeed().x);
-				SetMove({GetMove().x - Type::Move::base(currentSpeed_ / CPS),GetMove().y});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x > GetMove().x)
+				calculateSpeed(GetMoveSpeed().x());
+				SetMove({GetMove().x() - Type::Move::base(currentSpeed_ / CPS),GetMove().y()});
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() > GetMove().x())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
-					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
+						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
+					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
 				}
-				if (GetMove().x <= 0)
+				if (GetMove().x() <= 0)
 				{
-					carryMove_ = std::abs(GetMove().x);
+					carryMove_ = std::abs(GetMove().x());
 					SetMove({0,0});
 					scene->ObjectArrived(GetCoord());
 				}
@@ -189,17 +189,17 @@ namespace Object
 			template <typename DATA>
 			void Func<DATA>::StepRight()
 			{
-				calculateSpeed(GetMoveSpeed().x);
-				SetMove({GetMove().x + Type::Move::base(currentSpeed_ / CPS),GetMove().y});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x < GetMove().x)
+				calculateSpeed(GetMoveSpeed().x());
+				SetMove({GetMove().x() + Type::Move::base(currentSpeed_ / CPS),GetMove().y()});
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() < GetMove().x())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
-					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
+						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
+					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
 				}
-				if (GetMove().x >= 0)
+				if (GetMove().x() >= 0)
 				{
-					carryMove_ = std::abs(GetMove().x);
+					carryMove_ = std::abs(GetMove().x());
 					SetMove({0,0});
 					scene->ObjectArrived(GetCoord());
 				}
@@ -207,13 +207,13 @@ namespace Object
 			template <typename DATA>
 			void Func<DATA>::Step()
 			{
-				if (GetMove().x > 0)
+				if (GetMove().x() > 0)
 					StepLeft();
-				else if (GetMove().x < 0)
+				else if (GetMove().x() < 0)
 					StepRight();
-				else if (GetMove().y > 0)
+				else if (GetMove().y() > 0)
 					StepUp();
-				else if (GetMove().y < 0)
+				else if (GetMove().y() < 0)
 					StepDown();
 			}
 
@@ -222,10 +222,10 @@ namespace Object
 			{
 				if (carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x,GetMove().y - carryMove_});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y > GetMove().y)
+					SetMove({GetMove().x(),GetMove().y() - carryMove_});
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() > GetMove().y())
 					{
-						SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
+						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -235,12 +235,12 @@ namespace Object
 			{
 				if (carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x,GetMove().y + carryMove_});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y < GetMove().y)
+					SetMove({GetMove().x(),GetMove().y() + carryMove_});
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() < GetMove().y())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y)
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y;
-						SetMove({GetMove().x,scene->GetObjectOut(GetCoord())->GetMove().y});
+						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
+							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
+						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -250,12 +250,12 @@ namespace Object
 			{
 				if (carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x - carryMove_,GetMove().y});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x > GetMove().x)
+					SetMove({GetMove().x() - carryMove_,GetMove().y()});
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() > GetMove().x())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
-						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
+						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
+							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
+						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -265,12 +265,12 @@ namespace Object
 			{
 				if (carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x + carryMove_,GetMove().y});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x < GetMove().x)
+					SetMove({GetMove().x() + carryMove_,GetMove().y()});
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() < GetMove().x())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x)
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x;
-						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x,GetMove().y});
+						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
+							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
+						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -278,13 +278,13 @@ namespace Object
 			template <typename DATA>
 			void Func<DATA>::carryStep()
 			{
-				if (GetMove().x > 0)
+				if (GetMove().x() > 0)
 					carryStepLeft();
-				else if (GetMove().x < 0)
+				else if (GetMove().x() < 0)
 					carryStepRight();
-				else if (GetMove().y > 0)
+				else if (GetMove().y() > 0)
 					carryStepUp();
-				else if (GetMove().y < 0)
+				else if (GetMove().y() < 0)
 					carryStepDown();
 			}
 
@@ -297,12 +297,12 @@ namespace Object
 			template <typename DATA>
 			Type::Move::base Func<DATA>::GetMoveSpeedVertical()
 			{
-				return MoveSpeed.y;
+				return MoveSpeed.y();
 			}
 			template <typename DATA>
 			Type::Move::base Func<DATA>::GetMoveSpeedHorizontal()
 			{
-				return MoveSpeed.x;
+				return MoveSpeed.x();
 			}
 
 			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
@@ -338,48 +338,48 @@ namespace Object
 			template <typename DATA>
 			bool Func<DATA>::IsMove()
 			{
-				return move.x != 0 || move.y != 0;
+				return move.x() != 0 || move.y() != 0;
 			}
 			template <typename DATA>
 			bool Func<DATA>::IsMoveHorizontal()
 			{
-				return move.x != 0;
+				return move.x() != 0;
 			}
 			template <typename DATA>
 			bool Func<DATA>::IsMoveVertical()
 			{
-				return move.y != 0;
+				return move.y() != 0;
 			}
 			template <typename DATA>
 			bool Func<DATA>::IsMoveLeft()
 			{
-				return move.x > 0;
+				return move.x() > 0;
 			}
 			template <typename DATA>
 			bool Func<DATA>::IsMoveRight()
 			{
-				return move.x < 0;
+				return move.x() < 0;
 			}
 			template <typename DATA>
 			bool Func<DATA>::IsMoveDown()
 			{
-				return move.y < 0;
+				return move.y() < 0;
 			}
 			template <typename DATA>
 			bool Func<DATA>::IsMoveUp()
 			{
-				return move.y > 0;
+				return move.y() > 0;
 			}
 			template <typename DATA>
 			Type::Direction Func<DATA>::getMoveDirection() const
 			{
-				if (move.x > 0)
+				if (move.x() > 0)
 					return Type::Directions::left;
-				else if (move.x < 0)
+				else if (move.x() < 0)
 					return Type::Directions::right;
-				else if (move.y > 0)
+				else if (move.y() > 0)
 					return Type::Directions::up;
-				else if (move.y < 0)
+				else if (move.y() < 0)
 					return Type::Directions::down;
 				else
 					return Type::Directions::up;
@@ -390,25 +390,25 @@ namespace Object
 			void Func<DATA>::SetMove(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMove({this->move.x,move.y});
+					SetMove({this->move.x(),move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMove({this->move.x,-move.y});
+					SetMove({this->move.x(),-move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMove({move.x,this->move.y});
+					SetMove({move.x(),this->move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMove({-move.x,this->move.y});
+					SetMove({-move.x(),this->move.y()});
 			}
 			template <typename DATA>
 			void Func<DATA>::SetMoveUnsafe(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMoveUnsafe({this->move.x,move.y});
+					SetMoveUnsafe({this->move.x(),move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMoveUnsafe({this->move.x,-move.y});
+					SetMoveUnsafe({this->move.x(),-move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMoveUnsafe({move.x,this->move.y});
+					SetMoveUnsafe({move.x(),this->move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMoveUnsafe({-move.x,this->move.y});
+					SetMoveUnsafe({-move.x(),this->move.y()});
 			}
 		}
 	}

@@ -206,13 +206,13 @@ namespace Editor::UI
 					}
 
 					Type::Coord coord;
-					for (coord.x = 0; coord.x < (std::min)(((Type::Size)(*map)).width, ((Type::Size)(tmpMap)).width - xShift); ++coord.x)
+					for (coord.x() = 0; coord.x() < (std::min)(((Type::Size)(*map)).width(), ((Type::Size)(tmpMap)).width() - xShift); ++coord.x())
 					{
-						for (coord.y = 0; coord.y < (std::min)(((Type::Size)(*map)).height, ((Type::Size)(tmpMap)).height - yShift); ++coord.y)
+						for (coord.y() = 0; coord.y() < (std::min)(((Type::Size)(*map)).height(), ((Type::Size)(tmpMap)).height() - yShift); ++coord.y())
 						{
-							(*map)[{coord.x + sxShift, coord.y + syShift}] = tmpMap[{coord.x + xShift, coord.y + yShift}];
-							tmpMap[{coord.x + xShift, coord.y + yShift}].object = nullptr;
-							tmpMap[{coord.x + xShift, coord.y + yShift}].remain = nullptr;
+							(*map)[{coord.x() + sxShift, coord.y() + syShift}] = tmpMap[{coord.x() + xShift, coord.y() + yShift}];
+							tmpMap[{coord.x() + xShift, coord.y() + yShift}].object = nullptr;
+							tmpMap[{coord.x() + xShift, coord.y() + yShift}].remain = nullptr;
 						}
 					}
 
@@ -220,7 +220,7 @@ namespace Editor::UI
 				}
 				else
 				{
-					bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+					bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width()) + "*" + std::to_string(((Type::Size)(*map)).height()));
 				}
 			});
 
@@ -420,7 +420,7 @@ namespace Editor::UI
 			{
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
-					if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)reach(map)).width - 1 || coord.y == ((Type::Size)reach(map)).height - 1)
+					if (coord.x() == 0 || coord.y() == 0 || coord.x() == ((Type::Size)reach(map)).width() - 1 || coord.y() == ((Type::Size)reach(map)).height() - 1)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
 						block.Redrawn = true;
@@ -436,7 +436,7 @@ namespace Editor::UI
 			{
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
-					if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)reach(map)).width - 1 && coord.y != ((Type::Size)reach(map)).height - 1)
+					if (coord.x() != 0 && coord.y() != 0 && coord.x() != ((Type::Size)reach(map)).width() - 1 && coord.y() != ((Type::Size)reach(map)).height() - 1)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
 						block.Redrawn = true;
@@ -710,16 +710,16 @@ namespace Editor::UI
 					{
 						if (!block.selected && block.object->id == id &&
 							(
-								(map->Test({coord.x - 1, coord.y - 1}) && reach(map)[{coord.x - 1, coord.y - 1}].selected) ||
-								(map->Test({coord.x - 0, coord.y - 1}) && reach(map)[{coord.x - 0, coord.y - 1}].selected) ||
-								(map->Test({coord.x + 1, coord.y - 1}) && reach(map)[{coord.x + 1, coord.y - 1}].selected) ||
+								(map->Test({coord.x() - 1, coord.y() - 1}) && reach(map)[{coord.x() - 1, coord.y() - 1}].selected) ||
+								(map->Test({coord.x() - 0, coord.y() - 1}) && reach(map)[{coord.x() - 0, coord.y() - 1}].selected) ||
+								(map->Test({coord.x() + 1, coord.y() - 1}) && reach(map)[{coord.x() + 1, coord.y() - 1}].selected) ||
 
-								(map->Test({coord.x - 1, coord.y - 0}) && reach(map)[{coord.x - 1, coord.y - 0}].selected) ||
-								(map->Test({coord.x + 1, coord.y - 0}) && reach(map)[{coord.x + 1, coord.y - 0}].selected) ||
+								(map->Test({coord.x() - 1, coord.y() - 0}) && reach(map)[{coord.x() - 1, coord.y() - 0}].selected) ||
+								(map->Test({coord.x() + 1, coord.y() - 0}) && reach(map)[{coord.x() + 1, coord.y() - 0}].selected) ||
 
-								(map->Test({coord.x - 1, coord.y + 1}) && reach(map)[{coord.x - 1, coord.y + 1}].selected) ||
-								(map->Test({coord.x - 0, coord.y + 1}) && reach(map)[{coord.x - 0, coord.y + 1}].selected) ||
-								(map->Test({coord.x + 1, coord.y + 1}) && reach(map)[{coord.x + 1, coord.y + 1}].selected)
+								(map->Test({coord.x() - 1, coord.y() + 1}) && reach(map)[{coord.x() - 1, coord.y() + 1}].selected) ||
+								(map->Test({coord.x() - 0, coord.y() + 1}) && reach(map)[{coord.x() - 0, coord.y() + 1}].selected) ||
+								(map->Test({coord.x() + 1, coord.y() + 1}) && reach(map)[{coord.x() + 1, coord.y() + 1}].selected)
 								)
 							)
 						{
@@ -768,7 +768,7 @@ namespace Editor::UI
 						{
 							if (block.object->id == ObjectID::RAMChipsRight)
 							{
-								if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+								if (map->Test({coord.x() - 1,coord.y()}) && reach(map)[{coord.x() - 1, coord.y()}].object->id != ObjectID::RAMChipsLeft)
 								{
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
@@ -779,7 +779,7 @@ namespace Editor::UI
 							}
 							if (block.object->id == ObjectID::RAMChipsBottom)
 							{
-								if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+								if (map->Test({coord.x(),coord.y() - 1}) && reach(map)[{coord.x(), coord.y() - 1}].object->id != ObjectID::RAMChipsTop)
 								{
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
@@ -791,10 +791,10 @@ namespace Editor::UI
 
 							if (block.object->id == ObjectID::RAMChipsLeft)
 							{
-								if (map->Test({coord.x + 1,coord.y}) && reach(map)[{coord.x + 1, coord.y}].selected &&isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+								if (map->Test({coord.x() + 1,coord.y()}) && reach(map)[{coord.x() + 1, coord.y()}].selected &&isRam(reach(map)[{coord.x() + 1, coord.y()}].object->id))
 								{
-									ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-									reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
+									ObjectCreate(reach(map)[{coord.x() + 1, coord.y()}].object, ObjectID::RAMChipsRight, {coord.x() + 1,coord.y()});
+									reach(map)[{coord.x() + 1, coord.y()}].Redrawn = true;
 								}
 								else
 								{
@@ -804,10 +804,10 @@ namespace Editor::UI
 							}
 							if (block.object->id == ObjectID::RAMChipsTop)
 							{
-								if (map->Test({coord.x,coord.y + 1}) && reach(map)[{coord.x, coord.y + 1}].selected &&isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
+								if (map->Test({coord.x(),coord.y() + 1}) && reach(map)[{coord.x(), coord.y() + 1}].selected &&isRam(reach(map)[{coord.x(), coord.y() + 1}].object->id))
 								{
-									ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-									reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
+									ObjectCreate(reach(map)[{coord.x(), coord.y() + 1}].object, ObjectID::RAMChipsBottom, {coord.x(),coord.y() + 1});
+									reach(map)[{coord.x(), coord.y() + 1}].Redrawn = true;
 								}
 								else
 								{
@@ -824,7 +824,7 @@ namespace Editor::UI
 					{
 						if (block.object->id == ObjectID::RAMChipsRight)
 						{
-							if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+							if (map->Test({coord.x() - 1,coord.y()}) && reach(map)[{coord.x() - 1, coord.y()}].object->id != ObjectID::RAMChipsLeft)
 							{
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
@@ -835,7 +835,7 @@ namespace Editor::UI
 						}
 						if (block.object->id == ObjectID::RAMChipsBottom)
 						{
-							if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+							if (map->Test({coord.x(),coord.y() - 1}) && reach(map)[{coord.x(), coord.y() - 1}].object->id != ObjectID::RAMChipsTop)
 							{
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
@@ -847,10 +847,10 @@ namespace Editor::UI
 
 						if (block.object->id == ObjectID::RAMChipsLeft)
 						{
-							if (map->Test({coord.x + 1,coord.y}) && isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+							if (map->Test({coord.x() + 1,coord.y()}) && isRam(reach(map)[{coord.x() + 1, coord.y()}].object->id))
 							{
-								ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-								reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
+								ObjectCreate(reach(map)[{coord.x() + 1, coord.y()}].object, ObjectID::RAMChipsRight, {coord.x() + 1,coord.y()});
+								reach(map)[{coord.x() + 1, coord.y()}].Redrawn = true;
 							}
 							else
 							{
@@ -860,10 +860,10 @@ namespace Editor::UI
 						}
 						if (block.object->id == ObjectID::RAMChipsTop)
 						{
-							if (map->Test({coord.x,coord.y + 1}) && isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
+							if (map->Test({coord.x(),coord.y() + 1}) && isRam(reach(map)[{coord.x(), coord.y() + 1}].object->id))
 							{
-								ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-								reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
+								ObjectCreate(reach(map)[{coord.x(), coord.y() + 1}].object, ObjectID::RAMChipsBottom, {coord.x(),coord.y() + 1});
+								reach(map)[{coord.x(), coord.y() + 1}].Redrawn = true;
 							}
 							else
 							{
@@ -1085,11 +1085,11 @@ namespace Editor::UI
 		this->map = map;
 		infotron_ToCollect_TextBox->setText(std::to_string(bluePrint->scoreToUnlock));
 		titleOfBluePrint_TextBox->setText(bluePrint->title);
-		bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+		bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width()) + "*" + std::to_string(((Type::Size)(*map)).height()));
 
 		{
 			std::stringstream stream;
-			stream << std::fixed << std::setprecision(2) << bluePrint->cameraSize.width << "*" << bluePrint->cameraSize.height;
+			stream << std::fixed << std::setprecision(2) << bluePrint->cameraSize.width() << "*" << bluePrint->cameraSize.height();
 			sizeOfCamera_TextBox->setText(stream.str());
 		}
 

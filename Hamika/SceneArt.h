@@ -54,7 +54,7 @@ namespace UI::Scene::Module::Art
 			std::shared_ptr<SingleSeamlessBackground> single_seamless_background = std::shared_ptr<SingleSeamlessBackground>(new SingleSeamlessBackground());
 			single_seamless_background->setBitmap(Res::uielements[Res::UIElements::GameBackground]);
 			background = single_seamless_background;
-			background->setCameraScale(-drawer.GetDrawSize().width/* / 1.5f*/);
+			background->setCameraScale(-drawer.GetDrawSize().width()/* / 1.5f*/);
 		}
 
 		protected: virtual void Redrawn(Type::Coord coord)

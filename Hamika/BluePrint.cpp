@@ -31,8 +31,8 @@ namespace Res
 		std::get<IO_HamSt1::title>(record) = title;
 		std::get<IO_HamSt1::scoreToUnlock>(record) = static_cast<std::uint16_t>(scoreToUnlock);
 		std::get<IO_HamSt1::globalGravity>(record) = globalGravity;
-		std::get<IO_HamSt1::cameraWidth>(record) = cameraSize.width;
-		std::get<IO_HamSt1::cameraHeight>(record) = cameraSize.height;
+		std::get<IO_HamSt1::cameraWidth>(record) = cameraSize.width();
+		std::get<IO_HamSt1::cameraHeight>(record) = cameraSize.height();
 		auto &blockRecords = std::get<IO_HamSt1::blocks>(record);
 
 		blockRecords.resize(blocks);
@@ -141,9 +141,9 @@ namespace Res
 		const std::uint8_t *id = std::get<IO_Orig::id>(record).data();
 		blocks.resize({IO_Orig::FIX_WIDTH, IO_Orig::FIX_HEIGHT});
 		Type::Coord coord;
-		for (coord.y = 0; coord.y < ((Type::Size)blocks).height; ++coord.y)
+		for (coord.y() = 0; coord.y() < ((Type::Size)blocks).height(); ++coord.y())
 		{
-			for (coord.x = 0; coord.x < ((Type::Size)blocks).width; ++coord.x)
+			for (coord.x() = 0; coord.x() < ((Type::Size)blocks).width(); ++coord.x())
 			{
 				if (*id == 3)
 				{
@@ -163,9 +163,9 @@ namespace Res
 
 		std::uint8_t *id = const_cast<std::uint8_t *>(std::get<IO_Orig::id>(record).data());
 		Type::Coord coord;
-		for (coord.y = 0; coord.y < ((Type::Size)blocks).height; ++coord.y)
+		for (coord.y() = 0; coord.y() < ((Type::Size)blocks).height(); ++coord.y())
 		{
-			for (coord.x = 0; coord.x < ((Type::Size)blocks).width; ++coord.x)
+			for (coord.x() = 0; coord.x() < ((Type::Size)blocks).width(); ++coord.x())
 			{
 				if (blocks[coord].flags & GridFlags::SpawnPoint)
 				{

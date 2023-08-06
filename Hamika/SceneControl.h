@@ -89,7 +89,7 @@ namespace UI::Scene::Module::Contol
 			{
 				if (murphy)
 				{
-					Type::Camera camera = {murphy->GetCoord().x + murphy->GetMove().x, murphy->GetCoord().y + murphy->GetMove().y};
+					Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
 					drawer.MoveCameraTo(camera);
 					background->setCamera(drawer.GetCamera());
 				}
@@ -99,7 +99,7 @@ namespace UI::Scene::Module::Contol
 			{
 				if (murphy)
 				{
-					Type::Camera camera = {murphy->GetCoord().x + murphy->GetMove().x, murphy->GetCoord().y + murphy->GetMove().y};
+					Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
 					drawer.MoveCameraTo(camera);
 					background->setCamera(drawer.GetCamera());
 				}

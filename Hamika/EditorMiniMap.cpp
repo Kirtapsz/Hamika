@@ -48,10 +48,10 @@ namespace Editor::UI
 			bitmap.drawScaled(cx, cy, w, h);
 
 			al_draw_rectangle(
-				cx + (int)(camera.x * min - cameraSize.x / 2) + 1,
-				cy + (int)(camera.y * min - cameraSize.y / 2) + 1,
-				cx + (int)(camera.x * min + cameraSize.x / 2),
-				cy + (int)(camera.y * min + cameraSize.y / 2),
+				cx + (int)(camera.x() * min - cameraSize.x() / 2) + 1,
+				cy + (int)(camera.y() * min - cameraSize.y() / 2) + 1,
+				cx + (int)(camera.x() * min + cameraSize.x() / 2),
+				cy + (int)(camera.y() * min + cameraSize.y() / 2),
 				KIR5::Color(255, 255, 255), 1);
 		}));
 	}
@@ -90,7 +90,7 @@ namespace Editor::UI
 	void MiniMap::SetMap(std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> &map_)
 	{
 		map = map_;
-		bitmap = al_create_bitmap(((Type::Size)*map).width * blockDimension, ((Type::Size)*map).height * blockDimension);
+		bitmap = al_create_bitmap(((Type::Size)*map).width() * blockDimension, ((Type::Size)*map).height() * blockDimension);
 		updateBlocks();
 	}
 	void MiniMap::updateBlocks()
@@ -99,10 +99,10 @@ namespace Editor::UI
 		al_clear_to_color(KIR5::Color(0, 0, 0));
 		map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 		{
-			DrawObject((*map)[coord].object->id, coord.x * blockDimension, coord.y * blockDimension, blockDimension, blockDimension);
+			DrawObject((*map)[coord].object->id, coord.x() * blockDimension, coord.y() * blockDimension, blockDimension, blockDimension);
 			if (block.selected)
 			{
-				al_draw_filled_rectangle(coord.x * blockDimension, coord.y * blockDimension, coord.x * blockDimension + blockDimension, coord.y * blockDimension + blockDimension, KIR5::Color(255, 0, 0, 127).getAlphaColored());
+				al_draw_filled_rectangle(coord.x() * blockDimension, coord.y() * blockDimension, coord.x() * blockDimension + blockDimension, coord.y() * blockDimension + blockDimension, KIR5::Color(255, 0, 0, 127).getAlphaColored());
 			}
 		});
 	}
@@ -111,11 +111,8 @@ namespace Editor::UI
 		camera = center;
 		cameraSize = size;
 
-		camera.x *= blockDimension;
-		camera.y *= blockDimension;
-		camera.x += blockDimension / 2.f;
-		camera.y += blockDimension / 2.f;
-		cameraSize.x *= blockDimension;
-		cameraSize.y *= blockDimension;
+		camera *= blockDimension;
+		camera += blockDimension / 2.f;
+		cameraSize *= blockDimension;
 	}
 }

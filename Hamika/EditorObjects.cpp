@@ -115,16 +115,16 @@ namespace Editor::Object
 
 			char buffer[32];
 
-			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x, stack->o->GetCoord().y);
+			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x(), stack->o->GetCoord().y());
 
-			KIR5::Font font = Res::Consolas[stack->o->scene->GetDrawSize().height / 6];
+			KIR5::Font font = Res::Consolas[stack->o->scene->GetDrawSize().height() / 6];
 
 			font.draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
 			font.draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 
 			sprintf_s(buffer, "(%03d)", obj->id);
-			font.draw(x + 1, y + 1 + (stack->o->scene->GetDrawSize().height / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			font.draw(x, y + (stack->o->scene->GetDrawSize().height / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+			font.draw(x + 1, y + 1 + (stack->o->scene->GetDrawSize().height() / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(x, y + (stack->o->scene->GetDrawSize().height() / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 		}
 	}
 }

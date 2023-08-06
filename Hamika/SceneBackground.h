@@ -31,10 +31,10 @@ namespace UI::Scene
 		private: bool redraw = true; // request redraw the buffer bitmap
 
 		private: Type::Camera original_camera{0.f,0.f}; // real camera position, this is aligned to teh top-left corner
-		private: Type::_Pos<__int32> camera{0,0}; // real camera position, this is aligned to teh top-left corner
+		private: Type::var2D<__int32> camera{0,0}; // real camera position, this is aligned to teh top-left corner
 		private: float camera_scale = 1.f;
-		private: Type::_Pos<__int32> camera_snapshot{0,0}; // camera position when the buffer bitmap redrawned
-		private: Type::_Pos<__int32> camera_shift{0,0}; // snapshot and the current camera shift, responsible to shift the drawn position and check if it is out of buffer
+		private: Type::var2D<__int32> camera_snapshot{0,0}; // camera position when the buffer bitmap redrawned
+		private: Type::var2D<__int32> camera_shift{0,0}; // snapshot and the current camera shift, responsible to shift the drawn position and check if it is out of buffer
 
 		public: void setBitmap(const KIR5::Bitmap &_bitmap, float _scale = 1.f);
 		public: virtual void setCamera(Type::Camera _camera);

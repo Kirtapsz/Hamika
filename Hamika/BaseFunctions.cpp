@@ -197,9 +197,9 @@ namespace Object
 			return
 				!o->scene->IsObjectOut(o->GetCoordUp())
 				||
-				!o->scene->IsObjectOut({o->GetCoord().x,o->GetCoord().y - 2})
+				!o->scene->IsObjectOut({o->GetCoord().x(),o->GetCoord().y() - 2})
 				||
-				o->scene->GetGoto({o->GetCoord().x, o->GetCoord().y - 2}).x != coord1.x
+				o->scene->GetGoto({o->GetCoord().x(), o->GetCoord().y() - 2}).x() != coord1.x()
 				;
 		}
 		bool CanRoll(Brick *object, Type::Direction _direction)
@@ -222,7 +222,7 @@ namespace Object
 						(
 							object->scene->GetObjectOut(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (leaving)
 							||
-							object->scene->GetObjectOut(coord_next)->GetCoord().x != coord_next.x // the leaving one moving away on the X
+							object->scene->GetObjectOut(coord_next)->GetCoord().x() != coord_next.x() // the leaving one moving away on the X
 							)
 						)
 					&&
@@ -240,7 +240,7 @@ namespace Object
 								(
 									object->scene->GetObjectOut(coord_diagonal)->isActionMove() // the leaving one moving away
 									&&
-									object->scene->GetObjectOut(coord_diagonal)->GetCoord().x != coord.x // the leaving one is not moving under it
+									object->scene->GetObjectOut(coord_diagonal)->GetCoord().x() != coord.x() // the leaving one is not moving under it
 									)
 								)
 							)
@@ -250,7 +250,7 @@ namespace Object
 						!object->scene->IsObjectOut(coord_up) // there is no leaving object on the top
 						||
 						(
-							object->scene->GetObjectOut(coord_up)->GetCoord().x != coord_next.x // the leaving object on the top moving different direction
+							object->scene->GetObjectOut(coord_up)->GetCoord().x() != coord_next.x() // the leaving object on the top moving different direction
 							||
 							object->scene->GetObjectOut(coord_up)->GetAbsMove() >= 0.9f // the leaving object on the top at the beginning of it's move
 							)

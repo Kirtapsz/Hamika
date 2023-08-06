@@ -47,18 +47,18 @@ namespace Res
 
 		inline T &operator[](const Type::Coord &coord)
 		{
-			return (*this)[coord.x][coord.y];
+			return (*this)[coord.x()][coord.y()];
 		}
 		inline const T &operator[](const Type::Coord &coord) const
 		{
-			return (*this)[coord.x][coord.y];
+			return (*this)[coord.x()][coord.y()];
 		}
 		inline void resize(Type::Size size)
 		{
-			std::vector<std::vector<T>>::resize(size.width);
+			std::vector<std::vector<T>>::resize(size.width());
 			for (auto &it : *this)
 			{
-				it.resize(size.height);
+				it.resize(size.height());
 			}
 		}
 		public: inline operator Type::Size() const
@@ -93,11 +93,11 @@ namespace Res
 
 		inline T &operator[](const Type::Coord &coord)
 		{
-			return (*this)[coord.x][coord.y];
+			return (*this)[coord.x()][coord.y()];
 		}
 		inline const T &operator[](const Type::Coord &coord) const
 		{
-			return (*this)[coord.x][coord.y];
+			return (*this)[coord.x()][coord.y()];
 		}
 		public: inline operator Type::Size() const
 		{

@@ -99,11 +99,11 @@ namespace Object
 			FallAndRoll::Timer(OBJECT_TIMER_CALL);
 			if (stack->o->IsMoveLeft())
 			{
-				DRAW_NUMBER_DESC(stack->o->move.x, 1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
+				DRAW_NUMBER_DESC(stack->o->move.x(), 1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
 			}
 			else if (stack->o->IsMoveRight())
 			{
-				DRAW_NUMBER_ASC(stack->o->move.x, -1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
+				DRAW_NUMBER_ASC(stack->o->move.x(), -1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
 			}
 			else
 			{
@@ -930,11 +930,11 @@ namespace Object
 			FallAndRoll::Timer(OBJECT_TIMER_CALL);
 			if (stack->o->IsMoveLeft())
 			{
-				DRAW_NUMBER_DESC(stack->o->move.x, 1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
+				DRAW_NUMBER_DESC(stack->o->move.x(), 1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
 			}
 			else if (stack->o->IsMoveRight())
 			{
-				DRAW_NUMBER_ASC(stack->o->move.x, -1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
+				DRAW_NUMBER_ASC(stack->o->move.x(), -1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
 			}
 			else
 			{
@@ -1084,9 +1084,9 @@ namespace Object
 		void Open(Brick *o)
 		{
 			Type::Coord coord{};
-			for (coord.x = 0; coord.x < o->scene->MapSize().width; coord.x++)
+			for (coord.x() = 0; coord.x() < o->scene->MapSize().width(); coord.x()++)
 			{
-				for (coord.y = 0; coord.y < o->scene->MapSize().height; coord.y++)
+				for (coord.y() = 0; coord.y() < o->scene->MapSize().height(); coord.y()++)
 				{
 					Brick *oe = o->scene->GetObjectU(coord);
 					if (oe->id == ObjectID::Exit)
@@ -1687,9 +1687,9 @@ namespace Object
 			if (spec->time != activatedAnimateTime)
 			{
 				Type::Coord coord;
-				for (coord.x = 0; coord.x < o->scene->MapSize().width; coord.x++)
+				for (coord.x() = 0; coord.x() < o->scene->MapSize().width(); coord.x()++)
 				{
-					for (coord.y = 0; coord.y < o->scene->MapSize().height; coord.y++)
+					for (coord.y() = 0; coord.y() < o->scene->MapSize().height(); coord.y()++)
 					{
 						if (o->scene->GetObjectU(coord))
 						{
