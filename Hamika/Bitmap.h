@@ -89,6 +89,7 @@ namespace Res
 		public: static constexpr std::array<const char *, 4> Stick{StickUp, StickRight, StickDown, StickLeft};
 		public: static constexpr char *Unset = "Unset";
 		public: static constexpr char *Settings = "Settings";
+		public: static constexpr char *GameBackground = "GameBackground";
 	};
 
 	class BitmapPool: public Base
@@ -125,6 +126,7 @@ namespace Res
 
 		public: virtual bool initialize(std::uint32_t mode);
 
+		public: static constexpr char *_Gravitation = "Gravitation";
 		public: static constexpr char *_Player_Base = "Player-Base";
 		public: static constexpr char *_Player_PlaceBase = "Player-BasePlace";
 		public: static constexpr char *_Player_Suck = "Player-Suck";

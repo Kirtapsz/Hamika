@@ -13,7 +13,7 @@ namespace Editor::UI
 
 	ControlPanel::BlockIDPanel::BlockIDPanel()
 	{
-		fncMoved.push_back([&](FNC_MOVED_PARAMS)->FNC_MOVED_RET
+		fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 		{
 			font = Res::TimesNewRoman[height() / 3];
 		});
@@ -57,7 +57,7 @@ namespace Editor::UI
 		*this << saveBluePrint_Button;
 		saveBluePrint_Button->setText("SAVE");
 		saveBluePrint_Button->width(saveBluePrint_Button->getTextWidth() + 10);
-		saveBluePrint_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+		saveBluePrint_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 		{
 			bluePrint->blocks.resize(reach(map));
 			bluePrint->blocks.foreach([&](Type::Coord coord, Res::BluePrint::Block &block)
@@ -95,7 +95,7 @@ namespace Editor::UI
 			{
 				*rotation_Panel << rotation_Navigation_Buttons[i];
 				rotation_Navigation_Buttons[i]->setBitmap(Res::uielements[Res::UIElements::Stick[i]]);
-				rotation_Navigation_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				rotation_Navigation_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 				{
 					for (auto &it : rotation_Navigation_Buttons)
 					{
@@ -112,7 +112,7 @@ namespace Editor::UI
 
 			*rotation_Panel << rotation_Apply_Button;
 			rotation_Apply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
-			rotation_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			rotation_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				Type::Rotation r =
 					rotation_Navigation_Buttons[0]->isSelected ? Type::Rotations::Up :
@@ -152,7 +152,7 @@ namespace Editor::UI
 
 			*bluePrintResize_Panel << bluePrintResize_Apply_Button;
 			bluePrintResize_Apply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
-			bluePrintResize_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			bluePrintResize_Apply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				int w, h;
 				if (sscanf_s(bluePrintResize_Size_TextBox->getText().c_str(), "%d*%d", &w, &h) == 2 && w >= 2 && h >= 2)
@@ -173,11 +173,11 @@ namespace Editor::UI
 					}
 					if (bluePrintResize_Navigation_Buttons[1][0]->isSelected || bluePrintResize_Navigation_Buttons[1][1]->isSelected || bluePrintResize_Navigation_Buttons[1][2]->isSelected)
 					{
-						xShift = (((Type::Size)(tmpMap)).width - w) / 2;
+						xShift = (tmpMap.width() - w) / 2;
 					}
 					if (bluePrintResize_Navigation_Buttons[2][0]->isSelected || bluePrintResize_Navigation_Buttons[2][1]->isSelected || bluePrintResize_Navigation_Buttons[2][2]->isSelected)
 					{
-						xShift = ((Type::Size)(tmpMap)).width - w;
+						xShift = tmpMap.width() - w;
 					}
 
 					//Y
@@ -187,11 +187,11 @@ namespace Editor::UI
 					}
 					if (bluePrintResize_Navigation_Buttons[0][1]->isSelected || bluePrintResize_Navigation_Buttons[1][1]->isSelected || bluePrintResize_Navigation_Buttons[2][1]->isSelected)
 					{
-						yShift = (((Type::Size)(tmpMap)).height - h) / 2;
+						yShift = (tmpMap.height() - h) / 2;
 					}
 					if (bluePrintResize_Navigation_Buttons[0][2]->isSelected || bluePrintResize_Navigation_Buttons[1][2]->isSelected || bluePrintResize_Navigation_Buttons[2][2]->isSelected)
 					{
-						yShift = ((Type::Size)(tmpMap)).height - h;
+						yShift = tmpMap.height() - h;
 					}
 
 					if (yShift < 0)
@@ -206,13 +206,13 @@ namespace Editor::UI
 					}
 
 					Type::Coord coord;
-					for (coord.x = 0; coord.x < (std::min)(((Type::Size)(*map)).width, ((Type::Size)(tmpMap)).width - xShift); ++coord.x)
+					for (coord.x() = 0; coord.x() < (std::min)(((Type::Size)(*map)).width(), ((Type::Size)(tmpMap)).width() - xShift); ++coord.x())
 					{
-						for (coord.y = 0; coord.y < (std::min)(((Type::Size)(*map)).height, ((Type::Size)(tmpMap)).height - yShift); ++coord.y)
+						for (coord.y() = 0; coord.y() < (std::min)(((Type::Size)(*map)).height(), ((Type::Size)(tmpMap)).height() - yShift); ++coord.y())
 						{
-							(*map)[{coord.x + sxShift, coord.y + syShift}] = tmpMap[{coord.x + xShift, coord.y + yShift}];
-							tmpMap[{coord.x + xShift, coord.y + yShift}].object = nullptr;
-							tmpMap[{coord.x + xShift, coord.y + yShift}].remain = nullptr;
+							(*map)[{coord.x() + sxShift, coord.y() + syShift}] = tmpMap[{coord.x() + xShift, coord.y() + yShift}];
+							tmpMap[{coord.x() + xShift, coord.y() + yShift}].object = nullptr;
+							tmpMap[{coord.x() + xShift, coord.y() + yShift}].remain = nullptr;
 						}
 					}
 
@@ -220,11 +220,11 @@ namespace Editor::UI
 				}
 				else
 				{
-					bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+					bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width()) + "*" + std::to_string(((Type::Size)(*map)).height()));
 				}
 			});
 
-			auto bluePrintResize_Navigation_Buttons_FncPress = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			auto bluePrintResize_Navigation_Buttons_FncPress = [&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				int px = 0;
 				int py = 0;
@@ -286,7 +286,7 @@ namespace Editor::UI
 			s_objectLabel->width(s_objectLabel->getTextWidth() + 10);
 
 			*s_objectPanel << s_objectID_Panel;
-			s_objectID_Panel->fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+			s_objectID_Panel->fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
 			{
 				if (s_objectID_Panel->onPanel(x_, y_))
 				{
@@ -325,17 +325,17 @@ namespace Editor::UI
 			*s_objectPanel << s_objectID_TextBox;
 			s_objectID_TextBox->setText(std::to_string(s_objectID_Panel->id));
 			s_objectID_TextBox->setTextAlignment(KIR5::CENTER);
-			s_objectID_TextBox->fncGetFocus.push_back([&](FNC_GET_FOCUS_PARAMS)->FNC_GET_FOCUS_RET
+			s_objectID_TextBox->fncGetFocus.push_back([&](FNC_GET_FOCUS_PARAMS) -> FNC_GET_FOCUS_RET
 			{
 				s_objectID_TextBox->setText("");
 			});
 
-			s_objectID_TextBox->fncLossFocus.push_back([&](FNC_LOSS_FOCUS_PARAMS)->FNC_LOSS_FOCUS_RET
+			s_objectID_TextBox->fncLossFocus.push_back([&](FNC_LOSS_FOCUS_PARAMS) -> FNC_LOSS_FOCUS_RET
 			{
 				s_objectID_TextBox->setText(std::to_string(s_objectID_Panel->id));
 			});
 
-			s_objectID_TextBox->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+			s_objectID_TextBox->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 			{
 				if (s_objectID_TextBox->isActiveBox())
 				{
@@ -351,7 +351,7 @@ namespace Editor::UI
 
 			*s_objectPanel << s_objectApply_Button;
 			s_objectApply_Button->setBitmap(Res::uielements[Res::UIElements::Execute]);
-			s_objectApply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			s_objectApply_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
@@ -390,7 +390,7 @@ namespace Editor::UI
 			*s_objectPanel << s_objectRandomFill_Button;
 			s_objectRandomFill_Button->setText("Random fill");
 			s_objectRandomFill_Button->width(s_objectRandomFill_Button->getTextWidth() + 10);
-			s_objectRandomFill_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			s_objectRandomFill_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				float chancef = std::atof(s_objectRate_TextBox->getText().c_str());
 				int chance = (int)(chancef * 10);
@@ -416,11 +416,11 @@ namespace Editor::UI
 			*s_objectPanel << s_objectFillFrame_Button;
 			s_objectFillFrame_Button->setText("Fill frame");
 			s_objectFillFrame_Button->width(120);
-			s_objectFillFrame_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			s_objectFillFrame_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
-					if (coord.x == 0 || coord.y == 0 || coord.x == ((Type::Size)reach(map)).width - 1 || coord.y == ((Type::Size)reach(map)).height - 1)
+					if (coord.x() == 0 || coord.y() == 0 || coord.x() == ((Type::Size)reach(map)).width() - 1 || coord.y() == ((Type::Size)reach(map)).height() - 1)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
 						block.Redrawn = true;
@@ -432,11 +432,11 @@ namespace Editor::UI
 			*s_objectPanel << s_objectFillContent_Button;
 			s_objectFillContent_Button->setText("Fill content");
 			s_objectFillContent_Button->width(120);
-			s_objectFillContent_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			s_objectFillContent_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
-					if (coord.x != 0 && coord.y != 0 && coord.x != ((Type::Size)reach(map)).width - 1 && coord.y != ((Type::Size)reach(map)).height - 1)
+					if (coord.x() != 0 && coord.y() != 0 && coord.x() != ((Type::Size)reach(map)).width() - 1 && coord.y() != ((Type::Size)reach(map)).height() - 1)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
 						block.Redrawn = true;
@@ -448,7 +448,7 @@ namespace Editor::UI
 			*s_objectPanel << s_objectselectAllOfThisType_Button;
 			s_objectselectAllOfThisType_Button->setText("Select all");
 			s_objectselectAllOfThisType_Button->width(120);
-			s_objectselectAllOfThisType_Button->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			s_objectselectAllOfThisType_Button->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
@@ -509,7 +509,7 @@ namespace Editor::UI
 					infotron_Pickers_Buttons[i]->setAdjustParams(3 + i * 32 - (i / 5) * 5 * 32, 54 + (i / 5) * 32, 32, 32);
 					infotron_Pickers_Buttons[i]->id = infotrons[i].id;
 					infotron_Pickers_Buttons[i]->multiplier = infotrons[i].multiplier;
-					infotron_Pickers_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+					infotron_Pickers_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 					{
 						s_objectID_Panel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
 						s_objectID_TextBox->setText(std::to_string(s_objectID_Panel->id));
@@ -524,7 +524,7 @@ namespace Editor::UI
 			*special_Panel << selectAllButton;
 			selectAllButton->setText("Select all");
 			selectAllButton->width(selectAllButton->getTextWidth());
-			selectAllButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			selectAllButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				bool isNonSelected = false;
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
@@ -562,7 +562,7 @@ namespace Editor::UI
 			*special_Panel << gravityTurnOnOffButton;
 			gravityTurnOnOffButton->setText("Set gravity");
 			gravityTurnOnOffButton->width(gravityTurnOnOffButton->getTextWidth());
-			gravityTurnOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			gravityTurnOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (!MainEvent::s_object->scene->isOperationModeAll())
 				{
@@ -625,7 +625,7 @@ namespace Editor::UI
 			*special_Panel << initExplodeButton;
 			initExplodeButton->setText("Set init explode");
 			initExplodeButton->width(initExplodeButton->getTextWidth());
-			initExplodeButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			initExplodeButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (!MainEvent::s_object->scene->isOperationModeAll())
 				{
@@ -688,7 +688,7 @@ namespace Editor::UI
 			*special_Panel << selectFriendlyButton;
 			selectFriendlyButton->setText("Select neighbors");
 			selectFriendlyButton->width(selectFriendlyButton->getTextWidth());
-			selectFriendlyButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			selectFriendlyButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
@@ -710,16 +710,16 @@ namespace Editor::UI
 					{
 						if (!block.selected && block.object->id == id &&
 							(
-								(map->Test({coord.x - 1, coord.y - 1}) && reach(map)[{coord.x - 1, coord.y - 1}].selected) ||
-								(map->Test({coord.x - 0, coord.y - 1}) && reach(map)[{coord.x - 0, coord.y - 1}].selected) ||
-								(map->Test({coord.x + 1, coord.y - 1}) && reach(map)[{coord.x + 1, coord.y - 1}].selected) ||
+								(map->Test({coord.x() - 1, coord.y() - 1}) && reach(map)[{coord.x() - 1, coord.y() - 1}].selected) ||
+								(map->Test({coord.x() - 0, coord.y() - 1}) && reach(map)[{coord.x() - 0, coord.y() - 1}].selected) ||
+								(map->Test({coord.x() + 1, coord.y() - 1}) && reach(map)[{coord.x() + 1, coord.y() - 1}].selected) ||
 
-								(map->Test({coord.x - 1, coord.y - 0}) && reach(map)[{coord.x - 1, coord.y - 0}].selected) ||
-								(map->Test({coord.x + 1, coord.y - 0}) && reach(map)[{coord.x + 1, coord.y - 0}].selected) ||
+								(map->Test({coord.x() - 1, coord.y() - 0}) && reach(map)[{coord.x() - 1, coord.y() - 0}].selected) ||
+								(map->Test({coord.x() + 1, coord.y() - 0}) && reach(map)[{coord.x() + 1, coord.y() - 0}].selected) ||
 
-								(map->Test({coord.x - 1, coord.y + 1}) && reach(map)[{coord.x - 1, coord.y + 1}].selected) ||
-								(map->Test({coord.x - 0, coord.y + 1}) && reach(map)[{coord.x - 0, coord.y + 1}].selected) ||
-								(map->Test({coord.x + 1, coord.y + 1}) && reach(map)[{coord.x + 1, coord.y + 1}].selected)
+								(map->Test({coord.x() - 1, coord.y() + 1}) && reach(map)[{coord.x() - 1, coord.y() + 1}].selected) ||
+								(map->Test({coord.x() - 0, coord.y() + 1}) && reach(map)[{coord.x() - 0, coord.y() + 1}].selected) ||
+								(map->Test({coord.x() + 1, coord.y() + 1}) && reach(map)[{coord.x() + 1, coord.y() + 1}].selected)
 								)
 							)
 						{
@@ -758,7 +758,7 @@ namespace Editor::UI
 			*special_Panel << ramRepairButton;
 			ramRepairButton->setText("Repair RAMs");
 			ramRepairButton->width(ramRepairButton->getTextWidth());
-			ramRepairButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			ramRepairButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
@@ -768,7 +768,7 @@ namespace Editor::UI
 						{
 							if (block.object->id == ObjectID::RAMChipsRight)
 							{
-								if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+								if (map->Test({coord.x() - 1,coord.y()}) && reach(map)[{coord.x() - 1, coord.y()}].object->id != ObjectID::RAMChipsLeft)
 								{
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
@@ -779,7 +779,7 @@ namespace Editor::UI
 							}
 							if (block.object->id == ObjectID::RAMChipsBottom)
 							{
-								if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+								if (map->Test({coord.x(),coord.y() - 1}) && reach(map)[{coord.x(), coord.y() - 1}].object->id != ObjectID::RAMChipsTop)
 								{
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
@@ -791,10 +791,10 @@ namespace Editor::UI
 
 							if (block.object->id == ObjectID::RAMChipsLeft)
 							{
-								if (map->Test({coord.x + 1,coord.y}) && reach(map)[{coord.x + 1, coord.y}].selected &&isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+								if (map->Test({coord.x() + 1,coord.y()}) && reach(map)[{coord.x() + 1, coord.y()}].selected &&isRam(reach(map)[{coord.x() + 1, coord.y()}].object->id))
 								{
-									ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-									reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
+									ObjectCreate(reach(map)[{coord.x() + 1, coord.y()}].object, ObjectID::RAMChipsRight, {coord.x() + 1,coord.y()});
+									reach(map)[{coord.x() + 1, coord.y()}].Redrawn = true;
 								}
 								else
 								{
@@ -804,10 +804,10 @@ namespace Editor::UI
 							}
 							if (block.object->id == ObjectID::RAMChipsTop)
 							{
-								if (map->Test({coord.x,coord.y + 1}) && reach(map)[{coord.x, coord.y + 1}].selected &&isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
+								if (map->Test({coord.x(),coord.y() + 1}) && reach(map)[{coord.x(), coord.y() + 1}].selected &&isRam(reach(map)[{coord.x(), coord.y() + 1}].object->id))
 								{
-									ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-									reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
+									ObjectCreate(reach(map)[{coord.x(), coord.y() + 1}].object, ObjectID::RAMChipsBottom, {coord.x(),coord.y() + 1});
+									reach(map)[{coord.x(), coord.y() + 1}].Redrawn = true;
 								}
 								else
 								{
@@ -824,7 +824,7 @@ namespace Editor::UI
 					{
 						if (block.object->id == ObjectID::RAMChipsRight)
 						{
-							if (map->Test({coord.x - 1,coord.y}) && reach(map)[{coord.x - 1, coord.y}].object->id != ObjectID::RAMChipsLeft)
+							if (map->Test({coord.x() - 1,coord.y()}) && reach(map)[{coord.x() - 1, coord.y()}].object->id != ObjectID::RAMChipsLeft)
 							{
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
@@ -835,7 +835,7 @@ namespace Editor::UI
 						}
 						if (block.object->id == ObjectID::RAMChipsBottom)
 						{
-							if (map->Test({coord.x,coord.y - 1}) && reach(map)[{coord.x, coord.y - 1}].object->id != ObjectID::RAMChipsTop)
+							if (map->Test({coord.x(),coord.y() - 1}) && reach(map)[{coord.x(), coord.y() - 1}].object->id != ObjectID::RAMChipsTop)
 							{
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
@@ -847,10 +847,10 @@ namespace Editor::UI
 
 						if (block.object->id == ObjectID::RAMChipsLeft)
 						{
-							if (map->Test({coord.x + 1,coord.y}) && isRam(reach(map)[{coord.x + 1, coord.y}].object->id))
+							if (map->Test({coord.x() + 1,coord.y()}) && isRam(reach(map)[{coord.x() + 1, coord.y()}].object->id))
 							{
-								ObjectCreate(reach(map)[{coord.x + 1, coord.y}].object, ObjectID::RAMChipsRight, {coord.x + 1,coord.y});
-								reach(map)[{coord.x + 1, coord.y}].Redrawn = true;
+								ObjectCreate(reach(map)[{coord.x() + 1, coord.y()}].object, ObjectID::RAMChipsRight, {coord.x() + 1,coord.y()});
+								reach(map)[{coord.x() + 1, coord.y()}].Redrawn = true;
 							}
 							else
 							{
@@ -860,10 +860,10 @@ namespace Editor::UI
 						}
 						if (block.object->id == ObjectID::RAMChipsTop)
 						{
-							if (map->Test({coord.x,coord.y + 1}) && isRam(reach(map)[{coord.x, coord.y + 1}].object->id))
+							if (map->Test({coord.x(),coord.y() + 1}) && isRam(reach(map)[{coord.x(), coord.y() + 1}].object->id))
 							{
-								ObjectCreate(reach(map)[{coord.x, coord.y + 1}].object, ObjectID::RAMChipsBottom, {coord.x,coord.y + 1});
-								reach(map)[{coord.x, coord.y + 1}].Redrawn = true;
+								ObjectCreate(reach(map)[{coord.x(), coord.y() + 1}].object, ObjectID::RAMChipsBottom, {coord.x(),coord.y() + 1});
+								reach(map)[{coord.x(), coord.y() + 1}].Redrawn = true;
 							}
 							else
 							{
@@ -879,7 +879,7 @@ namespace Editor::UI
 			*special_Panel << randomizeRamsButton;
 			randomizeRamsButton->setText("Randomize RAMs");
 			randomizeRamsButton->width(randomizeRamsButton->getTextWidth());
-			randomizeRamsButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			randomizeRamsButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (MainEvent::s_object->scene->isOperationModeAll())
 				{
@@ -909,7 +909,7 @@ namespace Editor::UI
 			*special_Panel << spawnPointButton;
 			spawnPointButton->setText("Set SPAWN");
 			spawnPointButton->width(spawnPointButton->getTextWidth());
-			spawnPointButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			spawnPointButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (!MainEvent::s_object->scene->isOperationModeAll())
 				{
@@ -972,7 +972,7 @@ namespace Editor::UI
 			*special_Panel << globalGravityOnOffButton;
 			globalGravityOnOffButton->setText(GLOBAL_GRAVITY_OFF);
 			globalGravityOnOffButton->width(globalGravityOnOffButton->getTextWidth());
-			globalGravityOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			globalGravityOnOffButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				if (globalGravityOnOffButton->getText() == GLOBAL_GRAVITY_OFF)
 				{
@@ -990,7 +990,7 @@ namespace Editor::UI
 			for (size_t i = 0; i < prevBlockPickers.size(); ++i)
 			{
 				prevBlockPickers[i]->id = (Type::ID)i;
-				prevBlockPickers[i]->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				prevBlockPickers[i]->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 				{
 					s_objectID_Panel->id = dynamic_cast<BlockIDPanel *>(obj_)->id;
 					s_objectID_TextBox->setText(std::to_string(s_objectID_Panel->id));
@@ -1002,7 +1002,7 @@ namespace Editor::UI
 			*this << prevBlockPickers_Panel;
 		}
 
-		this->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		this->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 		{
 			if (
 				eventEngine->getTargetPanel().get() == this ||
@@ -1085,11 +1085,11 @@ namespace Editor::UI
 		this->map = map;
 		infotron_ToCollect_TextBox->setText(std::to_string(bluePrint->scoreToUnlock));
 		titleOfBluePrint_TextBox->setText(bluePrint->title);
-		bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width) + "*" + std::to_string(((Type::Size)(*map)).height));
+		bluePrintResize_Size_TextBox->setText(std::to_string(((Type::Size)(*map)).width()) + "*" + std::to_string(((Type::Size)(*map)).height()));
 
 		{
 			std::stringstream stream;
-			stream << std::fixed << std::setprecision(2) << bluePrint->cameraSize.width << "*" << bluePrint->cameraSize.height;
+			stream << std::fixed << std::setprecision(2) << bluePrint->cameraSize.width() << "*" << bluePrint->cameraSize.height();
 			sizeOfCamera_TextBox->setText(stream.str());
 		}
 

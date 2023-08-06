@@ -17,8 +17,6 @@
 template <typename ACTIVE_BLOCK_T>
 class SceneDrawer
 {
-	public: void PrintBlock(Type::Coord coord);
-
 	private: std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> map;
 
 	private: static Object::Animator::Specific gravityAnimator;
@@ -69,8 +67,8 @@ class SceneDrawer
 	private: float CameraX2;
 	private: float CameraY1;
 	private: float CameraY2;
-	private: void RedrawnRow(Type::Coord::Type row, Type::Coord::Type begin, Type::Coord::Type end);
-	private: void RedrawnCol(Type::Coord::Type col, Type::Coord::Type begin, Type::Coord::Type end);
+	private: void RedrawnRow(Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end);
+	private: void RedrawnCol(Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end);
 
 	public: Type::Coord GetDrawBeginSource() const;
 	public: Type::Coord GetDrawBegin() const;

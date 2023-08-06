@@ -252,7 +252,7 @@ namespace UI
 	}
 	MapList::MapList()
 	{
-		auto actionButton = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+		auto actionButton = [&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 		{
 			S_BlueprintPanel *ptr = dynamic_cast<S_BlueprintPanel *>(obj_->getParent());
 			if (getStatus(ptr->index_) != Unavailable)
@@ -261,7 +261,7 @@ namespace UI
 			}
 		};
 #ifdef _DEBUG
-		auto devActionPress = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+		auto devActionPress = [&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
 		{
 			if (button_ == KIR5::MOUSE_BUTTON_RIGHT)
 			{
@@ -279,7 +279,7 @@ namespace UI
 		};
 #endif
 
-		auto actionPress = [&](FNC_KEY_CHAR_PARAMS)->FNC_KEY_CHAR_RET
+		auto actionPress = [&](FNC_KEY_CHAR_PARAMS) -> FNC_KEY_CHAR_RET
 		{
 			if (key_ == 13)
 			{
@@ -303,7 +303,7 @@ namespace UI
 			}
 		};
 
-		auto jumpOnIndex = [&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+		auto jumpOnIndex = [&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 		{
 			S_BlueprintPanel *ptr = dynamic_cast<S_BlueprintPanel *>(obj_);
 
@@ -327,7 +327,7 @@ namespace UI
 			it->fncPress.push_back(jumpOnIndex);
 		}
 
-		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS)->FNC_MOUSE_BUTTON_DOWN_RET
+		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
 		{
 			if (button_ == KIR5::MOUSE_BUTTON_LEFT)
 			{
@@ -342,7 +342,7 @@ namespace UI
 			return false;
 		});
 
-		fncMouseButtonUp.push_back([&](FNC_MOUSE_BUTTON_UP_PARAMS)->FNC_MOUSE_BUTTON_UP_RET
+		fncMouseButtonUp.push_back([&](FNC_MOUSE_BUTTON_UP_PARAMS) -> FNC_MOUSE_BUTTON_UP_RET
 		{
 			if (mouseOnHold)
 			{
@@ -364,7 +364,7 @@ namespace UI
 			return false;
 		});
 
-		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS)->FNC_MOUSE_AXES_RET
+		fncMouseAxes.push_back([&](FNC_MOUSE_AXES_PARAMS) -> FNC_MOUSE_AXES_RET
 		{
 			if (mouseOnHold)
 			{
@@ -377,7 +377,7 @@ namespace UI
 			move();
 		});
 
-		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 		{
 			if (key_ == 83)
 			{
@@ -390,7 +390,7 @@ namespace UI
 			return false;
 		});
 
-		fncTimer.push_back([&](FNC_TIMER_PARAMS)->FNC_TIMER_RET
+		fncTimer.push_back([&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			constexpr float c_min_speed = 0.1f;
 			if (currentTransition_ != targetTransition_)

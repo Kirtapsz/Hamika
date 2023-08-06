@@ -13,7 +13,7 @@ namespace Editor::UI
 		bluePrint(bluePrint_)
 	{
 		*this << ID;
-		ID->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+		ID->fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 		{
 			if (ID->isActiveBox())
 			{
@@ -79,12 +79,12 @@ namespace Editor::UI
 		});
 
 
-		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 		{
 			al_clear_to_color(al_map_rgb(15, 15, 16));
 		}));
 
-		blueprintPanel->fncDraw.push_front(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		blueprintPanel->fncDraw.push_front(FNC_DRAW([&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 		{
 			al_clear_to_color(al_map_rgb(35, 35, 36));
 		}));
@@ -127,7 +127,7 @@ namespace Editor::UI
 
 			row->pushBack(worltTitle_TextBox);
 
-			row->fncMoved.push_back([&](FNC_MOVED_PARAMS)->FNC_MOVED_RET
+			row->fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
 				dynamic_cast<KIR5::Row<> *>(obj_)->wrapItem(worltTitle_TextBox.get());
 			});
@@ -180,7 +180,7 @@ namespace Editor::UI
 			loadButton->height(30);
 			loadButton->width(loadButton->getTextWidth() + 20);
 			row->pushBack(loadButton);
-			loadButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			loadButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				std::string filename;
 				{
@@ -199,7 +199,7 @@ namespace Editor::UI
 			saveButton->height(30);
 			saveButton->width(saveButton->getTextWidth() + 20);
 			row->pushBack(saveButton);
-			saveButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			saveButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				MainEvent::s_object->saveWorldDialog->show();
 			});
@@ -208,7 +208,7 @@ namespace Editor::UI
 			newMapButton->height(30);
 			newMapButton->width(newMapButton->getTextWidth() + 20);
 			row->pushBack(newMapButton);
-			newMapButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			newMapButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				KIR5::Shared<Res::BluePrint> bluePrint;
 				bluePrint->blocks.resize({10,10});
@@ -229,7 +229,7 @@ namespace Editor::UI
 			newWorldButton->height(30);
 			newWorldButton->width(newWorldButton->getTextWidth() + 20);
 			row->pushBack(newWorldButton);
-			newWorldButton->fncPress.push_back([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+			newWorldButton->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
 			{
 				list->clear();
 

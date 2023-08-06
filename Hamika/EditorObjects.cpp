@@ -19,7 +19,7 @@ namespace Editor::Object
 
 		}
 
-		void Drawner(Brick::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
+		void Drawner(Brick::Stack *stack, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
 		{
 			DrawObject(stack->o->id, x, y, w, h);
 		}
@@ -47,7 +47,7 @@ namespace Editor::Object
 			spawn = Res::uielements[Res::UIElements::SpawnPoint];
 		}
 
-		void Drawner(Brick::Stack *stack, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h)
+		void Drawner(Brick::Stack *stack, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
 		{
 			Brick *obj = stack->o->scene->GetObject(stack->o->GetCoord());
 
@@ -115,16 +115,16 @@ namespace Editor::Object
 
 			char buffer[32];
 
-			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x, stack->o->GetCoord().y);
+			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x(), stack->o->GetCoord().y());
 
-			KIR5::Font font = Res::Consolas[stack->o->scene->GetDrawSize().height / 6];
+			KIR5::Font font = Res::Consolas[stack->o->scene->GetDrawSize().height() / 6];
 
 			font.draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
 			font.draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 
 			sprintf_s(buffer, "(%03d)", obj->id);
-			font.draw(x + 1, y + 1 + (stack->o->scene->GetDrawSize().height / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			font.draw(x, y + (stack->o->scene->GetDrawSize().height / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+			font.draw(x + 1, y + 1 + (stack->o->scene->GetDrawSize().height() / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(x, y + (stack->o->scene->GetDrawSize().height() / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 		}
 	}
 }

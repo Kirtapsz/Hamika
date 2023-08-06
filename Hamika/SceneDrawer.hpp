@@ -19,61 +19,13 @@ void SceneDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool *globalGravity)
 }
 
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::PrintBlock(Type::Coord coord)
-{
-	if (map->Test(coord))
-	{
-		clog << "====== (" << coord.x << ";" << coord.y << ")" << KIR4::eol;
-		clog << "ComeFrom: (" << reach(map)[coord].ComeFrom.x << ";" << reach(map)[coord].ComeFrom.y << ")" << KIR4::eol;
-		clog << "GoTo: (" << reach(map)[coord].GoTo.x << ";" << reach(map)[coord].GoTo.y << ")" << KIR4::eol;
-
-		clog << "DrawOptions ( " << reach(map)[coord].DrawType << " ) : ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::Cleared)
-			clog << "Cleared, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsMovingObjectDrawned)
-			clog << "MovObjDraw, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsNotMovingObjectDrawned)
-			clog << "NotMovObjDraw, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::IsNotMovingRemainDrawned)
-			clog << "NotMovRemDraw, ";
-		if (reach(map)[coord].DrawType & SceneBlock::DrawType::LastDrawned)
-			clog << "LastDraw, ";
-		clog << KIR4::eol;
-
-		clog << "PointDrawNumber: " << reach(map)[coord].DrawNumber << KIR4::eol;
-		clog << "UnionFlags: ";
-		//Object::PrintFlags(GetUnionFlags(coord));
-		clog << "\n";
-		clog << "SectionFlags: ";
-		//Object::PrintFlags(GetSectionFlags(coord));
-		clog << "\n";
-		if (reach(map)[coord].object->isExists)
-		{
-			clog << "Object: " << KIR4::eol;
-			reach(map)[coord].object->Print();
-			clog.color();
-		}
-		else
-			clog << "Object: nil" << KIR4::eol;
-		if (reach(map)[coord].remain->isExists)
-		{
-			clog << "Remain: " << KIR4::eol;
-			reach(map)[coord].remain->Print();
-			clog.color();
-		}
-		else
-			clog << "Remain: nil" << KIR4::eol;
-	}
-}
-
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::Type row, Type::Coord::Type begin, Type::Coord::Type end)
+void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end)
 {
 	for (; begin < end; begin++)
 		Redrawn({begin,row});
 }
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::Type col, Type::Coord::Type begin, Type::Coord::Type end)
+void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end)
 {
 	for (; begin < end; begin++)
 		Redrawn({col,begin});
@@ -97,12 +49,12 @@ Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawEnd() const
 template <typename ACTIVE_BLOCK_T>
 Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetBitmapDrawOffset() const
 {
-	return {-BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width, -BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height};
+	return {-BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), -BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height()};
 }
 template <typename ACTIVE_BLOCK_T>
 Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetBitmapSize() const
 {
-	return {BlocksBitmapSize.width * DrawSize.width, BlocksBitmapSize.height * DrawSize.height};
+	return {BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height()};
 }
 
 template <typename ACTIVE_BLOCK_T>
@@ -131,12 +83,12 @@ Type::Move SceneDrawer<ACTIVE_BLOCK_T>::GetCamera() const
 template <typename ACTIVE_BLOCK_T>
 Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
 {
-	float x_ = (CameraHcenter ? (x) : (x + BlocksBitmapBufferSize * DrawSize.width + BlocksBitmapDrawOffset.width)) / (float)DrawSize.width;
-	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height + BlocksBitmapDrawOffset.height)) / (float)DrawSize.height;
+	float x_ = (CameraHcenter ? (x) : (x + BlocksBitmapBufferSize * DrawSize.width() + BlocksBitmapDrawOffset.width())) / (float)DrawSize.width();
+	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height() + BlocksBitmapDrawOffset.height())) / (float)DrawSize.height();
 
 	return {
-		limiter<Type::Coord::Type>(0,((Type::Size)reach(map)).width - 1,CameraBegin.x + x_),
-		limiter<Type::Coord::Type>(0,((Type::Size)reach(map)).height - 1,CameraBegin.y + y_)
+		limiter<Type::Coord::base>(0,((Type::Size)reach(map)).width() - 1,CameraBegin.x() + x_),
+		limiter<Type::Coord::base>(0,((Type::Size)reach(map)).height() - 1,CameraBegin.y() + y_)
 	};
 }
 
@@ -148,97 +100,86 @@ void SceneDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
 		return;
 	if (CameraHcenter)
 	{
-		if (camera.x < CameraX1)
-			camera.x = CameraX1;
-		if (camera.x > CameraX2)
-			camera.x = CameraX2;
+		if (camera.x() < CameraX1)
+			camera.x() = CameraX1;
+		if (camera.x() > CameraX2)
+			camera.x() = CameraX2;
 
-		if (CameraLast.x != camera.x)
+		if (CameraLast.x() != camera.x())
 		{
-			CameraLast.x = camera.x;
+			CameraLast.x() = camera.x();
 
-			CameraBegin.x = camera.x - CameraCounts.x + 0.5f;
+			CameraBegin.x() = camera.x() - CameraCounts.x() + 0.5f;
 
 			if (BlocksBitmapHcenter)
 			{
-				CameraEnd.x = CameraBegin.x + CameraSize.x + 1;
+				CameraEnd.x() = CameraBegin.x() + CameraSize.x() + 1;
 
-				if ((int)CameraBegin.x<DrawBegin.x || (int)CameraEnd.x>DrawEnd.x)
+				if ((int)CameraBegin.x()<DrawBegin.x() || (int)CameraEnd.x()>DrawEnd.x())
 				{
-					DrawBeginSource.x = (int)(BlocksBitmapBufferSize + camera.x - BlocksBitmapCounts.width + 0.5f) - BlocksBitmapBufferSize;//BlocksBitmapBufferSize az�rt kel hozz�adni hogy ne mennyek �t negatv�ba, mert akkor m�sk�pp v�gja le a tizedees jegyet
+					DrawBeginSource.x() = (int)(BlocksBitmapBufferSize + camera.x() - BlocksBitmapCounts.width() + 0.5f) - BlocksBitmapBufferSize;//BlocksBitmapBufferSize az�rt kel hozz�adni hogy ne mennyek �t negatv�ba, mert akkor m�sk�pp v�gja le a tizedees jegyet
 
-					DrawBegin.x = DrawBeginSource.x;
-					DrawEnd.x = DrawBegin.x + BlocksBitmapSize.width;
+					DrawBegin.x() = DrawBeginSource.x();
+					DrawEnd.x() = DrawBegin.x() + BlocksBitmapSize.width();
 
-					DrawOffset.width = DrawBegin.x * DrawSize.width;
+					DrawOffset.width() = DrawBegin.x() * DrawSize.width();
 
-					if (DrawBegin.x < 0)
-						DrawBegin.x = 0;
-					if (DrawEnd.x > ((Type::Size)reach(map)).width)
-						DrawEnd.x = ((Type::Size)reach(map)).width;
+					if (DrawBegin.x() < 0)
+						DrawBegin.x() = 0;
+					if (DrawEnd.x() > ((Type::Size)reach(map)).width())
+						DrawEnd.x() = ((Type::Size)reach(map)).width();
 				}
 			}
 
-			BlocksBitmapDrawOffset.width = (CameraBegin.x - (DrawBeginSource.x + BlocksBitmapBufferSize)) * DrawSize.width;
+			BlocksBitmapDrawOffset.width() = (CameraBegin.x() - (DrawBeginSource.x() + BlocksBitmapBufferSize)) * DrawSize.width();
 		}
 	}
 
 	if (CameraVcenter)
 	{
-		if (camera.y < CameraY1)
-			camera.y = CameraY1;
-		if (camera.y > CameraY2)
-			camera.y = CameraY2;
+		if (camera.y() < CameraY1)
+			camera.y() = CameraY1;
+		if (camera.y() > CameraY2)
+			camera.y() = CameraY2;
 
-		if (CameraLast.y != camera.y)
+		if (CameraLast.y() != camera.y())
 		{
-			CameraLast.y = camera.y;
+			CameraLast.y() = camera.y();
 
-			CameraBegin.y = camera.y - CameraCounts.y + 0.5f;
+			CameraBegin.y() = camera.y() - CameraCounts.y() + 0.5f;
 
 			if (BlocksBitmapVcenter)
 			{
-				CameraEnd.y = CameraBegin.y + CameraSize.y + 1;
+				CameraEnd.y() = CameraBegin.y() + CameraSize.y() + 1;
 
-				if ((int)CameraBegin.y<DrawBegin.y || (int)CameraEnd.y>DrawEnd.y)
+				if ((int)CameraBegin.y()<DrawBegin.y() || (int)CameraEnd.y()>DrawEnd.y())
 				{
-					DrawBeginSource.y = (int)(BlocksBitmapBufferSize + camera.y - BlocksBitmapCounts.height + 0.5f) - BlocksBitmapBufferSize;//BlocksBitmapBufferSize az�rt kel hozz�adni hogy ne mennyek �t negatv�ba, mert akkor m�sk�pp v�gja le a tizedees jegyet
+					DrawBeginSource.y() = (int)(BlocksBitmapBufferSize + camera.y() - BlocksBitmapCounts.height() + 0.5f) - BlocksBitmapBufferSize;//BlocksBitmapBufferSize az�rt kel hozz�adni hogy ne mennyek �t negatv�ba, mert akkor m�sk�pp v�gja le a tizedees jegyet
 
-					DrawBegin.y = DrawBeginSource.y;
-					DrawEnd.y = DrawBegin.y + BlocksBitmapSize.height;
+					DrawBegin.y() = DrawBeginSource.y();
+					DrawEnd.y() = DrawBegin.y() + BlocksBitmapSize.height();
 
-					DrawOffset.height = DrawBegin.y * DrawSize.height;
+					DrawOffset.height() = DrawBegin.y() * DrawSize.height();
 
-					if (DrawBegin.y < 0)
-						DrawBegin.y = 0;
-					if (DrawEnd.y > ((Type::Size)reach(map)).height)
-						DrawEnd.y = ((Type::Size)reach(map)).height;
+					if (DrawBegin.y() < 0)
+						DrawBegin.y() = 0;
+					if (DrawEnd.y() > ((Type::Size)reach(map)).height())
+						DrawEnd.y() = ((Type::Size)reach(map)).height();
 				}
 			}
 
-			BlocksBitmapDrawOffset.height = (CameraBegin.y - (DrawBeginSource.y + BlocksBitmapBufferSize)) * DrawSize.height;
+			BlocksBitmapDrawOffset.height() = (CameraBegin.y() - (DrawBeginSource.y() + BlocksBitmapBufferSize)) * DrawSize.height();
 		}
 	}
-	/*clog <<"Camera: " <<camera <<KIR4::eol;
-	clog <<"CameraBegin: " <<CameraBegin <<KIR4::eol;
-	clog <<"CameraEnd: " <<CameraEnd <<KIR4::eol;
-	clog <<"CameraBox: " <<CameraX1 <<"*" <<CameraY1 <<"  " <<CameraX2 <<"*" <<CameraY2 <<KIR4::eol;
-	clog <<"BlocksBitmapCounts: " <<BlocksBitmapCounts <<KIR4::eol;
-	clog <<"CameraCounts: " <<CameraCounts <<KIR4::eol;
-	clog <<"DrawBegin: " <<DrawBegin <<KIR4::eol;
-	clog <<"DrawEnd: " <<DrawEnd <<KIR4::eol;
-	clog <<"DrawOffset: " <<DrawOffset <<KIR4::eol;
-	clog <<"BlocksBitmapDrawOffset: " <<BlocksBitmapDrawOffset <<KIR4::eol;
-	clog <<"-------------------" <<KIR4::eol;*/
 }
 template <typename ACTIVE_BLOCK_T>
 void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
 {
-	if (cameraSizeAdjust.width > 0.f && cameraSizeAdjust.height > 0.f)
+	if (cameraSizeAdjust.width() > 0.f && cameraSizeAdjust.height() > 0.f)
 	{
-		Type::CameraSize sizeDim = {cameraPhySize.width / cameraSizeAdjust.width, cameraPhySize.height / cameraSizeAdjust.height};
-		Type::CameraSize::Type sizeAdjust = (std::max)(sizeDim.width, sizeDim.height);
-		DrawSize = {(Type::Size::Type)sizeAdjust,(Type::Size::Type)sizeAdjust};
+		Type::CameraSize sizeDim = {cameraPhySize.width() / cameraSizeAdjust.width(), cameraPhySize.height() / cameraSizeAdjust.height()};
+		Type::CameraSize::base sizeAdjust = (std::max)(sizeDim.width(), sizeDim.height());
+		DrawSize = {(Type::Size::base)sizeAdjust,(Type::Size::base)sizeAdjust};
 	}
 	else
 	{
@@ -251,39 +192,39 @@ void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize
 	BlocksBitmapDrawOffset = {0,0};
 	CameraBegin = {0,0};
 
-	CameraSize.x = cameraPhySize.width / (float)DrawSize.width;
-	CameraSize.y = cameraPhySize.height / (float)DrawSize.height;
+	CameraSize.x() = cameraPhySize.width() / (float)DrawSize.width();
+	CameraSize.y() = cameraPhySize.height() / (float)DrawSize.height();
 
-	CameraCounts.x = CameraSize.x / 2.f;
-	CameraCounts.y = CameraSize.y / 2.f;
+	CameraCounts.x() = CameraSize.x() / 2.f;
+	CameraCounts.y() = CameraSize.y() / 2.f;
 
-	BlocksBitmapSize.width = (cameraPhySize.width + DrawSize.width - 1) / DrawSize.width + BlocksBitmapBufferSize * 2;
-	if (BlocksBitmapSize.width % 2 == 0)
-		BlocksBitmapSize.width++;
-	BlocksBitmapSize.height = (cameraPhySize.height + DrawSize.height - 1) / DrawSize.height + BlocksBitmapBufferSize * 2;
-	if (BlocksBitmapSize.height % 2 == 0)
-		BlocksBitmapSize.height++;
+	BlocksBitmapSize.width() = (cameraPhySize.width() + DrawSize.width() - 1) / DrawSize.width() + BlocksBitmapBufferSize * 2;
+	if (BlocksBitmapSize.width() % 2 == 0)
+		BlocksBitmapSize.width()++;
+	BlocksBitmapSize.height() = (cameraPhySize.height() + DrawSize.height() - 1) / DrawSize.height() + BlocksBitmapBufferSize * 2;
+	if (BlocksBitmapSize.height() % 2 == 0)
+		BlocksBitmapSize.height()++;
 
-	CameraX1 = (cameraPhySize.width / (float)DrawSize.width) / 2.f - 0.5f;
-	CameraY1 = (cameraPhySize.height / (float)DrawSize.height) / 2.f - 0.5f;
-	CameraX2 = ((Type::Size)reach(map)).width - CameraX1 - 1;
-	CameraY2 = ((Type::Size)reach(map)).height - CameraY1 - 1;
+	CameraX1 = (cameraPhySize.width() / (float)DrawSize.width()) / 2.f - 0.5f;
+	CameraY1 = (cameraPhySize.height() / (float)DrawSize.height()) / 2.f - 0.5f;
+	CameraX2 = ((Type::Size)reach(map)).width() - CameraX1 - 1;
+	CameraY2 = ((Type::Size)reach(map)).height() - CameraY1 - 1;
 
 	DrawBegin = Type::Coord::Invalid;
 	DrawEnd = Type::Coord::Invalid;
 	CameraLast = Type::Move::Invalid;
 
-	if (((Type::Size)reach(map)).width <= BlocksBitmapSize.width)
+	if (((Type::Size)reach(map)).width() <= BlocksBitmapSize.width())
 	{
-		BlocksBitmapSize.width = ((Type::Size)reach(map)).width;
-		DrawBegin.x = 0;
-		DrawEnd.x = ((Type::Size)reach(map)).width;
-		DrawOffset.width = 0;
-		DrawBeginSource.x = 0;
+		BlocksBitmapSize.width() = ((Type::Size)reach(map)).width();
+		DrawBegin.x() = 0;
+		DrawEnd.x() = ((Type::Size)reach(map)).width();
+		DrawOffset.width() = 0;
+		DrawBeginSource.x() = 0;
 		BlocksBitmapHcenter = false;
-		if (((Type::Size)reach(map)).width <= CameraSize.x)
+		if (((Type::Size)reach(map)).width() <= CameraSize.x())
 		{
-			BlocksBitmapDrawOffset.width = -(cameraPhySize.width - ((Type::Size)reach(map)).width * DrawSize.width) / 2 - BlocksBitmapBufferSize * DrawSize.width;
+			BlocksBitmapDrawOffset.width() = -(cameraPhySize.width() - ((Type::Size)reach(map)).width() * DrawSize.width()) / 2 - BlocksBitmapBufferSize * DrawSize.width();
 			CameraHcenter = false;
 		}
 		else
@@ -295,17 +236,17 @@ void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize
 		CameraHcenter = true;
 	}
 
-	if (((Type::Size)reach(map)).height <= BlocksBitmapSize.height)
+	if (((Type::Size)reach(map)).height() <= BlocksBitmapSize.height())
 	{
-		BlocksBitmapSize.height = ((Type::Size)reach(map)).height;
-		DrawBegin.y = 0;
-		DrawEnd.y = ((Type::Size)reach(map)).height;
-		DrawOffset.height = 0;
-		DrawBeginSource.y = 0;
+		BlocksBitmapSize.height() = ((Type::Size)reach(map)).height();
+		DrawBegin.y() = 0;
+		DrawEnd.y() = ((Type::Size)reach(map)).height();
+		DrawOffset.height() = 0;
+		DrawBeginSource.y() = 0;
 		BlocksBitmapVcenter = false;
-		if (((Type::Size)reach(map)).height <= CameraSize.y)
+		if (((Type::Size)reach(map)).height() <= CameraSize.y())
 		{
-			BlocksBitmapDrawOffset.height = -(cameraPhySize.height - ((Type::Size)reach(map)).height * DrawSize.height) / 2 - BlocksBitmapBufferSize * DrawSize.height;
+			BlocksBitmapDrawOffset.height() = -(cameraPhySize.height() - ((Type::Size)reach(map)).height() * DrawSize.height()) / 2 - BlocksBitmapBufferSize * DrawSize.height();
 			CameraVcenter = false;
 		}
 		else
@@ -319,13 +260,13 @@ void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize
 
 	LastDrawOffset = DrawOffset;
 
-	BlocksBitmapCounts.width = (BlocksBitmapSize.width - 1) / 2;
-	BlocksBitmapCounts.height = (BlocksBitmapSize.height - 1) / 2;
+	BlocksBitmapCounts.width() = (BlocksBitmapSize.width() - 1) / 2;
+	BlocksBitmapCounts.height() = (BlocksBitmapSize.height() - 1) / 2;
 
-	BlocksBitmap = al_create_bitmap(BlocksBitmapSize.width * DrawSize.width, BlocksBitmapSize.height * DrawSize.height);
-	LayerBitmap = al_create_bitmap(BlocksBitmapSize.width * DrawSize.width, BlocksBitmapSize.height * DrawSize.height);
-	RedrawnedBitmap = al_create_bitmap(BlocksBitmapSize.width * DrawSize.width, BlocksBitmapSize.height * DrawSize.height);
-	TempBitmap = al_create_bitmap(BlocksBitmapSize.width * DrawSize.width, BlocksBitmapSize.height * DrawSize.height);
+	BlocksBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
+	LayerBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
+	RedrawnedBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
+	TempBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
 
 	DrawBeginLast = {0,0};
 	DrawEndLast = {0,0};
@@ -342,7 +283,7 @@ void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize
 template <typename ACTIVE_BLOCK_T>
 SceneDrawer<ACTIVE_BLOCK_T>::SceneDrawer()
 {
-	gravitySlides.initialize(KIR5::Bitmap("Hamika\\Texture\\Block\\gravitation.png"), KIR5::SubBitmap());
+	gravitySlides.initialize(Res::tiles[Res::Tiles::_Gravitation], Res::tiles[Res::BitmapPool::Fallback]);
 	gravityAnimator.Initialize();
 	gravityAnimator.SetNumberOfFrames(gravitySlides.getCount());
 	gravityAnimator.SetAnimationTime(1.0f);
@@ -363,8 +304,8 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 		KIR5::BitmapTarget target;
 
-		int offsetw = LastDrawOffset.width - DrawOffset.width;
-		int offseth = LastDrawOffset.height - DrawOffset.height;
+		int offsetw = LastDrawOffset.width() - DrawOffset.width();
+		int offseth = LastDrawOffset.height() - DrawOffset.height();
 
 		if (offsetw != 0 || offseth != 0)
 		{
@@ -389,19 +330,19 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			al_clear_to_color(KIR5::Color::_transparent);
 			TempBitmap.draw(offsetw, offseth);
 
-			if (DrawBegin.x < DrawBeginLast.x)
-				for (DrawBeginLast.x--; DrawBeginLast.x >= DrawBegin.x; DrawBeginLast.x--)
-					RedrawnCol(DrawBeginLast.x, DrawBegin.y, DrawEnd.y);
-			else if (DrawEnd.x > DrawEndLast.x)
-				for (; DrawEndLast.x < DrawEnd.x; DrawEndLast.x++)
-					RedrawnCol(DrawEndLast.x, DrawBegin.y, DrawEnd.y);
+			if (DrawBegin.x() < DrawBeginLast.x())
+				for (DrawBeginLast.x()--; DrawBeginLast.x() >= DrawBegin.x(); DrawBeginLast.x()--)
+					RedrawnCol(DrawBeginLast.x(), DrawBegin.y(), DrawEnd.y());
+			else if (DrawEnd.x() > DrawEndLast.x())
+				for (; DrawEndLast.x() < DrawEnd.x(); DrawEndLast.x()++)
+					RedrawnCol(DrawEndLast.x(), DrawBegin.y(), DrawEnd.y());
 
-			if (DrawBegin.y < DrawBeginLast.y)
-				for (DrawBeginLast.y--; DrawBeginLast.y >= DrawBegin.y; DrawBeginLast.y--)
-					RedrawnRow(DrawBeginLast.y, DrawBegin.x, DrawEnd.x);
-			else if (DrawEnd.y > DrawEndLast.y)
-				for (; DrawEndLast.y < DrawEnd.y; DrawEndLast.y++)
-					RedrawnRow(DrawEndLast.y, DrawBegin.x, DrawEnd.x);
+			if (DrawBegin.y() < DrawBeginLast.y())
+				for (DrawBeginLast.y()--; DrawBeginLast.y() >= DrawBegin.y(); DrawBeginLast.y()--)
+					RedrawnRow(DrawBeginLast.y(), DrawBegin.x(), DrawEnd.x());
+			else if (DrawEnd.y() > DrawEndLast.y())
+				for (; DrawEndLast.y() < DrawEnd.y(); DrawEndLast.y()++)
+					RedrawnRow(DrawEndLast.y(), DrawBegin.x(), DrawEnd.x());
 
 			LastDrawOffset = DrawOffset;
 			DrawBeginLast = DrawBegin;
@@ -445,18 +386,18 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				if (block.Redrawn)
 				{
 					//if (
-					//	coord.x*DrawSize.width - DrawOffset.width >= bitmap.width() + MapBitmapBufferSize + DrawSize.width
+					//	coord.x()*DrawSize.width() - DrawOffset.width() >= bitmap.width() + MapBitmapBufferSize + DrawSize.width()
 					//	||
-					//	coord.y*DrawSize.height - DrawOffset.height >= bitmap.height() + MapBitmapBufferSize + DrawSize.height
+					//	coord.y()*DrawSize.height() - DrawOffset.height() >= bitmap.height() + MapBitmapBufferSize + DrawSize.height()
 					//	||
-					//	coord.x*DrawSize.width - DrawOffset.width + DrawSize.width <-DrawSize.width
+					//	coord.x()*DrawSize.width() - DrawOffset.width() + DrawSize.width() <-DrawSize.width()
 					//	||
-					//	coord.y*DrawSize.height - DrawOffset.height + DrawSize.height <-+DrawSize.height
+					//	coord.y()*DrawSize.height() - DrawOffset.height() + DrawSize.height() <-+DrawSize.height()
 					//	)
 					//	clog <<KIR4::LRED <<"NON VISIBLE BLOCK DRAWNED! " <<coord <<KIR4::eol;
 
 					PurpleDraw++;
-					al_draw_filled_rectangle(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, coord.x * DrawSize.width - DrawOffset.width + DrawSize.width, coord.y * DrawSize.height - DrawOffset.height + DrawSize.height, KIR5::Color(255, 0, 255, 20));
+					al_draw_filled_rectangle(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), coord.x() * DrawSize.width() - DrawOffset.width() + DrawSize.width(), coord.y() * DrawSize.height() - DrawOffset.height() + DrawSize.height(), KIR5::Color(255, 0, 255, 20));
 
 				}
 			});
@@ -470,9 +411,9 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 			{
 				block.DrawNumber = TotalPointDrawCount++;
 				block.DrawType |= ACTIVE_BLOCK_T::DrawType::Cleared;
-				al_set_clipping_rectangle(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
+				al_set_clipping_rectangle(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), DrawSize.width(), DrawSize.height());
 				al_clear_to_color(KIR5::Color::_transparent);
-				//al_draw_filled_rectangle(coord.x*DrawSize.width, coord.y*DrawSize.height, (coord.x + 1)*DrawSize.width, (coord.y + 1)*DrawSize.height, KIR5::Color::invisible());
+				//al_draw_filled_rectangle(coord.x()*DrawSize.width(), coord.y()*DrawSize.height(), (coord.x() + 1)*DrawSize.width(), (coord.y() + 1)*DrawSize.height(), KIR5::Color::invisible());
 			}
 		});
 
@@ -487,40 +428,40 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				 ||
 				 (block.remain->isExists && !block.remain->events.topDraw)))
 			{
-				x1 = coord.x * DrawSize.width;
-				y1 = coord.y * DrawSize.height;
-				x2 = x1 + DrawSize.width;
-				y2 = y1 + DrawSize.height;
+				x1 = coord.x() * DrawSize.width();
+				y1 = coord.y() * DrawSize.height();
+				x2 = x1 + DrawSize.width();
+				y2 = y1 + DrawSize.height();
 
 				if (block.ComeFrom != coord && block.object->isExists)
 				{
 					if (block.object->IsMoveRight())
-						x1 += DrawSize.width * (block.object->GetMove().x + 1);
+						x1 += DrawSize.width() * (block.object->GetMove().x() + 1);
 					else if (block.object->IsMoveLeft())
-						x2 += DrawSize.width * (block.object->GetMove().x - 1);
+						x2 += DrawSize.width() * (block.object->GetMove().x() - 1);
 
 					if (block.object->IsMoveDown())
-						y1 += DrawSize.height * (block.object->GetMove().y + 1);
+						y1 += DrawSize.height() * (block.object->GetMove().y() + 1);
 					else if (block.object->IsMoveUp())
-						y2 += DrawSize.height * (block.object->GetMove().y - 1);
+						y2 += DrawSize.height() * (block.object->GetMove().y() - 1);
 				}
 
 				if (block.GoTo != coord && reach(map)[block.GoTo].object->isExists)
 				{
 					if (reach(map)[block.GoTo].object->IsMoveRight())
-						x2 += DrawSize.width * reach(map)[block.GoTo].object->GetMove().x;
+						x2 += DrawSize.width() * reach(map)[block.GoTo].object->GetMove().x();
 					else if (reach(map)[block.GoTo].object->IsMoveLeft())
-						x1 += DrawSize.width * reach(map)[block.GoTo].object->GetMove().x;
+						x1 += DrawSize.width() * reach(map)[block.GoTo].object->GetMove().x();
 
 					if (reach(map)[block.GoTo].object->IsMoveDown())
-						y2 += DrawSize.height * reach(map)[block.GoTo].object->GetMove().y;
+						y2 += DrawSize.height() * reach(map)[block.GoTo].object->GetMove().y();
 					else if (reach(map)[block.GoTo].object->IsMoveUp())
-						y1 += DrawSize.height * reach(map)[block.GoTo].object->GetMove().y;
+						y1 += DrawSize.height() * reach(map)[block.GoTo].object->GetMove().y();
 				}
 
 				if (x2 - x1 > 0 && y2 - y1 > 0)
 				{
-					al_set_clipping_rectangle(x1 - DrawOffset.width, y1 - DrawOffset.height, x2 - x1, y2 - y1);
+					al_set_clipping_rectangle(x1 - DrawOffset.width(), y1 - DrawOffset.height(), x2 - x1, y2 - y1);
 
 					if (block.ComeFrom == coord && !block.object->events.topDraw)
 					{
@@ -599,7 +540,7 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 				{
 					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 					{
-						gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
+						gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), DrawSize.width(), DrawSize.height());
 					});
 				}
 				else
@@ -607,7 +548,7 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 					{
 						if (block.grid & GridFlags::Gravity)
-							gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x * DrawSize.width - DrawOffset.width, coord.y * DrawSize.height - DrawOffset.height, DrawSize.width, DrawSize.height);
+							gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), DrawSize.width(), DrawSize.height());
 					});
 				}
 				al_hold_bitmap_drawing(false);
@@ -618,21 +559,21 @@ void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
 
 	al_set_clipping_rectangle(cx, cy, cw, ch);
 	//al_reset_clipping_rectangle();
-	BlocksBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width, y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height);
+	BlocksBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height());
 	if (layerActive)
 	{
-		LayerBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width, y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height);
+		LayerBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height());
 	}
 	if (blockRefreshActive)
 	{
-		RedrawnedBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width, y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height);
+		RedrawnedBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height());
 	}
 
 	al_draw_rectangle(
-		x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width,
-		y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height,
-		x - BlocksBitmapBufferSize * DrawSize.width - BlocksBitmapDrawOffset.width + BlocksBitmap.width() + 1,
-		y - BlocksBitmapBufferSize * DrawSize.height - BlocksBitmapDrawOffset.height + BlocksBitmap.height() + 1,
+		x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(),
+		y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height(),
+		x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width() + BlocksBitmap.width() + 1,
+		y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height() + BlocksBitmap.height() + 1,
 		KIR5::Color(255, 0, 255), 1);
 
 	//al_set_clipping_rectangle(cx, cy, cw, ch);
@@ -655,13 +596,13 @@ void SceneDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 		else if (/*reach(map)[coord].object->isExists &&*/ reach(map)[coord].object->isActionMove())
 		{
 			if (reach(map)[coord].object->IsMoveLeft())
-				Redrawn({coord.x + 1,coord.y});
+				Redrawn({coord.x() + 1,coord.y()});
 			else if (reach(map)[coord].object->IsMoveRight())
-				Redrawn({coord.x - 1,coord.y});
+				Redrawn({coord.x() - 1,coord.y()});
 			else if (reach(map)[coord].object->IsMoveUp())
-				Redrawn({coord.x,coord.y + 1});
+				Redrawn({coord.x(),coord.y() + 1});
 			else if (reach(map)[coord].object->IsMoveDown())
-				Redrawn({coord.x,coord.y - 1});
+				Redrawn({coord.x(),coord.y() - 1});
 		}
 		if (reach(map)[coord].GoTo != coord)
 			Redrawn(reach(map)[coord].GoTo);

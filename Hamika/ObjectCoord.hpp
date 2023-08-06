@@ -19,8 +19,8 @@ namespace Object
 			{
 				Json json;
 
-				json["coord.x"] = coord.x;
-				json["coord.y"] = coord.y;
+				json["coord.x"] = coord.x();
+				json["coord.y"] = coord.y();
 
 				return json;
 			}
@@ -45,22 +45,22 @@ namespace Object
 			template <typename DATA>
 			Type::Coord Func<DATA>::GetCoordLeft() const
 			{
-				return{coord.x - 1,coord.y};
+				return{coord.x() - 1,coord.y()};
 			}
 			template <typename DATA>
 			Type::Coord Func<DATA>::GetCoordRight() const
 			{
-				return{coord.x + 1,coord.y};
+				return{coord.x() + 1,coord.y()};
 			}
 			template <typename DATA>
 			Type::Coord Func<DATA>::GetCoordUp() const
 			{
-				return{coord.x,coord.y - 1};
+				return{coord.x(),coord.y() - 1};
 			}
 			template <typename DATA>
 			Type::Coord Func<DATA>::GetCoordDown() const
 			{
-				return{coord.x,coord.y + 1};
+				return{coord.x(),coord.y() + 1};
 			}
 		}
 	}

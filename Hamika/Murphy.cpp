@@ -23,7 +23,7 @@ namespace Object
 
 		constexpr float PlaceUnityTime = 0.4f;
 		constexpr float PlaceFaceUnityTime = 0.4f;
-		constexpr float PushEffectTime = 0.15f;
+		constexpr float PushEffectTime = 0.08325f;
 		constexpr float SuckEffectTime = 0.15f;
 		constexpr float ExitEffectTime = 0.8f;
 		constexpr float pushSpeed = CPS / 21.99f;
@@ -113,13 +113,13 @@ namespace Object
 					o->GetObjectOut(to)->GetFlags() & Brick::StepOn
 					||
 					(
-						(rotation == Type::Rotations::Up && o->GetObjectOut(to)->GetCoord().y < to.y)
+						(rotation == Type::Rotations::Up && o->GetObjectOut(to)->GetCoord().y() < to.y())
 						||
-						(rotation == Type::Rotations::Down && o->GetObjectOut(to)->GetCoord().y > to.y)
+						(rotation == Type::Rotations::Down && o->GetObjectOut(to)->GetCoord().y() > to.y())
 						||
-						(rotation == Type::Rotations::Left && o->GetObjectOut(to)->GetCoord().x < to.x)
+						(rotation == Type::Rotations::Left && o->GetObjectOut(to)->GetCoord().x() < to.x())
 						||
-						(rotation == Type::Rotations::Right && o->GetObjectOut(to)->GetCoord().x > to.x)
+						(rotation == Type::Rotations::Right && o->GetObjectOut(to)->GetCoord().x() > to.x())
 						)
 					);
 		}
@@ -554,7 +554,7 @@ namespace Object
 							stack->o->doMoveEx(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)],
 											   ObjectID::MurphyCrawlTail,
 											   to,
-											   {Type::Move::base(coord.x - to.x), Type::Move::base(coord.y - to.y)}
+											   {Type::Move::base(coord.x() - to.x()), Type::Move::base(coord.y() - to.y())}
 							);
 							stack->o->scene->murphyMoved(stack->o);
 							stack->o->setRoundDrawCoord();

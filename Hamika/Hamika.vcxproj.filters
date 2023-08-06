@@ -70,6 +70,9 @@
     <Filter Include="Objects\Object\Module">
       <UniqueIdentifier>{260c4458-3d36-4744-8e22-4d01544c6823}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\background">
+      <UniqueIdentifier>{bd718035-2bb9-4b6e-bbde-b602f3ba6915}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneDrawer.hpp">
@@ -295,6 +298,12 @@
     <ClCompile Include="OriginalObjects.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="SceneBackground.hpp">
+      <Filter>Scene\background</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneBackground.cpp">
+      <Filter>Scene\background</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bedrock.h">
@@ -488,6 +497,9 @@
     </ClInclude>
     <ClInclude Include="ObjectDraw.h">
       <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneBackground.h">
+      <Filter>Scene\background</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

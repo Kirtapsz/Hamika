@@ -33,9 +33,9 @@ namespace Object
 
 				Type::Coord DrawCoord = {0,0};
 
-#define OBJECT_DRAWNER_PARAM Object::Brick::Stack *stack, Type::Coord::Type x,Type::Coord::Type y,Type::Coord::Type w,Type::Coord::Type h
+#define OBJECT_DRAWNER_PARAM Object::Brick::Stack *stack, Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
 #define OBJECT_DRAWNER_CALL stack, x, y, w, h
-				typedef void(*DRAWNER)(Stack *, Type::Coord::Type x, Type::Coord::Type y, Type::Coord::Type w, Type::Coord::Type h);
+				typedef void(*DRAWNER)(Stack *, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h);
 				DRAWNER drawnerFnc = nullptr;
 				unsigned long long int drawCounter = 0;//ez az objektum hányszor lett eddig újrarajzolva
 				unsigned long long int drawAtOnceCounter = 0;//ez az objektum hányszor lett újrarajzolva egy ciklus alatt

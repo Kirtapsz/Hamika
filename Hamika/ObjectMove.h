@@ -63,11 +63,11 @@ namespace Object
 				void carryStep();
 
 				Type::Move GetMoveSpeed();
-				Type::Move::Type GetMoveSpeedVertical();
-				Type::Move::Type GetMoveSpeedHorizontal();
+				Type::Move::base GetMoveSpeedVertical();
+				Type::Move::base GetMoveSpeedHorizontal();
 
 				//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
-				void SetMoveSpeed(Type::Move::Type speed);
+				void SetMoveSpeed(Type::Move::base speed);
 				//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
 				void SetMoveSpeed(Type::Move speed);
 

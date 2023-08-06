@@ -104,12 +104,12 @@ namespace UI
 		}
 	};
 
-	class Panel: public virtual KIR5::ColoredPanel//KIR5::Panel
+	class Panel: public virtual /*KIR5::ColoredPanel*/ KIR5::Panel
 	{
 		public: inline Panel()
 		{
 			show();
-			setBackgroundColor(KIR5::Color(rand() % 255, rand() % 255, rand() % 255));
+			/*setBackgroundColor(KIR5::Color(rand() % 255, rand() % 255, rand() % 255));*/
 		}
 	};
 
@@ -123,7 +123,7 @@ namespace UI
 			setColor(KIR5::Color(30, 30, 30));
 			setTextAlignment(KIR5::LEFT | KIR5::VCENTER | KIR5::IGNORE_DESCENT);
 
-			fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+			fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 			{
 				al_draw_line(x_, y_ + h_ - 1, x_ + w_, y_ + h_ - 1, KIR5::Color(230, 120, 40), 1.f);
 			}));
@@ -211,7 +211,7 @@ namespace UI
 			show();
 			setBackgroundColor(KIR5::Color(15, 15, 15));
 
-			fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+			fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 			{
 				al_draw_rectangle(x_ + 1, y_ + 1, x_ + w_, y_ + h_, KIR5::Color(116, 109, 161), 1.f);
 			}));

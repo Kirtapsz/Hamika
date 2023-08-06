@@ -48,7 +48,7 @@ namespace UI::Scene::Module::Field
 			globalGravity = _bluePrint->globalGravity;
 
 			map.reset(new Matrix<SceneBlock<Object::Brick>>(_bluePrint->blocks));
-			objects.resize(((Type::Size)*map).width * ((Type::Size)*map).height);
+			objects.resize(((Type::Size)*map).width() * ((Type::Size)*map).height());
 			remains.resize(objects.size());
 			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{

@@ -19,8 +19,8 @@
 //			{
 //				Json json;
 //
-//				json["hitCoord.x"] = hitCoord.x;
-//				json["hitCoord.y"] = hitCoord.y;
+//				json["hitCoord.x"] = hitCoord.x();
+//				json["hitCoord.y"] = hitCoord.y();
 //
 //				return json;
 //			}

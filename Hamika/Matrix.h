@@ -7,40 +7,52 @@
 template<class Data>
 class Matrix
 {
-	private: Type::Size size = {0,0};
+	private: Type::Size size_ = {0,0};
 
 	protected: std::vector<std::vector<Data>> data;
 
 	public: inline operator Type::Size() const
 	{
-		return size;
+		return size_;
+	}
+	public: inline Type::Size size() const
+	{
+		return size_;
+	}
+	public: inline Type::Size::base width() const
+	{
+		return size_.width();
+	}
+	public: inline Type::Size::base height() const
+	{
+		return size_.height();
 	}
 	public: inline Data &operator[](Type::Coord coord)
 	{
 #ifdef _DEBUG
-		if (coord.x >= size.width || coord.y >= size.height || coord.x < 0 || coord.y < 0)
+		if (coord.x() >= size_.width() || coord.y() >= size_.height() || coord.x() < 0 || coord.y() < 0)
 			clog << KIR4::LRED << "Coord ERROR!: " << coord << KIR4::eol << KIR4::pp;
 #endif // _DEBUG
-		return data[coord.x][coord.y];
+		return data[coord.x()][coord.y()];
 	}
 	public: inline const Data &operator[](Type::Coord coord) const
 	{
 #ifdef _DEBUG
-		if (coord.x >= size.width || coord.y >= size.height || coord.x < 0 || coord.y < 0)
+		if (coord.x() >= size_.width() || coord.y() >= size_.height() || coord.x() < 0 || coord.y() < 0)
 			clog << KIR4::LRED << "Coord ERROR!: " << coord << KIR4::eol << KIR4::pp;
 #endif // _DEBUG
-		return data[coord.x][coord.y];
+		return data[coord.x()][coord.y()];
 	}
 
-	public: Matrix(Type::Size size)
+	public: Matrix(Type::Size _size)
 	{
-		if (size.width > 0 && size.height > 0)
+		if (_size.width() > 0 && _size.height() > 0)
 		{
-			this->size = size;
+			size_ = _size;
 
-			data.resize(size.width);
-			for (Type::Size::Type i = 0; i < size.width; i++)
-				data[i].resize(size.height);
+			data.resize(size_.width());
+			for (Type::Size::base i = 0; i < size_.width(); i++)
+				data[i].resize(size_.height());
 		}
 	}
 	public: Matrix()
@@ -48,7 +60,7 @@ class Matrix
 
 	}
 	public: Matrix(Matrix &&array2D):
-		size(array2D.size),
+		size_(array2D.size_),
 		data(std::move(array2D.data))
 	{
 
@@ -56,30 +68,30 @@ class Matrix
 	public: virtual ~Matrix()
 	{
 		data.clear();
-		size = {0,0};
+		size_ = {0,0};
 	}
 	public: inline bool Exists() const
 	{
-		return size.width > 0;
+		return size_.width() > 0;
 	}
 	public: inline bool Test(Type::Coord coord) const
 	{
 		return
-			coord.x < size.width &&
-			coord.y < size.height &&
-			coord.x >= 0 &&
-			coord.y >= 0;
+			coord.x() < size_.width() &&
+			coord.y() < size_.height() &&
+			coord.x() >= 0 &&
+			coord.y() >= 0;
 	}
 
-	public: void resize(Type::Size size)
+	public: void resize(Type::Size _size)
 	{
-		if (size.width > 0 && size.height > 0)
+		if (_size.width() > 0 && _size.height() > 0)
 		{
-			this->size = size;
+			size_ = _size;
 			data.clear();
-			data.resize(size.width);
-			for (Type::Size::Type i = 0; i < size.width; i++)
-				data[i].resize(size.height);
+			data.resize(size_.width());
+			for (Type::Size::base i = 0; i < size_.width(); i++)
+				data[i].resize(size_.height());
 		}
 	}
 
@@ -88,10 +100,10 @@ class Matrix
 	{
 		Type::Coord coord;
 		auto x_ = &data.front();
-		for (coord.x = 0; coord.x < size.width; ++coord.x, ++x_)
+		for (coord.x() = 0; coord.x() < size_.width(); ++coord.x(), ++x_)
 		{
 			auto y_ = &x_->front();
-			for (coord.y = 0; coord.y < size.height; ++coord.y, ++y_)
+			for (coord.y() = 0; coord.y() < size_.height(); ++coord.y(), ++y_)
 			{
 				f(coord, *y_);
 			}
@@ -101,10 +113,10 @@ class Matrix
 	{
 		Type::Coord coord;
 		auto x_ = &data.front();
-		for (coord.x = 0; coord.x < size.width; ++coord.x, ++x_)
+		for (coord.x() = 0; coord.x() < size_.width(); ++coord.x(), ++x_)
 		{
 			auto y_ = &x_->front();
-			for (coord.y = 0; coord.y < size.height; ++coord.y, ++y_)
+			for (coord.y() = 0; coord.y() < size_.height(); ++coord.y(), ++y_)
 			{
 				f(coord, *y_);
 			}
@@ -114,10 +126,10 @@ class Matrix
 	{
 		Type::Coord coord;
 		auto x_ = &data.back();
-		for (coord.x = size.width - 1; coord.x >= 0; --coord.x, --x_)
+		for (coord.x() = size_.width() - 1; coord.x() >= 0; --coord.x(), --x_)
 		{
 			auto y_ = &x_->back();
-			for (coord.y = size.height - 1; coord.y >= 0; --coord.y, --y_)
+			for (coord.y() = size_.height() - 1; coord.y() >= 0; --coord.y(), --y_)
 			{
 				f(coord, *y_);
 			}
@@ -126,11 +138,11 @@ class Matrix
 	public: template<typename F> constexpr void forrange(Type::Coord start, Type::Coord end, F &f)
 	{
 		Type::Coord coord;
-		auto x_ = &data.front() + start.x;
-		for (coord.x = start.x; coord.x < end.x; ++coord.x, ++x_)
+		auto x_ = &data.front() + start.x();
+		for (coord.x() = start.x(); coord.x() < end.x(); ++coord.x(), ++x_)
 		{
-			auto y_ = &x_->front() + start.y;
-			for (coord.y = start.y; coord.y < end.y; ++coord.y, ++y_)
+			auto y_ = &x_->front() + start.y();
+			for (coord.y() = start.y(); coord.y() < end.y(); ++coord.y(), ++y_)
 			{
 				f(coord, *y_);
 			}

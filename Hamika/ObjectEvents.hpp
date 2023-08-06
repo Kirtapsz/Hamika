@@ -14,11 +14,13 @@ namespace Object
 			{
 				timer = false;
 				update = false;
+				topDraw = false;
 			}
 
 			template <typename DATA>
 			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
 			{
+				events.clear();
 			}
 			template <typename DATA>
 			Json Func<DATA>::print()

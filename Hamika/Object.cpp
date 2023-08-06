@@ -54,8 +54,8 @@ namespace Object
 	float Brick::GetAbsMove()
 	{
 		float
-			maxX = std::abs(move.x),
-			maxY = std::abs(move.y);
+			maxX = std::abs(move.x()),
+			maxY = std::abs(move.y());
 		if (maxX > maxY)
 			return maxX;
 		else
@@ -110,13 +110,13 @@ namespace Object
 	{
 		Brick *out = scene->GetObjectOut(to);
 		return
-			((rotation == Type::Rotations::Up && out->GetCoord().y < to.y)
+			((rotation == Type::Rotations::Up && out->GetCoord().y() < to.y())
 			 ||
-			 (rotation == Type::Rotations::Down && out->GetCoord().y > to.y)
+			 (rotation == Type::Rotations::Down && out->GetCoord().y() > to.y())
 			 ||
-			 (rotation == Type::Rotations::Left && out->GetCoord().x < to.x)
+			 (rotation == Type::Rotations::Left && out->GetCoord().x() < to.x())
 			 ||
-			 (rotation == Type::Rotations::Right && out->GetCoord().x > to.x)
+			 (rotation == Type::Rotations::Right && out->GetCoord().x() > to.x())
 			 );
 	}
 

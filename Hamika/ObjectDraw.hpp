@@ -28,8 +28,8 @@ namespace Object
 			{
 				Json json;
 
-				json["DrawCoord.x"] = DrawCoord.x;
-				json["DrawCoord.y"] = DrawCoord.y;
+				json["DrawCoord.x"] = DrawCoord.x();
+				json["DrawCoord.y"] = DrawCoord.y();
 
 				return json;
 			}
@@ -37,8 +37,8 @@ namespace Object
 			template<typename DATA>
 			void Func<DATA>::configureDrawOptions()
 			{
-				DrawCoord.x = coord.x * scene->GetDrawSize().width;
-				DrawCoord.y = coord.y * scene->GetDrawSize().height;
+				DrawCoord.x() = coord.x() * scene->GetDrawSize().width();
+				DrawCoord.y() = coord.y() * scene->GetDrawSize().height();
 			}
 
 
@@ -48,11 +48,11 @@ namespace Object
 				if (drawnerFnc)
 				{
 					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					drawnerFnc(&stack, this->GetDrawCoord().x, this->GetDrawCoord().y, scene->GetDrawSize().width, scene->GetDrawSize().height);
+					drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
 				}
 				else
 				{
-					static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(this->GetDrawCoord().x, this->GetDrawCoord().y, scene->GetDrawSize().width, scene->GetDrawSize().height);
+					static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
 				}
 			}
 			template<typename DATA>
@@ -61,7 +61,7 @@ namespace Object
 				DrawnedCount++;
 				if (DrawnedCount >= 2)
 				{
-					clog << "WARNING! An object has been drawned two times (" << coord.x << "," << coord.y << "):" << KIR4::eol;
+					clog << "WARNING! An object has been drawned two times (" << coord.x() << "," << coord.y() << "):" << KIR4::eol;
 				}
 				SObjectDrawCounts++;
 				Draw();
@@ -70,8 +70,8 @@ namespace Object
 			void Func<DATA>::setOddDrawCoord()
 			{
 				Type::Coord draw_coord = {
-					Type::Coord::Type((coord.x + move.x) * Type::Move::Type(scene->GetDrawSize().width)),
-					Type::Coord::Type((coord.y + move.y) * Type::Move::Type(scene->GetDrawSize().height))
+					Type::Coord::base((coord.x() + move.x()) * Type::Move::base(scene->GetDrawSize().width())),
+					Type::Coord::base((coord.y() + move.y()) * Type::Move::base(scene->GetDrawSize().height()))
 				};
 
 				if (draw_coord != DrawCoord)
@@ -84,8 +84,8 @@ namespace Object
 			void Func<DATA>::setRoundDrawCoord()
 			{
 				Type::Coord draw_coord = {
-					coord.x * scene->GetDrawSize().width,
-					coord.y * scene->GetDrawSize().height
+					coord.x() * scene->GetDrawSize().width(),
+					coord.y() * scene->GetDrawSize().height()
 				};
 
 				if (draw_coord != DrawCoord)
@@ -98,7 +98,7 @@ namespace Object
 			template<typename DATA>
 			Type::Coord Func<DATA>::GetDrawCoord()
 			{
-				return {DrawCoord.x - scene->GetDrawOffSet().width, DrawCoord.y - scene->GetDrawOffSet().height};
+				return {DrawCoord.x() - scene->GetDrawOffSet().width(), DrawCoord.y() - scene->GetDrawOffSet().height()};
 			}
 
 			//DRAW #####################################################################################
@@ -110,14 +110,14 @@ namespace Object
 				drawAtOnceCounter++;
 				if (drawAtOnceCounter >= 2)
 				{
-					clog << "WARNING! An object has been drawned two times (" << coord.x << "," << coord.y << "):" << KIR4::eol;
+					clog << "WARNING! An object has been drawned two times (" << coord.x() << "," << coord.y() << "):" << KIR4::eol;
 					Print();
 				}
 				drawCounterID = ++totalDrawCounter;
 				Stack stack;
 				stack.o = this;
 				stack.specific = this->specific;
-				drawnerFnc(&stack, this->GetDrawCoord().x, this->GetDrawCoord().y, scene->GetDrawSize().width, scene->GetDrawSize().height);
+				drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
 			}
 		}
 	}

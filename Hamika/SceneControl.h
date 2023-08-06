@@ -51,24 +51,26 @@ namespace UI::Scene::Module::Contol
 		{
 			show();
 
+			*this << background;
 			*this << statusbar;
 			*this << drawnerBar;
 			drawnerBar->show();
 
 			*activeMoved = [&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
 			{
+				background->move(0, 0, width(), height());
 				drawnerBar->move(0, 0, width(), height() - statusbar->Height());
 				drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 				statusbar->Align();
 			};
 
-			*activeKeyDown = [&](FNC_KEY_DOWN_PARAMS)->FNC_KEY_DOWN_RET
+			*activeKeyDown = [&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
 			{
 				keyboardController->keyDown(key_);
 				return false;
 			};
 
-			*activeKeyUp = [&](FNC_KEY_UP_PARAMS)->FNC_KEY_UP_RET
+			*activeKeyUp = [&](FNC_KEY_UP_PARAMS) -> FNC_KEY_UP_RET
 			{
 				keyboardController->keyUp(key_);
 				return false;
@@ -83,15 +85,26 @@ namespace UI::Scene::Module::Contol
 				keyboardController->finalize();
 			};
 
-			*drawnerBarDraw = [&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+			fncDraw.push_back([&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 			{
 				if (murphy)
 				{
-					drawer.MoveCameraTo({murphy->GetCoord().x + murphy->GetMove().x, murphy->GetCoord().y + murphy->GetMove().y});
+					Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
+					drawer.MoveCameraTo(camera);
+					background->setCamera(drawer.GetCamera());
+				}
+			});
+
+			*drawnerBarDraw = [&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
+			{
+				if (murphy)
+				{
+					Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
+					drawer.MoveCameraTo(camera);
+					background->setCamera(drawer.GetCamera());
 				}
 				drawer.DrawBlocks(x_, y_);
 			};
-
 			drawnerBar->fncDraw.push_back(drawnerBarDraw);
 		}
 	};
