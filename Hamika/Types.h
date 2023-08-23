@@ -108,7 +108,8 @@ namespace Type
 	{
 		using ADDITION = decltype(std::declval<T>() + std::declval<U>());
 		using SUBTRACTION = decltype(std::declval<T>() - std::declval<U>());
-		using MULTIPLICATION = decltype(std::declval<T>() *std::declval<U>());
+
+		using MULTIPLICATION = decltype(std::declval<T>() * std::declval<U>());
 		using DIVISION = decltype(std::declval<T>() / std::declval<U>());
 
 		using MODULO = decltype(std::declval<typename ModuloType<T>::TYPE>() % std::declval<typename ModuloType<U>::TYPE>());
@@ -162,8 +163,6 @@ namespace Type
 		}
 
 		template<typename F>
-		constexpr var2D(F _valuel, F _valuer):
-			valuel((T)_valuel), valuer((T)_valuer)
 		{
 
 		}
