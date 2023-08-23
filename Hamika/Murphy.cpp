@@ -55,8 +55,6 @@ namespace Object
 
 			float _effect_timer;
 			Type::Flags _effect_type;
-
-			bool _fall_down;
 		};
 
 		bool CanSuck(Brick *o, Type::Coord coord)
@@ -330,9 +328,21 @@ namespace Object
 			}
 			return false;
 		}
+		bool CheckGravity(Brick::Stack *stack)
+		{
+			return stack->o->scene->IsGlobalGravity() || stack->o->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity;
+		}
+		bool CanFallDown(Brick::Stack *stack)
+		{
+			static constexpr Type::Rotation rotation = Type::Rotations::Down;
+			Type::Coord to = stack->o->GetCoordDown();
+			return CanMovePos(stack->o, to, rotation, Brick::StepOn);
+		}
 		bool ControllMove(Brick::Stack *stack)
 		{
 			Specific *spec = *stack;
+
+			bool can_fall_down = CheckGravity(stack) ? CanFallDown(stack) : false;
 
 			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
 			for (Type::Direction direction = 0; direction < 4; ++direction)
@@ -345,17 +355,16 @@ namespace Object
 					if (MurphyCanMovePos(stack->o, to, rotation))
 					{
 						Brick *to_object = stack->o->GetObject(to);
-						if (to_object->GetFlags() & Brick::GiveGravityDelay)
+						if (to_object->GetFlags() & Brick::GiveGravityDelay || !can_fall_down)
 						{
-							spec->_fall_down = false;
+							Eat(stack->o, to_object);
+							stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
+							stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
+							stack->o->scene->murphyMoved(stack->o);
+							stack->o->SetRotation(rotation);
+							spec->_effect_type = EFFECTS::MOVE;
+							return true;
 						}
-						Eat(stack->o, to_object);
-						stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-						stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
-						stack->o->scene->murphyMoved(stack->o);
-						stack->o->SetRotation(rotation);
-						spec->_effect_type = EFFECTS::MOVE;
-						return true;
 					}
 				}
 			}
@@ -365,28 +374,18 @@ namespace Object
 		{
 			Specific *spec = *stack;
 
-			if (stack->o->scene->IsGlobalGravity() || stack->o->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity)
+			if (CheckGravity(stack) && CanFallDown(stack))
 			{
-				if (spec->_fall_down)
-				{
-					static constexpr Type::Rotation rotation = Type::Rotations::Down;
-					Type::Coord to = stack->o->GetCoordDown();
+				static constexpr Type::Rotation rotation = Type::Rotations::Down;
+				Type::Coord to = stack->o->GetCoordDown();
 
-					if (CanMovePos(stack->o, to, rotation, Brick::StepOn))
-					{
-						Eat(stack->o, stack->o->GetObject(to));
-						stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-						stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
-						stack->o->scene->murphyMoved(stack->o);
-						stack->o->SetRotation(rotation);
-						spec->_effect_type = EFFECTS::MOVE | EFFECTS::FALL;
-						return true;
-					}
-				}
-				else
-				{
-					spec->_fall_down = true;
-				}
+				Eat(stack->o, stack->o->GetObject(to));
+				stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
+				stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
+				stack->o->scene->murphyMoved(stack->o);
+				stack->o->SetRotation(rotation);
+				spec->_effect_type = EFFECTS::MOVE | EFFECTS::FALL;
+				return true;
 			}
 
 			return false;
@@ -611,7 +610,6 @@ namespace Object
 			spec->draw_number_ = 0;
 			spec->controller = nullptr;
 			spec->_effect_type = EFFECTS::NONE;
-			spec->_fall_down = true;
 		}
 
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
@@ -622,7 +620,6 @@ namespace Object
 			json["draw_number"] = spec->draw_number_;
 			json["effect_timer"] = spec->_effect_timer;
 			json["effect_type"] = spec->_effect_type;
-			json["fall_down"] = spec->_fall_down;
 
 			return json;
 		}
@@ -699,12 +696,13 @@ namespace Object
 			}
 			if (!stack->o->IsMove())
 			{
-				if (ControllFallDown(stack))
-				{
-					return;
-				}
 				if (spec->controller->actionSpecial)
 				{
+					if (ControllFallDown(stack))
+					{
+						return;
+					}
+
 					if (stack->o->isAction())
 					{
 						spec->_effect_type = EFFECTS::NONE;
@@ -723,6 +721,10 @@ namespace Object
 				else
 				{
 					if (ControllMove(stack))
+					{
+						return;
+					}
+					else if (ControllFallDown(stack))
 					{
 						return;
 					}
