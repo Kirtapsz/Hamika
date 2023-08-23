@@ -384,7 +384,7 @@ namespace UI::Scene::Module::Action
 		{
 			if (TestObject(coord))
 			{
-				ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetTranslationTo(), coord);
+				ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetObjectIDremain(), coord);
 				if (reach(map)[coord].ComeFrom != coord)
 				{
 					reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
@@ -590,7 +590,7 @@ namespace UI::Scene::Module::Action
 				//(*reach(map)[coord].remain) = reach(map)[coord].object;
 				reach(map)[coord].remain->requests.remove = true;
 
-				ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetTranslationTo(), coord);
+				ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetObjectIDremain(), coord);
 
 				UpdateSquare33(coord);
 			}

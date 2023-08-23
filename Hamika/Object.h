@@ -235,8 +235,8 @@ namespace Object
 
 
 		public:
-		Type::ID TranslationTo = ObjectID::Space;
-		Type::ID ObjectIDremain = ObjectID::Space;
+		Type::ID TranslationTo = ObjectID::Space; // when its blow up
+		Type::ID ObjectIDremain = ObjectID::Space; // when it disappear
 
 
 		public:
