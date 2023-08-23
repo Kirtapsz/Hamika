@@ -90,7 +90,7 @@ namespace Type
 
 	template<class T>
 	struct ModuloType;
-	
+
 	template<>
 	struct ModuloType<float>
 	{
@@ -108,7 +108,7 @@ namespace Type
 	{
 		using ADDITION = decltype(std::declval<T>() + std::declval<U>());
 		using SUBTRACTION = decltype(std::declval<T>() - std::declval<U>());
-		using MULTIPLICATION = decltype(std::declval<T>() * std::declval<U>());
+		using MULTIPLICATION = decltype(std::declval<T>() *std::declval<U>());
 		using DIVISION = decltype(std::declval<T>() / std::declval<U>());
 
 		using MODULO = decltype(std::declval<typename ModuloType<T>::TYPE>() % std::declval<typename ModuloType<U>::TYPE>());
@@ -122,238 +122,275 @@ namespace Type
 		base valuel;
 		base valuer;
 
-		inline base &x()
+		constexpr base &x()
 		{
 			return valuel;
 		}
-		inline base &y()
+		constexpr base &y()
 		{
 			return valuer;
 		}
-		inline base &width()
+		constexpr base &width()
 		{
 			return valuel;
 		}
-		inline base &height()
-		{
-			return valuer;
-		}
-
-		inline const base &x() const
-		{
-			return valuel;
-		}
-		inline const base &y() const
-		{
-			return valuer;
-		}
-		inline const base &width() const
-		{
-			return valuel;
-		}
-		inline const base &height() const
+		constexpr base &height()
 		{
 			return valuer;
 		}
 
-		inline var2D()
+		constexpr const base &x() const
+		{
+			return valuel;
+		}
+		constexpr const base &y() const
+		{
+			return valuer;
+		}
+		constexpr const base &width() const
+		{
+			return valuel;
+		}
+		constexpr const base &height() const
+		{
+			return valuer;
+		}
+
+		constexpr var2D()
 		{
 
 		}
 
 		template<typename F>
-		inline var2D(F _valuel, F _valuer):
+		constexpr var2D(F _valuel, F _valuer):
 			valuel((T)_valuel), valuer((T)_valuer)
 		{
 
 		}
 		template<typename F>
-		inline auto operator+(F _b) const
+		constexpr auto operator+(F _b) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::ADDITION
 			>(valuel + _b, valuer + _b);
 		}
 		template<typename F>
-		inline auto operator-(F _b) const
+		constexpr auto operator-(F _b) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::SUBTRACTION
 			>(valuel - _b, valuer - _b);
 		}
 		template<typename F>
-		inline var2D<F> operator*(F _b) const
+		constexpr var2D<F> operator*(F _b) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::MULTIPLICATION
 			>(valuel * _b, valuer * _b);
 		}
 		template<typename F>
-		inline var2D<F> operator/(F _b) const
+		constexpr var2D<F> operator/(F _b) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::DIVISION
 			>(valuel / _b, valuer / _b);
 		}
 		template<typename F>
-		inline var2D<F> operator%(F _b) const
+		constexpr var2D<F> operator%(F _b) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::MODULO
 			>(valuel % _b, valuer % _b);
 		}
 		template<typename F>
-		inline void operator+=(F _b)
+		constexpr void operator+=(F _b)
 		{
 			valuel += _b;
 			valuer += _b;
 		}
 		template<typename F>
-		inline void operator-=(F _b)
+		constexpr void operator-=(F _b)
 		{
 			valuel -= _b;
 			valuer -= _b;
 		}
 		template<typename F>
-		inline void operator*=(F _b)
+		constexpr void operator*=(F _b)
 		{
 			valuel *= _b;
 			valuer *= _b;
 		}
 		template<typename F>
-		inline void operator/=(F _b)
+		constexpr void operator/=(F _b)
 		{
 			valuel /= _b;
 			valuer /= _b;
 		}
 		template<typename F>
-		inline void operator%=(F _b)
+		constexpr void operator%=(F _b)
 		{
 			valuel %= _b;
 			valuer %= _b;
 		}
 		template<typename F>
-		inline bool operator==(F _b) const
+		constexpr bool operator==(F _b) const
 		{
 			return valuel == (T)_b && valuer == (T)_b;
 		}
 		template<typename F>
-		inline bool operator!=(F _b) const
+		constexpr bool operator!=(F _b) const
 		{
 			return valuel != (T)_b || valuer != (T)_b;
 		}
 		template<typename F>
-		inline bool operator<(F _b) const
+		constexpr bool operator<(F _b) const
 		{
 			return valuel < (T)_b && valuer < (T)_b;
 		}
 		template<typename F>
-		inline bool operator>(F _b) const
+		constexpr bool operator<=(F _b) const
+		{
+			return valuel <= (T)_b && valuer <= (T)_b;
+		}
+		template<typename F>
+		constexpr bool operator>(F _b) const
 		{
 			return valuel > (T)_b && valuer > (T)_b;
 		}
+		template<typename F>
+		constexpr bool operator>=(F _b) const
+		{
+			return valuel >= (T)_b && valuer >= (T)_b;
+		}
 
 		template<typename F>
-		inline var2D(const var2D<F> &_val):
+		constexpr var2D(const var2D<F> &_val):
 			valuel((T)_val.valuel), valuer((T)_val.valuer)
 		{
 
 		}
 		template<typename F>
-		inline auto operator+(const var2D<F> &_val) const
+		constexpr auto operator+(const var2D<F> &_val) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::ADDITION
 			>(valuel + _val.valuel, valuer + _val.valuer);
 		}
 		template<typename F>
-		inline auto operator-(const var2D<F> &_val) const
+		constexpr auto operator-(const var2D<F> &_val) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::SUBTRACTION
 			>(valuel - _val.valuel, valuer - _val.valuer);
 		}
 		template<typename F>
-		inline auto operator*(const var2D<F> &_val) const
+		constexpr auto operator*(const var2D<F> &_val) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::MULTIPLICATION
 			>(valuel * _val.valuel, valuer * _val.valuer);
 		}
 		template<typename F>
-		inline auto operator/(const var2D<F> &_val) const
+		constexpr auto operator/(const var2D<F> &_val) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::DIVISION
 			>(valuel / _val.valuel, valuer / _val.valuer);
 		}
 		template<typename F>
-		inline auto operator%(const var2D<F> &_val) const
+		constexpr auto operator%(const var2D<F> &_val) const
 		{
 			return var2D<
 				typename ArithmeticType<T, F>::MODULO
 			>(valuel % _val.valuel, valuer % _val.valuer);
 		}
 		template<typename F>
-		inline void operator+=(const var2D<F> &_val)
+		constexpr void operator+=(const var2D<F> &_val)
 		{
 			valuel += _val.valuel;
 			valuer += _val.valuer;
 		}
 		template<typename F>
-		inline void operator-=(const var2D<F> &_val)
+		constexpr void operator-=(const var2D<F> &_val)
 		{
 			valuel -= _val.valuel;
 			valuer -= _val.valuer;
 		}
 		template<typename F>
-		inline void operator*=(const var2D<F> &_val)
+		constexpr void operator*=(const var2D<F> &_val)
 		{
 			valuel *= _val.valuel;
 			valuer *= _val.valuer;
 		}
 		template<typename F>
-		inline void operator/=(const var2D<F> &_val)
+		constexpr void operator/=(const var2D<F> &_val)
 		{
 			valuel /= _val.valuel;
 			valuer /= _val.valuer;
 		}
 		template<typename F>
-		inline void operator%=(const var2D<F> &_val)
+		constexpr void operator%=(const var2D<F> &_val)
 		{
 			valuel %= _val.valuel;
 			valuer %= _val.valuer;
 		}
 		template<typename F>
-		inline bool operator==(const var2D<F> &_val) const
+		constexpr bool operator==(const var2D<F> &_val) const
 		{
 			return valuel == (T)_val.valuel && valuer == (T)_val.valuer;
 		}
 		template<typename F>
-		inline bool operator!=(const var2D<F> &_val) const
+		constexpr bool operator!=(const var2D<F> &_val) const
 		{
 			return valuel != (T)_val.valuel || valuer != (T)_val.valuer;
 		}
 		template<typename F>
-		inline bool operator<(const var2D<F> &_val) const
+		constexpr bool operator<(const var2D<F> &_val) const
 		{
 			return valuel < (T)_val.valuel && valuer < (T)_val.valuer;
 		}
 		template<typename F>
-		inline bool operator>(const var2D<F> &_val) const
+		constexpr bool operator<=(const var2D<F> &_val) const
+		{
+			return valuel <= (T)_val.valuel && valuer <= (T)_val.valuer;
+		}
+		template<typename F>
+		constexpr bool operator>(const var2D<F> &_val) const
 		{
 			return valuel > (T)_val.valuel && valuer > (T)_val.valuer;
 		}
+		template<typename F>
+		constexpr bool operator>=(const var2D<F> &_val) const
+		{
+			return valuel >= (T)_val.valuel && valuer >= (T)_val.valuer;
+		}
 
 		template<typename F>
-		inline void limiter(const var2D<F> &_min, const var2D<F> &_max)
+		constexpr void limiter(const var2D<F> &_min, const var2D<F> &_max)
 		{
 			valuel = std::max((T)_min.valuel, std::min((T)_max.valuel, valuel));
 			valuer = std::max((T)_min.valuer, std::min((T)_max.valuer, valuer));
 		}
 
+		template<typename F>
+		constexpr void limit(const var2D<F> &_min, const var2D<F> &_max)
+		{
+			return limiter<F>(_min, _max);
+		}
+
+
+		// open interval [ x , y [
+		template<typename F>
+		constexpr bool isInside(const var2D<F> &_p1, const var2D<F> &_p2)
+		{
+			const var2D<F> &p_min{std::min(_p1.valuel, _p2.valuel), std::min(_p1.valuer, _p2.valuer)};
+			const var2D<F> &p_max{std::max(_p1.valuel, _p2.valuel), std::max(_p1.valuer, _p2.valuer)};
+
+			return *this >= p_min && *this < p_max;
+		}
+
 		static const var2D<T> Invalid;
-		inline operator std::ostringstream() const
+		constexpr operator std::ostringstream() const
 		{
 			std::ostringstream os;
 			os << "( " << valuel << " * " << valuer << " )";

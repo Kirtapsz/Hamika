@@ -179,13 +179,30 @@ namespace UI::Scene::Module::Action
 					d = 2;
 				}
 
-				Type::Coord begin = center - d;
-				Type::Coord end = center + 1 + d;
+				Type::Coord begin_of_center = center - d;
+				Type::Coord end_of_center = center + 1 + d;
 
-				begin.limiter({0,0}, map->size());
-				end.limiter({0,0}, map->size());
+				begin_of_center.limiter({0,0}, map->size());
+				end_of_center.limiter({0,0}, map->size());
 
-				map->forrange(begin, end, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
+				if (center != coord)
+				{
+					Type::Coord begin_of_coord = coord - d;
+					Type::Coord end_of_coord = coord + 1 + d;
+
+					begin_of_coord.limiter({0,0}, map->size());
+					end_of_coord.limiter({0,0}, map->size());
+
+					map->forrange(begin_of_coord, end_of_coord, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
+					{
+						if (!coord.isInside(begin_of_center, end_of_center))
+						{
+							blowup(coord, block, ObjectID::Space);
+						}
+					});
+				}
+
+				map->forrange(begin_of_center, end_of_center, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
 					blowup(coord, block, id_to);
 				});
