@@ -1,0 +1,756 @@
+{
+    "BlueprintHash": [
+        76,
+        130,
+        122,
+        105,
+        238,
+        76,
+        240,
+        6,
+        173,
+        10,
+        247,
+        148,
+        128,
+        43,
+        3,
+        155,
+        213,
+        88,
+        120,
+        12,
+        151,
+        152,
+        242,
+        210,
+        125,
+        110,
+        196,
+        44,
+        149,
+        182,
+        187,
+        253,
+        206,
+        65,
+        128,
+        218,
+        172,
+        239,
+        56,
+        145,
+        6,
+        161,
+        179,
+        175,
+        176,
+        147,
+        196,
+        222,
+        49,
+        193,
+        41,
+        60,
+        110,
+        243,
+        196,
+        89,
+        207,
+        245,
+        96,
+        138,
+        92,
+        223,
+        155,
+        37
+    ],
+    "Comment": "",
+    "Commit": "1f8ac11ccc3547eeb8193c57566daf29859da669",
+    "Records": [
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 1965,
+            "LoopCounter": 89,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 2315,
+            "LoopCounter": 110,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 2665,
+            "LoopCounter": 131,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 3149,
+            "LoopCounter": 160,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 3216,
+            "LoopCounter": 164,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 3750,
+            "LoopCounter": 196,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 3783,
+            "LoopCounter": 198,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 4618,
+            "LoopCounter": 248,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 4667,
+            "LoopCounter": 251,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 4885,
+            "LoopCounter": 264,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 6453,
+            "LoopCounter": 358,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 11391,
+            "LoopCounter": 654,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 11508,
+            "LoopCounter": 661,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 11975,
+            "LoopCounter": 689,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 11975,
+            "LoopCounter": 689,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 13309,
+            "LoopCounter": 769,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 13427,
+            "LoopCounter": 776,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 14978,
+            "LoopCounter": 869,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 16763,
+            "LoopCounter": 976,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 17214,
+            "LoopCounter": 1003,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 17214,
+            "LoopCounter": 1003,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 17531,
+            "LoopCounter": 1022,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 17564,
+            "LoopCounter": 1024,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 17914,
+            "LoopCounter": 1045,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 17914,
+            "LoopCounter": 1045,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 18048,
+            "LoopCounter": 1053,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 18048,
+            "LoopCounter": 1053,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 18281,
+            "LoopCounter": 1067,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 18301,
+            "LoopCounter": 1068,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 18431,
+            "LoopCounter": 1076,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 18451,
+            "LoopCounter": 1077,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 18764,
+            "LoopCounter": 1096,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 18781,
+            "LoopCounter": 1097,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 18882,
+            "LoopCounter": 1103,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 18899,
+            "LoopCounter": 1104,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 19266,
+            "LoopCounter": 1126,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 19282,
+            "LoopCounter": 1127,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 19399,
+            "LoopCounter": 1134,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 19466,
+            "LoopCounter": 1138,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 20317,
+            "LoopCounter": 1189,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 20317,
+            "LoopCounter": 1189,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 20934,
+            "LoopCounter": 1226,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 24137,
+            "LoopCounter": 1418,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 24954,
+            "LoopCounter": 1467,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 25071,
+            "LoopCounter": 1474,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 25272,
+            "LoopCounter": 1486,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 25305,
+            "LoopCounter": 1488,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 25672,
+            "LoopCounter": 1510,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 25722,
+            "LoopCounter": 1513,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 25938,
+            "LoopCounter": 1526,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 26122,
+            "LoopCounter": 1537,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 26323,
+            "LoopCounter": 1549,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 26706,
+            "LoopCounter": 1572,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 27073,
+            "LoopCounter": 1594,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 27107,
+            "LoopCounter": 1596,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 27807,
+            "LoopCounter": 1638,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 27824,
+            "LoopCounter": 1639,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 28658,
+            "LoopCounter": 1689,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 28724,
+            "LoopCounter": 1693,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 28892,
+            "LoopCounter": 1703,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 28925,
+            "LoopCounter": 1705,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 30543,
+            "LoopCounter": 1802,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 30610,
+            "LoopCounter": 1806,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 31327,
+            "LoopCounter": 1849,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 31327,
+            "LoopCounter": 1849,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 31895,
+            "LoopCounter": 1883,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 31911,
+            "LoopCounter": 1884,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 34230,
+            "LoopCounter": 2023,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 34297,
+            "LoopCounter": 2027,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 34498,
+            "LoopCounter": 2039,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 34547,
+            "LoopCounter": 2042,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 35348,
+            "LoopCounter": 2090,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 35364,
+            "LoopCounter": 2091,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 35882,
+            "LoopCounter": 2122,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 35915,
+            "LoopCounter": 2124,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 36585,
+            "LoopCounter": 2164,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 36649,
+            "LoopCounter": 2168,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 37200,
+            "LoopCounter": 2201,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 37300,
+            "LoopCounter": 2207,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 39685,
+            "LoopCounter": 2350,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 39753,
+            "LoopCounter": 2354,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 40387,
+            "LoopCounter": 2392,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 40387,
+            "LoopCounter": 2392,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 41805,
+            "LoopCounter": 2477,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 41872,
+            "LoopCounter": 2481,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 46226,
+            "LoopCounter": 2742,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 46226,
+            "LoopCounter": 2742,
+            "ObjectProperties": {
+                "victory": true
+            },
+            "ObjectType": 2,
+            "ValidateType": 5
+        },
+        {
+            "CurrentTimeMS": 46226,
+            "LoopCounter": 2742,
+            "ObjectProperties": null,
+            "ObjectType": 2,
+            "ValidateType": 4
+        }
+    ],
+    "UserHash": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}
