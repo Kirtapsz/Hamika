@@ -326,6 +326,7 @@ namespace Object
 						changeAction(stack->o, spec, Brick::MOVE_DOWN);
 						stack->o->doMove(Brick::MOVE_DOWN, ObjectID::Space);
 						stack->o->requests.timer = true;
+						spec->roll_preference_ = 0;
 						return;
 					}
 				}
