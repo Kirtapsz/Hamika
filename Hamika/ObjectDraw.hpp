@@ -114,10 +114,13 @@ namespace Object
 					Print();
 				}
 				drawCounterID = ++totalDrawCounter;
-				Stack stack;
-				stack.o = this;
-				stack.specific = this->specific;
-				drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
+				if (drawnerFnc)
+				{
+					Stack stack;
+					stack.o = this;
+					stack.specific = this->specific;
+					drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
+				}
 			}
 		}
 	}

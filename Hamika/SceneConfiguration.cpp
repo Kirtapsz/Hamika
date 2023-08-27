@@ -368,9 +368,79 @@ namespace UI::Scene
 	}
 
 
+
+	InteractiveMultitest::Icon::Icon()
+	{
+		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
+		{
+			static const KIR5::Color color_active{200,200,200};
+			static const KIR5::Color color_inactive{30,30,30};
+
+			const KIR5::Color &color = is_active_ ? color_active : color_inactive;
+
+			bitmap_.drawTintedScaled(x_, y_, w_, h_, 0, 0, bitmap_.width(), bitmap_.height(), color);
+		}));
+	}
+
+	void InteractiveMultitest::Icon::setActive(bool _is_active)
+	{
+		is_active_ = _is_active;
+	}
+	void InteractiveMultitest::Icon::setBitmap(const KIR5::Bitmap &bitmap)
+	{
+		bitmap_ = bitmap;
+	}
+
+	void InteractiveMultitest::updateKeyboardState()
+	{
+		keyboard_state[1][0]->setActive(keyboardController->actionUp.isLocked());
+		keyboard_state[0][1]->setActive(keyboardController->actionLeft.isLocked());
+		keyboard_state[1][1]->setActive(keyboardController->actionSpecial.isLocked());
+		keyboard_state[2][1]->setActive(keyboardController->actionRight.isLocked());
+		keyboard_state[1][2]->setActive(keyboardController->actionDown.isLocked());
+	}
+	void InteractiveMultitest::updateLoopcounter()
+	{
+		loopcounter_Label->setText(std::to_string(loopCounter));
+	}
 	InteractiveMultitest::InteractiveMultitest(const std::string &replayPath, std::int8_t speed_):
 		speed(speed_)
 	{
+		keyboard_state[1][0]->setBitmap(Res::uielements[Res::UIElements::StickUp]);
+		keyboard_state[0][1]->setBitmap(Res::uielements[Res::UIElements::StickLeft]);
+		keyboard_state[1][1]->setBitmap(Res::uielements[Res::UIElements::Ball]);
+		keyboard_state[2][1]->setBitmap(Res::uielements[Res::UIElements::StickRight]);
+		keyboard_state[1][2]->setBitmap(Res::uielements[Res::UIElements::StickDown]);
+
+		for (int x = 0; x < 3; ++x)
+		{
+			for (int y = 0; y < 3; ++y)
+			{
+				keyboard_state[x][y]->show();
+				*keyboard_Panel << keyboard_state[x][y];
+			}
+		}
+
+		keyboard_state[0][0]->hide();
+		keyboard_state[0][2]->hide();
+		keyboard_state[2][0]->hide();
+		keyboard_state[2][2]->hide();
+
+		loopcounter_Label->setTextColor(KIR5::Color(230, 230, 230));
+
+		*this << keyboard_Panel << loopcounter_Label;
+
+		fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
+		{
+			keyboard_Panel->bringTop();
+			keyboard_Panel->move(
+				width() - decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, 0,
+				decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, decltype(keyboard_Panel)::element_type::ADJUSTER_HEIGHT
+			);
+			loopcounter_Label->bringTop();
+			loopcounter_Label->move(keyboard_Panel->x(), keyboard_Panel->y2(), keyboard_Panel->width(), 28);
+		});
+
 		logger = std::shared_ptr<Res::Logger>(new Res::Logger(*this, nullptr, nullptr));
 		try
 		{
@@ -404,13 +474,45 @@ namespace UI::Scene
 
 		fncMoved.push_back(activeMoved);
 
-		fncTimer.push_back([&](FNC_TIMER_PARAMS)
+		*coreTimer = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
 			for (std::int8_t i = 0; i < speed; ++i)
 			{
 				validator->validate();
 				(*activeTimer)(obj_, cps_);
 			}
+			updateLoopcounter();
+			updateKeyboardState();
+		};
+
+		fncTimer.push_back(coreTimer);
+
+		fncKeyChar.push_back([&](FNC_KEY_CHAR_PARAMS) -> FNC_KEY_CHAR_RET
+		{
+			if (key_ == 'p')
+			{
+				if (paused)
+				{
+					fncTimer.push_back(coreTimer);
+				}
+				else
+				{
+					fncTimer.remove(coreTimer);
+				}
+				paused = !paused;
+				return true;
+			}
+			else if (key_ == 'f')
+			{
+				if (paused)
+				{
+					(*activeTimer)(nullptr, 0.);
+					updateLoopcounter();
+					updateKeyboardState();
+					return true;
+				}
+			}
+			return false;
 		});
 
 		fncKeyDown.push_back([&](FNC_KEY_DOWN_PARAMS) -> FNC_KEY_DOWN_RET
@@ -426,6 +528,7 @@ namespace UI::Scene
 		);
 
 		statusbar->hide();
+		callbackMove();
 	}
 	void InteractiveMultitest::signGame()
 	{

@@ -44,6 +44,10 @@ namespace Object
 		{
 
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 
@@ -129,6 +133,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			ZonkMoveHorizontal[0].drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -242,6 +250,10 @@ namespace Object
 		{
 			BaseX.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//HardwareBlueLed 003
@@ -284,6 +296,10 @@ namespace Object
 		{
 			HardwareBlueLed.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//HardwareBrick1 004
@@ -324,6 +340,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			HardwareBrick1.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -366,6 +386,10 @@ namespace Object
 		{
 			HardwareBlueResistance.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//HardwareGreenLed 006
@@ -406,6 +430,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			HardwareGreenLed.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -448,6 +476,10 @@ namespace Object
 		{
 			HardwareRedLed.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//HardwareResource 008
@@ -488,6 +520,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			HardwareResource.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -530,6 +566,10 @@ namespace Object
 		{
 			HardwareResistance.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//HardwareStripLine 010
@@ -570,6 +610,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			HardwareStripLine.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -612,6 +656,10 @@ namespace Object
 		{
 			HardwareYellowResistance.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//HardwareRedCapacitor 012
@@ -652,6 +700,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			HardwareRedCapacitor.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -837,6 +889,10 @@ namespace Object
 		{
 			Bug[Bug.getDrawNumber(0.5f)].drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//Infotron 014
@@ -980,6 +1036,10 @@ namespace Object
 		{
 			InfotronMoveHorizontal[0].drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//Exit 015
@@ -1080,6 +1140,10 @@ namespace Object
 		{
 			Exit[Exit.getCount() - 1].drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 
 		void Open(Brick *o)
 		{
@@ -1136,6 +1200,10 @@ namespace Object
 		{
 			CrossPort.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//DualPortHorizontal 017
@@ -1172,6 +1240,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			DualPortHorizontal.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1210,6 +1282,10 @@ namespace Object
 		{
 			DualPortVertical.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//OneWayPortDown 019
@@ -1246,6 +1322,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			OneWayPortDown.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1284,6 +1364,10 @@ namespace Object
 		{
 			OneWayPortLeft.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//OneWayPortRight 021
@@ -1320,6 +1404,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			OneWayPortRight.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1358,6 +1446,10 @@ namespace Object
 		{
 			OneWayPortUp.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//RAMChipsMini 023
@@ -1394,6 +1486,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			RAMChipsMini.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1432,6 +1528,10 @@ namespace Object
 		{
 			RAMChipsLeft.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//RAMChipsRight 025
@@ -1468,6 +1568,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			RAMChipsRight.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1528,6 +1632,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			Electrons[0].drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1621,6 +1729,10 @@ namespace Object
 		{
 			SnikSnakRotate[0].drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//Terminal 028
@@ -1671,6 +1783,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			Terminal[0].drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 
 		void speedUpTerminalSpeed(Brick *o)
@@ -1780,6 +1896,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			Utility1.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -1931,6 +2051,10 @@ namespace Object
 		{
 			Utility2[0].drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 
 		void Activate(Brick *o)
 		{
@@ -1977,6 +2101,10 @@ namespace Object
 		{
 			Utility3.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//ExplosionEffect 032
@@ -1986,7 +2114,7 @@ namespace Object
 
 		Res::Slides Blasting;
 
-		constexpr float explosionTime = 0.6f;
+		constexpr float explosionTime = 0.745f;
 
 		struct Specific
 		{
@@ -2009,9 +2137,9 @@ namespace Object
 			stack->o->events.update = true;
 			stack->o->events.topDraw = true;
 
-			stack->o->requests.update = true;
+			stack->o->requests.finalize = true;
 
-			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded | Brick::RollOff);
+			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded | Brick::RollOff | Brick::MurphyDies | Brick::MurphyStepOn);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2058,12 +2186,6 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			Object::Brick::Stack::Handler<Specific> sHandler(stack);
-			Specific *spec = sHandler;
-
-			stack->o->events.timer = true;
-			stack->o->requests.timer = true;
-			stack->o->events.update = false;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2074,6 +2196,15 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			Blasting[0].drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			stack->o->events.timer = true;
+			stack->o->requests.timer = true;
+			stack->o->events.update = false;
 		}
 	}
 
@@ -2098,28 +2229,26 @@ namespace Object
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
-			spec->explosionTimer = ExplosionEffect_032::explosionTime;
 			spec->blastingTimer = blastingTime;
 			spec->draw_number_ = 0;
 
-			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff);
+			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
+			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
+			stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
 
 			stack->o->events.timer = false;
 			stack->o->events.update = true;
 			stack->o->events.topDraw = true;
 
-			stack->o->requests.update = true;
+			stack->o->requests.finalize = true;
 
-			stack->o->scene->GetObject(stack->o->GetCoord())->events.clear();
-			stack->o->scene->GetObject(stack->o->GetCoord())->requests.clear();
-			stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
+			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::MurphyDies | Brick::MurphyStepOn);
 		}
 		void ReCreate(OBJECT_CREATER_PARAM)
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
 
-			spec->explosionTimer = ExplosionEffect_032::explosionTime;
 			spec->draw_number_ = 0;
 
 			if (spec->blastingTimer == 0)
@@ -2131,10 +2260,8 @@ namespace Object
 				stack->o->scene->GetObject(stack->o->GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
 			}
 
-			stack->o->events.timer = false;
 			stack->o->events.update = true;
-
-			stack->o->requests.update = true;
+			stack->o->requests.finalize = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2210,12 +2337,6 @@ namespace Object
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			Object::Brick::Stack::Handler<Specific> sHandler(stack);
-			Specific *spec = sHandler;
-
-			stack->o->events.timer = true;
-			stack->o->requests.timer = true;
-			stack->o->events.update = false;
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -2226,6 +2347,17 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			ExplosionEffect_032::Blasting[0].drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			stack->o->events.timer = true;
+			stack->o->requests.timer = true;
+			stack->o->events.update = false;
+
+			spec->explosionTimer = ExplosionEffect_032::explosionTime;
 		}
 	}
 
@@ -2264,6 +2396,10 @@ namespace Object
 		{
 			RAMChipsTop.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//RAMChipsBottom 036
@@ -2300,6 +2436,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			RAMChipsBottom.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -2342,6 +2482,10 @@ namespace Object
 		{
 			HardwareSwitch.drawScaled(x, y, w, h);
 		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
+		}
 	}
 
 	//OneWayPortDownGrav 038
@@ -2354,6 +2498,10 @@ namespace Object
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
 			OneWayPortDown = Res::tiles[Res::Tiles::_038_OneWayPortDownGrav];
+		}
+		void Create(OBJECT_CREATER_PARAM)
+		{
+			stack->o->SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromTop);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2368,6 +2516,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			OneWayPortDown.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -2382,6 +2534,10 @@ namespace Object
 		{
 			OneWayPortLeft = Res::tiles[Res::Tiles::_039_OneWayPortLeftGrav];
 		}
+		void Create(OBJECT_CREATER_PARAM)
+		{
+			stack->o->SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromRight);
+		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			Json json;
@@ -2395,6 +2551,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			OneWayPortLeft.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -2409,6 +2569,10 @@ namespace Object
 		{
 			OneWayPortRight = Res::tiles[Res::Tiles::_040_OneWayPortRightGrav];
 		}
+		void Create(OBJECT_CREATER_PARAM)
+		{
+			stack->o->SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromLeft);
+		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			Json json;
@@ -2422,6 +2586,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			OneWayPortRight.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 
@@ -2436,6 +2604,10 @@ namespace Object
 		{
 			OneWayPortUp = Res::tiles[Res::Tiles::_041_OneWayPortUpGrav];
 		}
+		void Create(OBJECT_CREATER_PARAM)
+		{
+			stack->o->SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromBottom);
+		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
 			Json json;
@@ -2449,6 +2621,10 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
 			OneWayPortUp.drawScaled(x, y, w, h);
+		}
+		void Finalize(OBJECT_FINALIZE_PARAM)
+		{
+
 		}
 	}
 }

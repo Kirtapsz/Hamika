@@ -62,5 +62,6 @@ namespace Res
 
 
 		public: virtual bool initialize(std::uint32_t mode);
+		public: void print() const;
 	};
 }

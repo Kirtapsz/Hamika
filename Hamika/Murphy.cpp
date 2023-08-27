@@ -68,26 +68,36 @@ namespace Object
 				;
 		}
 
-		void Eat(Brick *murphy, Brick *object)
+		void Eat(Brick *murphy, Brick *object, Brick *remain)
 		{
-			if (object->GetFlags() & Brick::MurphyDies)
+			if (object->isExists)
 			{
-				murphy->scene->blowup(murphy);
-			}
-			if (object->GetFlags() & Brick::Give1Score)
-			{
-				if (murphy->scene->getScoreToCollect() > 0)
+				if (object->GetFlags() & Brick::MurphyDies)
 				{
-					murphy->scene->addScore(1);
-					if (murphy->scene->getScoreToCollect() == 0)
+					murphy->scene->blowup(murphy);
+				}
+				if (object->GetFlags() & Brick::Give1Score)
+				{
+					if (murphy->scene->getScoreToCollect() > 0)
 					{
-						Exit_015::Open(murphy);
+						murphy->scene->addScore(1);
+						if (murphy->scene->getScoreToCollect() == 0)
+						{
+							Exit_015::Open(murphy);
+						}
 					}
 				}
+				if (object->GetFlags() & Brick::Give1Unity)
+				{
+					murphy->scene->addUnity(1);
+				}
 			}
-			if (object->GetFlags() & Brick::Give1Unity)
+			if (remain->isExists)
 			{
-				murphy->scene->addUnity(1);
+				if (remain->GetFlags() & Brick::MurphyDies)
+				{
+					murphy->scene->blowup(murphy);
+				}
 			}
 		}
 
@@ -320,7 +330,7 @@ namespace Object
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 
 							Brick *to_object = stack->o->GetObject(to);
-							Eat(stack->o, to_object);
+							Eat(stack->o, to_object, stack->o->scene->GetRemain(to));
 							stack->o->scene->ObjectDisappear(to);
 							if (to_object->isExists && to_object->events.update)
 							{
@@ -367,7 +377,7 @@ namespace Object
 						Brick *to_object = stack->o->GetObject(to);
 						if (to_object->GetFlags() & Brick::GiveGravityDelay || !can_fall_down)
 						{
-							Eat(stack->o, to_object);
+							Eat(stack->o, to_object, stack->o->scene->GetRemain(to));
 							stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 							stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
 							stack->o->scene->murphyMoved(stack->o);
@@ -389,7 +399,7 @@ namespace Object
 				static constexpr Type::Rotation rotation = Type::Rotations::Down;
 				Type::Coord to = stack->o->GetCoordDown();
 
-				Eat(stack->o, stack->o->GetObject(to));
+				Eat(stack->o, stack->o->GetObject(to), stack->o->scene->GetRemain(to));
 				stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 				stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
 				stack->o->scene->murphyMoved(stack->o);
@@ -558,7 +568,13 @@ namespace Object
 							Type::Coord coord = stack->o->GetCoord();
 
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
-							Eat(stack->o, to_object);
+							Eat(stack->o, to_object, stack->o->scene->GetRemain(to));
+
+							if (next_object->GetFlags() & Brick::SwapsGravity)
+							{
+								stack->o->scene->switchGravity();
+							}
+
 							stack->o->SetMoveSpeed({passageSpeed,passageSpeed});
 							stack->o->doMoveEx(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)],
 											   ObjectID::MurphyCrawlTail,

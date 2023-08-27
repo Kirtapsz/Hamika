@@ -8,6 +8,7 @@
 #include "Resource.h"
 #include "versions.h"
 #include "SceneBackground.h"
+#include "Worlds.h"
 
 std::shared_ptr<KIR5::Display> display;
 std::shared_ptr<KIR5::EventEngine> eventEngine;
@@ -29,6 +30,12 @@ int main(int argc, char *argv[])
 	{
 		clog << "KIR LIB commit ID: " << Versions::ApplicationCommitID << KIR4::eol;
 		clog << "Application commit ID: " << Versions::KIRLIBCommitID << KIR4::eol;
+
+		if (Res::initialize(Res::TEST))
+		{
+			Res::worlds.print();
+			Res::testWorlds.print();
+		}
 	}
 	else if (argc >= 4 && strcmp("--multitest", argv[1]) == 0 && strcmp("-json", argv[2]) == 0)
 	{
@@ -87,6 +94,27 @@ int main(int argc, char *argv[])
 			if (Res::initialize(Res::EDITOR))
 			{
 				Editor::UI::MainEvent::initialize(display);
+			}
+			else
+			{
+				processRet = -1;
+			}
+		}
+		else if (argc >= 6 && strcmp("--multitest", argv[1]) == 0 && strcmp("-i", argv[2]) == 0 && strcmp("--json", argv[4]) == 0)
+		{
+			Res::MultitestInput testinput{argv[5]};
+			Res::Json::LoadResource_(testinput);
+			std::list<std::string> replayPaths;
+			for (auto &it : std::get<0>(testinput))
+			{
+				replayPaths.push_back(it);
+			}
+
+			display = std::shared_ptr<KIR5::Display>(new KIR5::Display("Interactive multitest", 640, 480 + 83, ALLEGRO_RESIZABLE | ALLEGRO_OPENGL));
+
+			if (Res::initialize(Res::ITEST))
+			{
+				UI::Multitest::MainEvent::initialize(display, replayPaths, range(1l, 16l, std::atol(argv[3])));
 			}
 			else
 			{

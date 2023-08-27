@@ -22,6 +22,7 @@ namespace Object
 					bool timer;
 					bool tick;
 					bool update;
+					bool finalize;
 					bool draw;
 					bool remove;
 

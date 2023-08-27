@@ -15,5 +15,6 @@ namespace Object
 		void Timer(OBJECT_TIMER_PARAM);
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
+		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 	}
 }

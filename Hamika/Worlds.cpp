@@ -44,6 +44,16 @@ namespace Res
 		return nullptr;
 	}
 
+	void Worlds::print() const
+	{
+		unsigned count = 0;
+		for (auto &world : *this)
+		{
+			clog << count++ << ". =========" << KIR4::eol;
+			world->print();
+		}
+	}
+
 	Worlds worlds{"Hamika\\worlds"};
 	Worlds testWorlds{"Hamika\\multitest\\worlds"};
 

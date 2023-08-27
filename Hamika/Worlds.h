@@ -10,6 +10,8 @@ namespace Res
 
 		public: virtual bool initialize(std::uint32_t mode);
 		public: std::shared_ptr<BluePrint> find(const KIR5::sha512digest &hash_) const;
+
+		public: void print() const;
 	};
 
 	extern Worlds worlds;

@@ -29,6 +29,8 @@ namespace Res
 
 		}
 
+		void print() const;
+
 		inline Block &operator[](Type::Coord coord)
 		{
 			return blocks[coord];

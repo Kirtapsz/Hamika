@@ -30,9 +30,9 @@ namespace Object
 				//UPDATE #####################################################################################
 				enum UpdateType: std::uint8_t
 				{
-					UPDATE_ASC,
-					UPDATE_DESC,
-					UPDATE_MURPHY,
+					UPDATE_ASC = 1 << 0,
+					UPDATE_DESC = 1 << 1,
+					UPDATE_MURPHY = 1 << 2,
 				};
 #define OBJECT_UPDATE_PARAM Object::Brick::Stack *stack, Object::Brick::UpdateType updateType
 #define OBJECT_UPDATE_CALL stack, updateType
@@ -40,6 +40,12 @@ namespace Object
 				UPDATE updaterFnc = nullptr;
 				unsigned long long updateNumber = 0;
 				static unsigned long long totalUpdateNumber;
+
+				//FINALIZE #####################################################################################
+#define OBJECT_FINALIZE_PARAM Object::Brick::Stack *stack
+#define OBJECT_FINALIZE_CALL stack
+				typedef void(*FINALIZE)(Stack *);
+				FINALIZE finalizeFnc = nullptr;
 
 
 				//TIMER EVENT #####################################################################################
@@ -56,7 +62,7 @@ namespace Object
 				Json print();
 
 				void RunUpdate(typename DATA::UpdateType updateType);
-
+				void RunFinalize();
 				void RunTimer();
 			};
 		}

@@ -229,6 +229,8 @@ namespace UI::Scene::Module::Action
 
 			UpdateRun();
 
+			FinalizeRun();
+
 			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
 				if (block.remain->isExists && block.remain->requests.remove)
@@ -411,9 +413,9 @@ namespace UI::Scene::Module::Action
 		{
 			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
-				if (block.object->isExists && GetObject(coord)->events.update && GetObject(coord)->requests.update)
+				if (block.object->isExists && block.object->events.update && block.object->requests.update)
 				{
-					GetObject(coord)->RunUpdate(Object::Brick::UPDATE_ASC);
+					block.object->RunUpdate(Object::Brick::UPDATE_ASC);
 				}
 			});
 
@@ -435,6 +437,21 @@ namespace UI::Scene::Module::Action
 			}
 		}
 
+		protected: void FinalizeRun()
+		{
+			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
+			{
+				if (block.object->isExists && block.object->events.update && block.object->requests.finalize)
+				{
+					block.object->RunFinalize();
+				}
+				if (block.remain->isExists && block.remain->events.update && block.remain->requests.finalize)
+				{
+					block.remain->RunFinalize();
+				}
+			});
+		}
+
 		protected: void UpdateBlock(Type::Coord coord)
 		{
 			if (map->Test(coord))
@@ -450,7 +467,7 @@ namespace UI::Scene::Module::Action
 			}
 		}
 
-		protected:  void UpdateSquare33(Type::Coord coord)
+		protected: void UpdateSquare33(Type::Coord coord)
 		{
 			UpdateBlock({coord.x(),coord.y()});
 			UpdateBlock({coord.x() - 1,coord.y()});

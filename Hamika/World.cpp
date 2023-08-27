@@ -91,4 +91,15 @@ namespace Res
 		}
 		return true;
 	}
+	void World::print() const
+	{
+		clog << "World: " << title << KIR4::eol;
+
+		unsigned count = 0;
+		for (auto &bluePrint : bluePrints)
+		{
+			clog << count++ << ". ---------" << KIR4::eol;
+			bluePrint->print();
+		}
+	}
 }

@@ -29,8 +29,6 @@ drawNumber
 
 namespace Object
 {
-	void cpuKill();
-
 	//Space 000
 	namespace Space_000
 	{
@@ -43,6 +41,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Zonk 001
@@ -57,6 +56,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//BaseX 002
@@ -71,6 +71,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareBlueLed 003
@@ -85,6 +86,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareBrick1 004
@@ -99,6 +101,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareBlueResistance 005
@@ -113,6 +116,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareGreenLed 006
@@ -127,6 +131,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareRedLed 007
@@ -141,6 +146,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareResource 008
@@ -155,6 +161,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareResistance 009
@@ -169,6 +176,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareStripLine 010
@@ -183,6 +191,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareYellowResistance 011
@@ -197,6 +206,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareRedCapacitor 012
@@ -211,6 +221,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Bug 013
@@ -225,6 +236,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Infotron 014
@@ -239,6 +251,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Exit 015
@@ -253,6 +266,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 
 		void Open(Brick *o);
 	}
@@ -269,6 +283,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//DualPortHorizontal 017
@@ -283,6 +298,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//DualPortVertical 018
@@ -297,6 +313,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortDown 019
@@ -311,6 +328,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortLeft 020
@@ -325,6 +343,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortRight 021
@@ -339,6 +358,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortUp 022
@@ -353,6 +373,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//RAMChipsMini 023
@@ -367,6 +388,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//RAMChipsLeft 024
@@ -381,6 +403,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//RAMChipsRight 025
@@ -395,6 +418,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Electrons 026
@@ -409,6 +433,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//SnikSnakMove 027
@@ -423,6 +448,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Terminal 028
@@ -437,6 +463,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 
 		void Pushed(Brick *o);
 	}
@@ -453,6 +480,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Utility2 030
@@ -467,6 +495,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 
 		void Activate(Brick *o);
 	}
@@ -483,6 +512,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//ExplosionEffect 032
@@ -497,6 +527,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//Explosion 033
@@ -511,6 +542,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 
 		void ReCreate(OBJECT_CREATER_PARAM);
 	}
@@ -527,6 +559,7 @@ namespace Object
 	//	void Update(OBJECT_UPDATE_PARAM);
 	//	void Drawner(OBJECT_DRAWNER_PARAM);
 	//	void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+	void Finalize(OBJECT_FINALIZE_PARAM);
 	//}
 
 	//RAMChipsTop 035
@@ -541,6 +574,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//RAMChipsBottom 036
@@ -555,6 +589,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//HardwareSwitch 037
@@ -569,6 +604,7 @@ namespace Object
 		void Update(OBJECT_UPDATE_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortDownGrav 038
@@ -576,9 +612,11 @@ namespace Object
 	{
 		extern const char *name;
 		void Initializer(OBJECT_INITIALIZER_PARAM);
+		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortLeftGrav 039
@@ -586,9 +624,11 @@ namespace Object
 	{
 		extern const char *name;
 		void Initializer(OBJECT_INITIALIZER_PARAM);
+		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortRightGrav 040
@@ -596,9 +636,11 @@ namespace Object
 	{
 		extern const char *name;
 		void Initializer(OBJECT_INITIALIZER_PARAM);
+		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 
 	//OneWayPortUpGrav 041
@@ -606,8 +648,10 @@ namespace Object
 	{
 		extern const char *name;
 		void Initializer(OBJECT_INITIALIZER_PARAM);
+		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
+		void Finalize(OBJECT_FINALIZE_PARAM);
 	}
 }

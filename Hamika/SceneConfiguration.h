@@ -5,6 +5,7 @@
 #include "SceneControl.h"
 #include "SceneField.h"
 #include "SceneMurphy.h"
+#include "Font.h"
 
 #pragma warning(disable: 4250)
 
@@ -149,6 +150,44 @@ namespace UI::Scene
 
 	class InteractiveMultitest: public Base::Standard::Type
 	{
+		private: class Icon: public virtual Panel
+		{
+			friend class InteractiveMultitest;
+
+			private: bool is_active_ = false;
+			private: KIR5::Bitmap bitmap_;
+
+			public: Icon();
+
+			public: void setActive(bool _is_active);
+			public: void setBitmap(const KIR5::Bitmap &bitmap);
+		};
+
+		private: KIR5::Shared<AdjusterPanel<Panel, 96, 96>> keyboard_Panel;
+		private: std::array<std::array<std::shared_ptr<Icon>, 3>, 3> keyboard_state{{
+			{
+				KIR5::Shared<AdjustablePanel<Icon, 0, 0, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 0, 32, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 0, 64, 32, 32>>(),
+			},
+			{
+				KIR5::Shared<AdjustablePanel<Icon, 32, 0, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 32, 32, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 32, 64, 32, 32>>(),
+			},
+			{
+				KIR5::Shared<AdjustablePanel<Icon, 64, 0, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 64, 32, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 64, 64, 32, 32>>(),
+			},
+		}};
+		private: void updateKeyboardState();
+
+		private: KIR5::Shared<Label<Res::Consolas>> loopcounter_Label;
+		private: void updateLoopcounter();
+
+		private: bool paused = false;
+		private: KIR5::Event::FNC_TIMER coreTimer;
 		private: std::int32_t deplayTimer;
 		private: std::int8_t speed;
 		private: std::shared_ptr<Res::Logger> logger;

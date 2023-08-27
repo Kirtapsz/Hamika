@@ -1,4 +1,5 @@
 #include "BluePrint.h"
+#include <KIR/KIR4_algorithm.h>
 
 namespace Res
 {
@@ -179,5 +180,23 @@ namespace Res
 		}
 
 		return record;
+	}
+	void BluePrint::print() const
+	{
+		clog << "Title: " << title << KIR4::eol;
+		std::string hash_str(KIR5::SHA512_BLOCK_SIZE, '0');
+		KIR4::convert_bin_to_hex(&hash[0], &hash_str[0], KIR5::SHA512_DIGEST_SIZE);
+
+		clog << "Hash: " << hash_str << " (";
+		for (auto &it : hash)
+		{
+			clog << (int)it << ", ";
+		}
+		clog << ")" << KIR4::eol;
+
+		clog << "Camera size: " << cameraSize.str() << KIR4::eol;
+		clog << "Speed: " << speed << KIR4::eol;
+		clog << "Gravity: " << globalGravity << KIR4::eol;
+		clog << "Score to unlock: " << scoreToUnlock << KIR4::eol;
 	}
 }

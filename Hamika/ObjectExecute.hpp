@@ -17,6 +17,7 @@ namespace Object
 			{
 				printFnc = nullptr;
 				updaterFnc = nullptr;
+				finalizeFnc = nullptr;
 				timerFnc = nullptr;
 			}
 			template <typename DATA>
@@ -32,10 +33,22 @@ namespace Object
 			{
 				requests.update = false;
 				updateNumber = totalUpdateNumber++;
+
 				if (updaterFnc)
 				{
 					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
 					updaterFnc(&stack, updateType);
+				}
+			}
+
+			template <typename DATA>
+			void Func<DATA>::RunFinalize()
+			{
+				requests.finalize = false;
+				if (finalizeFnc)
+				{
+					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
+					finalizeFnc(&stack);
 				}
 			}
 

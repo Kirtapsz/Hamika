@@ -396,6 +396,13 @@ namespace Type
 			os << "( " << valuel << " * " << valuer << " )";
 			return os;
 		}
+
+		constexpr std::string str() const
+		{
+			std::ostringstream os;
+			os << "( " << valuel << " ; " << valuer << " )";
+			return os.str();
+		}
 	};
 	template<typename T>
 	const var2D<T> var2D<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
