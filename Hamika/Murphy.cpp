@@ -771,10 +771,11 @@ namespace Object
 						return;
 					}
 
-					if (stack->o->isAction() || spec->_effect_type & EFFECTS::PLACE)
+					if (stack->o->isAction() || spec->_effect_type & (EFFECTS::PLACE | EFFECTS::PLACE_FACE))
 					{
 						spec->_effect_type = EFFECTS::NONE;
 						stack->o->finishMove();
+						stack->o->requests.draw = true;
 					}
 				}
 
