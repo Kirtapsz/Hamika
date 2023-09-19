@@ -23,6 +23,8 @@ kirlib = os.environ['KIRLIB']
 RELEASE_BUILD = sys.argv[3] == "Release"
 MULTITEST_BUILD = sys.argv[3] == "Multitest"
 
+print(f'KIRLIB: {kirlib}')
+
 if (POST_BUILD):
     out_dir = sys.argv[4]
 

@@ -245,16 +245,16 @@ namespace Object
 			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
 
 			if ([&]()->bool
-			{
-				for (Type::Direction direction = 0; direction < 4; ++direction)
 				{
-					if (*move_controllers[direction])
+					for (Type::Direction direction = 0; direction < 4; ++direction)
 					{
-						return true;
+						if (*move_controllers[direction])
+						{
+							return true;
+						}
 					}
-				}
-				return false;
-			}())
+					return false;
+				}())
 			{
 				for (Type::Direction direction = 0; direction < 4; ++direction)
 				{
@@ -773,7 +773,10 @@ namespace Object
 
 					if (stack->o->isAction() || spec->_effect_type & (EFFECTS::PLACE | EFFECTS::PLACE_FACE))
 					{
-						spec->_effect_type = EFFECTS::NONE;
+						if (!(spec->_effect_type & EFFECTS::PUSH))
+						{
+							spec->_effect_type = EFFECTS::NONE;
+						}
 						stack->o->finishMove();
 						stack->o->requests.draw = true;
 					}
