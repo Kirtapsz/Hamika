@@ -383,13 +383,17 @@ namespace Object
 				o->scene->GetObjectOut(to)->GetFlags() & Brick::Flags::StepOn
 				;
 		}
-		bool CanExlosive(Type::Coord coord, Brick *o)
+		bool CanExlosive(Type::Coord coord, Brick *o, bool _do_explosive)
 		{
 			Brick *object;
 
 			object = o->scene->GetObject(coord);
 			if (object->GetFlags() & Brick::Flags::CanBeKilled)
 			{
+				if (_do_explosive)
+				{
+					o->scene->blowup(object);
+				}
 				return true;
 			}
 
@@ -397,6 +401,10 @@ namespace Object
 			if (object->GetFlags() & Brick::Flags::CanBeKilled &&
 				o->scene->getMoveProgress(object) < 0.5f)
 			{
+				if (_do_explosive)
+				{
+					o->scene->blowup(object);
+				}
 				return true;
 			}
 			return false;
@@ -405,7 +413,7 @@ namespace Object
 		{
 			Type::Coord
 				CoordLeft = o->GetForwardCoord(o->GetRealRotation(o->GetRotation() - Type::Rotations::_90));
-			return o->CanMovePos(CoordLeft, o->GetRealRotation(o->GetRotation() - Type::Rotations::_90)) || CanExlosive(CoordLeft, o);
+			return o->CanMovePos(CoordLeft, o->GetRealRotation(o->GetRotation() - Type::Rotations::_90)) || CanExlosive(CoordLeft, o, false);
 		}
 		void finishAction(Brick *o)
 		{
@@ -488,7 +496,7 @@ namespace Object
 					}
 				}
 				Type::Coord to = stack->o->GetForwardCoord();
-				if (CanExlosive(to, stack->o))
+				if (CanExlosive(to, stack->o, true))
 				{
 					stack->o->scene->blowup(stack->o);
 					return;
