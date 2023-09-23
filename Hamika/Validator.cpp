@@ -149,7 +149,7 @@ void ValidatorReplay::finalize()
 	validate();
 	if (it != rows.end())
 	{
-		loopControllerInterface.failure("ValidatorReplay failed because some of the records were not processed");
+		loopControllerInterface.failure(concatenate("ValidatorReplay failed because some of the records were not processed at ", loopControllerInterface.loopCounter));
 	}
 	else
 	{

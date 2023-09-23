@@ -392,7 +392,7 @@ namespace Object
 
 			object = o->scene->GetObject(coord);
 			if (object->GetFlags() & Brick::Flags::CanBeKilled &&
-				o->scene->getMoveProgress(object) > 0.7f)
+				o->scene->getMoveProgress(object) > 0.1f)
 			{
 				return true;
 			}

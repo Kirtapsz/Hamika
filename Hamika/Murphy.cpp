@@ -750,11 +750,11 @@ namespace Object
 					{
 						return;
 					}
-					else if (ControllFallDown(stack))
+					else if (ControllCrawl(stack))
 					{
 						return;
 					}
-					else if (ControllCrawl(stack))
+					else if (ControllFallDown(stack))
 					{
 						return;
 					}
