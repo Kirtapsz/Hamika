@@ -104,10 +104,7 @@ namespace Object
 				{
 					Type::Coord coord_down = o->GetCoordDown();
 					Brick *object = o->scene->GetObject(coord_down);
-					if (object->IsMoveUp() || o->scene->getMoveProgress(object) >= 0.3f)
-					{
-						o->scene->blowup(object);
-					}
+					o->scene->blowup(object);
 					if (o->scene->IsObjectOut(coord_down))
 					{
 						Brick *object = o->scene->GetObjectOut(coord_down);
@@ -391,8 +388,7 @@ namespace Object
 			Brick *object;
 
 			object = o->scene->GetObject(coord);
-			if (object->GetFlags() & Brick::Flags::CanBeKilled &&
-				o->scene->getMoveProgress(object) > 0.1f)
+			if (object->GetFlags() & Brick::Flags::CanBeKilled)
 			{
 				return true;
 			}
