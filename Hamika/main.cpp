@@ -7,7 +7,6 @@
 #include "Cursor.h"
 #include "Resource.h"
 #include "versions.h"
-#include "SceneBackground.h"
 #include "Worlds.h"
 
 std::shared_ptr<KIR5::Display> display;

@@ -35,7 +35,7 @@ namespace Res
 			private: std::uint64_t _date;
 			private: std::uint32_t _timeMS;
 
-			private: struct Iv1Record: Record<
+			private: struct Iv1Record: KIR5::StreamRecords::Record<
 				std::string,
 				KIR5::sha512digest,
 				std::uint64_t,
@@ -65,11 +65,11 @@ namespace Res
 		private: std::uint32_t _totalTimePlayedMS{0};
 		private: std::vector<CompletedBluePrint> _completedBlueprints;
 
-		private: struct Iv1Record: Record<
+		private: struct Iv1Record: KIR5::StreamRecords::Record<
 			std::string,
 			KIR5::sha512digest,
 			std::uint32_t,
-			VectorRecord<std::uint16_t, CompletedBluePrint::Iv1Record>
+			KIR5::StreamRecords::Vector<std::uint16_t, CompletedBluePrint::Iv1Record>
 			   >
 		{
 			constexpr static std::size_t username = 0;
@@ -98,8 +98,8 @@ namespace Res
 
 		public: std::vector<std::shared_ptr<Account>> list;
 
-		public: struct Iv1Record: Record<
-			VectorRecord<std::uint16_t, Account::Iv1Record>
+		public: struct Iv1Record: KIR5::StreamRecords::Record<
+			KIR5::StreamRecords::Vector<std::uint16_t, Account::Iv1Record>
 			  >
 		{
 			constexpr static std::size_t account = 0;

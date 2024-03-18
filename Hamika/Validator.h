@@ -6,11 +6,11 @@
 
 namespace Res::Log
 {
-	struct ObjectValidator: Base, Record<
+	struct ObjectValidator: Base, KIR5::StreamRecords::Record<
 		std::uint32_t,
 		std::uint32_t,
 		std::uint8_t,
-		::Json
+		JsonRecord
 	>
 	{
 		enum OBJECT_TYPE: std::uint8_t

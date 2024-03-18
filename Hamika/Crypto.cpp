@@ -1,6 +1,7 @@
 #include "Crypto.h"
 
 #include <KIR/KIR4_algorithm.h>
+#include <KIR/stream/KIR5_static_stream.h>
 
 #include <tuple>
 #include <array>

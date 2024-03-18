@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <KIR/KIR5_stream.h>
+#include <KIR/stream/KIR5_static_stream.h>
 
 namespace Res
 {

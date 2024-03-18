@@ -45,7 +45,7 @@ namespace Res
 		};
 	}
 
-	template<typename C, typename T>
+/*	template<typename C, typename T>
 	inline void ReadFromStream_(KIR5::Stream &stream, T &t)
 	{
 		stream.pop<T>(t);
@@ -76,7 +76,7 @@ namespace Res
 	{
 		std::size_t count = strnlen_s(reinterpret_cast<const char *>(stream.data()), COUNT);
 		t = std::string(reinterpret_cast<const char *>(stream.data()), count);
-		stream.popSkip(count + 1);
+		stream.skip(count + 1);
 	}
 	template<typename C, std::size_t COUNT>
 	inline void WriteToStream_(KIR5::Stream &stream, const TerminatedStringRecord<COUNT> &t)
@@ -91,7 +91,7 @@ namespace Res
 	{
 		std::size_t count = strnlen_s(reinterpret_cast<const char *>(stream.data()), COUNT);
 		t = std::string(reinterpret_cast<const char *>(stream.data()), count);
-		stream.popSkip(COUNT);
+		stream.skip(COUNT);
 	}
 	template<typename C, std::size_t COUNT>
 	inline void WriteToStream_(KIR5::Stream &stream, const FixedStringRecord<COUNT> &t)
@@ -387,7 +387,7 @@ namespace Res
 	inline void WriteToStream(KIR5::Stream &stream, const C &t)
 	{
 		WriteToStream_<C>(stream, static_cast<const record_cast<C>&>(t));
-	}
+	}*/
 
 
 
@@ -408,7 +408,7 @@ namespace Res
 			{
 				throw Exception::Missmatch();
 			}
-			stream.popSkip(handler.fingerprintL.size());
+			stream.skip(handler.fingerprintL.size());
 		}
 
 		Crypto::descript(stream, handler.cryptoType);
@@ -428,11 +428,13 @@ namespace Res
 			{
 				throw Exception::Corrupted();
 			}
-			stream.popSkip(handler.fingerprintR.size());
+			stream.skip(handler.fingerprintR.size());
 		}
 
 		H::RECORD_T record;
-		ReadFromStream(stream, record);
+		KIR5::DynamicStream::Reader reader(stream);
+		KIR5::StreamReader stream_reader(reader);
+		KIR5::StreamRecordsIO::read(stream_reader, record);
 		static_cast<T &>(resource) = record;
 	}
 	template<typename T, typename H>
@@ -450,7 +452,12 @@ namespace Res
 		{
 			streamData.push(handler.fingerprintR.data(), handler.fingerprintR.size());
 		}
-		WriteToStream(streamData, static_cast<const H::RECORD_T &>(resource));
+
+		KIR5::DynamicStream::Writer writer(streamData);
+		KIR5::StreamWriter stream_writer(writer);
+		KIR5::StreamRecordsIO::write(stream_writer, static_cast<const H::RECORD_T &>(resource));
+
+		//WriteToStream(streamData, static_cast<const H::RECORD_T &>(resource));
 
 		Hash::engrave(streamHashedData, streamData, handler.hashType);
 		streamHashedData.push(&*streamData.begin(), streamData.size());

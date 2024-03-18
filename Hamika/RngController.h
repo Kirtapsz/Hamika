@@ -6,7 +6,7 @@
 
 namespace Res::Log
 {
-	struct RNGenerator: Base, Record<
+	struct RNGenerator: Base, KIR5::StreamRecords::Record<
 		std::uint32_t,
 		std::uint32_t,
 		std::uint8_t,
