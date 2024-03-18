@@ -3,391 +3,442 @@
 
 namespace Res::Json
 {
-	template<typename C, typename T>
-	inline void ReadFromJson_(const ::Json &json, T &t)
-	{
-		t = json.get<T>();
-	}
-	template<typename C, typename T>
-	inline const T &WriteToJson_(const T &t)
-	{
-		return t;
-	}
+	template <typename C, KIR5::StreamRecords::RecordType RT>
+	struct JsonIO;
 
-	template<typename C>
-	inline void ReadFromJson_(const ::Json &json, ::Json &t)
+	struct JsonIO_
 	{
-		t = json;
-	}
-	template<typename C>
-	inline const ::Json &WriteToJson_(const ::Json &t)
-	{
-		return t;
-	}
-
-	template<typename C, std::size_t COUNT>
-	inline void ReadFromJson_(const ::Json &json, TerminatedStringRecord<COUNT> &t)
-	{
-		t = json.get<std::string>();
-		if (t.length() > COUNT)
+		public:
+		template<typename T>
+		inline static void readJ(const ::Json &json, T &t)
 		{
-			t = t.substr(0, COUNT);
-		}
-	}
-	template<typename C, std::size_t COUNT>
-	inline std::string WriteToJson_(const TerminatedStringRecord<COUNT> &t)
-	{
-		std::string ret;
-		if (t.length() > COUNT)
-		{
-			ret = t.substr(0, COUNT);
-		}
-		else
-		{
-			ret = t;
-		}
-		return t;
-	}
-
-	template<typename C, std::size_t COUNT>
-	inline void ReadFromJson_(const ::Json &json, FixedStringRecord<COUNT> &t)
-	{
-		t = json.get<std::string>();
-		if (t.length() > COUNT)
-		{
-			t = t.substr(0, COUNT);
-		}
-	}
-	template<typename C, std::size_t COUNT>
-	inline std::string WriteToJson_(const FixedStringRecord<COUNT> &t)
-	{
-		std::string ret;
-		if (t.length() > COUNT)
-		{
-			ret = t.substr(0, COUNT);
-		}
-		else
-		{
-			ret = t;
-		}
-		return t;
-	}
-
-
-	template<typename C, typename T, std::size_t COUNT>
-	inline void ReadFromJson_(const ::Json &json, FixedVectorRecord<T, COUNT> &t)
-	{
-		std::size_t idx = 0;
-		for (auto &it : t)
-		{
-			ReadFromJson(json[idx++], it);
-		}
-	}
-	template<typename C, typename T, std::size_t COUNT>
-	inline ::Json WriteToJson_(const FixedVectorRecord<T, COUNT> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &it : t)
-		{
-			ret.push_back(WriteToJson(it));
-		}
-		return ret;
-	}
-
-	template<typename C, typename T, std::size_t COUNT>
-	inline void ReadFromJson_(const ::Json &json, HeapVectorRecord<T, COUNT> &t)
-	{
-		std::size_t idx = 0;
-		for (auto &it : t)
-		{
-			ReadFromJson(json[idx++], it);
-		}
-	}
-	template<typename C, typename T, std::size_t COUNT>
-	inline ::Json WriteToJson_(const HeapVectorRecord<T, COUNT> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &it : t)
-		{
-			ret.push_back(WriteToJson(it));
-		}
-		return ret;
-	}
-
-	template <typename C, class BASE, typename... Args> struct TypeList
-	{
-		static constexpr BASE *ReadFromJson__(const ::Json &json)
-		{
-			std::int8_t type = json["ObjectType"].get<std::int8_t>();
-			return ReadFromJson__<Args...>(json, type);
-		}
-
-		template <typename T>
-		static constexpr BASE *ReadFromJson__(const ::Json &json, std::int8_t &type)
-		{
-			if (type == 0)
+			if constexpr (KIR5::StreamTypes::IsFundamental<T>::value)
 			{
-				T *t = new T();
-				ReadFromJson(json, *t);
+				t = json.get<T>();
+			}
+			else
+			{
+				JsonIO<T, T::type>::readJ(json, t);
+			}
+		}
+
+		public:
+		template<typename T>
+		inline static auto writeJ(const T &t)
+		{
+			if constexpr (KIR5::StreamTypes::IsFundamental<T>::value)
+			{
 				return t;
 			}
 			else
 			{
-				--type;
-			}
-			return nullptr;
-		}
-
-		template <typename T, typename N, typename... Args>
-		static constexpr BASE *ReadFromJson__(const ::Json &json, std::int8_t &type)
-		{
-			BASE *base = ReadFromJson__<T>(json, type);
-			if (base == nullptr)
-			{
-				base = ReadFromJson__<N, Args...>(json, type);
-			}
-			return base;
-		}
-
-
-		static constexpr ::Json WriteToJson__(BASE *base)
-		{
-			::Json ret;
-			std::int8_t type = 0;
-			WriteToJson__<Args...>(ret, type, base);
-			return ret;
-		}
-
-		template <typename T>
-		static constexpr void *WriteToJson__(::Json &json, std::int8_t &type, BASE *base)
-		{
-			T *t = dynamic_cast<T *>(base);
-			if (t != nullptr)
-			{
-				json = WriteToJson(*t);
-				json["ObjectType"] = type;
-			}
-			else
-			{
-				++type;
-			}
-			return t;
-		}
-
-		template <typename T, typename N, typename... Args>
-		static constexpr void WriteToJson__(::Json &json, std::int8_t &type, BASE *base)
-		{
-			if (WriteToJson__<T>(json, type, base) == nullptr)
-			{
-				WriteToJson__<N, Args...>(json, type, base);
+				return JsonIO<T, T::type>::writeJ(t);
 			}
 		}
 	};
 
-	template<typename C, class BASE, class I, class... T>
-	inline void ReadFromJson_(const ::Json &json, SwitchVectorRecord<BASE, I, T...> &t)
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::Record_t>
 	{
-		t.resize(static_cast<std::size_t>(json.size()));
-
-		std::size_t idx = 0;
-		for (auto &it : t)
+		template<class... T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::Record<T...> &t)
 		{
-			it = std::shared_ptr<BASE>(TypeList<C, BASE, T...>::ReadFromJson__(json[idx++]));
-		}
-	}
-	template<typename C, class BASE, class I, class... T>
-	inline ::Json WriteToJson_(const SwitchVectorRecord<BASE, I, T...> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &it : t)
-		{
-			ret.push_back(TypeList<C, BASE, T...>::WriteToJson__(it.get()));
-		}
-		return ret;
-	}
-
-	template<typename C, typename I, typename T>
-	inline void ReadFromJson_(const ::Json &json, VectorRecord<I, T> &t)
-	{
-		t.resize(static_cast<std::size_t>(json.size()));
-
-		std::size_t idx = 0;
-		for (auto &it : t)
-		{
-			ReadFromJson(json[idx++], it);
-		}
-	}
-	template<typename C, typename I, typename T>
-	inline ::Json WriteToJson_(const VectorRecord<I, T> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &it : t)
-		{
-			ret.push_back(WriteToJson(it));
-		}
-		return ret;
-	}
-
-	template<typename C, typename I, typename T>
-	inline void ReadFromJson_(const ::Json &json, MatrixRecord<I, T> &t)
-	{
-		I width = static_cast<I>(json.size());
-		I height = static_cast<I>(json[0].size());
-		t.resize({
-			static_cast<std::size_t>(width),
-			static_cast<std::size_t>(height)
-				 });
-
-		std::size_t w = 0;
-		for (auto &c : t)
-		{
-			std::size_t h = 0;
-			for (auto &it : c)
+			std::apply([&json](auto&&... args)
 			{
-				ReadFromJson(json[w][h++], it);
-			}
-			++w;
+				std::size_t index = 0;
+				((JsonIO_::readJ(json[C::keys[index++]], args)), ...);
+			}, static_cast<std::tuple<T...> &>(t)
+				);
 		}
-	}
-	template<typename C, typename I, typename T>
-	inline ::Json WriteToJson_(const MatrixRecord<I, T> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &c : t)
+		template<class... T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::Record<T...> &t)
 		{
-			::Json a = ::Json::array();
-			for (auto &it : c)
+			::Json ret = ::Json::object();
+			std::apply([&ret](auto&&... args)
 			{
-				a.push_back(WriteToJson(it));
-			}
-			ret.push_back(a);
+				std::size_t index = 0;
+				((ret[C::keys[index++]] = JsonIO_::writeJ(args)), ...);
+			}, static_cast<const std::tuple<T...> &>(t)
+				);
+			return ret;
 		}
-		return ret;
-	}
+	};
 
-	template<typename C, class T, std::size_t WIDTH, std::size_t HEIGHT>
-	inline void ReadFromJson_(const ::Json &json, FixedMatrixRecord<T, WIDTH, HEIGHT> &t)
+
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::Vector_t>
 	{
-		std::size_t w = 0;
-		for (auto &c : t)
+		template<typename T_SIZE, class T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::Vector<T_SIZE, T> &t)
 		{
-			std::size_t h = 0;
-			for (auto &it : c)
+			t.resize(static_cast<std::size_t>(json.size()));
+
+			std::size_t idx = 0;
+			for (auto &it : t)
 			{
-				ReadFromJson(json[w][h++], it);
+				JsonIO_::readJ(json[idx++], it);
 			}
-			++w;
 		}
-	}
-	template<typename C, class T, std::size_t WIDTH, std::size_t HEIGHT>
-	inline ::Json WriteToJson_(const FixedMatrixRecord<T, WIDTH, HEIGHT> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &c : t)
+		template<typename T_SIZE, class T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::Vector<T_SIZE, T> &t)
 		{
-			::Json a = ::Json::array();
-			for (auto &it : c)
+			::Json ret = ::Json::array();
+			for (auto &it : t)
 			{
-				a.push_back(WriteToJson(it));
+				ret.push_back(JsonIO_::writeJ(it));
 			}
-			ret.push_back(a);
+			return ret;
 		}
-		return ret;
-	}
+	};
 
-	template<typename C, class T>
-	inline void ReadFromJson_(const ::Json &json, EofVectorRecord<T> &t)
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::TermString_t>
 	{
-		t.resize(static_cast<std::size_t>(json.size()));
-
-		std::size_t idx = 0;
-		for (auto &it : t)
+		template<typename... Ts>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::TermString<Ts...> &t)
 		{
-			ReadFromJson(json[idx++], it);
+			t = json.get<std::string>();
+			//if (t.length() > COUNT)
+			//{
+			//	t = t.substr(0, COUNT);
+			//}
 		}
-	}
-	template<typename C, class T>
-	inline ::Json WriteToJson_(const EofVectorRecord<T> &t)
-	{
-		::Json ret = ::Json::array();
-		for (auto &it : t)
+		template<typename... Ts>
+		inline static ::Json writeJ(const KIR5::StreamRecords::TermString<Ts...> &t)
 		{
-			ret.push_back(WriteToJson(it));
+			//std::string ret;
+			//if (t.length() > COUNT)
+			//{
+			//	ret = t.substr(0, COUNT);
+			//}
+			//else
+			//{
+			//	ret = t;
+			//}
+			return t;
 		}
-		return ret;
-	}
+	};
 
-	template<typename C, typename ...T>
-	inline void ReadFromJson_(const ::Json &json, HashRecord<T...> &t)
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::FixString_t>
 	{
-		std::apply([&json](auto&&... args)
+		template<std::size_t COUNT, typename... Ts>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::FixString<COUNT, Ts...> &t)
 		{
-			std::size_t index = 0;
-			((ReadFromJson(json[C::keys[index++]], args)), ...);
-		}, static_cast<std::tuple<T...> &>(t)
-			);
-		t.hash = json["ObjectHash"];
-	}
-	template<typename C, typename ...T>
-	inline ::Json WriteToJson_(const HashRecord<T...> &t)
-	{
-		::Json ret = ::Json::object();
-		ret["ObjectHash"] = t.hash;
-		std::apply([&ret](auto&&... args)
+			t = json.get<std::string>();
+			if (t.length() > COUNT)
+			{
+				t = t.substr(0, COUNT);
+			}
+		}
+		template<std::size_t COUNT, typename... Ts>
+		inline static ::Json writeJ(const KIR5::StreamRecords::FixString<COUNT, Ts...> &t)
 		{
-			std::size_t index = 0;
-			((ret[C::keys[index++]] = WriteToJson(args)), ...);
-		}, static_cast<const std::tuple<T...> &>(t)
-			);
-		return ret;
-	}
+			std::string ret;
+			if (t.length() > COUNT)
+			{
+				ret = t.substr(0, COUNT);
+			}
+			else
+			{
+				ret = t;
+			}
+			return t;
+		}
+	};
 
-	template<typename C, typename ...T>
-	inline void ReadFromJson_(const ::Json &json, Record<T...> &t)
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::Array_t>
 	{
-		std::apply([&json](auto&&... args)
+		template<std::size_t COUNT, class T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::Array<COUNT, T> &t)
 		{
-			std::size_t index = 0;
-			((ReadFromJson(json[C::keys[index++]], args)), ...);
-		}, static_cast<std::tuple<T...> &>(t)
-			);
-	}
-	template<typename C, typename ...T>
-	inline ::Json WriteToJson_(const Record<T...> &t)
-	{
-		::Json ret = ::Json::object();
-		std::apply([&ret](auto&&... args)
+			std::size_t idx = 0;
+			for (auto &it : t)
+			{
+				JsonIO_::readJ(json[idx++], it);
+			}
+		}
+		template<std::size_t COUNT, class T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::Array<COUNT, T> &t)
 		{
-			std::size_t index = 0;
-			((ret[C::keys[index++]] = WriteToJson(args)), ...);
-		}, static_cast<const std::tuple<T...> &>(t)
-			);
-		return ret;
-	}
+			::Json ret = ::Json::array();
+			for (auto &it : t)
+			{
+				ret.push_back(JsonIO_::writeJ(it));
+			}
+			return ret;
+		}
+	};
 
-	template<typename C>
-	inline void ReadFromJson(const ::Json &json, C &t)
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::FixVector_t>
 	{
-		ReadFromJson_<C>(json, static_cast<record_cast<C> &>(t));
-	}
-	template<typename C>
-	inline ::Json WriteToJson(const C &t)
-	{
-		return WriteToJson_<C>(static_cast<const record_cast<C> &>(t));
-	}
+		template<std::size_t COUNT, class T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::FixVector<COUNT, T> &t)
+		{
+			std::size_t idx = 0;
+			for (auto &it : t)
+			{
+				JsonIO_::readJ(json[idx++], it);
+			}
+		}
+		template<std::size_t COUNT, class T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::FixVector<COUNT, T> &t)
+		{
+			::Json ret = ::Json::array();
+			for (auto &it : t)
+			{
+				ret.push_back(JsonIO_::writeJ(it));
+			}
+			return ret;
+		}
+	};
 
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::SharedDerived_t>
+	{
+		template <typename T_BASE>
+		struct PartIO
+		{
+			template <typename ...T>
+			static constexpr T_BASE *readJ_(const ::Json &json)
+			{
+				std::int8_t type = json["ObjectType"].get<std::int8_t>();
+				return readJ_<T...>(json, type);
+			}
+
+			template <typename T>
+			static constexpr T_BASE *readJ_(const ::Json &json, std::int8_t &type)
+			{
+				if (type == 0)
+				{
+					T *t = new T();
+					JsonIO_::readJ(json, *t);
+					return t;
+				}
+				else
+				{
+					--type;
+				}
+				return nullptr;
+			}
+
+			template <typename T, typename N, typename... Args>
+			static constexpr T_BASE *readJ_(const ::Json &json, std::int8_t &type)
+			{
+				T_BASE *base = readJ_<T>(json, type);
+				if (base == nullptr)
+				{
+					base = readJ_<N, Args...>(json, type);
+				}
+				return base;
+			}
+
+
+			template <typename ...T>
+			static constexpr ::Json writeJ_(T_BASE *base)
+			{
+				::Json ret;
+				std::int8_t type = 0;
+				writeJ_<T...>(ret, type, base);
+				return ret;
+			}
+
+			template <typename T>
+			static constexpr void *writeJ_(::Json &json, std::int8_t &type, T_BASE *base)
+			{
+				T *t = dynamic_cast<T *>(base);
+				if (t != nullptr)
+				{
+					json = JsonIO_::writeJ(*t);
+					json["ObjectType"] = type;
+				}
+				else
+				{
+					++type;
+				}
+				return t;
+			}
+
+			template <typename T, typename N, typename... Args>
+			static constexpr void writeJ_(::Json &json, std::int8_t &type, T_BASE *base)
+			{
+				if (writeJ_<T>(json, type, base) == nullptr)
+				{
+					writeJ_<N, Args...>(json, type, base);
+				}
+			}
+		};
+
+		template<class T_BASE, class... T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::SharedDerived<T_BASE, T...> &t)
+		{
+			std::int8_t type = json["ObjectType"].get<std::int8_t>();
+			t = C(PartIO<T_BASE>::readJ_<T...>(json, type));
+		}
+
+		template<class T_BASE, class... T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::SharedDerived<T_BASE, T...> &t)
+		{
+			return PartIO<T_BASE>::writeJ_<T...>(t.get());
+		}
+	};
+
+	template <typename C>
+	struct JsonIO<C, record_t::MatrixRecord_t>
+	{
+		template<typename T_SIZE, class T>
+		inline static void readJ(const ::Json &json, MatrixRecord<T_SIZE, T> &t)
+		{
+			T_SIZE width = static_cast<T_SIZE>(json.size());
+			T_SIZE height = static_cast<T_SIZE>(json[0].size());
+			t.resize({
+				static_cast<std::size_t>(width),
+				static_cast<std::size_t>(height)
+					 });
+
+			std::size_t w = 0;
+			for (auto &c : t)
+			{
+				std::size_t h = 0;
+				for (auto &it : c)
+				{
+					JsonIO_::readJ(json[w][h++], it);
+				}
+				++w;
+			}
+		}
+		template<typename T_SIZE, class T>
+		inline static ::Json writeJ(const MatrixRecord<T_SIZE, T> &t)
+		{
+			::Json ret = ::Json::array();
+			for (auto &c : t)
+			{
+				::Json a = ::Json::array();
+				for (auto &it : c)
+				{
+					a.push_back(JsonIO_::writeJ(it));
+				}
+				ret.push_back(a);
+			}
+			return ret;
+		}
+	};
+
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::FixMatrix_t>
+	{
+		template<std::size_t WIDTH, std::size_t HEIGHT, class T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::FixMatrix<WIDTH, HEIGHT, T> &t)
+		{
+			std::size_t w = 0;
+			for (auto &c : t)
+			{
+				std::size_t h = 0;
+				for (auto &it : c)
+				{
+					JsonIO_::readJ(json[w][h++], it);
+				}
+				++w;
+			}
+		}
+		template<std::size_t WIDTH, std::size_t HEIGHT, class T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::FixMatrix<WIDTH, HEIGHT, T> &t)
+		{
+			::Json ret = ::Json::array();
+			for (auto &c : t)
+			{
+				::Json a = ::Json::array();
+				for (auto &it : c)
+				{
+					a.push_back(JsonIO_::writeJ(it));
+				}
+				ret.push_back(a);
+			}
+			return ret;
+		}
+	};
+
+	template <typename C>
+	struct JsonIO<C, KIR5::StreamRecords::record_t::EofVector_t>
+	{
+		template<class T>
+		inline static void readJ(const ::Json &json, KIR5::StreamRecords::EofVector<T> &t)
+		{
+			t.resize(static_cast<std::size_t>(json.size()));
+
+			std::size_t idx = 0;
+			for (auto &it : t)
+			{
+				JsonIO_::readJ(json[idx++], it);
+			}
+		}
+		template<class T>
+		inline static ::Json writeJ(const KIR5::StreamRecords::EofVector<T> &t)
+		{
+			::Json ret = ::Json::array();
+			for (auto &it : t)
+			{
+				ret.push_back(JsonIO_::writeJ(it));
+			}
+			return ret;
+		}
+	};
+
+	template <typename C>
+	struct JsonIO<C, record_t::HashRecord_t>
+	{
+		template<class... T>
+		inline static void readJ(const ::Json &json, HashRecord<T...> &t)
+		{
+			std::apply([&json](auto&&... args)
+			{
+				std::size_t index = 0;
+				((JsonIO_::readJ(json[C::keys[index++]], args)), ...);
+			}, static_cast<std::tuple<T...> &>(t)
+				);
+			t.hash = json["ObjectHash"];
+		}
+		template<class... T>
+		inline static ::Json writeJ(const HashRecord<T...> &t)
+		{
+			::Json ret = ::Json::object();
+			ret["ObjectHash"] = t.hash;
+			std::apply([&ret](auto&&... args)
+			{
+				std::size_t index = 0;
+				((ret[C::keys[index++]] = JsonIO_::writeJ(args)), ...);
+			}, static_cast<const std::tuple<T...> &>(t)
+				);
+			return ret;
+		}
+	};
+
+	template <typename C>
+	struct JsonIO<C, record_t::JsonRecord_t>
+	{
+		inline static void readJ(const ::Json &json, JsonRecord &t)
+		{
+			t = json;
+		}
+		inline static ::Json writeJ(const JsonRecord &t)
+		{
+			return ::Json(static_cast<const ::Json &>(t));
+		}
+	};
 
 	template<typename T, typename H>
 	void LoadResource(T &resource, ::Json &json, H &handler)
 	{
 		H::RECORD_T record;
-		ReadFromJson(json, record);
+		JsonIO_::readJ(json, record);
 		static_cast<T &>(resource) = record;
 	}
 	template<typename T, typename H>
 	void SaveResource(T &resource, ::Json &json, H &handler)
 	{
-		json = WriteToJson(static_cast<const H::RECORD_T &>(resource));
+		json = JsonIO_::writeJ(static_cast<const H::RECORD_T &>(resource));
 	}
 
 

@@ -1,7 +1,7 @@
 #include "Hash.h"
 
 #include <KIR/hash/KIR5_sha512.h>
-#include <KIR/KIR5_stream.h>
+#include <KIR/stream/KIR5_stream.h>
 
 #include <functional>
 #include <array>

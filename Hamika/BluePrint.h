@@ -41,7 +41,7 @@ namespace Res
 			return blocks[coord];
 		}
 
-		struct IO_HamSt1_Block: public Record<
+		struct IO_HamSt1_Block: public KIR5::StreamRecords::Record<
 			std::uint16_t,                // id
 			std::uint8_t,                 // rotation (0-up, 1-right, 2-down, 3-left)
 			std::uint8_t                  // flags
@@ -54,9 +54,9 @@ namespace Res
 			constexpr static std::array<const char *, 3> keys{{"BlockID", "Rotation", "Flags"}};
 		};
 
-		struct IO_HamSt1: HashRecord <
+		struct IO_HamSt1: public HashRecord<
 			std::float_t,                 // speed
-			FixedStringRecord<128>,       // title
+			KIR5::StreamRecords::FixString<128, char>,       // title
 			std::uint16_t,                // scoreToUnlock
 			std::uint8_t,                 // globalGravity
 			std::float_t,                 // camera width
@@ -78,14 +78,14 @@ namespace Res
 		operator IO_HamSt1() const;
 
 		struct IO_HamBC: HashRecord <
-			FixedMatrixRecord<std::uint8_t, 63, 53>,  // block ID
-			FixedMatrixRecord<std::uint16_t, 63, 53>, // rotation of block
-			FixedMatrixRecord<std::uint8_t, 63, 53>,  // is explode
-			FixedMatrixRecord<std::uint8_t, 63, 53>,  // is gravitation
+			FixMatrixRecord<std::uint8_t, 63, 53>,    // block ID
+			FixMatrixRecord<std::uint16_t, 63, 53>,   // rotation of block
+			FixMatrixRecord<std::uint8_t, 63, 53>,    // is explode
+			FixMatrixRecord<std::uint8_t, 63, 53>,    // is gravitation
 			std::uint16_t,                            // scoreToUnlock
 			std::float_t,                             // speed
 			std::uint8_t,                             // murphy spawn fill block ID
-			TerminatedStringRecord<98>                // title of blue print
+			KIR5::StreamRecords::TermString<char>     // title of blue print
 		>
 		{
 			constexpr static std::size_t id = 0;
@@ -241,14 +241,14 @@ namespace Res
 		operator IO_HamBC() const;
 
 		struct IO_Orig: HashRecord <
-			HeapVectorRecord<std::uint8_t, 60 * 24>,  // block ID
-			FixedVectorRecord<std::uint8_t, 4>,       // unused
-			std::uint8_t,                             // gravity
-			FixedVectorRecord<std::uint8_t, 1>,       // unused
-			FixedStringRecord<23>,                    // title
-			FixedVectorRecord<std::uint8_t, 1>,       // unused
-			std::uint8_t,                             // score to unlock
-			FixedVectorRecord<std::uint8_t, 65>       // unused
+			KIR5::StreamRecords::FixVector<60 * 24, std::uint8_t>,  // block ID
+			KIR5::StreamRecords::Array<4, std::uint8_t>,            // unused
+			std::uint8_t,                                           // gravity
+			KIR5::StreamRecords::Array<1, std::uint8_t>,            // unused
+			KIR5::StreamRecords::FixString<23, char>,               // title
+			KIR5::StreamRecords::Array<1, std::uint8_t>,            // unused
+			std::uint8_t,                                           // score to unlock
+			KIR5::StreamRecords::Array<65, std::uint8_t>            // unused
 		>
 		{
 			constexpr static std::size_t id = 0;

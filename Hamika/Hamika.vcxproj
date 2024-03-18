@@ -360,7 +360,9 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_scroll_bar.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_md5.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\hash\KIR5_sha512.cpp" />
-    <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_stream.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_dynamic_stream.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_ring_stream.cpp" />
+    <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_static_stream.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_files.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_blender.cpp" />
@@ -377,7 +379,6 @@
     <ClCompile Include="ObjectRotate.hpp" />
     <ClCompile Include="ObjectStack.hpp" />
     <ClCompile Include="SceneBackground.cpp" />
-    <ClCompile Include="SceneBackground.hpp" />
     <ClCompile Include="SceneConfiguration.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
     <ClCompile Include="Bedrock.cpp" />

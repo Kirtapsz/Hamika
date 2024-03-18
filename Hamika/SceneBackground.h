@@ -46,5 +46,3 @@ namespace UI::Scene
 }
 
 #endif
-
-#include "SceneBackground.hpp"

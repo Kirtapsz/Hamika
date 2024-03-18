@@ -24,12 +24,13 @@ namespace Res
 		struct StandardKeyboard;
 		struct ObjectValidator;
 
-		struct Container: Record <
-			TerminatedStringRecord<64>,
-			TerminatedStringRecord<1024>,
+		struct Container: KIR5::StreamRecords::Record<
+			KIR5::StreamRecords::TermString<char>,
+			KIR5::StreamRecords::TermString<char>,
 			KIR5::sha512digest,
 			KIR5::sha512digest,
-			SwitchVectorRecord<Base, std::uint32_t, RNGenerator, StandardKeyboard, ObjectValidator>>
+			KIR5::StreamRecords::Vector<std::uint32_t, KIR5::StreamRecords::SharedDerived<Base, RNGenerator, StandardKeyboard, ObjectValidator>>
+		>
 		{
 			static constexpr std::size_t commit = 0;
 			static constexpr std::size_t comment = 2;

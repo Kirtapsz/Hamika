@@ -73,6 +73,9 @@
     <Filter Include="Scene\background">
       <UniqueIdentifier>{bd718035-2bb9-4b6e-bbde-b602f3ba6915}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KIR\stream">
+      <UniqueIdentifier>{efeb9280-4fcb-4ccf-ab0a-a6eed29b5f23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneDrawer.hpp">
@@ -179,9 +182,6 @@
     </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\sys\KIR5_system.cpp">
       <Filter>KIR\sys</Filter>
-    </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\KIR5_stream.cpp">
-      <Filter>KIR</Filter>
     </ClCompile>
     <ClCompile Include="EditorSaveWorldDialog.cpp">
       <Filter>Editor</Filter>
@@ -298,11 +298,17 @@
     <ClCompile Include="OriginalObjects.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
-    <ClCompile Include="SceneBackground.hpp">
-      <Filter>Scene\background</Filter>
-    </ClCompile>
     <ClCompile Include="SceneBackground.cpp">
       <Filter>Scene\background</Filter>
+    </ClCompile>
+    <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_dynamic_stream.cpp">
+      <Filter>KIR\stream</Filter>
+    </ClCompile>
+    <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_ring_stream.cpp">
+      <Filter>KIR\stream</Filter>
+    </ClCompile>
+    <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_static_stream.cpp">
+      <Filter>KIR\stream</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
