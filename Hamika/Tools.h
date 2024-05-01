@@ -63,7 +63,7 @@ extern int processRet;
 
 constexpr float CPS = KIR5_60_CPS;
 constexpr float CA = 1 / CPS;
-constexpr int blockSizeInPixel = 32;
+constexpr int blockSizeInPixel = 64;
 
 
 template<typename O>
