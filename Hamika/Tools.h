@@ -1,7 +1,7 @@
 #pragma once
 
 #include <KIR\AL\KIR5_event_engine.h>
-#include <KIR/KIR5_stream.h>
+#include <KIR/stream/KIR5_dynamic_stream.h>
 #include <KIR/KIR4_algorithm.h>
 #include <KIR/KIR4_time.h>
 

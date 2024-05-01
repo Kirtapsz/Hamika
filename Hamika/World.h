@@ -12,9 +12,9 @@ namespace Res
 		std::string title{"UNKNOWN"};
 		std::vector<std::shared_ptr<BluePrint>> bluePrints;
 
-		struct IO_HamSt1: Record<
-			FixedStringRecord<128>,
-			VectorRecord<std::uint16_t, BluePrint::IO_HamSt1>
+		struct IO_HamSt1: KIR5::StreamRecords::Record<
+			KIR5::StreamRecords::FixString<128, char>,
+			KIR5::StreamRecords::Vector<std::uint16_t, BluePrint::IO_HamSt1>
 		>
 		{
 			constexpr static std::size_t title = 0;
@@ -25,8 +25,8 @@ namespace Res
 		void operator=(const IO_HamSt1 &record);
 		operator IO_HamSt1() const;
 
-		struct IO_HamBC: Record<
-			EofVectorRecord<BluePrint::IO_HamBC>
+		struct IO_HamBC: KIR5::StreamRecords::Record<
+			KIR5::StreamRecords::EofVector<BluePrint::IO_HamBC>
 		>
 		{
 			constexpr static std::size_t blueprints = 0;
@@ -36,8 +36,8 @@ namespace Res
 		void operator=(const IO_HamBC &record);
 		operator IO_HamBC() const;
 
-		struct IO_Orig: Record<
-			EofVectorRecord<BluePrint::IO_Orig>
+		struct IO_Orig: KIR5::StreamRecords::Record<
+			KIR5::StreamRecords::EofVector<BluePrint::IO_Orig>
 		>
 		{
 			constexpr static std::size_t blueprints = 0;

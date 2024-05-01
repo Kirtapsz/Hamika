@@ -69,6 +69,15 @@ if (POST_BUILD and RELEASE_BUILD):
         raise Exception("Hamika Changes are not commited")
     if (kirlib_commited == False):
         raise Exception("KIRLIB changes are not commited")
+if (POST_BUILD):
+    logging.info(f'Copy allegro DLLs: ')
+    allegro_dlls =  os.path.join(project_dir, "..\\allegro\\dll")
+    for file in os.listdir(allegro_dlls):
+        dst_file = os.path.join(".", file)
+        if not os.path.exists(dst_file):
+            src_file = os.path.join(allegro_dlls, file)
+            logging.info(f'  {src_file} -> {dst_file}')
+            shutil.copy(src_file, dst_file)
 if (POST_BUILD and (RELEASE_BUILD or MULTITEST_BUILD)):
     validators = "Hamika\\multitest\\validators"
     ext = ('.json')

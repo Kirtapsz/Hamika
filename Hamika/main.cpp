@@ -7,7 +7,6 @@
 #include "Cursor.h"
 #include "Resource.h"
 #include "versions.h"
-#include "SceneBackground.h"
 #include "Worlds.h"
 
 std::shared_ptr<KIR5::Display> display;
@@ -21,11 +20,6 @@ int processRet = 0;
 
 int main(int argc, char *argv[])
 {
-	Type::var2D<float> A{0.5,0.5};
-	Type::var2D<int> B{1,1};
-	Type::var2D<float> C = A - B;
-	Type::var2D<float> D = B - A;
-
 	if (argc >= 2 && strcmp("--info", argv[1]) == 0)
 	{
 		clog << "KIR LIB commit ID: " << Versions::ApplicationCommitID << KIR4::eol;

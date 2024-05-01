@@ -220,9 +220,6 @@ namespace Res
 	};
 	bool initialize(std::uint32_t editorMode);
 	void shutdown();
-
-	template <typename T>
-	using record_cast = typename type_of_base_templates<T, Record, HashRecord>;
 }
 
 #include "BinaryResource.hpp"
@@ -255,7 +252,7 @@ namespace Res
 		}
 	}
 
-	struct MultitestInput: public Base, public Res::Record<Res::VectorRecord<std::uint16_t, std::string>>
+	struct MultitestInput: public Base, public KIR5::StreamRecords::Record<KIR5::StreamRecords::Vector<std::uint16_t, std::string>>
 	{
 		constexpr static std::array<const char *, 1> keys{"files"};
 
@@ -263,7 +260,7 @@ namespace Res
 
 		void operator=(const MultitestInput &record)
 		{
-			Res::Record<Res::VectorRecord<std::uint16_t, std::string>>::operator=(record);
+			KIR5::StreamRecords::Record<KIR5::StreamRecords::Vector<std::uint16_t, std::string>>::operator=(record);
 		}
 		operator const MultitestInput&() const
 		{
