@@ -78,7 +78,7 @@ namespace Object
 
 	namespace Animator
 	{
-		struct Specific
+		struct EntityData
 		{
 			std::float_t time;
 			std::float_t timer;
@@ -93,40 +93,37 @@ namespace Object
 			void UpdateTimer();
 		};
 
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType);
 	}
 
 	namespace Fall
 	{
-		struct Specific
+		struct EntityData
 		{
 			bool heavy_object_;
+
+			void setHeavy(bool _heavy_object);
 		};
 
-		void setHeavy(Specific *spec, bool _heavy_object);
-
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType);
 	}
 	namespace FallAndRoll
 	{
-		struct Specific
+		struct EntityData: public Fall::EntityData
 		{
-			bool heavy_object_;
 			std::int8_t roll_preference_;
 		};
 
-		void setHeavy(Specific *spec, bool _heavy_object);
-
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType);
 	}
 
 	namespace MoveLeftWay
@@ -136,14 +133,14 @@ namespace Object
 		bool CanExlosive(Type::Coord coord, Brick *o);
 		bool CanTurnLeft(Brick *o);
 
-		struct Specific
+		struct EntityData
 		{
 			bool PriorityStep;
 		};
 
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType);
 	}
 }

@@ -2,12 +2,12 @@
 
 #include "Murphy.h"
 #include "Tools.h"
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 #include "BaseFunctions.h"
 
 #include <KIR/KIR4_console.h>
 
-namespace Object
+namespace Object::Entity
 {
 	namespace Murphy
 	{
@@ -48,14 +48,7 @@ namespace Object
 			EXIT = 1 << 10,
 		};
 
-		struct Specific
-		{
-			KeyboardController *controller;
-			DRAW_NUMBER_T draw_number_;
-
-			float _effect_timer;
-			Type::Flags _effect_type;
-		};
+		typedef EntityData Specific;
 
 		bool CanSuck(Brick *o, Type::Coord coord)
 		{

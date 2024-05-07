@@ -2,12 +2,22 @@
 
 #include "Object.h"
 #include "KeyboardController.h"
+#include "BaseFunctions.h"
 
-namespace Object
+namespace Object::Entity
 {
 	namespace Murphy
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			KeyboardController *controller;
+			DRAW_NUMBER_T draw_number_;
+
+			float _effect_timer;
+			Type::Flags _effect_type;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);

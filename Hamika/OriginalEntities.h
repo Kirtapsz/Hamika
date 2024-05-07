@@ -1,6 +1,19 @@
 #pragma once
 
-#include "Object.h"
+#include "BaseFunctions.h"
+#include "Tools.h"
+
+#include "ObjectActions.h"
+#include "ObjectBase.h"
+#include "ObjectCoord.h"
+#include "ObjectDraw.h"
+#include "ObjectEvents.h"
+#include "ObjectExecute.h"
+#include "ObjectFlags.h"
+#include "ObjectMove.h"
+#include "ObjectRequests.h"
+#include "ObjectRotate.h"
+#include "ObjectStack.h"
 
 /*
 naming:
@@ -27,7 +40,7 @@ drawNumber
 
 */
 
-namespace Object
+namespace Object::Entity
 {
 	//Space 000
 	namespace Space_000
@@ -49,6 +62,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			FallAndRoll::EntityData fall_and_roll_;
+			DRAW_NUMBER_T draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -63,6 +82,12 @@ namespace Object
 	namespace BaseX_002
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			float disappearTimer;
+			DRAW_NUMBER_T draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -229,6 +254,14 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			float electricDelayTimer;
+			float electricTimer;
+			float disappearTimer;
+			DRAW_NUMBER_T draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -244,6 +277,13 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			FallAndRoll::EntityData fall_and_roll_;
+			float disappearTimer;
+			DRAW_NUMBER_T draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -258,6 +298,12 @@ namespace Object
 	namespace Exit_015
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			DRAW_NUMBER_T draw_number_;
+			float animateTimer;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -426,6 +472,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			Animator::EntityData animator_;
+			MoveLeftWay::EntityData move_left_way_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -441,6 +493,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			MoveLeftWay::EntityData move_left_way_;
+			DRAW_NUMBER_T draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -455,6 +513,11 @@ namespace Object
 	namespace Terminal_028
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			Animator::EntityData animator_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -473,6 +536,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			FallAndRoll::EntityData fall_and_roll_;
+			bool active;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -487,6 +556,13 @@ namespace Object
 	namespace Utility2_030
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			float activateTimer;
+			float disappearTimer;
+			DRAW_NUMBER_T draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -520,6 +596,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			float explosionTimer;
+			DRAW_NUMBER_T draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -534,6 +616,13 @@ namespace Object
 	namespace Explosion_033
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			float explosionTimer;
+			float blastingTimer;
+			DRAW_NUMBER_T draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);

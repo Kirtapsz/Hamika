@@ -19,12 +19,10 @@ namespace Object
 			struct Data: virtual Stack::Data<OBJECT>
 			{
 				//LÉTRHOZÁS #####################################################################################
-#define OBJECT_CREATER_PARAM Object::Brick::Stack *stack
-#define OBJECT_CREATER_CALL stack
+
 				typedef void(*CREATER)(Stack *);
 
 				//INICIALIZÁLÓ
-#define OBJECT_INITIALIZER_PARAM
 				typedef void(*INITIALIZER)(OBJECT_INITIALIZER_PARAM);
 
 				//UPDATE #####################################################################################
@@ -34,23 +32,16 @@ namespace Object
 					UPDATE_DESC = 1 << 1,
 					UPDATE_MURPHY = 1 << 2,
 				};
-#define OBJECT_UPDATE_PARAM Object::Brick::Stack *stack, Object::Brick::UpdateType updateType
-#define OBJECT_UPDATE_CALL stack, updateType
 				typedef void(*UPDATE)(Stack *, UpdateType);
 				UPDATE updaterFnc = nullptr;
 				unsigned long long updateNumber = 0;
 				static unsigned long long totalUpdateNumber;
 
 				//FINALIZE #####################################################################################
-#define OBJECT_FINALIZE_PARAM Object::Brick::Stack *stack
-#define OBJECT_FINALIZE_CALL stack
 				typedef void(*FINALIZE)(Stack *);
 				FINALIZE finalizeFnc = nullptr;
 
-
 				//TIMER EVENT #####################################################################################
-#define OBJECT_TIMER_PARAM Object::Brick::Stack *stack
-#define OBJECT_TIMER_CALL stack
 				typedef void(*TIMER)(Stack *);
 				TIMER timerFnc = nullptr;
 			};

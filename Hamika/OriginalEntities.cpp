@@ -1,12 +1,10 @@
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 #include "Space.h"
 #include "Bedrock.h"
-#include "BaseFunctions.h"
-#include "Tools.h"
 
 #include <KIR/KIR4_console.h>
 
-namespace Object
+namespace Object::Entity
 {
 	//Space 000
 	namespace Space_000
@@ -61,10 +59,7 @@ namespace Object
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rollSpeed = moveSpeed;
 
-		struct Specific
-		{
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -80,9 +75,8 @@ namespace Object
 			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::CanPushLeft | Brick::CanPushRight);
 			stack->o->enablePhysics();
 
-			FallAndRoll::Specific *fall_and_roll_spec = *stack;
-			FallAndRoll::Create(OBJECT_CREATER_CALL);
-			FallAndRoll::setHeavy(fall_and_roll_spec, true);
+			FallAndRoll::Create(*stack->o, spec->fall_and_roll_);
+			spec->fall_and_roll_.setHeavy(true);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -92,7 +86,7 @@ namespace Object
 
 			json["draw_number"] = spec->draw_number_;
 
-			json["\\FallAndRoll"] = FallAndRoll::Print(OBJECT_PRINTER_CALL);
+			json["\\FallAndRoll"] = FallAndRoll::Print(*stack->o, spec->fall_and_roll_);
 
 			return json;
 		}
@@ -100,7 +94,7 @@ namespace Object
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
-			FallAndRoll::Timer(OBJECT_TIMER_CALL);
+			FallAndRoll::Timer(*stack->o, spec->fall_and_roll_);
 			if (stack->o->IsMoveLeft())
 			{
 				DRAW_NUMBER_DESC(stack->o->move.x(), 1.f, spec->draw_number_, stack->o, ZonkMoveHorizontal);
@@ -122,7 +116,7 @@ namespace Object
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
-			FallAndRoll::Update(OBJECT_UPDATE_CALL);
+			FallAndRoll::Update(*stack->o, spec->fall_and_roll_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -151,11 +145,7 @@ namespace Object
 
 		constexpr float disappearTime = 0.23f;
 
-		struct Specific
-		{
-			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -719,13 +709,7 @@ namespace Object
 		constexpr float disappearTime = 0.23f;    // duration in sec
 		constexpr float triggerChance = 1 / 6.f;  // chance / sec
 
-		struct Specific
-		{
-			float electricDelayTimer;
-			float electricTimer;
-			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -907,11 +891,7 @@ namespace Object
 		constexpr float rollSpeed = moveSpeed;
 		constexpr float disappearTime = 0.23f;
 
-		struct Specific
-		{
-			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -927,9 +907,8 @@ namespace Object
 			stack->o->SetMoveSpeed({rollSpeed,moveSpeed});
 			stack->o->SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::Give1Score);
 
-			FallAndRoll::Specific *fall_and_roll_spec = *stack;
-			FallAndRoll::Create(OBJECT_CREATER_CALL);
-			FallAndRoll::setHeavy(fall_and_roll_spec, true);
+			FallAndRoll::Create(*stack->o, spec->fall_and_roll_);
+			spec->fall_and_roll_.setHeavy(true);
 
 			stack->o->events.update = true;
 		}
@@ -941,7 +920,7 @@ namespace Object
 
 			json["disappearTimer"] = spec->disappearTimer;
 			json["draw_number"] = spec->draw_number_;
-			json["\\FallAndRoll"] = FallAndRoll::Print(OBJECT_PRINTER_CALL);
+			json["\\FallAndRoll"] = FallAndRoll::Print(*stack->o, spec->fall_and_roll_);
 
 			return json;
 		}
@@ -983,7 +962,7 @@ namespace Object
 				return;
 			}
 
-			FallAndRoll::Timer(OBJECT_TIMER_CALL);
+			FallAndRoll::Timer(*stack->o, spec->fall_and_roll_);
 			if (stack->o->IsMoveLeft())
 			{
 				DRAW_NUMBER_DESC(stack->o->move.x(), 1.f, spec->draw_number_, stack->o, InfotronMoveHorizontal);
@@ -1015,7 +994,7 @@ namespace Object
 			{
 				Object::Brick::Stack::Handler<Specific> sHandler(stack);
 				Specific *spec = sHandler;
-				FallAndRoll::Update(OBJECT_UPDATE_CALL);
+				FallAndRoll::Update(*stack->o, spec->fall_and_roll_, updateType);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
@@ -1051,11 +1030,7 @@ namespace Object
 
 		constexpr float animateTime = 0.5f;
 
-		struct Specific
-		{
-			DRAW_NUMBER_T draw_number_;
-			float animateTimer;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1585,49 +1560,62 @@ namespace Object
 
 		Res::Slides Electrons;
 
+		typedef EntityData Specific;
+
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
 			Electrons.initialize(Res::tiles[Res::Tiles::_026_Electrons], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
 			stack->o->SetRotationSpeed(rotateSpeed);
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Infotron);
 			stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 
-			{
-				Animator::Specific *spec = *stack;
-				Animator::Create(OBJECT_CREATER_CALL);
-				spec->SetNumberOfFrames(Electrons.getCount());
-				spec->SetAnimationTime(0.8f);
-			}
+			Animator::Create(*stack->o, spec->animator_);
+			spec->animator_.SetNumberOfFrames(Electrons.getCount());
+			spec->animator_.SetAnimationTime(0.8f);
 
-			MoveLeftWay::Create(OBJECT_CREATER_CALL);
+			MoveLeftWay::Create(*stack->o, spec->move_left_way_);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
 			Json json;
 
-			json["\\Animator"] = Animator::Print(OBJECT_PRINTER_CALL);
-			json["\\MoveLeftWay"] = MoveLeftWay::Print(OBJECT_PRINTER_CALL);
+			json["\\Animator"] = Animator::Print(*stack->o, spec->animator_);
+			json["\\MoveLeftWay"] = MoveLeftWay::Print(*stack->o, spec->move_left_way_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			Animator::Timer(OBJECT_TIMER_CALL);
-			MoveLeftWay::Timer(OBJECT_TIMER_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			Animator::Timer(*stack->o, spec->animator_);
+			MoveLeftWay::Timer(*stack->o, spec->move_left_way_);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			Animator::Update(OBJECT_UPDATE_CALL);
-			MoveLeftWay::Update(OBJECT_UPDATE_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			Animator::Update(*stack->o, spec->animator_, updateType);
+			MoveLeftWay::Update(*stack->o, spec->move_left_way_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			Animator::Specific *spec = *stack;
-			Electrons[spec->GetDrawNumber()].drawScaled(x, y, w, h);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			Electrons[spec->animator_.GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1650,10 +1638,7 @@ namespace Object
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
-		struct Specific
-		{
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1674,7 +1659,7 @@ namespace Object
 			stack->o->SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 			stack->o->SetTranslationID(ObjectID::Space);
 
-			MoveLeftWay::Create(OBJECT_CREATER_CALL);
+			MoveLeftWay::Create(*stack->o, spec->move_left_way_);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1683,7 +1668,7 @@ namespace Object
 			Json json;
 
 			json["draw_number"] = spec->draw_number_;
-			json["\\MoveLeftWay"] = MoveLeftWay::Print(OBJECT_PRINTER_CALL);
+			json["\\MoveLeftWay"] = MoveLeftWay::Print(*stack->o, spec->move_left_way_);
 
 			return json;
 		}
@@ -1692,7 +1677,7 @@ namespace Object
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
 
-			MoveLeftWay::Timer(OBJECT_TIMER_CALL);
+			MoveLeftWay::Timer(*stack->o, spec->move_left_way_);
 
 			if (stack->o->isActionMove())
 			{
@@ -1709,7 +1694,7 @@ namespace Object
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
-			MoveLeftWay::Update(OBJECT_UPDATE_CALL);
+			MoveLeftWay::Update(*stack->o, spec->move_left_way_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -1745,40 +1730,54 @@ namespace Object
 		constexpr float activatedAnimateTime = 0.7f;
 		constexpr float animateTime = 3.f;
 
+		typedef EntityData Specific;
+
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
 			Terminal.initialize(Res::tiles[Res::Tiles::_028_Terminal], Res::tiles[Res::BitmapPool::Fallback]);
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
 
-			Animator::Specific *spec = *stack;
-			Animator::Create(OBJECT_CREATER_CALL);
-			spec->SetNumberOfFrames(Terminal.getCount());
-			spec->SetAnimationTime(animateTime);
+			Animator::Create(*stack->o, spec->animator_);
+			spec->animator_.SetNumberOfFrames(Terminal.getCount());
+			spec->animator_.SetAnimationTime(animateTime);
 
 			stack->o->SetFlags(Brick::ButtonPush | Brick::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
 			Json json;
 
-			json["\\Animator"] = Animator::Print(OBJECT_PRINTER_CALL);
+			json["\\Animator"] = Animator::Print(*stack->o, spec->animator_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			Animator::Timer(OBJECT_TIMER_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			Animator::Timer(*stack->o, spec->animator_);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			Animator::Update(OBJECT_UPDATE_CALL);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			Animator::Update(*stack->o, spec->animator_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			Animator::Specific *spec = *stack;
-			Terminal[spec->GetDrawNumber()].drawScaled(x, y, w, h);
+			Object::Brick::Stack::Handler<Specific> sHandler(stack);
+			Specific *spec = sHandler;
+
+			Terminal[spec->animator_.GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1792,15 +1791,15 @@ namespace Object
 		void speedUpTerminalSpeed(Brick *o)
 		{
 			Brick::Stack stack(o);
-			Animator::Specific *spec = stack;
-			spec->SetAnimationTime(activatedAnimateTime);
+			Specific *spec = stack;
+			spec->animator_.SetAnimationTime(activatedAnimateTime);
 		}
 
 		void Pushed(Brick *o)
 		{
 			Brick::Stack stack(o);
-			Animator::Specific *spec = stack;
-			if (spec->time != activatedAnimateTime)
+			Specific *spec = stack;
+			if (spec->animator_.time != activatedAnimateTime)
 			{
 				Type::Coord coord;
 				for (coord.x() = 0; coord.x() < o->scene->MapSize().width(); coord.x()++)
@@ -1833,10 +1832,7 @@ namespace Object
 
 		constexpr float moveSpeed = CPS / 13.99f;
 
-		struct Specific
-		{
-			bool active;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1851,7 +1847,7 @@ namespace Object
 			stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
 			stack->o->SetTranslationID(ObjectID::Space);
 
-			Fall::Create(OBJECT_CREATER_CALL);
+			Fall::Create(*stack->o, spec->fall_and_roll_);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1860,7 +1856,7 @@ namespace Object
 			Json json;
 
 			json["active"] = spec->active;
-			json["\\Fall"] = Fall::Print(OBJECT_PRINTER_CALL);
+			json["\\Fall"] = Fall::Print(*stack->o, spec->fall_and_roll_);
 
 			return json;
 		}
@@ -1868,13 +1864,13 @@ namespace Object
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
-			Fall::Timer(OBJECT_TIMER_CALL);
+			Fall::Timer(*stack->o, spec->fall_and_roll_);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			Object::Brick::Stack::Handler<Specific> sHandler(stack);
 			Specific *spec = sHandler;
-			Fall::Update(OBJECT_UPDATE_CALL);
+			Fall::Update(*stack->o, spec->fall_and_roll_,updateType);
 			spec = sHandler;
 
 			if (stack->o->isActionMove())
@@ -1914,12 +1910,7 @@ namespace Object
 		constexpr float activateTime = 1.8f;
 		constexpr float disappearTime = 0.23f;
 
-		struct Specific
-		{
-			float activateTimer;
-			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -2116,11 +2107,7 @@ namespace Object
 
 		constexpr float explosionTime = 0.745f;
 
-		struct Specific
-		{
-			float explosionTimer;
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -2215,12 +2202,7 @@ namespace Object
 
 		constexpr float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
 
-		struct Specific
-		{
-			float explosionTimer;
-			float blastingTimer;
-			DRAW_NUMBER_T draw_number_;
-		};
+		typedef EntityData Specific;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{

@@ -42,8 +42,8 @@ namespace UI::Scene::Module::Field
 		{
 			_bluePrint = bluePrint_;
 
-			ObjectCreate(this, &bedrock, ObjectID::FullBedrock, Type::Coord::Invalid, Object::Bedrock::Create);
-			ObjectCreate(this, &space, ObjectID::FullSpace, Type::Coord::Invalid, Object::Space::Create);
+			ObjectCreate(this, &bedrock, ObjectID::FullBedrock, Type::Coord::Invalid, Object::Entity::Bedrock::Create);
+			ObjectCreate(this, &space, ObjectID::FullSpace, Type::Coord::Invalid, Object::Entity::Space::Create);
 
 			globalGravity = _bluePrint->globalGravity;
 

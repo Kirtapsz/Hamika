@@ -1,7 +1,7 @@
 #include "TestMainEvent.h"
 #include "Font.h"
 
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 #include "Worlds.h"
 
 #include <KIR\AL\KIR5_bitmap_target.h>

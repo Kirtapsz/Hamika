@@ -1,6 +1,6 @@
 #include "Bedrock.h"
 
-namespace Object
+namespace Object::Entity
 {
 	//Bedrock
 	namespace Bedrock

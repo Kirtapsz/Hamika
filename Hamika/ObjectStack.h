@@ -6,6 +6,21 @@
 #include "IDreg.h"
 #include "Tools.h"
 
+
+#define OBJECT_CREATER_PARAM Object::Brick::Stack *stack
+#define OBJECT_CREATER_CALL stack
+
+#define OBJECT_INITIALIZER_PARAM
+
+#define OBJECT_UPDATE_PARAM Object::Brick::Stack *stack, Object::Brick::UpdateType updateType
+#define OBJECT_UPDATE_CALL stack, updateType
+
+#define OBJECT_FINALIZE_PARAM Object::Brick::Stack *stack
+#define OBJECT_FINALIZE_CALL stack
+
+#define OBJECT_TIMER_PARAM Object::Brick::Stack *stack
+#define OBJECT_TIMER_CALL stack
+
 namespace Object
 {
 	namespace Module
@@ -64,7 +79,10 @@ namespace Object
 				};
 
 				//OBJECT SPECIFIC
-				unsigned char specific[256] = {0};
+				union EntityData;
+				EntityData entity_data;
+
+				unsigned char *specific{(unsigned char *)&entity_data};
 
 #define OBJECT_PRINTER_PARAM Object::Brick::Stack *stack
 #define OBJECT_PRINTER_CALL stack
@@ -77,9 +95,9 @@ namespace Object
 			template <typename DATA>
 			struct Func: virtual DATA
 			{
-				 virtual ~Func();
-				 void __init__(Type::ID id, Type::Coord coord);
-				 Json print();
+				virtual ~Func();
+				void __init__(Type::ID id, Type::Coord coord);
+				Json print();
 			};
 		}
 	}

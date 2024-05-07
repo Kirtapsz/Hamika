@@ -611,7 +611,7 @@ void SceneDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
 
 
 template <typename ACTIVE_BLOCK_T>
-Object::Animator::Specific SceneDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
+Object::Animator::EntityData SceneDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
 
 template <typename ACTIVE_BLOCK_T>
 Res::Slides SceneDrawer<ACTIVE_BLOCK_T>::gravitySlides;

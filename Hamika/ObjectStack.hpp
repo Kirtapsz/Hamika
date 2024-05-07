@@ -2,6 +2,7 @@
 #define OBJECT_STACK_HPP
 
 #include "ObjectStack.h"
+#include "EntityData.hpp"
 
 namespace Object
 {

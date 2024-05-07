@@ -6,7 +6,6 @@
 
 #include "Object.h"
 
-
 #include "Bedrock.h"
 #include "Space.h"
 #include "Types.h"

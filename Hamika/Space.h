@@ -2,7 +2,7 @@
 
 #include "Object.h"
 
-namespace Object
+namespace Object::Entity
 {
 	//Space
 	namespace Space

@@ -1,8 +1,9 @@
 #include "Objects.h"
 #include "Murphy.h"
 
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 #include "EditorObjects.h"
+#include "EntityData.hpp"
 #include <KIR/KIR4_console.h>
 
 namespace Objects
@@ -13,6 +14,7 @@ namespace Objects
 	}
 
 	using namespace Object;
+	using namespace Object::Entity;
 	struct Container
 	{
 		const char *name;

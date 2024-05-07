@@ -1,6 +1,6 @@
 #include "Space.h"
 
-namespace Object
+namespace Object::Entity
 {
 	//Space
 	namespace Space

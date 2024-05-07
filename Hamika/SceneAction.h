@@ -3,7 +3,7 @@
 #include "Types.h"
 #include "World.h"
 #include "Objects.h"
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 
 #include <KIR\AL\KIR5_panel.h>
 #include <KIR\KIR4_time.h>
@@ -104,7 +104,7 @@ namespace UI::Scene::Module::Action
 				{
 					block.remain->SetObjectIDremain(std::max(IDto, block.remain->GetObjectIDremain()));
 					Object::Brick::Stack stack(block.remain);
-					Object::Explosion_033::ReCreate(&stack);
+					Object::Entity::Explosion_033::ReCreate(&stack);
 				}
 				else
 				{
@@ -135,7 +135,7 @@ namespace UI::Scene::Module::Action
 						{
 							remain->SetObjectIDremain(std::max(IDto, remain->GetObjectIDremain()));
 							Object::Brick::Stack stack(remain);
-							Object::Explosion_033::ReCreate(&stack);
+							Object::Entity::Explosion_033::ReCreate(&stack);
 						}
 						else
 						{

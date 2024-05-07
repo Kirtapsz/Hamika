@@ -415,13 +415,14 @@
     <ClCompile Include="SceneDrawer.hpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Objects.cpp" />
-    <ClCompile Include="OriginalObjects.cpp" />
+    <ClCompile Include="OriginalEntities.cpp" />
     <ClCompile Include="Murphy.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="StatusBar.cpp" />
     <ClCompile Include="Worlds.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EntityData.hpp" />
     <ClInclude Include="ObjectActions.h" />
     <ClInclude Include="ObjectBase.h" />
     <ClInclude Include="ObjectCoord.h" />
@@ -481,7 +482,7 @@
     <ClInclude Include="SceneDrawer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Objects.h" />
-    <ClInclude Include="OriginalObjects.h" />
+    <ClInclude Include="OriginalEntities.h" />
     <ClInclude Include="Murphy.h" />
     <ClInclude Include="Space.h" />
     <ClInclude Include="StatusBar.h" />
