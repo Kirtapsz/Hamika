@@ -82,26 +82,26 @@ namespace UI::Scene::Module::Field
 				return reach(map)[coord].grid;
 			return 0;
 		}
-		public: virtual Object::Brick *GetObject(Type::Coord coord)
+		public: virtual Object::Brick &GetObject(Type::Coord coord)
 		{
 			if (map->Test(coord))
 			{
 				if (reach(map)[coord].object->isExists)
-					return reach(map)[coord].object;
+					return *reach(map)[coord].object;
 				else
-					return &space;
+					return space;
 			}
-			return &bedrock;
+			return bedrock;
 		}
-		public: virtual Object::Brick *GetObjectOut(Type::Coord coord)
+		public: virtual Object::Brick &GetObjectOut(Type::Coord coord)
 		{
 			if (map->Test(coord))
 			{
 				if (reach(map)[coord].GoTo != coord && reach(map)[reach(map)[coord].GoTo].object->isExists)
-					return reach(map)[reach(map)[coord].GoTo].object;
-				return &space;
+					return *reach(map)[reach(map)[coord].GoTo].object;
+				return space;
 			}
-			return &bedrock;
+			return bedrock;
 		}
 		public: virtual Object::Brick *GetObjectOutU(Type::Coord coord)
 		{
@@ -112,20 +112,20 @@ namespace UI::Scene::Module::Field
 			}
 			return nullptr;
 		}
-		public: virtual Object::Brick *GetRemain(Type::Coord coord)
+		public: virtual Object::Brick &GetRemain(Type::Coord coord)
 		{
 			if (map->Test(coord))
 			{
 				if (reach(map)[coord].remain->isExists)
-					return reach(map)[coord].remain;
+					return *reach(map)[coord].remain;
 				else
-					return &space;
+					return space;
 			}
-			return &bedrock;
+			return bedrock;
 		}
 		public: virtual Type::Flags GetUnionFlags(Type::Coord coord)
 		{
-			return GetObject(coord)->GetFlags() | GetObjectOut(coord)->GetFlags() | GetRemain(coord)->GetFlags();
+			return GetObject(coord).GetFlags() | GetObjectOut(coord).GetFlags() | GetRemain(coord).GetFlags();
 		}
 		public: virtual Type::Flags GetSectionFlags(Type::Coord coord)
 		{
@@ -165,13 +165,13 @@ namespace UI::Scene::Module::Field
 		{
 			globalGravity = !globalGravity;
 		}
-		public: virtual bool IamRemain(Object::Brick *o)
+		public: virtual bool IamRemain(const Object::Brick &_brick)
 		{
-			if (map->Test(o->GetCoord()))
+			if (map->Test(_brick.GetCoord()))
 			{
-				if (reach(map)[o->GetCoord()].object == o)
+				if (reach(map)[_brick.GetCoord()].object == &_brick)
 					return false;
-				if (reach(map)[o->GetCoord()].remain == o)
+				if (reach(map)[_brick.GetCoord()].remain == &_brick)
 					return true;
 			}
 			return true;

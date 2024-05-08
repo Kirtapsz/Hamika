@@ -53,11 +53,11 @@ namespace Object::Entity
 		bool CanSuck(Brick &_brick, Type::Coord coord)
 		{
 			return
-				!_brick.GetObject(coord)->isActionMove()
+				!_brick.GetObject(coord).isActionMove()
 				&&
-				_brick.GetObject(coord)->GetFlags() & Brick::MurphyCanSuck
+				_brick.GetObject(coord).GetFlags() & Brick::MurphyCanSuck
 				&&
-				_brick.GetRemain(coord)->GetFlags() & Brick::StepOn
+				_brick.GetRemain(coord).GetFlags() & Brick::StepOn
 				;
 		}
 
@@ -67,7 +67,7 @@ namespace Object::Entity
 			{
 				if (_brick.GetFlags() & Brick::MurphyDies)
 				{
-					murphy.scene->blowup(&murphy);
+					murphy.scene->blowup(murphy);
 				}
 				if (_brick.GetFlags() & Brick::Give1Score)
 				{
@@ -89,7 +89,7 @@ namespace Object::Entity
 			{
 				if (remain.GetFlags() & Brick::MurphyDies)
 				{
-					murphy.scene->blowup(&murphy);
+					murphy.scene->blowup(murphy);
 				}
 			}
 		}
@@ -104,23 +104,23 @@ namespace Object::Entity
 		bool CanMovePos(Brick &_brick, Type::Coord to, Type::Rotation rotation, Type::Flags _step_flags)
 		{
 			return
-				!_brick.GetObject(to)->isActionMove()
+				!_brick.GetObject(to).isActionMove()
 				&&
-				_brick.GetObject(to)->GetFlags() & _step_flags
+				_brick.GetObject(to).GetFlags() & _step_flags
 				&&
-				_brick.GetRemain(to)->GetFlags() & _step_flags
+				_brick.GetRemain(to).GetFlags() & _step_flags
 				&&
 				(
-					_brick.GetObjectOut(to)->GetFlags() & Brick::StepOn
+					_brick.GetObjectOut(to).GetFlags() & Brick::StepOn
 					||
 					(
-						(rotation == Type::Rotations::Up && _brick.GetObjectOut(to)->GetCoord().y() < to.y())
+						(rotation == Type::Rotations::Up && _brick.GetObjectOut(to).GetCoord().y() < to.y())
 						||
-						(rotation == Type::Rotations::Down && _brick.GetObjectOut(to)->GetCoord().y() > to.y())
+						(rotation == Type::Rotations::Down && _brick.GetObjectOut(to).GetCoord().y() > to.y())
 						||
-						(rotation == Type::Rotations::Left && _brick.GetObjectOut(to)->GetCoord().x() < to.x())
+						(rotation == Type::Rotations::Left && _brick.GetObjectOut(to).GetCoord().x() < to.x())
 						||
-						(rotation == Type::Rotations::Right && _brick.GetObjectOut(to)->GetCoord().x() > to.x())
+						(rotation == Type::Rotations::Right && _brick.GetObjectOut(to).GetCoord().x() > to.x())
 						)
 					);
 		}
@@ -265,9 +265,9 @@ namespace Object::Entity
 							_brick.requests.draw = true;
 
 							_brick.scene->ObjectPut(to, ObjectID::Utility2);
-							if (_brick.GetObject(to)->id == ObjectID::Utility2)
+							if (_brick.GetObject(to).id == ObjectID::Utility2)
 							{
-								Utility2_030::Activate(*_brick.GetObject(to));
+								Utility2_030::Activate(_brick.GetObject(to));
 							}
 							return;
 						}
@@ -282,10 +282,10 @@ namespace Object::Entity
 				Type::Coord coord = _brick.GetCoord();
 
 				_brick.scene->RemainPut(coord, ObjectID::Utility2);
-				if (_brick.GetRemain(coord)->id == ObjectID::Utility2)
+				if (_brick.GetRemain(coord).id == ObjectID::Utility2)
 				{
-					Utility2_030::Activate(*_brick.GetRemain(coord));
-					_brick.GetRemain(coord)->events.topDraw = true;
+					Utility2_030::Activate(_brick.GetRemain(coord));
+					_brick.scene->GetRemain(coord).events.topDraw = true;
 				}
 
 				entity_data->_effect_type = EFFECTS::NONE;
@@ -322,12 +322,12 @@ namespace Object::Entity
 						{
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 
-							Brick *to_object = _brick.GetObject(to);
-							Eat(_brick, *to_object, *_brick.scene->GetRemain(to));
+							Brick &to_object = _brick.GetObject(to);
+							Eat(_brick, to_object, _brick.scene->GetRemain(to));
 							_brick.scene->ObjectDisappear(to);
-							if (to_object->isExists && to_object->events.update)
+							if (to_object.isExists && to_object.events.update)
 							{
-								to_object->RunUpdate(Brick::UPDATE_MURPHY);
+								to_object.RunUpdate(Brick::UPDATE_MURPHY);
 							}
 							_brick.SetRotation(rotation);
 							entity_data->_effect_timer = SuckEffectTime;
@@ -367,10 +367,10 @@ namespace Object::Entity
 
 					if (MurphyCanMovePos(_brick, to, rotation))
 					{
-						Brick *to_object = _brick.GetObject(to);
-						if (to_object->GetFlags() & Brick::GiveGravityDelay || !can_fall_down)
+						Brick &to_object = _brick.GetObject(to);
+						if (to_object.GetFlags() & Brick::GiveGravityDelay || !can_fall_down)
 						{
-							Eat(_brick, *to_object, *_brick.scene->GetRemain(to));
+							Eat(_brick, to_object, _brick.scene->GetRemain(to));
 							_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 							_brick.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
 							_brick.scene->murphyMoved(&_brick);
@@ -392,7 +392,7 @@ namespace Object::Entity
 				static constexpr Type::Rotation rotation = Type::Rotations::Down;
 				Type::Coord to = _brick.GetCoordDown();
 
-				Eat(_brick, *_brick.GetObject(to), *_brick.scene->GetRemain(to));
+				Eat(_brick, _brick.GetObject(to), _brick.scene->GetRemain(to));
 				_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 				_brick.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
 				_brick.scene->murphyMoved(&_brick);
@@ -429,9 +429,9 @@ namespace Object::Entity
 						Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 						Type::Coord to = _brick.GetCoord(direction);
 
-						Brick *to_object = _brick.scene->GetObject(to);
+						Brick &to_object = _brick.scene->GetObject(to);
 
-						if (to_object->GetFlags() & move_push_flags[direction])
+						if (to_object.GetFlags() & move_push_flags[direction])
 						{
 							entity_data->_effect_type = EFFECTS::PUSH_TRY | EFFECTS::EFFECT_TIMER;
 							entity_data->_effect_timer = PushEffectTime;
@@ -450,23 +450,23 @@ namespace Object::Entity
 				{
 					Type::Coord to = _brick.GetCoord(direction);
 
-					Brick *to_object = _brick.scene->GetObject(to);
-					Type::Coord to_object_next = to_object->GetCoord(direction);
+					Brick &to_object = _brick.scene->GetObject(to);
+					Type::Coord to_object_next = to_object.GetCoord(direction);
 
-					if (to_object->GetFlags() & move_push_flags[direction] &&
-						!to_object->isActionMove() &&
-						CanMovePos(*to_object, to_object_next, rotation, Brick::StepOn))
+					if (to_object.GetFlags() & move_push_flags[direction] &&
+						!to_object.isActionMove() &&
+						CanMovePos(to_object, to_object_next, rotation, Brick::StepOn))
 					{
-						to_object->SetRotation(rotation);
+						to_object.SetRotation(rotation);
 
-						to_object->SetMove(rotation);
+						to_object.SetMove(rotation);
 						_brick.SetMove(rotation);
 
-						to_object->enableFixSpeed(pushSpeed);
+						to_object.enableFixSpeed(pushSpeed);
 						_brick.enableFixSpeed(pushSpeed);
 
-						to_object->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
-						to_object->action = Brick::LINKED;
+						to_object.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
+						to_object.action = Brick::LINKED;
 						_brick.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], _brick.GetObjectIDremain());
 						_brick.scene->murphyMoved(&_brick);
 
@@ -496,9 +496,9 @@ namespace Object::Entity
 
 					if (_brick.scene->GetUnionFlags(to) & Brick::ButtonPush)
 					{
-						if (_brick.GetObject(to)->id == ObjectID::Terminal)
+						if (_brick.GetObject(to).id == ObjectID::Terminal)
 						{
-							Terminal_028::Pushed(*_brick.GetObject(to));
+							Terminal_028::Pushed(_brick.GetObject(to));
 						}
 						_brick.SetRotation(rotation);
 						entity_data->_effect_timer = SuckEffectTime;
@@ -523,7 +523,7 @@ namespace Object::Entity
 					{
 						Type::Coord to = _brick.GetCoord(direction);
 
-						if (_brick.GetObject(to)->id == ObjectID::Exit)
+						if (_brick.GetObject(to).id == ObjectID::Exit)
 						{
 							Type::Coord coord = _brick.GetCoord();
 
@@ -549,21 +549,21 @@ namespace Object::Entity
 				if (*move_controllers[direction])
 				{
 					Type::Coord next = _brick.GetCoord(direction);
-					Brick *next_object = _brick.scene->GetObject(next);
+					Brick &next_object = _brick.scene->GetObject(next);
 
-					if (next_object->GetFlags() & move_crawl_flags[direction])
+					if (next_object.GetFlags() & move_crawl_flags[direction])
 					{
-						Type::Coord to = next_object->GetCoord(direction);
+						Type::Coord to = next_object.GetCoord(direction);
 
 						if (_brick.scene->GetSectionFlags(to) & Brick::StepOn)
 						{
-							Brick *to_object = _brick.scene->GetObject(to);
+							Brick &to_object = _brick.scene->GetObject(to);
 							Type::Coord coord = _brick.GetCoord();
 
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
-							Eat(_brick, *to_object, *_brick.scene->GetRemain(to));
+							Eat(_brick, to_object, _brick.scene->GetRemain(to));
 
-							if (next_object->GetFlags() & Brick::SwapsGravity)
+							if (next_object.GetFlags() & Brick::SwapsGravity)
 							{
 								_brick.scene->switchGravity();
 							}
@@ -681,15 +681,15 @@ namespace Object::Entity
 				}
 				else if (entity_data->_effect_type == EFFECTS::PUSH)
 				{
-					Brick *push_object = _brick.GetObjectOut(_brick.GetCoord());
-					if (push_object)
+					if (_brick.scene->IsObjectOut(_brick.GetCoord()))
 					{
-						push_object->Step();
-						if (!push_object->IsMove())
+						Brick &push_object = _brick.GetObjectOut(_brick.GetCoord());
+						push_object.Step();
+						if (!push_object.IsMove())
 						{
-							push_object->disableFixSpeed();
+							push_object.disableFixSpeed();
 						}
-						push_object->requests.timer = true;
+						push_object.requests.timer = true;
 					}
 					_brick.Step();
 					if (!_brick.IsMove())
@@ -711,7 +711,7 @@ namespace Object::Entity
 
 			if (entity_data->controller->actionDestroy)
 			{
-				_brick.scene->blowup(&_brick);
+				_brick.scene->blowup(_brick);
 				return;
 			}
 			if (!_brick.IsMove())

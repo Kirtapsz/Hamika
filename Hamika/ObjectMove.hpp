@@ -137,11 +137,11 @@ namespace Object
 			{
 				calculateSpeed(GetMoveSpeed().y());
 				SetMove({GetMove().x(),GetMove().y() - Type::Move::base(currentSpeed_ / CPS)});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() > GetMove().y())
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().y() > GetMove().y())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
-					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().y())
+						currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().y();
+					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord()).GetMove().y()});
 				}
 				if (GetMove().y() <= 0)
 				{
@@ -155,11 +155,11 @@ namespace Object
 			{
 				calculateSpeed(GetMoveSpeed().y());
 				SetMove({GetMove().x(),GetMove().y() + Type::Move::base(currentSpeed_ / CPS)});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() < GetMove().y())
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().y() < GetMove().y())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
-					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().y())
+						currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().y();
+					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord()).GetMove().y()});
 				}
 				if (GetMove().y() >= 0)
 				{
@@ -173,11 +173,11 @@ namespace Object
 			{
 				calculateSpeed(GetMoveSpeed().x());
 				SetMove({GetMove().x() - Type::Move::base(currentSpeed_ / CPS),GetMove().y()});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() > GetMove().x())
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().x() > GetMove().x())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().x())
+						currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().x();
+					SetMove({scene->GetObjectOut(GetCoord()).GetMove().x(),GetMove().y()});
 				}
 				if (GetMove().x() <= 0)
 				{
@@ -191,11 +191,11 @@ namespace Object
 			{
 				calculateSpeed(GetMoveSpeed().x());
 				SetMove({GetMove().x() + Type::Move::base(currentSpeed_ / CPS),GetMove().y()});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() < GetMove().x())
+				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().x() < GetMove().x())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+					if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().x())
+						currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().x();
+					SetMove({scene->GetObjectOut(GetCoord()).GetMove().x(),GetMove().y()});
 				}
 				if (GetMove().x() >= 0)
 				{
@@ -223,9 +223,9 @@ namespace Object
 				if (carryMove_ > 0.f)
 				{
 					SetMove({GetMove().x(),GetMove().y() - carryMove_});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() > GetMove().y())
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().y() > GetMove().y())
 					{
-						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord()).GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -236,11 +236,11 @@ namespace Object
 				if (carryMove_ > 0.f)
 				{
 					SetMove({GetMove().x(),GetMove().y() + carryMove_});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() < GetMove().y())
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().y() < GetMove().y())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
-						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+						if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().y())
+							currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().y();
+						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord()).GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -251,11 +251,11 @@ namespace Object
 				if (carryMove_ > 0.f)
 				{
 					SetMove({GetMove().x() - carryMove_,GetMove().y()});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() > GetMove().x())
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().x() > GetMove().x())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+						if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().x())
+							currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().x();
+						SetMove({scene->GetObjectOut(GetCoord()).GetMove().x(),GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}
@@ -266,11 +266,11 @@ namespace Object
 				if (carryMove_ > 0.f)
 				{
 					SetMove({GetMove().x() + carryMove_,GetMove().y()});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() < GetMove().x())
+					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord()).GetMove().x() < GetMove().x())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+						if (currentSpeed_ > scene->GetObjectOut(GetCoord()).GetMoveSpeed().x())
+							currentSpeed_ = scene->GetObjectOut(GetCoord()).GetMoveSpeed().x();
+						SetMove({scene->GetObjectOut(GetCoord()).GetMove().x(),GetMove().y()});
 					}
 					carryMove_ = 0.f;
 				}

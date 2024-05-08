@@ -204,7 +204,7 @@ namespace Object::Entity
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+  			EntityData *entity_data = (EntityData *)(_brick.specific);
 
 			if (_brick.requests.remove)
 			{
@@ -976,7 +976,7 @@ namespace Object::Entity
 				Timer(_brick);
 			}
 
-			if (!_brick.scene->IamRemain(&_brick))
+			if (!_brick.scene->IamRemain(_brick))
 			{
 				FallAndRoll::Update(_brick, entity_data->fall_and_roll_, updateType);
 			}
@@ -1781,7 +1781,7 @@ namespace Object::Entity
 						{
 							if (_brick.scene->GetObjectU(coord)->id == ObjectID::Utility3)
 							{
-								_brick.scene->blowup(_brick.scene->GetObjectU(coord));
+								_brick.scene->blowup(*_brick.scene->GetObjectU(coord));
 							}
 							else if (_brick.scene->GetObjectU(coord)->id == _brick.id)
 							{
@@ -1847,7 +1847,7 @@ namespace Object::Entity
 			else if (entity_data->active)
 			{
 				_brick.scene->ObjectArrived(_brick.GetCoord());
-				_brick.scene->blowup(&_brick);
+				_brick.scene->blowup(_brick);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
@@ -1970,7 +1970,7 @@ namespace Object::Entity
 				[&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
-				_brick.scene->blowup(&_brick);
+				_brick.scene->blowup(_brick);
 				return true;
 			}))
 			{
@@ -2174,9 +2174,9 @@ namespace Object::Entity
 			entity_data->blastingTimer = blastingTime;
 			entity_data->draw_number_ = 0;
 
-			_brick.scene->GetObject(_brick.GetCoord())->events.clear();
-			_brick.scene->GetObject(_brick.GetCoord())->requests.clear();
-			_brick.scene->GetObject(_brick.GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
+			_brick.scene->GetObject(_brick.GetCoord()).events.clear();
+			_brick.scene->GetObject(_brick.GetCoord()).requests.clear();
+			_brick.scene->GetObject(_brick.GetCoord()).RemoveFlags(Brick::Flags::CanBeKilled);
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
@@ -2196,9 +2196,9 @@ namespace Object::Entity
 			{
 				entity_data->blastingTimer = blastingTime;
 
-				_brick.scene->GetObject(_brick.GetCoord())->events.clear();
-				_brick.scene->GetObject(_brick.GetCoord())->requests.clear();
-				_brick.scene->GetObject(_brick.GetCoord())->RemoveFlags(Brick::Flags::CanBeKilled);
+				_brick.scene->GetObject(_brick.GetCoord()).events.clear();
+				_brick.scene->GetObject(_brick.GetCoord()).requests.clear();
+				_brick.scene->GetObject(_brick.GetCoord()).RemoveFlags(Brick::Flags::CanBeKilled);
 			}
 
 			_brick.events.update = true;
@@ -2237,10 +2237,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				Brick *object = _brick.scene->GetObject(_brick.GetCoord());
-				if (object->GetFlags() & Brick::ExplosionType)
+				Brick &brick = _brick.scene->GetObject(_brick.GetCoord());
+				if (brick.GetFlags() & Brick::ExplosionType)
 				{
-					_brick.scene->blowup(object);
+					_brick.scene->blowup(brick);
 				}
 				else
 				{

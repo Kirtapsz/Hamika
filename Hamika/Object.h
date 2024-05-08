@@ -77,7 +77,12 @@ namespace Editor
 			virtual Module::Draw::Func<DataCo<Brick>>,
 			virtual Module::Coord::Func<DataCo<Brick>>
 		{
+			Brick()
+			{
 
+			}
+			Brick(const Brick &brick) = delete;
+			Brick(const Brick &&brick) = delete;
 		};
 	}
 }
@@ -114,10 +119,10 @@ namespace Object
 
 			// field
 			virtual Type::Flags GetBlockFlags(Type::Coord) = 0;
-			virtual OBJECT *GetObject(Type::Coord) = 0;
-			virtual OBJECT *GetObjectOut(Type::Coord) = 0;
+			virtual OBJECT &GetObject(Type::Coord) = 0;
+			virtual OBJECT &GetObjectOut(Type::Coord) = 0;
 			virtual OBJECT *GetObjectOutU(Type::Coord) = 0;
-			virtual OBJECT *GetRemain(Type::Coord) = 0;
+			virtual OBJECT &GetRemain(Type::Coord) = 0;
 			virtual Type::Flags GetUnionFlags(Type::Coord) = 0;
 			virtual Type::Flags GetSectionFlags(Type::Coord) = 0;
 			virtual Type::Coord GetGoto(Type::Coord) = 0;
@@ -125,13 +130,13 @@ namespace Object
 			virtual bool IsObjectOut(Type::Coord) = 0;
 			virtual bool IsGlobalGravity() const = 0;
 			virtual void switchGravity() = 0;
-			virtual bool IamRemain(OBJECT *) = 0;
+			virtual bool IamRemain(const OBJECT &_object) = 0;
 			virtual Type::Size MapSize() = 0;
 			virtual OBJECT *GetObjectU(Type::Coord) = 0;
 
 			// action
-			virtual float getMoveProgress(OBJECT *_object) const = 0;
-			virtual void blowup(OBJECT *_object) = 0;
+			virtual float getMoveProgress(OBJECT &_object) const = 0;
+			virtual void blowup(OBJECT &_object) = 0;
 			virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
 			virtual void ObjectPut(Type::Coord, Type::ID) = 0;
 			virtual void RemainPut(Type::Coord, Type::ID) = 0;
@@ -160,6 +165,12 @@ namespace Object
 		virtual Module::Actions::Func<DataCo<Brick>>,
 		virtual Module::Flags::Func<DataCo<Brick>>
 	{
+		Brick()
+		{
+		}
+		Brick(const Brick &brick) = delete;
+		Brick(const Brick &&brick) = delete;
+
 		inline void __init__(Type::ID id, Type::Coord coord)
 		{
 			Module::Requests::Func<DataCo<Brick>>::__init__(id, coord);
@@ -220,15 +231,15 @@ namespace Object
 		{
 			return scene->ObjectDisappear(coord);
 		}
-		inline auto GetObject(Type::Coord coord)
+		inline auto &GetObject(Type::Coord coord)
 		{
 			return scene->GetObject(coord);
 		}
-		inline auto GetObjectOut(Type::Coord coord)
+		inline auto &GetObjectOut(Type::Coord coord)
 		{
 			return scene->GetObjectOut(coord);
 		}
-		inline auto GetRemain(Type::Coord coord)
+		inline auto &GetRemain(Type::Coord coord)
 		{
 			return scene->GetRemain(coord);
 		}
@@ -272,7 +283,7 @@ namespace Object
 
 		//AUTOMOVE
 		private:
-		bool CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation);
+		bool CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation) const;
 		public:
 		bool CanMovePos(Type::Coord to, Type::Rotation rotation);
 		bool CanMoveDown();

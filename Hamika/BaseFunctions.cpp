@@ -93,14 +93,14 @@ namespace Object
 				if (_entity_data.heavy_object_)
 				{
 					Type::Coord coord_down = _brick.GetCoordDown();
-					Brick *_below_brick = _brick.scene->GetObject(coord_down);
+					Brick &_below_brick = _brick.scene->GetObject(coord_down);
 					_brick.scene->blowup(_below_brick);
 					if (_brick.scene->IsObjectOut(coord_down))
 					{
-						Brick *_below_brick = _brick.scene->GetObjectOut(coord_down);
-						if (_brick.scene->getMoveProgress(_below_brick) < 0.5f)
+						Brick &_below_out_brick = _brick.scene->GetObjectOut(coord_down);
+						if (_brick.scene->getMoveProgress(_below_out_brick) < 0.5f)
 						{
-							_brick.scene->blowup(_below_brick);
+							_brick.scene->blowup(_below_out_brick);
 						}
 					}
 				}
@@ -150,7 +150,7 @@ namespace Object
 			{
 				if (_brick.CanMoveDown())
 				{
-					if (_brick.scene->GetObjectOut(_brick.GetCoordDown())->GetAbsMove() <= 0.5f)
+					if (_brick.scene->GetObjectOut(_brick.GetCoordDown()).GetAbsMove() <= 0.5f)
 					{
 						_brick.doMove(Brick::MOVE_DOWN, ObjectID::Space);
 						_brick.requests.timer = true;
@@ -183,39 +183,39 @@ namespace Object
 			Type::Coord coord_bottom = _brick.GetCoordDown();
 			Type::Coord coord_up = _brick.GetCoordUp();
 			Type::Coord coord_next = _brick.GetCoord(_direction);
-			Type::Coord coord_diagonal = _brick.scene->GetObject(coord_next)->GetCoordDown();
+			Type::Coord coord_diagonal = _brick.scene->GetObject(coord_next).GetCoordDown();
 
 			return
 				(
-					_brick.scene->GetObject(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (object)
+					_brick.scene->GetObject(coord_next).GetFlags() & Brick::StepOn // it can step to the next place (object)
 					&&
-					_brick.scene->GetRemain(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (remain)
+					_brick.scene->GetRemain(coord_next).GetFlags() & Brick::StepOn // it can step to the next place (remain)
 					&&
 					(
 						!_brick.scene->IsObjectOut(coord_next)
 						||
 						(
-							_brick.scene->GetObjectOut(coord_next)->GetFlags() & Brick::StepOn // it can step to the next place (leaving)
+							_brick.scene->GetObjectOut(coord_next).GetFlags() & Brick::StepOn // it can step to the next place (leaving)
 							||
-							_brick.scene->GetObjectOut(coord_next)->GetCoord().x() != coord_next.x() // the leaving one moving away on the X
+							_brick.scene->GetObjectOut(coord_next).GetCoord().x() != coord_next.x() // the leaving one moving away on the X
 							)
 						)
 					&&
 					(
-						_brick.scene->GetObject(coord_diagonal)->GetFlags() & Brick::StepOn // it can step to the diagonal place (object)
+						_brick.scene->GetObject(coord_diagonal).GetFlags() & Brick::StepOn // it can step to the diagonal place (object)
 						&&
-						_brick.scene->GetRemain(coord_diagonal)->GetFlags() & Brick::StepOn // it can step to the diagonal place (remain)
+						_brick.scene->GetRemain(coord_diagonal).GetFlags() & Brick::StepOn // it can step to the diagonal place (remain)
 						&&
 						(
 							!_brick.scene->IsObjectOut(coord_diagonal) // there is no leaving object in the diagonal
 							||
 							(
-								_brick.scene->GetObjectOut(coord_diagonal)->GetFlags() & Brick::StepOn // it can step to the next place (leaving)
+								_brick.scene->GetObjectOut(coord_diagonal).GetFlags() & Brick::StepOn // it can step to the next place (leaving)
 								||
 								(
-									_brick.scene->GetObjectOut(coord_diagonal)->isActionMove() // the leaving one moving away
+									_brick.scene->GetObjectOut(coord_diagonal).isActionMove() // the leaving one moving away
 									&&
-									_brick.scene->GetObjectOut(coord_diagonal)->GetCoord().x() != coord.x() // the leaving one is not moving under it
+									_brick.scene->GetObjectOut(coord_diagonal).GetCoord().x() != coord.x() // the leaving one is not moving under it
 									)
 								)
 							)
@@ -225,9 +225,9 @@ namespace Object
 						!_brick.scene->IsObjectOut(coord_up) // there is no leaving object on the top
 						||
 						(
-							_brick.scene->GetObjectOut(coord_up)->GetCoord().x() != coord_next.x() // the leaving object on the top moving different direction
+							_brick.scene->GetObjectOut(coord_up).GetCoord().x() != coord_next.x() // the leaving object on the top moving different direction
 							||
-							_brick.scene->GetObjectOut(coord_up)->GetAbsMove() >= 0.9f // the leaving object on the top at the beginning of it's move
+							_brick.scene->GetObjectOut(coord_up).GetAbsMove() >= 0.9f // the leaving object on the top at the beginning of it's move
 							)
 						)
 					)
@@ -289,7 +289,7 @@ namespace Object
 			{
 				if (_updateType == Brick::UPDATE_DESC && _brick.CanMoveDown())
 				{
-					if (_brick.scene->GetObjectOut(_brick.GetCoordDown())->GetAbsMove() <= 0.5f)
+					if (_brick.scene->GetObjectOut(_brick.GetCoordDown()).GetAbsMove() <= 0.5f)
 					{
 						changeAction(_brick, _entity_data, Brick::MOVE_DOWN);
 						_brick.doMove(Brick::MOVE_DOWN, ObjectID::Space);
@@ -347,17 +347,17 @@ namespace Object
 		bool CanMoveForward(Type::Coord to, Brick &_brick)
 		{
 			return
-				_brick.scene->GetObject(to)->GetFlags() & Brick::Flags::StepOn
+				_brick.scene->GetObject(to).GetFlags() & Brick::Flags::StepOn
 				&&
-				_brick.scene->GetRemain(to)->GetFlags() & Brick::Flags::StepOn
+				_brick.scene->GetRemain(to).GetFlags() & Brick::Flags::StepOn
 				&&
-				_brick.scene->GetObjectOut(to)->GetFlags() & Brick::Flags::StepOn
+				_brick.scene->GetObjectOut(to).GetFlags() & Brick::Flags::StepOn
 				;
 		}
 		bool CanExlosive(Type::Coord coord, Brick &_brick, bool _do_explosive)
 		{
-			Brick *_target_brick = _brick.scene->GetObject(coord);
-			if (_target_brick->GetFlags() & Brick::Flags::CanBeKilled)
+			Brick &_target_brick = _brick.scene->GetObject(coord);
+			if (_target_brick.GetFlags() & Brick::Flags::CanBeKilled)
 			{
 				if (_do_explosive)
 				{
@@ -366,13 +366,13 @@ namespace Object
 				return true;
 			}
 
-			_target_brick = _brick.scene->GetObjectOut(coord);
-			if (_target_brick->GetFlags() & Brick::Flags::CanBeKilled &&
-				_brick.scene->getMoveProgress(_target_brick) < 0.5f)
+			Brick &_target_out_brick = _brick.scene->GetObjectOut(coord);
+			if (_target_out_brick.GetFlags() & Brick::Flags::CanBeKilled &&
+				_brick.scene->getMoveProgress(_target_out_brick) < 0.5f)
 			{
 				if (_do_explosive)
 				{
-					_brick.scene->blowup(&_brick);
+					_brick.scene->blowup(_brick);
 				}
 				return true;
 			}
@@ -458,7 +458,7 @@ namespace Object
 				Type::Coord to = _brick.GetForwardCoord();
 				if (CanExlosive(to, _brick, true))
 				{
-					_brick.scene->blowup(&_brick);
+					_brick.scene->blowup(_brick);
 					return;
 				}
 				else if (CanMoveForward(to, _brick))
