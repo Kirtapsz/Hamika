@@ -47,8 +47,8 @@ namespace Object
 			{
 				if (drawnerFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
+					typename DATA::OBJECT_T *object = dynamic_cast<typename DATA::OBJECT_T *>(this);
+					drawnerFnc(*object, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
 				}
 				else
 				{

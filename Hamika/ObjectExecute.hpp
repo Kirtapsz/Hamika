@@ -36,8 +36,8 @@ namespace Object
 
 				if (updaterFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					updaterFnc(&stack, updateType);
+					typename DATA::OBJECT_T *object = dynamic_cast<typename DATA::OBJECT_T *>(this);
+					updaterFnc(*object, updateType);
 				}
 			}
 
@@ -47,8 +47,8 @@ namespace Object
 				requests.finalize = false;
 				if (finalizeFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					finalizeFnc(&stack);
+					typename DATA::OBJECT_T *object = dynamic_cast<typename DATA::OBJECT_T *>(this);
+					finalizeFnc(*object);
 				}
 			}
 
@@ -58,8 +58,8 @@ namespace Object
 				requests.timer = false;
 				if (timerFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					timerFnc(&stack);
+					typename DATA::OBJECT_T *object = dynamic_cast<typename DATA::OBJECT_T *>(this);
+					timerFnc(*object);
 				}
 			}
 		}

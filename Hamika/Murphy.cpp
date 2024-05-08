@@ -50,133 +50,132 @@ namespace Object::Entity
 
 		typedef EntityData Specific;
 
-		bool CanSuck(Brick *o, Type::Coord coord)
+		bool CanSuck(Brick &_brick, Type::Coord coord)
 		{
 			return
-				!o->GetObject(coord)->isActionMove()
+				!_brick.GetObject(coord)->isActionMove()
 				&&
-				o->GetObject(coord)->GetFlags() & Brick::MurphyCanSuck
+				_brick.GetObject(coord)->GetFlags() & Brick::MurphyCanSuck
 				&&
-				o->GetRemain(coord)->GetFlags() & Brick::StepOn
+				_brick.GetRemain(coord)->GetFlags() & Brick::StepOn
 				;
 		}
 
-		void Eat(Brick *murphy, Brick *object, Brick *remain)
+		void Eat(Brick &murphy, Brick &_brick, Brick &remain)
 		{
-			if (object->isExists)
+			if (_brick.isExists)
 			{
-				if (object->GetFlags() & Brick::MurphyDies)
+				if (_brick.GetFlags() & Brick::MurphyDies)
 				{
-					murphy->scene->blowup(murphy);
+					murphy.scene->blowup(&murphy);
 				}
-				if (object->GetFlags() & Brick::Give1Score)
+				if (_brick.GetFlags() & Brick::Give1Score)
 				{
-					if (murphy->scene->getScoreToCollect() > 0)
+					if (murphy.scene->getScoreToCollect() > 0)
 					{
-						murphy->scene->addScore(1);
-						if (murphy->scene->getScoreToCollect() == 0)
+						murphy.scene->addScore(1);
+						if (murphy.scene->getScoreToCollect() == 0)
 						{
 							Exit_015::Open(murphy);
 						}
 					}
 				}
-				if (object->GetFlags() & Brick::Give1Unity)
+				if (_brick.GetFlags() & Brick::Give1Unity)
 				{
-					murphy->scene->addUnity(1);
+					murphy.scene->addUnity(1);
 				}
 			}
-			if (remain->isExists)
+			if (remain.isExists)
 			{
-				if (remain->GetFlags() & Brick::MurphyDies)
+				if (remain.GetFlags() & Brick::MurphyDies)
 				{
-					murphy->scene->blowup(murphy);
+					murphy.scene->blowup(&murphy);
 				}
 			}
 		}
 
-		void SetController(Brick *o, KeyboardController *controller)
+		void SetController(Brick &_brick, KeyboardController *controller)
 		{
-			Brick::Stack stack(o);
-			Specific *spec = stack;
-			spec->controller = controller;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
+
+			entity_data->controller = controller;
 		}
 
-		bool CanMovePos(Brick *o, Type::Coord to, Type::Rotation rotation, Type::Flags _step_flags)
+		bool CanMovePos(Brick &_brick, Type::Coord to, Type::Rotation rotation, Type::Flags _step_flags)
 		{
 			return
-				!o->GetObject(to)->isActionMove()
+				!_brick.GetObject(to)->isActionMove()
 				&&
-				o->GetObject(to)->GetFlags() & _step_flags
+				_brick.GetObject(to)->GetFlags() & _step_flags
 				&&
-				o->GetRemain(to)->GetFlags() & _step_flags
+				_brick.GetRemain(to)->GetFlags() & _step_flags
 				&&
 				(
-					o->GetObjectOut(to)->GetFlags() & Brick::StepOn
+					_brick.GetObjectOut(to)->GetFlags() & Brick::StepOn
 					||
 					(
-						(rotation == Type::Rotations::Up && o->GetObjectOut(to)->GetCoord().y() < to.y())
+						(rotation == Type::Rotations::Up && _brick.GetObjectOut(to)->GetCoord().y() < to.y())
 						||
-						(rotation == Type::Rotations::Down && o->GetObjectOut(to)->GetCoord().y() > to.y())
+						(rotation == Type::Rotations::Down && _brick.GetObjectOut(to)->GetCoord().y() > to.y())
 						||
-						(rotation == Type::Rotations::Left && o->GetObjectOut(to)->GetCoord().x() < to.x())
+						(rotation == Type::Rotations::Left && _brick.GetObjectOut(to)->GetCoord().x() < to.x())
 						||
-						(rotation == Type::Rotations::Right && o->GetObjectOut(to)->GetCoord().x() > to.x())
+						(rotation == Type::Rotations::Right && _brick.GetObjectOut(to)->GetCoord().x() > to.x())
 						)
 					);
 		}
-		inline bool MurphyCanMovePos(Brick *o, Type::Coord to, Type::Rotation rotation)
+		inline bool MurphyCanMovePos(Brick &_brick, Type::Coord to, Type::Rotation rotation)
 		{
-			return CanMovePos(o, to, rotation, Brick::MurphyStepOn | Brick::StepOn);
+			return CanMovePos(_brick, to, rotation, Brick::MurphyStepOn | Brick::StepOn);
 		}
-		void timerCrawlTail(Brick *_tail, Brick *_head)
+		void timerCrawlTail(Brick &_tail, Brick &_head)
 		{
-			Brick::Stack stack(_tail);
-			Specific *spec = stack;
+			EntityData *entity_data = (EntityData *)(_tail.specific);
 
-			if (_head->GetAbsMove() > 0)
+			if (_head.GetAbsMove() > 0)
 			{
-				DRAW_NUMBER_ASC(_head->GetAbsMove(), 2.f, spec->draw_number_, _tail, PassInSlides[_tail->getMoveDirection()]);
+				DRAW_NUMBER_ASC(_head.GetAbsMove(), 2.f, entity_data->draw_number_, &_tail, PassInSlides[_tail.getMoveDirection()]);
 			}
 			else
 			{
-				_tail->requests.remove = true;
+				_tail.requests.remove = true;
 			}
 		}
-		void createCrawlExit(Brick *_object, Type::Direction _direction)
+		void createCrawlExit(Brick &_brick, Type::Direction _direction)
 		{
-			Brick::Stack stack(_object);
-			Specific *spec = stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
+
 			Type::Direction direction = (_direction + 2) % 4;
 
-			spec->_effect_type = EFFECTS::EXIT;
-			spec->_effect_timer = ExitEffectTime;
-			_object->SetRotation(Type::Rotations::getRotationOfIndex(direction));
-			_object->SetTranslationID(ObjectID::Infotron);
+			entity_data->_effect_type = EFFECTS::EXIT;
+			entity_data->_effect_timer = ExitEffectTime;
+			_brick.SetRotation(Type::Rotations::getRotationOfIndex(direction));
+			_brick.SetTranslationID(ObjectID::Infotron);
 
-			_object->SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
-			_object->disablePhysics();
-			_object->SetObjectIDremain(ObjectID::Space);
+			_brick.SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
+			_brick.disablePhysics();
+			_brick.SetObjectIDremain(ObjectID::Space);
 
-			_object->events.timer = true;
-			_object->requests.timer = true;
+			_brick.events.timer = true;
+			_brick.requests.timer = true;
 
-			DRAW_NUMBER_ASC_INIT(spec->draw_number_, _object, PassInSlides[direction]);
+			DRAW_NUMBER_ASC_INIT(entity_data->draw_number_, &_brick, PassInSlides[direction]);
 		}
-		void createCrawlTail(Brick *_tail, Brick *_head)
+		void createCrawlTail(Brick &_tail, Brick &_head)
 		{
-			Brick::Stack stack(_tail);
-			Specific *spec = stack;
-			Type::Direction direction = (_head->getMoveDirection() + 2) % 4;
+			EntityData *entity_data = (EntityData *)(_tail.specific);
 
-			spec->_effect_type = EFFECTS::CRAWL;
-			_tail->SetRotation(Type::Rotations::getRotationOfIndex(direction));
-			_tail->SetTranslationID(ObjectID::Space);
+			Type::Direction direction = (_head.getMoveDirection() + 2) % 4;
 
-			_tail->SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
-			_tail->disablePhysics();
-			_tail->SetObjectIDremain(ObjectID::Space);
+			entity_data->_effect_type = EFFECTS::CRAWL;
+			_tail.SetRotation(Type::Rotations::getRotationOfIndex(direction));
+			_tail.SetTranslationID(ObjectID::Space);
 
-			DRAW_NUMBER_ASC_INIT(spec->draw_number_, _tail, PassInSlides[_tail->getMoveDirection()]);
+			_tail.SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
+			_tail.disablePhysics();
+			_tail.SetObjectIDremain(ObjectID::Space);
+
+			DRAW_NUMBER_ASC_INIT(entity_data->draw_number_, &_tail, PassInSlides[_tail.getMoveDirection()]);
 		}
 
 		void InitializerCrawlTail(OBJECT_INITIALIZER_PARAM)
@@ -185,26 +184,26 @@ namespace Object::Entity
 		}
 		void CreateCrawlTail(OBJECT_CREATER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			stack->o->SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded);
-			stack->o->events.topDraw = true;
+			_brick.SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded);
+			_brick.events.topDraw = true;
 		}
 		void TimerCrawlTail(OBJECT_TIMER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (spec->_effect_type == EFFECTS::EXIT)
+			if (entity_data->_effect_type == EFFECTS::EXIT)
 			{
-				spec->_effect_timer -= CA;
-				if (spec->_effect_timer <= 0)
+				entity_data->_effect_timer -= CA;
+				if (entity_data->_effect_timer <= 0)
 				{
-					stack->o->requests.remove = true;
+					_brick.requests.remove = true;
 				}
 				else
 				{
-					DRAW_NUMBER_ASC(spec->_effect_timer, ExitEffectTime, spec->draw_number_, stack->o, PassInSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())]);
-					stack->o->requests.timer = true;
+					DRAW_NUMBER_ASC(entity_data->_effect_timer, ExitEffectTime, entity_data->draw_number_, &_brick, PassInSlides[Type::Rotations::getIndexOfRotation(_brick.GetRotation())]);
+					_brick.requests.timer = true;
 				}
 			}
 		}
@@ -214,9 +213,9 @@ namespace Object::Entity
 		}
 		void DrawnerCrawlTail(OBJECT_DRAWNER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			PassInSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())][spec->draw_number_].drawScaled(x, y, w, h);
+			PassInSlides[Type::Rotations::getIndexOfRotation(_brick.GetRotation())][entity_data->draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDrawCrawlTail(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -224,115 +223,116 @@ namespace Object::Entity
 		}
 
 
-		void TimeUpPlaceExplosive(Brick::Stack *stack)
+		void TimeUpPlaceExplosive(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (!(spec->_effect_type & EFFECTS::PLACE_FACE))
+			if (!(entity_data->_effect_type & EFFECTS::PLACE_FACE))
 			{
-				spec->_effect_timer = PlaceFaceUnityTime;
-				spec->_effect_type = EFFECTS::PLACE | EFFECTS::PLACE_FACE | EFFECTS::EFFECT_TIMER;
+				entity_data->_effect_timer = PlaceFaceUnityTime;
+				entity_data->_effect_type = EFFECTS::PLACE | EFFECTS::PLACE_FACE | EFFECTS::EFFECT_TIMER;
 				return;
 			}
 
-			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 
 			if ([&]()->bool
-				{
-					for (Type::Direction direction = 0; direction < 4; ++direction)
-					{
-						if (*move_controllers[direction])
-						{
-							return true;
-						}
-					}
-					return false;
-				}())
 			{
 				for (Type::Direction direction = 0; direction < 4; ++direction)
 				{
 					if (*move_controllers[direction])
 					{
-						Type::Coord to = stack->o->GetCoord(direction);
+						return true;
+					}
+				}
+				return false;
+			}())
+			{
+				for (Type::Direction direction = 0; direction < 4; ++direction)
+				{
+					if (*move_controllers[direction])
+					{
+						Type::Coord to = _brick.GetCoord(direction);
 
-						if (stack->o->scene->GetSectionFlags(to) & Brick::StepOn)
+						if (_brick.scene->GetSectionFlags(to) & Brick::StepOn)
 						{
-							stack->o->scene->addUnity(-1);
+							_brick.scene->addUnity(-1);
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 
-							stack->o->SetRotation(rotation);
-							spec->_effect_timer = SuckEffectTime;
-							spec->_effect_type = EFFECTS::SUCK | EFFECTS::EFFECT_TIMER;
-							stack->o->requests.draw = true;
+							_brick.SetRotation(rotation);
+							entity_data->_effect_timer = SuckEffectTime;
+							entity_data->_effect_type = EFFECTS::SUCK | EFFECTS::EFFECT_TIMER;
+							_brick.requests.draw = true;
 
-							stack->o->scene->ObjectPut(to, ObjectID::Utility2);
-							if (stack->o->GetObject(to)->id == ObjectID::Utility2)
+							_brick.scene->ObjectPut(to, ObjectID::Utility2);
+							if (_brick.GetObject(to)->id == ObjectID::Utility2)
 							{
-								Utility2_030::Activate(stack->o->GetObject(to));
+								Utility2_030::Activate(*_brick.GetObject(to));
 							}
 							return;
 						}
 					}
 				}
 
-				spec->_effect_type = EFFECTS::NONE;
+				entity_data->_effect_type = EFFECTS::NONE;
 			}
 			else
 			{
-				stack->o->scene->addUnity(-1);
-				Type::Coord coord = stack->o->GetCoord();
+				_brick.scene->addUnity(-1);
+				Type::Coord coord = _brick.GetCoord();
 
-				stack->o->scene->RemainPut(coord, ObjectID::Utility2);
-				if (stack->o->GetRemain(coord)->id == ObjectID::Utility2)
+				_brick.scene->RemainPut(coord, ObjectID::Utility2);
+				if (_brick.GetRemain(coord)->id == ObjectID::Utility2)
 				{
-					Utility2_030::Activate(stack->o->GetRemain(coord));
-					stack->o->GetRemain(coord)->events.topDraw = true;
+					Utility2_030::Activate(*_brick.GetRemain(coord));
+					_brick.GetRemain(coord)->events.topDraw = true;
 				}
 
-				spec->_effect_type = EFFECTS::NONE;
+				entity_data->_effect_type = EFFECTS::NONE;
 			}
 		}
-		bool ControllPlaceExplosive(Brick::Stack *stack)
+		bool ControllPlaceExplosive(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (spec->_effect_type == EFFECTS::NONE && stack->o->scene->getUnity() > 0)
+			if (entity_data->_effect_type == EFFECTS::NONE && _brick.scene->getUnity() > 0)
 			{
-				spec->_effect_timer = PlaceUnityTime;
-				spec->_effect_type = EFFECTS::PLACE | EFFECTS::EFFECT_TIMER;
-				stack->o->requests.draw = true;
+				entity_data->_effect_timer = PlaceUnityTime;
+				entity_data->_effect_type = EFFECTS::PLACE | EFFECTS::EFFECT_TIMER;
+				_brick.requests.draw = true;
 				return true;
 			}
 
 			return false;
 		}
-		bool ControllSuck(Brick::Stack *stack)
+		bool ControllSuck(Brick &_brick)
 		{
-			Specific *spec = *stack;
-			if (!(spec->_effect_type & EFFECTS::SUCK))
+			EntityData *entity_data = (EntityData *)(_brick.specific);
+
+			if (!(entity_data->_effect_type & EFFECTS::SUCK))
 			{
-				const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+				const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 				for (Type::Direction direction = 0; direction < 4; ++direction)
 				{
 					if (*move_controllers[direction])
 					{
-						Type::Coord to = stack->o->GetCoord(direction);
+						Type::Coord to = _brick.GetCoord(direction);
 
-						if (CanSuck(stack->o, to))
+						if (CanSuck(_brick, to))
 						{
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 
-							Brick *to_object = stack->o->GetObject(to);
-							Eat(stack->o, to_object, stack->o->scene->GetRemain(to));
-							stack->o->scene->ObjectDisappear(to);
+							Brick *to_object = _brick.GetObject(to);
+							Eat(_brick, *to_object, *_brick.scene->GetRemain(to));
+							_brick.scene->ObjectDisappear(to);
 							if (to_object->isExists && to_object->events.update)
 							{
 								to_object->RunUpdate(Brick::UPDATE_MURPHY);
 							}
-							stack->o->SetRotation(rotation);
-							spec->_effect_timer = SuckEffectTime;
-							spec->_effect_type = EFFECTS::SUCK | EFFECTS::EFFECT_TIMER;
-							stack->o->requests.draw = true;
+							_brick.SetRotation(rotation);
+							entity_data->_effect_timer = SuckEffectTime;
+							entity_data->_effect_type = EFFECTS::SUCK | EFFECTS::EFFECT_TIMER;
+							_brick.requests.draw = true;
 
 							return true;
 						}
@@ -341,41 +341,41 @@ namespace Object::Entity
 			}
 			return false;
 		}
-		bool CheckGravity(Brick::Stack *stack)
+		bool CheckGravity(Brick &_brick)
 		{
-			return stack->o->scene->IsGlobalGravity() || stack->o->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity;
+			return _brick.scene->IsGlobalGravity() || _brick.scene->GetBlockFlags(_brick.GetCoord()) & GridFlags::Gravity;
 		}
-		bool CanFallDown(Brick::Stack *stack)
+		bool CanFallDown(Brick &_brick)
 		{
 			static constexpr Type::Rotation rotation = Type::Rotations::Down;
-			Type::Coord to = stack->o->GetCoordDown();
-			return CanMovePos(stack->o, to, rotation, Brick::StepOn);
+			Type::Coord to = _brick.GetCoordDown();
+			return CanMovePos(_brick, to, rotation, Brick::StepOn);
 		}
-		bool ControllMove(Brick::Stack *stack)
+		bool ControllMove(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			bool can_fall_down = CheckGravity(stack) ? CanFallDown(stack) : false;
+			bool can_fall_down = CheckGravity(_brick) ? CanFallDown(_brick) : false;
 
-			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 			for (Type::Direction direction = 0; direction < 4; ++direction)
 			{
 				if (*move_controllers[direction])
 				{
 					Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
-					Type::Coord to = stack->o->GetCoord(direction);
+					Type::Coord to = _brick.GetCoord(direction);
 
-					if (MurphyCanMovePos(stack->o, to, rotation))
+					if (MurphyCanMovePos(_brick, to, rotation))
 					{
-						Brick *to_object = stack->o->GetObject(to);
+						Brick *to_object = _brick.GetObject(to);
 						if (to_object->GetFlags() & Brick::GiveGravityDelay || !can_fall_down)
 						{
-							Eat(stack->o, to_object, stack->o->scene->GetRemain(to));
-							stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-							stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
-							stack->o->scene->murphyMoved(stack->o);
-							stack->o->SetRotation(rotation);
-							spec->_effect_type = EFFECTS::MOVE;
+							Eat(_brick, *to_object, *_brick.scene->GetRemain(to));
+							_brick.SetMoveSpeed({moveSpeed,moveSpeed});
+							_brick.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
+							_brick.scene->murphyMoved(&_brick);
+							_brick.SetRotation(rotation);
+							entity_data->_effect_type = EFFECTS::MOVE;
 							return true;
 						}
 					}
@@ -383,153 +383,153 @@ namespace Object::Entity
 			}
 			return false;
 		}
-		bool ControllFallDown(Brick::Stack *stack)
+		bool ControllFallDown(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (CheckGravity(stack) && CanFallDown(stack))
+			if (CheckGravity(_brick) && CanFallDown(_brick))
 			{
 				static constexpr Type::Rotation rotation = Type::Rotations::Down;
-				Type::Coord to = stack->o->GetCoordDown();
+				Type::Coord to = _brick.GetCoordDown();
 
-				Eat(stack->o, stack->o->GetObject(to), stack->o->scene->GetRemain(to));
-				stack->o->SetMoveSpeed({moveSpeed,moveSpeed});
-				stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
-				stack->o->scene->murphyMoved(stack->o);
-				stack->o->SetRotation(rotation);
-				spec->_effect_type = EFFECTS::MOVE | EFFECTS::FALL;
+				Eat(_brick, *_brick.GetObject(to), *_brick.scene->GetRemain(to));
+				_brick.SetMoveSpeed({moveSpeed,moveSpeed});
+				_brick.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
+				_brick.scene->murphyMoved(&_brick);
+				_brick.SetRotation(rotation);
+				entity_data->_effect_type = EFFECTS::MOVE | EFFECTS::FALL;
 				return true;
 			}
 
 			return false;
 		}
-		bool ControllPush(Brick::Stack *stack)
+		bool ControllPush(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 			static constexpr std::array<Type::Flags, 4> move_push_flags{Brick::CanPushUp, Brick::CanPushRight, Brick::CanPushDown, Brick::CanPushLeft};
 
-			if (spec->_effect_type == EFFECTS::PUSH_TRY)
+			if (entity_data->_effect_type == EFFECTS::PUSH_TRY)
 			{
-				Type::Rotation rotation = stack->o->GetRotation();
+				Type::Rotation rotation = _brick.GetRotation();
 				Type::Direction direction = Type::Rotations::getIndexOfRotation(rotation);
 				if (!*move_controllers[direction])
 				{
-					spec->_effect_type = EFFECTS::NONE;
-					stack->o->requests.draw = true;
+					entity_data->_effect_type = EFFECTS::NONE;
+					_brick.requests.draw = true;
 				}
 			}
-			if (spec->_effect_type == EFFECTS::NONE)
+			if (entity_data->_effect_type == EFFECTS::NONE)
 			{
 				for (Type::Direction direction = 0; direction < 4; ++direction)
 				{
 					if (*move_controllers[direction])
 					{
 						Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
-						Type::Coord to = stack->o->GetCoord(direction);
+						Type::Coord to = _brick.GetCoord(direction);
 
-						Brick *to_object = stack->o->scene->GetObject(to);
+						Brick *to_object = _brick.scene->GetObject(to);
 
 						if (to_object->GetFlags() & move_push_flags[direction])
 						{
-							spec->_effect_type = EFFECTS::PUSH_TRY | EFFECTS::EFFECT_TIMER;
-							spec->_effect_timer = PushEffectTime;
-							stack->o->SetRotation(rotation);
-							stack->o->requests.draw = true;
+							entity_data->_effect_type = EFFECTS::PUSH_TRY | EFFECTS::EFFECT_TIMER;
+							entity_data->_effect_timer = PushEffectTime;
+							_brick.SetRotation(rotation);
+							_brick.requests.draw = true;
 							return true;
 						}
 					}
 				}
 			}
-			if (spec->_effect_type == EFFECTS::PUSH)
+			if (entity_data->_effect_type == EFFECTS::PUSH)
 			{
-				Type::Rotation rotation = stack->o->GetRotation();
+				Type::Rotation rotation = _brick.GetRotation();
 				Type::Direction direction = Type::Rotations::getIndexOfRotation(rotation);
 				if (*move_controllers[direction])
 				{
-					Type::Coord to = stack->o->GetCoord(direction);
+					Type::Coord to = _brick.GetCoord(direction);
 
-					Brick *to_object = stack->o->scene->GetObject(to);
+					Brick *to_object = _brick.scene->GetObject(to);
 					Type::Coord to_object_next = to_object->GetCoord(direction);
 
 					if (to_object->GetFlags() & move_push_flags[direction] &&
 						!to_object->isActionMove() &&
-						CanMovePos(to_object, to_object_next, rotation, Brick::StepOn))
+						CanMovePos(*to_object, to_object_next, rotation, Brick::StepOn))
 					{
 						to_object->SetRotation(rotation);
 
 						to_object->SetMove(rotation);
-						stack->o->SetMove(rotation);
+						_brick.SetMove(rotation);
 
 						to_object->enableFixSpeed(pushSpeed);
-						stack->o->enableFixSpeed(pushSpeed);
+						_brick.enableFixSpeed(pushSpeed);
 
 						to_object->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], ObjectID::Space);
 						to_object->action = Brick::LINKED;
-						stack->o->doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], stack->o->GetObjectIDremain());
-						stack->o->scene->murphyMoved(stack->o);
+						_brick.doMove(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)], _brick.GetObjectIDremain());
+						_brick.scene->murphyMoved(&_brick);
 
-						spec->_effect_type = EFFECTS::PUSH;
+						entity_data->_effect_type = EFFECTS::PUSH;
 						return true;
 					}
 				}
 				else
 				{
-					spec->_effect_type = EFFECTS::NONE;
-					stack->o->requests.draw = true;
+					entity_data->_effect_type = EFFECTS::NONE;
+					_brick.requests.draw = true;
 				}
 			}
 			return false;
 		}
-		bool ControllButton(Brick::Stack *stack)
+		bool ControllButton(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 			for (Type::Direction direction = 0; direction < 4; ++direction)
 			{
 				if (*move_controllers[direction])
 				{
 					Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
-					Type::Coord to = stack->o->GetCoord(direction);
+					Type::Coord to = _brick.GetCoord(direction);
 
-					if (stack->o->scene->GetUnionFlags(to) & Brick::ButtonPush)
+					if (_brick.scene->GetUnionFlags(to) & Brick::ButtonPush)
 					{
-						if (stack->o->GetObject(to)->id == ObjectID::Terminal)
+						if (_brick.GetObject(to)->id == ObjectID::Terminal)
 						{
-							Terminal_028::Pushed(stack->o->GetObject(to));
+							Terminal_028::Pushed(*_brick.GetObject(to));
 						}
-						stack->o->SetRotation(rotation);
-						spec->_effect_timer = SuckEffectTime;
-						spec->_effect_type = EFFECTS::SUCK | EFFECTS::EFFECT_TIMER;
-						stack->o->requests.draw = true;
+						_brick.SetRotation(rotation);
+						entity_data->_effect_timer = SuckEffectTime;
+						entity_data->_effect_type = EFFECTS::SUCK | EFFECTS::EFFECT_TIMER;
+						_brick.requests.draw = true;
 						return true;
 					}
 				}
 			}
 			return false;
 		}
-		bool ControllExit(Brick::Stack *stack)
+		bool ControllExit(Brick &_brick)
 		{
-			if (stack->o->scene->getScoreToCollect() == 0)
+			if (_brick.scene->getScoreToCollect() == 0)
 			{
-				Specific *spec = *stack;
+				EntityData *entity_data = (EntityData *)(_brick.specific);
 
-				const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+				const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 				for (Type::Direction direction = 0; direction < 4; ++direction)
 				{
 					if (*move_controllers[direction])
 					{
-						Type::Coord to = stack->o->GetCoord(direction);
+						Type::Coord to = _brick.GetCoord(direction);
 
-						if (stack->o->GetObject(to)->id == ObjectID::Exit)
+						if (_brick.GetObject(to)->id == ObjectID::Exit)
 						{
-							Type::Coord coord = stack->o->GetCoord();
+							Type::Coord coord = _brick.GetCoord();
 
-							stack->o->scene->murphyVictory();
-							stack->o->scene->ObjectPut(coord, ObjectID::MurphyCrawlTail);
-							createCrawlExit(stack->o, direction);
+							_brick.scene->murphyVictory();
+							_brick.scene->ObjectPut(coord, ObjectID::MurphyCrawlTail);
+							createCrawlExit(_brick, direction);
 							return true;
 						}
 					}
@@ -537,50 +537,50 @@ namespace Object::Entity
 			}
 			return false;
 		}
-		bool ControllCrawl(Brick::Stack *stack)
+		bool ControllCrawl(Brick &_brick)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			const std::array<const KeyboardController::STATE *, 4> move_controllers{&spec->controller->actionUp, &spec->controller->actionRight, &spec->controller->actionDown, &spec->controller->actionLeft};
+			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data->controller->actionUp, &entity_data->controller->actionRight, &entity_data->controller->actionDown, &entity_data->controller->actionLeft};
 			static constexpr std::array<Type::Flags, 4> move_crawl_flags{Brick::PassageFromBottom, Brick::PassageFromLeft, Brick::PassageFromTop, Brick::PassageFromRight};
 
 			for (Type::Direction direction = 0; direction < 4; ++direction)
 			{
 				if (*move_controllers[direction])
 				{
-					Type::Coord next = stack->o->GetCoord(direction);
-					Brick *next_object = stack->o->scene->GetObject(next);
+					Type::Coord next = _brick.GetCoord(direction);
+					Brick *next_object = _brick.scene->GetObject(next);
 
 					if (next_object->GetFlags() & move_crawl_flags[direction])
 					{
 						Type::Coord to = next_object->GetCoord(direction);
 
-						if (stack->o->scene->GetSectionFlags(to) & Brick::StepOn)
+						if (_brick.scene->GetSectionFlags(to) & Brick::StepOn)
 						{
-							Brick *to_object = stack->o->scene->GetObject(to);
-							Type::Coord coord = stack->o->GetCoord();
+							Brick *to_object = _brick.scene->GetObject(to);
+							Type::Coord coord = _brick.GetCoord();
 
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
-							Eat(stack->o, to_object, stack->o->scene->GetRemain(to));
+							Eat(_brick, *to_object, *_brick.scene->GetRemain(to));
 
 							if (next_object->GetFlags() & Brick::SwapsGravity)
 							{
-								stack->o->scene->switchGravity();
+								_brick.scene->switchGravity();
 							}
 
-							stack->o->SetMoveSpeed({passageSpeed,passageSpeed});
-							stack->o->doMoveEx(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)],
-											   ObjectID::MurphyCrawlTail,
-											   to,
-											   {Type::Move::base(coord.x() - to.x()), Type::Move::base(coord.y() - to.y())}
+							_brick.SetMoveSpeed({passageSpeed,passageSpeed});
+							_brick.doMoveEx(Brick::ACTION_MOVE[Type::Rotations::getIndexOfRotation(rotation)],
+											ObjectID::MurphyCrawlTail,
+											to,
+											{Type::Move::base(coord.x() - to.x()), Type::Move::base(coord.y() - to.y())}
 							);
-							stack->o->scene->murphyMoved(stack->o);
-							stack->o->setRoundDrawCoord();
-							stack->o->SetRotation(rotation);
-							spec->_effect_type = EFFECTS::CRAWL;
-							Brick *tail = stack->o->scene->GetObjectU(stack->o->scene->GetComefrom(stack->o->GetCoord()));
-							createCrawlTail(tail, stack->o);
-							DRAW_NUMBER_DESC_INIT(spec->draw_number_, stack->o, PassOutSlides[stack->o->getMoveDirection()]);
+							_brick.scene->murphyMoved(&_brick);
+							_brick.setRoundDrawCoord();
+							_brick.SetRotation(rotation);
+							entity_data->_effect_type = EFFECTS::CRAWL;
+							Brick *tail = _brick.scene->GetObjectU(_brick.scene->GetComefrom(_brick.GetCoord()));
+							createCrawlTail(*tail, _brick);
+							DRAW_NUMBER_DESC_INIT(entity_data->draw_number_, &_brick, PassOutSlides[_brick.getMoveDirection()]);
 							return true;
 						}
 					}
@@ -615,72 +615,73 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			stack->o->SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
-			stack->o->disablePhysics();
+			_brick.SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
+			_brick.disablePhysics();
 
-			stack->o->events.timer = false;
-			stack->o->events.update = false;
+			_brick.events.timer = false;
+			_brick.events.update = false;
 
-			stack->o->SetTranslationID(ObjectID::Infotron);
-			stack->o->SetObjectIDremain(ObjectID::Space);
+			_brick.SetTranslationID(ObjectID::Infotron);
+			_brick.SetObjectIDremain(ObjectID::Space);
 
-			spec->draw_number_ = 0;
-			spec->controller = nullptr;
-			spec->_effect_type = EFFECTS::NONE;
+			entity_data->draw_number_ = 0;
+			entity_data->controller = nullptr;
+			entity_data->_effect_type = EFFECTS::NONE;
 		}
 
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
+
 			Json json;
 
-			json["draw_number"] = spec->draw_number_;
-			json["effect_timer"] = spec->_effect_timer;
-			json["effect_type"] = spec->_effect_type;
+			json["draw_number"] = entity_data->draw_number_;
+			json["effect_timer"] = entity_data->_effect_timer;
+			json["effect_type"] = entity_data->_effect_type;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (spec->_effect_type & EFFECTS::EFFECT_TIMER)
+			if (entity_data->_effect_type & EFFECTS::EFFECT_TIMER)
 			{
-				spec->_effect_timer -= CA;
-				if (spec->_effect_timer <= 0)
+				entity_data->_effect_timer -= CA;
+				if (entity_data->_effect_timer <= 0)
 				{
-					if (spec->_effect_type & EFFECTS::PLACE)
+					if (entity_data->_effect_type & EFFECTS::PLACE)
 					{
-						TimeUpPlaceExplosive(stack);
+						TimeUpPlaceExplosive(_brick);
 					}
-					else if (spec->_effect_type & EFFECTS::PUSH_TRY)
+					else if (entity_data->_effect_type & EFFECTS::PUSH_TRY)
 					{
-						spec->_effect_type = EFFECTS::PUSH;
+						entity_data->_effect_type = EFFECTS::PUSH;
 					}
 					else
 					{
-						spec->_effect_type = EFFECTS::NONE;
+						entity_data->_effect_type = EFFECTS::NONE;
 					}
-					stack->o->requests.draw = true;
+					_brick.requests.draw = true;
 				}
 			}
 
-			if (stack->o->isActionMove())
+			if (_brick.isActionMove())
 			{
-				if (spec->_effect_type == EFFECTS::CRAWL)
+				if (entity_data->_effect_type == EFFECTS::CRAWL)
 				{
-					Brick *tail = stack->o->scene->GetObjectU(stack->o->scene->GetComefrom(stack->o->GetCoord()));
-					stack->o->Step();
-					timerCrawlTail(tail, stack->o);
+					Brick *tail = _brick.scene->GetObjectU(_brick.scene->GetComefrom(_brick.GetCoord()));
+					_brick.Step();
+					timerCrawlTail(*tail, _brick);
 
-					stack->o->setRoundDrawCoord();
-					DRAW_NUMBER_DESC(stack->o->GetAbsMove(), 2.f, spec->draw_number_, stack->o, PassOutSlides[stack->o->getMoveDirection()]);
+					_brick.setRoundDrawCoord();
+					DRAW_NUMBER_DESC(_brick.GetAbsMove(), 2.f, entity_data->draw_number_, &_brick, PassOutSlides[_brick.getMoveDirection()]);
 				}
-				else if (spec->_effect_type == EFFECTS::PUSH)
+				else if (entity_data->_effect_type == EFFECTS::PUSH)
 				{
-					Brick *push_object = stack->o->GetObjectOut(stack->o->GetCoord());
+					Brick *push_object = _brick.GetObjectOut(_brick.GetCoord());
 					if (push_object)
 					{
 						push_object->Step();
@@ -690,88 +691,88 @@ namespace Object::Entity
 						}
 						push_object->requests.timer = true;
 					}
-					stack->o->Step();
-					if (!stack->o->IsMove())
+					_brick.Step();
+					if (!_brick.IsMove())
 					{
-						stack->o->disableFixSpeed();
-						spec->_effect_type = EFFECTS::NONE;
+						_brick.disableFixSpeed();
+						entity_data->_effect_type = EFFECTS::NONE;
 					}
 				}
 				else
 				{
-					stack->o->Step();
-					DRAW_NUMBER_ASC(stack->o->GetAbsMove(), 1.f, spec->draw_number_, stack->o, MovingSlides[stack->o->getMoveDirection()]);
+					_brick.Step();
+					DRAW_NUMBER_ASC(_brick.GetAbsMove(), 1.f, entity_data->draw_number_, &_brick, MovingSlides[_brick.getMoveDirection()]);
 				}
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (spec->controller->actionDestroy)
+			if (entity_data->controller->actionDestroy)
 			{
-				stack->o->scene->blowup(stack->o);
+				_brick.scene->blowup(&_brick);
 				return;
 			}
-			if (!stack->o->IsMove())
+			if (!_brick.IsMove())
 			{
-				if (spec->controller->actionSpecial)
+				if (entity_data->controller->actionSpecial)
 				{
-					if (ControllFallDown(stack))
+					if (ControllFallDown(_brick))
 					{
 						return;
 					}
 
-					if (stack->o->isAction())
+					if (_brick.isAction())
 					{
-						spec->_effect_type = EFFECTS::NONE;
-						stack->o->finishMove();
+						entity_data->_effect_type = EFFECTS::NONE;
+						_brick.finishMove();
 					}
 
-					if (ControllSuck(stack))
+					if (ControllSuck(_brick))
 					{
 						return;
 					}
-					else if (ControllPlaceExplosive(stack))
+					else if (ControllPlaceExplosive(_brick))
 					{
 						return;
 					}
 				}
 				else
 				{
-					if (ControllMove(stack))
+					if (ControllMove(_brick))
 					{
 						return;
 					}
-					else if (ControllCrawl(stack))
+					else if (ControllCrawl(_brick))
 					{
 						return;
 					}
-					else if (ControllFallDown(stack))
+					else if (ControllFallDown(_brick))
 					{
 						return;
 					}
-					else if (ControllPush(stack))
+					else if (ControllPush(_brick))
 					{
 						return;
 					}
-					else if (ControllButton(stack))
+					else if (ControllButton(_brick))
 					{
 
 					}
-					else if (ControllExit(stack))
+					else if (ControllExit(_brick))
 					{
 						return;
 					}
 
-					if (stack->o->isAction() || spec->_effect_type & (EFFECTS::PLACE | EFFECTS::PLACE_FACE))
+					if (_brick.isAction() || entity_data->_effect_type & (EFFECTS::PLACE | EFFECTS::PLACE_FACE))
 					{
-						if (!(spec->_effect_type & EFFECTS::PUSH))
+						if (!(entity_data->_effect_type & EFFECTS::PUSH))
 						{
-							spec->_effect_type = EFFECTS::NONE;
+							entity_data->_effect_type = EFFECTS::NONE;
 						}
-						stack->o->finishMove();
-						stack->o->requests.draw = true;
+						_brick.finishMove();
+						_brick.requests.draw = true;
 					}
 				}
 
@@ -779,40 +780,40 @@ namespace Object::Entity
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			Specific *spec = *stack;
+			EntityData *entity_data = (EntityData *)(_brick.specific);
 
-			if (stack->o->IsMove())
+			if (_brick.IsMove())
 			{
-				if (spec->_effect_type & EFFECTS::CRAWL)
+				if (entity_data->_effect_type & EFFECTS::CRAWL)
 				{
-					PassOutSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())][spec->draw_number_].drawScaled(x, y, w, h);
+					PassOutSlides[Type::Rotations::getIndexOfRotation(_brick.GetRotation())][entity_data->draw_number_].drawScaled(x, y, w, h);
 				}
-				else if (spec->_effect_type & EFFECTS::PUSH_TRY)
+				else if (entity_data->_effect_type & EFFECTS::PUSH_TRY)
 				{
-					PushSlides[stack->o->getMoveDirection()].drawScaled(x, y, w, h);
+					PushSlides[_brick.getMoveDirection()].drawScaled(x, y, w, h);
 				}
-				else if (spec->_effect_type & EFFECTS::FALL)
+				else if (entity_data->_effect_type & EFFECTS::FALL)
 				{
-					MovingSlides[(stack->o->getMoveDirection() + 2) % 4][spec->draw_number_].drawScaled(x, y, w, h);
+					MovingSlides[(_brick.getMoveDirection() + 2) % 4][entity_data->draw_number_].drawScaled(x, y, w, h);
 				}
 				else
 				{
-					MovingSlides[stack->o->getMoveDirection()][spec->draw_number_].drawScaled(x, y, w, h);
+					MovingSlides[_brick.getMoveDirection()][entity_data->draw_number_].drawScaled(x, y, w, h);
 				}
 			}
 			else
 			{
-				if (spec->_effect_type & EFFECTS::SUCK)
+				if (entity_data->_effect_type & EFFECTS::SUCK)
 				{
-					SuckSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].drawScaled(x, y, w, h);
+					SuckSlides[Type::Rotations::getIndexOfRotation(_brick.GetRotation())].drawScaled(x, y, w, h);
 				}
-				else if (spec->_effect_type & EFFECTS::PLACE_FACE)
+				else if (entity_data->_effect_type & EFFECTS::PLACE_FACE)
 				{
 					PlaceBase.drawScaled(x, y, w, h);
 				}
-				else if (spec->_effect_type & EFFECTS::PUSH_TRY)
+				else if (entity_data->_effect_type & EFFECTS::PUSH_TRY)
 				{
-					PushSlides[Type::Rotations::getIndexOfRotation(stack->o->GetRotation())].drawScaled(x, y, w, h);
+					PushSlides[Type::Rotations::getIndexOfRotation(_brick.GetRotation())].drawScaled(x, y, w, h);
 				}
 				else
 				{

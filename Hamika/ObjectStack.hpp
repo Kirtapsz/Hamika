@@ -31,8 +31,8 @@ namespace Object
 			{
 				if (printFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					return printFnc(&stack);
+					typename DATA::OBJECT_T *object = dynamic_cast<typename DATA::OBJECT_T *>(this);
+					return printFnc(*object);
 				}
 				else
 				{

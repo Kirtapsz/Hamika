@@ -19,9 +19,9 @@ namespace Editor::Object
 
 		}
 
-		void Drawner(Brick::Stack *stack, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
+		void Drawner(Brick &_brick, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
 		{
-			DrawObject(stack->o->id, x, y, w, h);
+			DrawObject(_brick.id, x, y, w, h);
 		}
 	}
 	namespace Front
@@ -47,44 +47,42 @@ namespace Editor::Object
 			spawn = Res::uielements[Res::UIElements::SpawnPoint];
 		}
 
-		void Drawner(Brick::Stack *stack, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
+		void Drawner(Brick &_brick, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h)
 		{
-			Brick *obj = stack->o->scene->GetObject(stack->o->GetCoord());
-
-			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::SpawnPoint)
+			if (_brick.scene->GetBlockFlags(_brick.GetCoord()) & GridFlags::SpawnPoint)
 			{
 				spawn.drawScaled(x, y, w, h);
 			}
-			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Detonate)
+			if (_brick.scene->GetBlockFlags(_brick.GetCoord()) & GridFlags::Detonate)
 			{
 				detonate.drawScaled(x, y, w, h);
 			}
-			if (obj->scene->GetBlockFlags(stack->o->GetCoord()) & GridFlags::Gravity)
+			if (_brick.scene->GetBlockFlags(_brick.GetCoord()) & GridFlags::Gravity)
 			{
 				gravity.drawScaled(x, y, w, h);
 			}
 
-			if (obj->GetRotation() == Type::Rotations::Up)
+			if (_brick.GetRotation() == Type::Rotations::Up)
 			{
 				arrowUp.drawScaled(x, y, w, h);
 			}
-			else if (obj->GetRotation() == Type::Rotations::Right)
+			else if (_brick.GetRotation() == Type::Rotations::Right)
 			{
 				arrowRight.drawScaled(x, y, w, h);
 			}
-			else if (obj->GetRotation() == Type::Rotations::Down)
+			else if (_brick.GetRotation() == Type::Rotations::Down)
 			{
 				arrowDown.drawScaled(x, y, w, h);
 			}
-			else if (obj->GetRotation() == Type::Rotations::Left)
+			else if (_brick.GetRotation() == Type::Rotations::Left)
 			{
 				arrowLeft.drawScaled(x, y, w, h);
 			}
 
-			int selectStatus = obj->scene->selectStatus(stack->o->GetCoord());
+			int selectStatus = _brick.scene->selectStatus(_brick.GetCoord());
 			if (selectStatus == 1)
 			{
-				if (obj->scene->isTarget(stack->o->GetCoord()))
+				if (_brick.scene->isTarget(_brick.GetCoord()))
 				{
 					al_draw_filled_rectangle(x, y, x + w, y + h, KIR5::Color(127, 0, 127, 127).getAlphaColored());
 				}
@@ -103,7 +101,7 @@ namespace Editor::Object
 				{
 					al_draw_filled_rectangle(x, y, x + w, y + h, KIR5::Color(255, 255, 255, 127).getAlphaColored());
 				}
-				else if (obj->scene->isTarget(stack->o->GetCoord()))
+				else if (_brick.scene->isTarget(_brick.GetCoord()))
 				{
 					al_draw_filled_rectangle(x, y, x + w, y + h, KIR5::Color(0, 0, 255, 127).getAlphaColored());
 				}
@@ -115,16 +113,16 @@ namespace Editor::Object
 
 			char buffer[32];
 
-			sprintf_s(buffer, "(%03d;%03d)", stack->o->GetCoord().x(), stack->o->GetCoord().y());
+			sprintf_s(buffer, "(%03d;%03d)", _brick.GetCoord().x(), _brick.GetCoord().y());
 
-			KIR5::Font font = Res::Consolas[stack->o->scene->GetDrawSize().height() / 6];
+			KIR5::Font font = Res::Consolas[_brick.scene->GetDrawSize().height() / 6];
 
 			font.draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
 			font.draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 
-			sprintf_s(buffer, "(%03d)", obj->id);
-			font.draw(x + 1, y + 1 + (stack->o->scene->GetDrawSize().height() / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			font.draw(x, y + (stack->o->scene->GetDrawSize().height() / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+			sprintf_s(buffer, "(%03d)", _brick.id);
+			font.draw(x + 1, y + 1 + (_brick.scene->GetDrawSize().height() / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(x, y + (_brick.scene->GetDrawSize().height() / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 		}
 	}
 }

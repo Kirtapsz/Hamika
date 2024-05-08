@@ -314,7 +314,7 @@ namespace Object::Entity
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 		void Finalize(OBJECT_FINALIZE_PARAM);
 
-		void Open(Brick *o);
+		void Open(Brick &_brick);
 	}
 
 	//CrossPort 016
@@ -528,7 +528,7 @@ namespace Object::Entity
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 		void Finalize(OBJECT_FINALIZE_PARAM);
 
-		void Pushed(Brick *o);
+		void Pushed(Brick &_brick);
 	}
 
 	//Utility1 029
@@ -573,7 +573,7 @@ namespace Object::Entity
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 		void Finalize(OBJECT_FINALIZE_PARAM);
 
-		void Activate(Brick *o);
+		void Activate(Brick &_brick);
 	}
 
 	//Utility3 031

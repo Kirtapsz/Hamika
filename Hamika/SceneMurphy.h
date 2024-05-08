@@ -54,7 +54,7 @@ namespace UI::Scene::Module::Murphy
 			Type::Coord spawn = spawns[rand() % spawns.size()];
 			ObjectCreate(reach(map)[spawn].object, ObjectID::Murphy, spawn);
 			murphy = reach(map)[spawn].object;
-			Object::Entity::Murphy::SetController(murphy, keyboardController.get());
+			Object::Entity::Murphy::SetController(*murphy, keyboardController.get());
 		}
 		public: virtual Json printResult() const
 		{

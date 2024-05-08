@@ -140,8 +140,7 @@ void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object:
 
 	if (creater)
 	{
-		Object::Brick::Stack stack(object);
-		creater(&stack);
+		creater(*object);
 	}
 	else
 	{

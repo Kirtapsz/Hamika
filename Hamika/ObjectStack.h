@@ -7,19 +7,19 @@
 #include "Tools.h"
 
 
-#define OBJECT_CREATER_PARAM Object::Brick::Stack *stack
-#define OBJECT_CREATER_CALL stack
+#define OBJECT_CREATER_PARAM Object::Brick &_brick
+#define OBJECT_CREATER_CALL _brick
 
 #define OBJECT_INITIALIZER_PARAM
 
-#define OBJECT_UPDATE_PARAM Object::Brick::Stack *stack, Object::Brick::UpdateType updateType
-#define OBJECT_UPDATE_CALL stack, updateType
+#define OBJECT_UPDATE_PARAM Object::Brick &_brick, Object::Brick::UpdateType updateType
+#define OBJECT_UPDATE_CALL _brick, updateType
 
-#define OBJECT_FINALIZE_PARAM Object::Brick::Stack *stack
-#define OBJECT_FINALIZE_CALL stack
+#define OBJECT_FINALIZE_PARAM Object::Brick &_brick
+#define OBJECT_FINALIZE_CALL _brick
 
-#define OBJECT_TIMER_PARAM Object::Brick::Stack *stack
-#define OBJECT_TIMER_CALL stack
+#define OBJECT_TIMER_PARAM Object::Brick &_brick
+#define OBJECT_TIMER_CALL _brick
 
 namespace Object
 {
@@ -84,10 +84,10 @@ namespace Object
 
 				unsigned char *specific{(unsigned char *)&entity_data};
 
-#define OBJECT_PRINTER_PARAM Object::Brick::Stack *stack
-#define OBJECT_PRINTER_CALL stack
+#define OBJECT_PRINTER_PARAM Object::Brick &_brick
+#define OBJECT_PRINTER_CALL _brick
 #define OBJECT_PRINTER_RET Json
-				typedef Json(*PRINT)(Stack *);
+				typedef Json(*PRINT)(OBJECT &_object);
 				PRINT printFnc = nullptr;
 
 				virtual ~Data();

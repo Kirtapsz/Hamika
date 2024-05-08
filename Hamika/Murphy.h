@@ -34,6 +34,6 @@ namespace Object::Entity
 		void DrawnerCrawlTail(OBJECT_DRAWNER_PARAM);
 		void simpleDrawCrawlTail(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-		void SetController(Brick *o, KeyboardController *controller);
+		void SetController(Brick &o, KeyboardController *controller);
 	}
 }

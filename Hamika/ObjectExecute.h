@@ -20,7 +20,7 @@ namespace Object
 			{
 				//LÉTRHOZÁS #####################################################################################
 
-				typedef void(*CREATER)(Stack *);
+				typedef void(*CREATER)(OBJECT &_object);
 
 				//INICIALIZÁLÓ
 				typedef void(*INITIALIZER)(OBJECT_INITIALIZER_PARAM);
@@ -32,17 +32,17 @@ namespace Object
 					UPDATE_DESC = 1 << 1,
 					UPDATE_MURPHY = 1 << 2,
 				};
-				typedef void(*UPDATE)(Stack *, UpdateType);
+				typedef void(*UPDATE)(OBJECT &_object, UpdateType);
 				UPDATE updaterFnc = nullptr;
 				unsigned long long updateNumber = 0;
 				static unsigned long long totalUpdateNumber;
 
 				//FINALIZE #####################################################################################
-				typedef void(*FINALIZE)(Stack *);
+				typedef void(*FINALIZE)(OBJECT &_object);
 				FINALIZE finalizeFnc = nullptr;
 
 				//TIMER EVENT #####################################################################################
-				typedef void(*TIMER)(Stack *);
+				typedef void(*TIMER)(OBJECT &_object);
 				TIMER timerFnc = nullptr;
 			};
 

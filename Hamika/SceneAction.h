@@ -103,8 +103,7 @@ namespace UI::Scene::Module::Action
 				if (block.remain->isExists && block.remain->id == ObjectID::Explosion)
 				{
 					block.remain->SetObjectIDremain(std::max(IDto, block.remain->GetObjectIDremain()));
-					Object::Brick::Stack stack(block.remain);
-					Object::Entity::Explosion_033::ReCreate(&stack);
+					Object::Entity::Explosion_033::ReCreate(*block.remain);
 				}
 				else
 				{
@@ -134,8 +133,7 @@ namespace UI::Scene::Module::Action
 						if (remain->isExists && remain->id == ObjectID::Explosion)
 						{
 							remain->SetObjectIDremain(std::max(IDto, remain->GetObjectIDremain()));
-							Object::Brick::Stack stack(remain);
-							Object::Entity::Explosion_033::ReCreate(&stack);
+							Object::Entity::Explosion_033::ReCreate(*remain);
 						}
 						else
 						{
