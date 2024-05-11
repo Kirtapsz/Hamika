@@ -6,9 +6,6 @@
 #include "IDreg.h"
 #include "Tools.h"
 
-#include "ObjectStack.h"
-#include "ObjectRequests.h"
-
 namespace Object
 {
 	namespace Module
@@ -23,15 +20,9 @@ namespace Object
 				typedef void(*CREATER)(typename MODULES_T::BRICK_T &_brick);
 
 				//INICIALIZÁLÓ
-				typedef void(*INITIALIZER)(OBJECT_INITIALIZER_PARAM);
+				typedef void(*INITIALIZER)();
 
 				//UPDATE #####################################################################################
-				enum UpdateType: std::uint8_t
-				{
-					UPDATE_ASC = 1 << 0,
-					UPDATE_DESC = 1 << 1,
-					UPDATE_MURPHY = 1 << 2,
-				};
 				typedef void(*UPDATE)(typename MODULES_T::BRICK_T &_brick, UpdateType);
 				UPDATE updaterFnc = nullptr;
 				unsigned long long updateNumber = 0;
@@ -56,7 +47,7 @@ namespace Object
 				public: void __init__(Type::ID id, Type::Coord coord);
 				public: Json print();
 
-				public: void RunUpdate(typename Data<MODULES_T>::UpdateType updateType);
+				public: void RunUpdate(UpdateType updateType);
 				public: void RunFinalize();
 				public: void RunTimer();
 			};

@@ -3,18 +3,6 @@
 #include "BaseFunctions.h"
 #include "Tools.h"
 
-#include "ObjectActions.h"
-#include "ObjectBase.h"
-#include "ObjectCoord.h"
-#include "ObjectDraw.h"
-#include "ObjectEvents.h"
-#include "ObjectExecute.h"
-#include "ObjectFlags.h"
-#include "ObjectMove.h"
-#include "ObjectRequests.h"
-#include "ObjectRotate.h"
-#include "ObjectStack.h"
-
 /*
 naming:
 
@@ -65,7 +53,7 @@ namespace Object::Entity
 		struct EntityData
 		{
 			FallAndRoll::EntityData fall_and_roll_;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -86,7 +74,7 @@ namespace Object::Entity
 		struct EntityData
 		{
 			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -259,7 +247,7 @@ namespace Object::Entity
 			float electricDelayTimer;
 			float electricTimer;
 			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -281,7 +269,7 @@ namespace Object::Entity
 		{
 			FallAndRoll::EntityData fall_and_roll_;
 			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -301,7 +289,7 @@ namespace Object::Entity
 
 		struct EntityData
 		{
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 			float animateTimer;
 		};
 
@@ -496,7 +484,7 @@ namespace Object::Entity
 		struct EntityData
 		{
 			MoveLeftWay::EntityData move_left_way_;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -561,7 +549,7 @@ namespace Object::Entity
 		{
 			float activateTimer;
 			float disappearTimer;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -599,7 +587,7 @@ namespace Object::Entity
 		struct EntityData
 		{
 			float explosionTimer;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
@@ -621,7 +609,7 @@ namespace Object::Entity
 		{
 			float explosionTimer;
 			float blastingTimer;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);

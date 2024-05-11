@@ -36,7 +36,7 @@ namespace Object
 			}
 
 			template <typename MODULES_T>
-			inline void Func<MODULES_T>::RunUpdate(typename Data<MODULES_T>::UpdateType updateType)
+			inline void Func<MODULES_T>::RunUpdate(UpdateType updateType)
 			{
 				data_.requests.update = false;
 				data_.updateNumber = data_.totalUpdateNumber++;

@@ -6,9 +6,6 @@
 #include "IDreg.h"
 #include "Tools.h"
 
-#include "ObjectActions.h"
-#include "ObjectCoord.h"
-
 namespace Object
 {
 	namespace Module

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Object.h"
-#include "KeyboardController.h"
 #include "BaseFunctions.h"
+
+struct KeyboardController;
 
 namespace Object::Entity
 {
@@ -13,7 +13,7 @@ namespace Object::Entity
 		struct EntityData
 		{
 			KeyboardController *controller;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 
 			float _effect_timer;
 			Type::Flags _effect_type;

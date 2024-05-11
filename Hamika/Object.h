@@ -23,14 +23,9 @@
 #include "ObjectMove.h"
 #include "ObjectRequests.h"
 #include "ObjectRotate.h"
-#include "ObjectStack.h"
+#include "ObjectEntityData.h"
 
 #undef GetObject
-
-#define OBJECT_SIMPLE_DRAWNER_PARAM Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
-#define OBJECT_SIMPLE_DRAWNER_CALL x, y, w, h
-typedef void(*SIMPLE_DRAWNER)(OBJECT_SIMPLE_DRAWNER_PARAM);
-
 
 namespace Editor
 {
@@ -53,7 +48,7 @@ namespace Editor
 			using BASE_DATA_T = Module::Base::Data<Modules>;
 			using EXECUTE_DATA_T = Module::Execute::Data<Modules>;
 			using MOVE_DATA_T = Module::Move::Data;
-			using STACK_DATA_T = Module::Stack::Data<Modules>;
+			using ENTITY_DATA_DATA_T = Module::EntityData::Data<Modules>;
 			using ROTATE_DATA_T = Module::Rotate::Data;
 			using EVENTS_DATA_T = Module::Events::Data;
 			using ACTIONS_DATA_T = Module::Actions::Data;
@@ -65,7 +60,7 @@ namespace Editor
 			using BASE_FUNC_T = Module::Base::Func<Modules>;
 			using EXECUTE_FUNC_T = Module::Execute::Func<Modules>;
 			using MOVE_FUNC_T = Module::Move::Func<Modules>;
-			using STACK_FUNC_T = Module::Stack::Func<Modules>;
+			using ENTITY_DATA_FUNC_T = Module::EntityData::Func<Modules>;
 			using ROTATE_FUNC_T = Module::Rotate::Func<Modules>;
 			using EVENTS_FUNC_T = Module::Events::Func<Modules>;
 			using ACTIONS_FUNC_T = Module::Actions::Func<Modules>;
@@ -85,7 +80,7 @@ namespace Editor
 			Modules::BASE_DATA_T,
 			Modules::EXECUTE_DATA_T,
 			Modules::MOVE_DATA_T,
-			Modules::STACK_DATA_T,
+			Modules::ENTITY_DATA_DATA_T,
 			Modules::ROTATE_DATA_T,
 			Modules::EVENTS_DATA_T,
 			Modules::ACTIONS_DATA_T,
@@ -100,7 +95,7 @@ namespace Editor
 			Modules::BASE_FUNC_T,
 			Modules::EXECUTE_FUNC_T,
 			Modules::MOVE_FUNC_T,
-			Modules::STACK_FUNC_T,
+			Modules::ENTITY_DATA_FUNC_T,
 			Modules::ROTATE_FUNC_T,
 			Modules::EVENTS_FUNC_T,
 			Modules::ACTIONS_FUNC_T,
@@ -111,7 +106,7 @@ namespace Editor
 				Modules::BASE_FUNC_T(*this, *this),
 				Modules::EXECUTE_FUNC_T(*this, *this),
 				Modules::MOVE_FUNC_T(*this, *this),
-				Modules::STACK_FUNC_T(*this, *this),
+				Modules::ENTITY_DATA_FUNC_T(*this, *this),
 				Modules::ROTATE_FUNC_T(*this, *this),
 				Modules::EVENTS_FUNC_T(*this, *this),
 				Modules::ACTIONS_FUNC_T(*this, *this),
@@ -143,7 +138,7 @@ namespace Object
 		using BASE_DATA_T = Module::Base::Data<Modules>;
 		using EXECUTE_DATA_T = Module::Execute::Data<Modules>;
 		using MOVE_DATA_T = Module::Move::Data;
-		using STACK_DATA_T = Module::Stack::Data<Modules>;
+		using ENTITY_DATA_DATA_T = Module::EntityData::Data<Modules>;
 		using ROTATE_DATA_T = Module::Rotate::Data;
 		using EVENTS_DATA_T = Module::Events::Data;
 		using ACTIONS_DATA_T = Module::Actions::Data;
@@ -155,7 +150,7 @@ namespace Object
 		using BASE_FUNC_T = Module::Base::Func<Modules>;
 		using EXECUTE_FUNC_T = Module::Execute::Func<Modules>;
 		using MOVE_FUNC_T = Module::Move::Func<Modules>;
-		using STACK_FUNC_T = Module::Stack::Func<Modules>;
+		using ENTITY_DATA_FUNC_T = Module::EntityData::Func<Modules>;
 		using ROTATE_FUNC_T = Module::Rotate::Func<Modules>;
 		using EVENTS_FUNC_T = Module::Events::Func<Modules>;
 		using ACTIONS_FUNC_T = Module::Actions::Func<Modules>;
@@ -212,7 +207,7 @@ namespace Object
 		Modules::BASE_DATA_T,
 		Modules::EXECUTE_DATA_T,
 		Modules::MOVE_DATA_T,
-		Modules::STACK_DATA_T,
+		Modules::ENTITY_DATA_DATA_T,
 		Modules::ROTATE_DATA_T,
 		Modules::EVENTS_DATA_T,
 		Modules::ACTIONS_DATA_T,
@@ -227,7 +222,7 @@ namespace Object
 		Modules::BASE_FUNC_T,
 		Modules::EXECUTE_FUNC_T,
 		Modules::MOVE_FUNC_T,
-		Modules::STACK_FUNC_T,
+		Modules::ENTITY_DATA_FUNC_T,
 		Modules::ROTATE_FUNC_T,
 		Modules::EVENTS_FUNC_T,
 		Modules::ACTIONS_FUNC_T,
@@ -240,7 +235,7 @@ namespace Object
 			Modules::BASE_FUNC_T(*this, *this),
 			Modules::EXECUTE_FUNC_T(*this, *this),
 			Modules::MOVE_FUNC_T(*this, *this),
-			Modules::STACK_FUNC_T(*this, *this),
+			Modules::ENTITY_DATA_FUNC_T(*this, *this),
 			Modules::ROTATE_FUNC_T(*this, *this),
 			Modules::EVENTS_FUNC_T(*this, *this),
 			Modules::ACTIONS_FUNC_T(*this, *this),
@@ -260,7 +255,7 @@ namespace Object
 			Modules::EVENTS_FUNC_T::__init__(id, coord);
 
 			Modules::BASE_FUNC_T::__init__(id, coord);
-			Modules::STACK_FUNC_T::__init__(id, coord);
+			Modules::ENTITY_DATA_FUNC_T::__init__(id, coord);
 			Modules::EXECUTE_FUNC_T::__init__(id, coord);
 			Modules::MOVE_FUNC_T::__init__(id, coord);
 			Modules::ROTATE_FUNC_T::__init__(id, coord);
@@ -283,7 +278,7 @@ namespace Object
 			json["\\ObjectEventsModule"] = Modules::EVENTS_FUNC_T::print();
 
 			json["\\Object_"] = Modules::BASE_FUNC_T::print();
-			json["\\ObjectStackModule"] = Modules::STACK_FUNC_T::print();
+			json["\\ObjectEntityDataModule"] = Modules::ENTITY_DATA_FUNC_T::print();
 			json["\\ObjectEventModule"] = Modules::EXECUTE_FUNC_T::print();
 			json["\\ObjectMoveModule"] = Modules::MOVE_FUNC_T::print();
 			json["\\ObjectRotationModule"] = Modules::ROTATE_FUNC_T::print();
@@ -348,7 +343,7 @@ namespace Object
 		void SetObjectIDremain(Type::ID id);
 
 
-		virtual void SetCoord(Type::Coord coord);
+		void SetCoord(Type::Coord coord);
 
 
 		//GET

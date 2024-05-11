@@ -417,7 +417,7 @@ namespace UI::Scene::Module::Action
 			{
 				if (block.object->isExists && block.object->events.update && block.object->requests.update)
 				{
-					block.object->RunUpdate(Object::Brick::UPDATE_ASC);
+					block.object->RunUpdate(UpdateType::UPDATE_ASC);
 				}
 			});
 
@@ -425,17 +425,17 @@ namespace UI::Scene::Module::Action
 			{
 				if (block.object->isExists && block.object->events.update && block.object->requests.update)
 				{
-					block.object->RunUpdate(Object::Brick::UPDATE_DESC);
+					block.object->RunUpdate(UpdateType::UPDATE_DESC);
 				}
 				if (block.remain->isExists && block.remain->events.update && block.remain->requests.update)
 				{
-					block.remain->RunUpdate(Object::Brick::UPDATE_DESC);
+					block.remain->RunUpdate(UpdateType::UPDATE_DESC);
 				}
 			});
 
 			if (murphy)
 			{
-				murphy->RunUpdate(Object::Brick::UPDATE_MURPHY);
+				murphy->RunUpdate(UpdateType::UPDATE_MURPHY);
 			}
 		}
 

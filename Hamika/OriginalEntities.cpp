@@ -1,6 +1,7 @@
 #include "OriginalEntities.h"
 #include "Space.h"
 #include "Bedrock.h"
+#include "Object.h"
 
 #include <KIR/KIR4_console.h>
 
@@ -65,57 +66,57 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			entity_data->draw_number_ = 0;
+			EntityData &entity_data = _brick.entity_data.zonk_001;
+			entity_data.draw_number_ = 0;
 
 			_brick.SetMoveSpeed({rollSpeed,moveSpeed});
 			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::CanPushLeft | Brick::CanPushRight);
 			_brick.enablePhysics();
 
-			FallAndRoll::Create(_brick, entity_data->fall_and_roll_);
-			entity_data->fall_and_roll_.setHeavy(true);
+			FallAndRoll::Create(_brick, entity_data.fall_and_roll_);
+			entity_data.fall_and_roll_.setHeavy(true);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.zonk_001;
 			Json json;
 
-			json["draw_number"] = entity_data->draw_number_;
+			json["draw_number"] = entity_data.draw_number_;
 
-			json["\\FallAndRoll"] = FallAndRoll::Print(_brick, entity_data->fall_and_roll_);
+			json["\\FallAndRoll"] = FallAndRoll::Print(_brick, entity_data.fall_and_roll_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			FallAndRoll::Timer(_brick, entity_data->fall_and_roll_);
+			EntityData &entity_data = _brick.entity_data.zonk_001;
+			FallAndRoll::Timer(_brick, entity_data.fall_and_roll_);
 			if (_brick.IsMoveLeft())
 			{
-				DRAW_NUMBER_DESC(_brick.move.x(), 1.f, entity_data->draw_number_, &_brick, ZonkMoveHorizontal);
+				DRAW_NUMBER_DESC(_brick.move.x(), 1.f, entity_data.draw_number_, _brick, ZonkMoveHorizontal);
 			}
 			else if (_brick.IsMoveRight())
 			{
-				DRAW_NUMBER_ASC(_brick.move.x(), -1.f, entity_data->draw_number_, &_brick, ZonkMoveHorizontal);
+				DRAW_NUMBER_ASC(_brick.move.x(), -1.f, entity_data.draw_number_, _brick, ZonkMoveHorizontal);
 			}
 			else
 			{
-				if (entity_data->draw_number_ != 0)
+				if (entity_data.draw_number_ != 0)
 				{
-					entity_data->draw_number_ = 0;
+					entity_data.draw_number_ = 0;
 					_brick.requests.draw = true;
 				}
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			FallAndRoll::Update(_brick, entity_data->fall_and_roll_, updateType);
+			EntityData &entity_data = _brick.entity_data.zonk_001;
+			FallAndRoll::Update(_brick, entity_data.fall_and_roll_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			ZonkMoveHorizontal[entity_data->draw_number_].drawScaled(x, y, w, h);
+			EntityData &entity_data = _brick.entity_data.zonk_001;
+			ZonkMoveHorizontal[entity_data.draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -136,9 +137,7 @@ namespace Object::Entity
 		KIR5::SubBitmap BaseX;
 		Res::Slides BaseLineDisappear;
 
-		constexpr float disappearTime = 0.23f;
-
-		typedef EntityData Specific;
+		constexpr float disappearTime = 0.23f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -147,9 +146,9 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			entity_data->disappearTimer = 0;
-			entity_data->draw_number_ = 0;
+			EntityData &entity_data = _brick.entity_data.basex_002;
+			entity_data.disappearTimer = 0;
+			entity_data.draw_number_ = 0;
 
 			_brick.SetFlags(Brick::CanBeExploded | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay);
 
@@ -157,28 +156,28 @@ namespace Object::Entity
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.basex_002;
 			Json json;
 
-			json["disappearTimer"] = entity_data->disappearTimer;
-			json["draw_number"] = entity_data->draw_number_;
+			json["disappearTimer"] = entity_data.disappearTimer;
+			json["draw_number"] = entity_data.draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.basex_002;
 
-			if (ACTION_TIMER(entity_data->disappearTimer,
+			if (ACTION_TIMER(entity_data.disappearTimer,
 							 disappearTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->disappearTimer == ACTION_TIMER_START;
+				return entity_data.disappearTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 				_brick.events.timer = true;
 				_brick.events.update = false;
 				_brick.requests.remove = false;
@@ -186,10 +185,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->disappearTimer,
+				DRAW_NUMBER_ASC(entity_data.disappearTimer,
 				disappearTime,
-				entity_data->draw_number_,
-				&_brick, BaseLineDisappear);
+				entity_data.draw_number_,
+				_brick, BaseLineDisappear);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -204,21 +203,21 @@ namespace Object::Entity
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-  			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.basex_002;
 
 			if (_brick.requests.remove)
 			{
-				entity_data->disappearTimer = ACTION_TIMER_START;
+				entity_data.disappearTimer = ACTION_TIMER_START;
 				Timer(_brick);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.basex_002;
 
-			if (entity_data->disappearTimer > 0)
+			if (entity_data.disappearTimer > 0)
 			{
-				BaseLineDisappear[entity_data->draw_number_].drawScaled(x, y, w, h);
+				BaseLineDisappear[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
@@ -696,9 +695,7 @@ namespace Object::Entity
 		constexpr float electricTime = 0.7f;      // duration in sec
 		constexpr float electricDelayTime = 3.0f; // duration in sec
 		constexpr float disappearTime = 0.23f;    // duration in sec
-		constexpr float triggerChance = 1 / 6.f;  // chance / sec
-
-		typedef EntityData Specific;
+		constexpr float triggerChance = 1 / 6.f;  // chance / sec
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -706,12 +703,12 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.bug_013;
 
-			entity_data->electricDelayTimer = 0;
-			entity_data->electricTimer = ACTION_TIMER_START;
-			entity_data->disappearTimer = 0;
-			entity_data->draw_number_ = 0;
+			entity_data.electricDelayTimer = 0;
+			entity_data.electricTimer = ACTION_TIMER_START;
+			entity_data.disappearTimer = 0;
+			entity_data.draw_number_ = 0;
 			_brick.SetFlags(Brick::CanBeExploded | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay | Brick::MurphyDies);
 
 			_brick.events.timer = true;
@@ -721,33 +718,33 @@ namespace Object::Entity
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.bug_013;
 
 			Json json;
 
-			json["electricDelayTimer"] = entity_data->electricDelayTimer;
-			json["electricTimer"] = entity_data->electricTimer;
-			json["disappearTimer"] = entity_data->disappearTimer;
-			json["draw_number"] = entity_data->draw_number_;
+			json["electricDelayTimer"] = entity_data.electricDelayTimer;
+			json["electricTimer"] = entity_data.electricTimer;
+			json["disappearTimer"] = entity_data.disappearTimer;
+			json["draw_number"] = entity_data.draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.bug_013;
 
 			_brick.requests.timer = true;
 
-			if (ACTION_TIMER(entity_data->disappearTimer,
+			if (ACTION_TIMER(entity_data.disappearTimer,
 							 disappearTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->disappearTimer == ACTION_TIMER_START;
+				return entity_data.disappearTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 				_brick.events.timer = true;
 				_brick.events.update = false;
 				_brick.requests.remove = false;
@@ -755,10 +752,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->disappearTimer,
+				DRAW_NUMBER_ASC(entity_data.disappearTimer,
 				disappearTime,
-				entity_data->draw_number_,
-				&_brick, BaseX_002::BaseLineDisappear);
+				entity_data.draw_number_,
+				_brick, BaseX_002::BaseLineDisappear);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -772,12 +769,12 @@ namespace Object::Entity
 			}
 
 
-			if (ACTION_TIMER(entity_data->electricDelayTimer,
+			if (ACTION_TIMER(entity_data.electricDelayTimer,
 							 electricDelayTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->electricDelayTimer == ACTION_TIMER_START;
+				return entity_data.electricDelayTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
@@ -795,16 +792,16 @@ namespace Object::Entity
 				return;
 			}
 
-			if (ACTION_TIMER(entity_data->electricTimer,
+			if (ACTION_TIMER(entity_data.electricTimer,
 							 electricTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return _brick.scene->rollTrigger(&_brick, 1300, triggerChance) || entity_data->electricTimer == ACTION_TIMER_START;
+				return _brick.scene->rollTrigger(&_brick, 1300, triggerChance) || entity_data.electricTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 
 				_brick.AddFlags(Brick::Flags::MurphyDies);
 				_brick.requests.draw = true;
@@ -812,15 +809,15 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->electricTimer,
+				DRAW_NUMBER_ASC(entity_data.electricTimer,
 				electricTime,
-				entity_data->draw_number_,
-				&_brick, Bug);
+				entity_data.draw_number_,
+				_brick, Bug);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				entity_data->electricDelayTimer = ACTION_TIMER_START;
+				entity_data.electricDelayTimer = ACTION_TIMER_START;
 				_brick.RemoveFlags(Brick::Flags::MurphyDies);
 				_brick.requests.draw = true;
 				return true;
@@ -831,25 +828,25 @@ namespace Object::Entity
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.bug_013;
 
 			if (_brick.requests.remove)
 			{
-				entity_data->disappearTimer = ACTION_TIMER_START;
+				entity_data.disappearTimer = ACTION_TIMER_START;
 				Timer(_brick);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.bug_013;
 
-			if (entity_data->disappearTimer > 0)
+			if (entity_data.disappearTimer > 0)
 			{
-				BaseX_002::BaseLineDisappear[entity_data->draw_number_].drawScaled(x, y, w, h);
+				BaseX_002::BaseLineDisappear[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
-			else if (entity_data->electricTimer > 0)
+			else if (entity_data.electricTimer > 0)
 			{
-				Bug[entity_data->draw_number_].drawScaled(x, y, w, h);
+				Bug[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
@@ -876,9 +873,7 @@ namespace Object::Entity
 
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rollSpeed = moveSpeed;
-		constexpr float disappearTime = 0.23f;
-
-		typedef EntityData Specific;
+		constexpr float disappearTime = 0.23f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -887,44 +882,44 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.infotron_014;
 
-			entity_data->disappearTimer = 0;
-			entity_data->draw_number_ = 0;
+			entity_data.disappearTimer = 0;
+			entity_data.draw_number_ = 0;
 			_brick.SetMoveSpeed({rollSpeed,moveSpeed});
 			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::Give1Score);
 
-			FallAndRoll::Create(_brick, entity_data->fall_and_roll_);
-			entity_data->fall_and_roll_.setHeavy(true);
+			FallAndRoll::Create(_brick, entity_data.fall_and_roll_);
+			entity_data.fall_and_roll_.setHeavy(true);
 
 			_brick.events.update = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.infotron_014;
 
 			Json json;
 
-			json["disappearTimer"] = entity_data->disappearTimer;
-			json["draw_number"] = entity_data->draw_number_;
-			json["\\FallAndRoll"] = FallAndRoll::Print(_brick, entity_data->fall_and_roll_);
+			json["disappearTimer"] = entity_data.disappearTimer;
+			json["draw_number"] = entity_data.draw_number_;
+			json["\\FallAndRoll"] = FallAndRoll::Print(_brick, entity_data.fall_and_roll_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.infotron_014;
 
-			if (ACTION_TIMER(entity_data->disappearTimer,
+			if (ACTION_TIMER(entity_data.disappearTimer,
 							 disappearTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->disappearTimer == ACTION_TIMER_START;
+				return entity_data.disappearTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 				_brick.events.timer = true;
 				_brick.events.update = false;
 				_brick.requests.remove = false;
@@ -932,10 +927,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->disappearTimer,
+				DRAW_NUMBER_ASC(entity_data.disappearTimer,
 				disappearTime,
-				entity_data->draw_number_,
-				&_brick, InfotronDisappear);
+				entity_data.draw_number_,
+				_brick, InfotronDisappear);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -948,50 +943,50 @@ namespace Object::Entity
 				return;
 			}
 
-			FallAndRoll::Timer(_brick, entity_data->fall_and_roll_);
+			FallAndRoll::Timer(_brick, entity_data.fall_and_roll_);
 			if (_brick.IsMoveLeft())
 			{
-				DRAW_NUMBER_DESC(_brick.move.x(), 1.f, entity_data->draw_number_, &_brick, InfotronMoveHorizontal);
+				DRAW_NUMBER_DESC(_brick.move.x(), 1.f, entity_data.draw_number_, _brick, InfotronMoveHorizontal);
 			}
 			else if (_brick.IsMoveRight())
 			{
-				DRAW_NUMBER_ASC(_brick.move.x(), -1.f, entity_data->draw_number_, &_brick, InfotronMoveHorizontal);
+				DRAW_NUMBER_ASC(_brick.move.x(), -1.f, entity_data.draw_number_, _brick, InfotronMoveHorizontal);
 			}
 			else
 			{
-				if (entity_data->draw_number_ != 0)
+				if (entity_data.draw_number_ != 0)
 				{
-					entity_data->draw_number_ = 0;
+					entity_data.draw_number_ = 0;
 					_brick.requests.draw = true;
 				}
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.infotron_014;
 
 			if (_brick.requests.remove)
 			{
-				entity_data->disappearTimer = ACTION_TIMER_START;
+				entity_data.disappearTimer = ACTION_TIMER_START;
 				Timer(_brick);
 			}
 
 			if (!_brick.scene->IamRemain(_brick))
 			{
-				FallAndRoll::Update(_brick, entity_data->fall_and_roll_, updateType);
+				FallAndRoll::Update(_brick, entity_data.fall_and_roll_, updateType);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.infotron_014;
 
-			if (entity_data->disappearTimer > 0)
+			if (entity_data.disappearTimer > 0)
 			{
-				InfotronDisappear[entity_data->draw_number_].drawScaled(x, y, w, h);
+				InfotronDisappear[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
-				InfotronMoveHorizontal[entity_data->draw_number_].drawScaled(x, y, w, h);
+				InfotronMoveHorizontal[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1011,9 +1006,7 @@ namespace Object::Entity
 
 		Res::Slides Exit;
 
-		constexpr float animateTime = 0.5f;
-
-		typedef EntityData Specific;
+		constexpr float animateTime = 0.5f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1021,12 +1014,12 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.exit_015;
 
-			DRAW_NUMBER_ASC_INIT(entity_data->draw_number_, &_brick, Exit);
+			DRAW_NUMBER_ASC_INIT(entity_data.draw_number_, _brick, Exit);
 
-			entity_data->draw_number_ = 0;
-			entity_data->animateTimer = 0.f;
+			entity_data.draw_number_ = 0;
+			entity_data.animateTimer = 0.f;
 
 			_brick.events.update = true;
 			_brick.requests.update = true;
@@ -1035,38 +1028,38 @@ namespace Object::Entity
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.exit_015;
 
 			Json json;
 
-			json["draw_number"] = entity_data->draw_number_;
-			json["animateTimer"] = entity_data->animateTimer;
+			json["draw_number"] = entity_data.draw_number_;
+			json["animateTimer"] = entity_data.animateTimer;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.exit_015;
 
-			if (ACTION_TIMER(entity_data->animateTimer,
+			if (ACTION_TIMER(entity_data.animateTimer,
 							 animateTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->animateTimer == ACTION_TIMER_START;
+				return entity_data.animateTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 				_brick.events.timer = true;
 				return true;
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->animateTimer,
+				DRAW_NUMBER_ASC(entity_data.animateTimer,
 				animateTime,
-				entity_data->draw_number_,
-				&_brick, Exit);
+				entity_data.draw_number_,
+				_brick, Exit);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -1082,18 +1075,18 @@ namespace Object::Entity
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.exit_015;
 
-			entity_data->animateTimer = _brick.scene->getScoreToCollect() > 0 ? 0.f : ACTION_TIMER_START;
+			entity_data.animateTimer = _brick.scene->getScoreToCollect() > 0 ? 0.f : ACTION_TIMER_START;
 			_brick.events.update = false;
 
 			Timer(_brick);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.exit_015;
 
-			Exit[entity_data->draw_number_].drawScaled(x, y, w, h);
+			Exit[entity_data.draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1114,8 +1107,8 @@ namespace Object::Entity
 					Brick *brick = _brick.scene->GetObjectU(coord);
 					if (brick->id == ObjectID::Exit)
 					{
-						EntityData *entity_data = (EntityData *)(brick->specific);
-						entity_data->animateTimer = ACTION_TIMER_START;
+						EntityData &entity_data = brick->entity_data.exit_015;
+						entity_data.animateTimer = ACTION_TIMER_START;
 						Timer(*brick);
 					}
 				}
@@ -1541,9 +1534,7 @@ namespace Object::Entity
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
-		Res::Slides Electrons;
-
-		typedef EntityData Specific;
+		Res::Slides Electrons;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1551,49 +1542,49 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.electrons_026;
 
 			_brick.SetRotationSpeed(rotateSpeed);
 			_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 			_brick.SetTranslationID(ObjectID::Infotron);
 			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 
-			Animator::Create(_brick, entity_data->animator_);
-			entity_data->animator_.SetNumberOfFrames(Electrons.getCount());
-			entity_data->animator_.SetAnimationTime(0.8f);
+			Animator::Create(_brick, entity_data.animator_);
+			entity_data.animator_.SetNumberOfFrames(Electrons.getCount());
+			entity_data.animator_.SetAnimationTime(0.8f);
 
-			MoveLeftWay::Create(_brick, entity_data->move_left_way_);
+			MoveLeftWay::Create(_brick, entity_data.move_left_way_);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.electrons_026;
 
 			Json json;
 
-			json["\\Animator"] = Animator::Print(_brick, entity_data->animator_);
-			json["\\MoveLeftWay"] = MoveLeftWay::Print(_brick, entity_data->move_left_way_);
+			json["\\Animator"] = Animator::Print(_brick, entity_data.animator_);
+			json["\\MoveLeftWay"] = MoveLeftWay::Print(_brick, entity_data.move_left_way_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.electrons_026;
 
-			Animator::Timer(_brick, entity_data->animator_);
-			MoveLeftWay::Timer(_brick, entity_data->move_left_way_);
+			Animator::Timer(_brick, entity_data.animator_);
+			MoveLeftWay::Timer(_brick, entity_data.move_left_way_);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.electrons_026;
 
-			Animator::Update(_brick, entity_data->animator_, updateType);
-			MoveLeftWay::Update(_brick, entity_data->move_left_way_, updateType);
+			Animator::Update(_brick, entity_data.animator_, updateType);
+			MoveLeftWay::Update(_brick, entity_data.move_left_way_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.electrons_026;
 
-			Electrons[entity_data->animator_.GetDrawNumber()].drawScaled(x, y, w, h);
+			Electrons[entity_data.animator_.GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1614,9 +1605,7 @@ namespace Object::Entity
 		Res::Slides SnikSnakRotate;
 
 		constexpr float moveSpeed = CPS / 13.99f;
-		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
-
-		typedef EntityData Specific;
+		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1628,62 +1617,62 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
-			entity_data->draw_number_ = 0;
+			entity_data.draw_number_ = 0;
 
 			_brick.SetRotationSpeed(rotateSpeed);
 			_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 			_brick.SetTranslationID(ObjectID::Space);
 
-			MoveLeftWay::Create(_brick, entity_data->move_left_way_);
+			MoveLeftWay::Create(_brick, entity_data.move_left_way_);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
 			Json json;
 
-			json["draw_number"] = entity_data->draw_number_;
-			json["\\MoveLeftWay"] = MoveLeftWay::Print(_brick, entity_data->move_left_way_);
+			json["draw_number"] = entity_data.draw_number_;
+			json["\\MoveLeftWay"] = MoveLeftWay::Print(_brick, entity_data.move_left_way_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
-			MoveLeftWay::Timer(_brick, entity_data->move_left_way_);
+			MoveLeftWay::Timer(_brick, entity_data.move_left_way_);
 
 			if (_brick.isActionMove())
 			{
-				DRAW_NUMBER_ASC(_brick.GetAbsMove(), 1.f, entity_data->draw_number_, &_brick, SnikSnakMove[_brick.getMoveDirection()]);
+				DRAW_NUMBER_ASC(_brick.GetAbsMove(), 1.f, entity_data.draw_number_, _brick, SnikSnakMove[_brick.getMoveDirection()]);
 			}
 			else
 			{
 				DRAW_NUMBER_DESC(Brick::GetRealRotation(
 					_brick.rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
-					Type::Rotations::_360, entity_data->draw_number_, &_brick, SnikSnakRotate);
+					Type::Rotations::_360, entity_data.draw_number_, _brick, SnikSnakRotate);
 			}
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
-			MoveLeftWay::Update(_brick, entity_data->move_left_way_, updateType);
+			MoveLeftWay::Update(_brick, entity_data.move_left_way_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
 			if (_brick.isActionMove())
 			{
-				SnikSnakMove[_brick.getMoveDirection()][entity_data->draw_number_].drawScaled(x, y, w, h);
+				SnikSnakMove[_brick.getMoveDirection()][entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 			else
 			{
-				SnikSnakRotate[entity_data->draw_number_].drawScaled(x, y, w, h);
+				SnikSnakRotate[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1704,9 +1693,7 @@ namespace Object::Entity
 		Res::Slides Terminal;
 
 		constexpr float activatedAnimateTime = 0.7f;
-		constexpr float animateTime = 3.f;
-
-		typedef EntityData Specific;
+		constexpr float animateTime = 3.f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1714,41 +1701,41 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
-			Animator::Create(_brick, entity_data->animator_);
-			entity_data->animator_.SetNumberOfFrames(Terminal.getCount());
-			entity_data->animator_.SetAnimationTime(animateTime);
+			Animator::Create(_brick, entity_data.animator_);
+			entity_data.animator_.SetNumberOfFrames(Terminal.getCount());
+			entity_data.animator_.SetAnimationTime(animateTime);
 
 			_brick.SetFlags(Brick::ButtonPush | Brick::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
 			Json json;
 
-			json["\\Animator"] = Animator::Print(_brick, entity_data->animator_);
+			json["\\Animator"] = Animator::Print(_brick, entity_data.animator_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
-			Animator::Timer(_brick, entity_data->animator_);
+			Animator::Timer(_brick, entity_data.animator_);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
-			Animator::Update(_brick, entity_data->animator_, updateType);
+			Animator::Update(_brick, entity_data.animator_, updateType);
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
-			Terminal[entity_data->animator_.GetDrawNumber()].drawScaled(x, y, w, h);
+			Terminal[entity_data.animator_.GetDrawNumber()].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -1761,16 +1748,16 @@ namespace Object::Entity
 
 		void speedUpTerminalSpeed(Brick &_brick)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
-			entity_data->animator_.SetAnimationTime(activatedAnimateTime);
+			entity_data.animator_.SetAnimationTime(activatedAnimateTime);
 		}
 
 		void Pushed(Brick &_brick)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.terminal_028;
 
-			if (entity_data->animator_.time != activatedAnimateTime)
+			if (entity_data.animator_.time != activatedAnimateTime)
 			{
 				Type::Coord coord;
 				for (coord.x() = 0; coord.x() < _brick.scene->MapSize().width(); coord.x()++)
@@ -1801,9 +1788,7 @@ namespace Object::Entity
 
 		KIR5::SubBitmap Utility1;
 
-		constexpr float moveSpeed = CPS / 13.99f;
-
-		typedef EntityData Specific;
+		constexpr float moveSpeed = CPS / 13.99f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1811,40 +1796,40 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility1_029;
 
-			entity_data->active = false;
+			entity_data.active = false;
 			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3 | Brick::CanPushLeft | Brick::CanPushRight);
 			_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 			_brick.SetTranslationID(ObjectID::Space);
 
-			Fall::Create(_brick, entity_data->fall_and_roll_);
+			Fall::Create(_brick, entity_data.fall_and_roll_);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility1_029;
 			Json json;
 
-			json["active"] = entity_data->active;
-			json["\\Fall"] = Fall::Print(_brick, entity_data->fall_and_roll_);
+			json["active"] = entity_data.active;
+			json["\\Fall"] = Fall::Print(_brick, entity_data.fall_and_roll_);
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			Fall::Timer(_brick, entity_data->fall_and_roll_);
+			EntityData &entity_data = _brick.entity_data.utility1_029;
+			Fall::Timer(_brick, entity_data.fall_and_roll_);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			Fall::Update(_brick, entity_data->fall_and_roll_, updateType);
+			EntityData &entity_data = _brick.entity_data.utility1_029;
+			Fall::Update(_brick, entity_data.fall_and_roll_, updateType);
 
 			if (_brick.isActionMove())
 			{
-				entity_data->active = true;
+				entity_data.active = true;
 			}
-			else if (entity_data->active)
+			else if (entity_data.active)
 			{
 				_brick.scene->ObjectArrived(_brick.GetCoord());
 				_brick.scene->blowup(_brick);
@@ -1852,7 +1837,6 @@ namespace Object::Entity
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
 			Utility1.drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -1874,9 +1858,7 @@ namespace Object::Entity
 		KIR5::SubBitmap Utility2Activated;
 
 		constexpr float activateTime = 1.8f;
-		constexpr float disappearTime = 0.23f;
-
-		typedef EntityData Specific;
+		constexpr float disappearTime = 0.23f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1885,39 +1867,39 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-			entity_data->activateTimer = 0.f;
-			entity_data->disappearTimer = 0.f;
-			entity_data->draw_number_ = 0;
+			EntityData &entity_data = _brick.entity_data.utility2_030;
+			entity_data.activateTimer = 0.f;
+			entity_data.disappearTimer = 0.f;
+			entity_data.draw_number_ = 0;
 			_brick.SetFlags(Brick::CanBeExploded | Brick::MurphyCanSuck | Brick::Give1Unity | Brick::MurphyStepOn);
 
 			_brick.events.update = true;
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility2_030;
 			Json json;
 
-			json["activateTimer"] = entity_data->activateTimer;
-			json["disappearTimer"] = entity_data->disappearTimer;
-			json["draw_number"] = entity_data->draw_number_;
+			json["activateTimer"] = entity_data.activateTimer;
+			json["disappearTimer"] = entity_data.disappearTimer;
+			json["draw_number"] = entity_data.draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility2_030;
 
-			if (ACTION_TIMER(entity_data->disappearTimer,
+			if (ACTION_TIMER(entity_data.disappearTimer,
 							 disappearTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->disappearTimer == ACTION_TIMER_START;
+				return entity_data.disappearTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 				_brick.events.timer = true;
 				_brick.events.update = false;
 				_brick.requests.remove = false;
@@ -1925,10 +1907,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->disappearTimer,
+				DRAW_NUMBER_ASC(entity_data.disappearTimer,
 				disappearTime,
-				entity_data->draw_number_,
-				&_brick, Utility2);
+				entity_data.draw_number_,
+				_brick, Utility2);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -1941,16 +1923,16 @@ namespace Object::Entity
 				return;
 			}
 
-			if (ACTION_TIMER(entity_data->activateTimer,
+			if (ACTION_TIMER(entity_data.activateTimer,
 							 activateTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
-				return entity_data->activateTimer == ACTION_TIMER_START;
+				return entity_data.activateTimer == ACTION_TIMER_START;
 			},
 							 [&entity_data, &_brick]()->bool
 			{
-				entity_data->draw_number_ = 0;
+				entity_data.draw_number_ = 0;
 				_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
 				_brick.events.timer = true;
 				_brick.events.update = false;
@@ -1959,10 +1941,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_T draw_number = (DRAW_NUMBER_T(entity_data->activateTimer * 10)) % 2;
-				if (entity_data->draw_number_ != draw_number)
+				DrawNumber draw_number = (DrawNumber(entity_data.activateTimer * 10)) % 2;
+				if (entity_data.draw_number_ != draw_number)
 				{
-					entity_data->draw_number_ = draw_number;
+					entity_data.draw_number_ = draw_number;
 					_brick.requests.draw = true;
 				}
 				return true;
@@ -1979,25 +1961,25 @@ namespace Object::Entity
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility2_030;
 
 			if (_brick.requests.remove)
 			{
-				entity_data->disappearTimer = ACTION_TIMER_START;
+				entity_data.disappearTimer = ACTION_TIMER_START;
 				Timer(_brick);
 			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility2_030;
 
-			if (entity_data->activateTimer > 0 && entity_data->draw_number_ == 1)
+			if (entity_data.activateTimer > 0 && entity_data.draw_number_ == 1)
 			{
 				Utility2Activated.drawScaled(x, y, w, h);
 			}
 			else
 			{
-				Utility2[entity_data->draw_number_].drawScaled(x, y, w, h);
+				Utility2[entity_data.draw_number_].drawScaled(x, y, w, h);
 			}
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
@@ -2011,9 +1993,9 @@ namespace Object::Entity
 
 		void Activate(Brick &_brick)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.utility2_030;
 
-			entity_data->activateTimer = ACTION_TIMER_START;
+			entity_data.activateTimer = ACTION_TIMER_START;
 			Timer(_brick);
 		}
 	}
@@ -2066,9 +2048,7 @@ namespace Object::Entity
 
 		Res::Slides Blasting;
 
-		constexpr float explosionTime = 0.745f;
-
-		typedef EntityData Specific;
+		constexpr float explosionTime = 0.745f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -2076,10 +2056,10 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_effect_032;
 
-			entity_data->explosionTimer = explosionTime;
-			entity_data->draw_number_ = 0;
+			entity_data.explosionTimer = explosionTime;
+			entity_data.draw_number_ = 0;
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
@@ -2091,22 +2071,22 @@ namespace Object::Entity
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_effect_032;
 
 			Json json;
 
-			json["explosionTimer"] = entity_data->explosionTimer;
-			json["draw_number"] = entity_data->draw_number_;
+			json["explosionTimer"] = entity_data.explosionTimer;
+			json["draw_number"] = entity_data.draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_effect_032;
 
-			if (ACTION_TIMER(entity_data->explosionTimer,
+			if (ACTION_TIMER(entity_data.explosionTimer,
 							 explosionTime,
-							 &_brick,
+							 _brick,
 							 [&entity_data, &_brick]()->bool
 			{
 				return false;
@@ -2117,10 +2097,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->explosionTimer,
+				DRAW_NUMBER_ASC(entity_data.explosionTimer,
 				explosionTime,
-				entity_data->draw_number_,
-				&_brick, ExplosionEffect_032::Blasting);
+				entity_data.draw_number_,
+				_brick, ExplosionEffect_032::Blasting);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -2137,9 +2117,9 @@ namespace Object::Entity
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_effect_032;
 
-			Blasting[entity_data->draw_number_].drawScaled(x, y, w, h);
+			Blasting[entity_data.draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -2147,8 +2127,6 @@ namespace Object::Entity
 		}
 		void Finalize(OBJECT_FINALIZE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
-
 			_brick.events.timer = true;
 			_brick.requests.timer = true;
 			_brick.events.update = false;
@@ -2160,19 +2138,17 @@ namespace Object::Entity
 	{
 		const char *name = "033 - Explosion";
 
-		constexpr float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
-
-		typedef EntityData Specific;
+		constexpr float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_033;
 
-			entity_data->blastingTimer = blastingTime;
-			entity_data->draw_number_ = 0;
+			entity_data.blastingTimer = blastingTime;
+			entity_data.draw_number_ = 0;
 
 			_brick.scene->GetObject(_brick.GetCoord()).events.clear();
 			_brick.scene->GetObject(_brick.GetCoord()).requests.clear();
@@ -2188,13 +2164,13 @@ namespace Object::Entity
 		}
 		void ReCreate(OBJECT_CREATER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_033;
 
-			entity_data->draw_number_ = 0;
+			entity_data.draw_number_ = 0;
 
-			if (entity_data->blastingTimer == 0)
+			if (entity_data.blastingTimer == 0)
 			{
-				entity_data->blastingTimer = blastingTime;
+				entity_data.blastingTimer = blastingTime;
 
 				_brick.scene->GetObject(_brick.GetCoord()).events.clear();
 				_brick.scene->GetObject(_brick.GetCoord()).requests.clear();
@@ -2206,23 +2182,23 @@ namespace Object::Entity
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_033;
 
 			Json json;
 
-			json["explosionTimer"] = entity_data->explosionTimer;
-			json["blastingTimer"] = entity_data->blastingTimer;
-			json["draw_number"] = entity_data->draw_number_;
+			json["explosionTimer"] = entity_data.explosionTimer;
+			json["blastingTimer"] = entity_data.blastingTimer;
+			json["draw_number"] = entity_data.draw_number_;
 
 			return json;
 		}
 		void Timer(OBJECT_TIMER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_033;
 
-			ACTION_TIMER(entity_data->blastingTimer,
+			ACTION_TIMER(entity_data.blastingTimer,
 						 blastingTime,
-						 &_brick,
+						 _brick,
 						 [&entity_data, &_brick]()->bool
 			{
 				return false;
@@ -2250,9 +2226,9 @@ namespace Object::Entity
 				return true;
 			});
 
-			ACTION_TIMER(entity_data->explosionTimer,
+			ACTION_TIMER(entity_data.explosionTimer,
 						 ExplosionEffect_032::explosionTime,
-						 &_brick,
+						 _brick,
 						 [&entity_data, &_brick]()->bool
 			{
 				return false;
@@ -2263,10 +2239,10 @@ namespace Object::Entity
 			},
 				[&entity_data, &_brick]()->bool
 			{
-				DRAW_NUMBER_ASC(entity_data->explosionTimer,
+				DRAW_NUMBER_ASC(entity_data.explosionTimer,
 				ExplosionEffect_032::explosionTime,
-				entity_data->draw_number_,
-				&_brick, ExplosionEffect_032::Blasting);
+				entity_data.draw_number_,
+				_brick, ExplosionEffect_032::Blasting);
 			return true;
 			},
 				[&entity_data, &_brick]()->bool
@@ -2280,9 +2256,9 @@ namespace Object::Entity
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_033;
 
-			ExplosionEffect_032::Blasting[entity_data->draw_number_].drawScaled(x, y, w, h);
+			ExplosionEffect_032::Blasting[entity_data.draw_number_].drawScaled(x, y, w, h);
 		}
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM)
 		{
@@ -2290,13 +2266,13 @@ namespace Object::Entity
 		}
 		void Finalize(OBJECT_FINALIZE_PARAM)
 		{
-			EntityData *entity_data = (EntityData *)(_brick.specific);
+			EntityData &entity_data = _brick.entity_data.explosion_033;
 
 			_brick.events.timer = true;
 			_brick.requests.timer = true;
 			_brick.events.update = false;
 
-			entity_data->explosionTimer = ExplosionEffect_032::explosionTime;
+			entity_data.explosionTimer = ExplosionEffect_032::explosionTime;
 		}
 	}
 

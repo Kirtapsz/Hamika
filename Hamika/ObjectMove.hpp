@@ -14,7 +14,8 @@ namespace Object
 				data_(_data), func_(_func)
 			{
 
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
 			{
@@ -25,7 +26,8 @@ namespace Object
 				data_.limitSpeed_ = 0.f;
 				data_.currentSpeed_ = 0.f;
 				data_.carryMove_ = 0.f;
-			}
+			}
+
 			template<typename MODULES_T>
 			Json Func<MODULES_T>::print()
 			{
@@ -42,7 +44,8 @@ namespace Object
 				json["currentSpeed"] = data_.currentSpeed_;
 
 				return json;
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::doMove(typename MODULES_T::ACTIONS_DATA_T::ACTION_T _action, Type::ID _remain)
 			{
@@ -78,7 +81,8 @@ namespace Object
 						break;
 					}
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::doMoveEx(typename MODULES_T::ACTIONS_DATA_T::ACTION_T _action, Type::ID _remain, Type::Coord _to, Type::Move _move)
 			{
@@ -86,35 +90,41 @@ namespace Object
 				data_.scene->ObjectMove(func_.GetCoord(), _to, _remain);
 				SetMove(_move);
 				carryStep();
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::finishMove()
 			{
 				data_.carryMove_ = 0.f;
 				data_.accelaratePercent_ = 0.f;
 				data_.action = MODULES_T::DATA_T::STEADY;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::enablePhysics()
 			{
 				func_.AddFlags(Flags::Data::PhysicsSpeed);
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::disablePhysics()
 			{
 				func_.RemoveFlags(Flags::Data::PhysicsSpeed);
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::enableFixSpeed(Type::Speed _fixSpeed)
 			{
 				func_.AddFlags(Flags::Data::LimitSpeed);
 				data_.limitSpeed_ = _fixSpeed;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::disableFixSpeed()
 			{
 				func_.RemoveFlags(Flags::Data::LimitSpeed);
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::calculateSpeed(Type::Speed _baseSpeed)
 			{
@@ -131,7 +141,8 @@ namespace Object
 				{
 					data_.currentSpeed_ = _baseSpeed;
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::StepUp()
 			{
@@ -149,7 +160,8 @@ namespace Object
 					SetMove({0,0});
 					data_.scene->ObjectArrived(func_.GetCoord());
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::StepDown()
 			{
@@ -167,7 +179,8 @@ namespace Object
 					SetMove({0,0});
 					data_.scene->ObjectArrived(func_.GetCoord());
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::StepLeft()
 			{
@@ -185,7 +198,8 @@ namespace Object
 					SetMove({0,0});
 					data_.scene->ObjectArrived(func_.GetCoord());
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::StepRight()
 			{
@@ -203,7 +217,8 @@ namespace Object
 					SetMove({0,0});
 					data_.scene->ObjectArrived(func_.GetCoord());
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::Step()
 			{
@@ -215,7 +230,8 @@ namespace Object
 					StepUp();
 				else if (GetMove().y() < 0)
 					StepDown();
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::carryStepUp()
 			{
@@ -228,7 +244,8 @@ namespace Object
 					}
 					data_.carryMove_ = 0.f;
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::carryStepDown()
 			{
@@ -243,7 +260,8 @@ namespace Object
 					}
 					data_.carryMove_ = 0.f;
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::carryStepLeft()
 			{
@@ -258,7 +276,8 @@ namespace Object
 					}
 					data_.carryMove_ = 0.f;
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			void Func<MODULES_T>::carryStepRight()
 			{
@@ -273,7 +292,8 @@ namespace Object
 					}
 					data_.carryMove_ = 0.f;
 				}
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::carryStep()
 			{
@@ -285,86 +305,102 @@ namespace Object
 					carryStepUp();
 				else if (GetMove().y() < 0)
 					carryStepDown();
-			}
+			}
+
 			template<typename MODULES_T>
 			inline Type::Move Func<MODULES_T>::GetMoveSpeed()
 			{
 				return data_.MoveSpeed;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedVertical()
 			{
 				return data_.MoveSpeed.y();
-			}
+			}
+
 			template<typename MODULES_T>
 			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedHorizontal()
 			{
 				return data_.MoveSpeed.x();
 			}
 
-			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
+			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMoveSpeed(Type::Move::base speed)
 			{
 				data_.MoveSpeed = {speed,speed};
 			}
-			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
+			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMoveSpeed(Type::Move speed)
 			{
 				data_.MoveSpeed = speed;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMoveUnsafe(Type::Move move_)
 			{
 				data_.move = move_;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMove(Type::Move move_)
 			{
 				data_.move = move_;
 				func_.setOddDrawCoord();
-			}
+			}
+
 			template<typename MODULES_T>
 			inline Type::Move Func<MODULES_T>::GetMove()
 			{
 				return data_.move;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMove()
 			{
 				return data_.move.x() != 0 || data_.move.y() != 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMoveHorizontal()
 			{
 				return data_.move.x() != 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMoveVertical()
 			{
 				return data_.move.y() != 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMoveLeft()
 			{
 				return data_.move.x() > 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMoveRight()
 			{
 				return data_.move.x() < 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMoveDown()
 			{
 				return data_.move.y() < 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline bool Func<MODULES_T>::IsMoveUp()
 			{
 				return data_.move.y() > 0;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline Type::Direction Func<MODULES_T>::getMoveDirection() const
 			{
@@ -378,7 +414,8 @@ namespace Object
 					return Type::Directions::down;
 				else
 					return Type::Directions::up;
-			}
+			}
+
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMove(Type::Rotation rotation, Type::Move move)
 			{
@@ -390,7 +427,8 @@ namespace Object
 					SetMove({move.x(),data_.move.y()});
 				else if (rotation == Type::Rotations::Right)
 					SetMove({-move.x(),data_.move.y()});
-			}			
+			}
+			
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMoveUnsafe(Type::Rotation rotation, Type::Move move)
 			{

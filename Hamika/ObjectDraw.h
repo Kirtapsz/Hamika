@@ -6,11 +6,6 @@
 #include "IDreg.h"
 #include "Tools.h"
 
-#include "ObjectCoord.h"
-#include "ObjectMove.h"
-#include "ObjectRequests.h"
-#include "ObjectStack.h"
-
 namespace Object
 {
 	namespace Module
@@ -33,8 +28,7 @@ namespace Object
 
 				Type::Coord DrawCoord = {0,0};
 
-#define OBJECT_DRAWNER_PARAM Object::Brick &_brick, Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
-#define OBJECT_DRAWNER_CALL _brick, x, y, w, h
+				typedef void(*SIMPLE_DRAWNER)(Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h);
 				typedef void(*DRAWNER)(typename MODULES_T::BRICK_T &_brick, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h);
 				DRAWNER drawnerFnc = nullptr;
 				unsigned long long int drawCounter = 0;//ez az objektum hányszor lett eddig újrarajzolva

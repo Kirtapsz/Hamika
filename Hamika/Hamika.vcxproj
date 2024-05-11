@@ -376,7 +376,7 @@
     <ClCompile Include="ObjectMove.hpp" />
     <ClCompile Include="ObjectRequests.hpp" />
     <ClCompile Include="ObjectRotate.hpp" />
-    <ClCompile Include="ObjectStack.hpp" />
+    <ClCompile Include="ObjectEntityData.hpp" />
     <ClCompile Include="SceneBackground.cpp" />
     <ClCompile Include="SceneConfiguration.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
@@ -421,7 +421,6 @@
     <ClCompile Include="Worlds.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EntityData.hpp" />
     <ClInclude Include="ObjectActions.h" />
     <ClInclude Include="ObjectBase.h" />
     <ClInclude Include="ObjectCoord.h" />
@@ -432,7 +431,7 @@
     <ClInclude Include="ObjectMove.h" />
     <ClInclude Include="ObjectRequests.h" />
     <ClInclude Include="ObjectRotate.h" />
-    <ClInclude Include="ObjectStack.h" />
+    <ClInclude Include="ObjectEntityData.h" />
     <ClInclude Include="SceneBackground.h" />
     <ClInclude Include="SceneConfiguration.h" />
     <ClInclude Include="Cursor.h" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object.h"
+#include "BaseFunctions.h"
 
 namespace Object::Entity
 {

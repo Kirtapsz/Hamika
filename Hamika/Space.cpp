@@ -1,4 +1,5 @@
 #include "Space.h"
+#include "Object.h"
 
 namespace Object::Entity
 {

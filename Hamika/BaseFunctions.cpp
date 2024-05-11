@@ -1,9 +1,77 @@
 #include "BaseFunctions.h"
+#include "Object.h"
 #include "Tools.h"
 #include <KIR/KIR4_console.h>
 
 namespace Object
 {
+	bool ACTION_TIMER(float &timer,
+					  const float &duration,
+					  Brick &_brick,
+					  const std::function<bool()> &triggerEvent,
+					  const std::function<bool()> &timerStarted,
+					  const std::function<bool()> &timerRunning,
+					  const std::function<bool()> &timerExpired)
+	{
+		if (timer > 0)
+		{
+			timer -= CA;
+			if (timer <= 0)
+			{
+				timer = 0;
+				return timerExpired();
+			}
+			else
+			{
+				_brick.requests.timer = true;
+				return timerRunning();
+			}
+		}
+		else
+		{
+			if (triggerEvent())
+			{
+				timer = duration;
+				_brick.requests.timer = true;
+				return timerStarted();
+			}
+		}
+		return false;
+	}
+
+	void DRAW_NUMBER_INVALIDATE(DrawNumber &_draw_number)
+	{
+		_draw_number = std::numeric_limits<DrawNumber>::max();
+	}
+	void DRAW_NUMBER_ASC_INIT(DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp)
+	{
+		_draw_number = 0;
+		_brick.requests.draw = true;
+	}
+	void DRAW_NUMBER_ASC(float timer, const float duration, DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp)
+	{
+		DrawNumber draw_number = static_cast<DrawNumber>(bmp.getDrawNumber(1 - (timer / duration)));
+		if (_draw_number != draw_number)
+		{
+			_brick.requests.draw = true;
+			_draw_number = draw_number;
+		}
+	}
+	void DRAW_NUMBER_DESC_INIT(DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp)
+	{
+		_draw_number = bmp.getCount() - 1;
+		_brick.requests.draw = true;
+	}
+	void DRAW_NUMBER_DESC(float timer, const float duration, DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp)
+	{
+		DrawNumber draw_number = static_cast<DrawNumber>(bmp.getDrawNumber(timer / duration));
+		if (_draw_number != draw_number)
+		{
+			_brick.requests.draw = true;
+			_draw_number = draw_number;
+		}
+	}
+
 	namespace Animator
 	{
 		void EntityData::Initialize()
@@ -31,7 +99,7 @@ namespace Object
 		}
 		bool EntityData::UpdateDrawNumber()
 		{
-			DRAW_NUMBER_T _draw_number = limiter<std::int8_t>(0, numberOfFrames - 1,
+			DrawNumber _draw_number = limiter<std::int8_t>(0, numberOfFrames - 1,
 															  static_cast<std::int8_t>((timer / time) * numberOfFrames));
 			if (draw_number_ != _draw_number)
 			{
@@ -78,7 +146,7 @@ namespace Object
 
 			_brick.requests.timer = true;
 		}
-		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType)
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType)
 		{
 		}
 	}
@@ -138,9 +206,9 @@ namespace Object
 				_brick.requests.timer = true;
 			}
 		}
-		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType)
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType)
 		{
-			if (_updateType == Brick::UPDATE_ASC)
+			if (_updateType == UpdateType::UPDATE_ASC)
 			{
 				_brick.requests.update = true;
 				return;
@@ -283,11 +351,11 @@ namespace Object
 				_brick.requests.timer = true;
 			}
 		}
-		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType)
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType)
 		{
 			if (!_brick.IsMove())
 			{
-				if (_updateType == Brick::UPDATE_DESC && _brick.CanMoveDown())
+				if (_updateType == UpdateType::UPDATE_DESC && _brick.CanMoveDown())
 				{
 					if (_brick.scene->GetObjectOut(_brick.GetCoordDown()).GetAbsMove() <= 0.5f)
 					{
@@ -330,7 +398,7 @@ namespace Object
 					}
 				}
 
-				if (_updateType == Brick::UPDATE_ASC)
+				if (_updateType == UpdateType::UPDATE_ASC)
 				{
 					_brick.requests.update = true;
 					return;
@@ -441,7 +509,7 @@ namespace Object
 			}
 			_brick.requests.timer = true;
 		}
-		void Update(Object::Brick &_brick, EntityData &_entity_data, Object::Brick::UpdateType _updateType)
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType)
 		{
 			if (!_brick.IsMove() && !_brick.isRotate())
 			{
@@ -469,7 +537,7 @@ namespace Object
 					_brick.doMove(new_action, ObjectID::Space);
 					return;
 				}
-				else if (_updateType == Brick::UPDATE_ASC)
+				else if (_updateType == UpdateType::UPDATE_ASC)
 				{
 					_brick.requests.update = true;
 					return;

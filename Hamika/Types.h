@@ -108,7 +108,7 @@ namespace Type
 	{
 		using ADDITION = decltype(std::declval<T>() + std::declval<U>());
 		using SUBTRACTION = decltype(std::declval<T>() - std::declval<U>());
-		using MULTIPLICATION = decltype(std::declval<T>() *std::declval<U>());
+		using MULTIPLICATION = decltype(std::declval<T>() * std::declval<U>());
 		using DIVISION = decltype(std::declval<T>() / std::declval<U>());
 
 		using MODULO = decltype(std::declval<typename ModuloType<T>::TYPE>() % std::declval<typename ModuloType<U>::TYPE>());
@@ -413,6 +413,15 @@ namespace Type
 	typedef var2D<float> Camera;
 	typedef var2D<float> CameraSize;
 }
+
+typedef std::uint8_t DrawNumber;
+
+enum UpdateType: std::uint8_t
+{
+	UPDATE_ASC = 1 << 0,
+	UPDATE_DESC = 1 << 1,
+	UPDATE_MURPHY = 1 << 2,
+};
 
 enum GridFlags: Type::Flags8
 {

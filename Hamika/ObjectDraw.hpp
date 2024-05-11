@@ -76,10 +76,7 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::setOddDrawCoord()
 			{
-				Type::Coord draw_coord = {
-					Type::Coord::base((data_.coord.x() + data_.move.x()) * Type::Move::base(data_.scene->GetDrawSize().width())),
-					Type::Coord::base((data_.coord.y() + data_.move.y()) * Type::Move::base(data_.scene->GetDrawSize().height()))
-				};
+				Type::Coord draw_coord = (data_.coord + data_.move) * data_.scene->GetDrawSize();
 
 				if (draw_coord != data_.DrawCoord)
 				{
@@ -90,10 +87,7 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::setRoundDrawCoord()
 			{
-				Type::Coord draw_coord = {
-					data_.coord.x() * data_.scene->GetDrawSize().width(),
-					data_.coord.y() * data_.scene->GetDrawSize().height()
-				};
+				Type::Coord draw_coord = data_.coord * data_.scene->GetDrawSize();
 
 				if (draw_coord != data_.DrawCoord)
 				{
@@ -106,28 +100,6 @@ namespace Object
 			inline Type::Coord Func<MODULES_T>::GetDrawCoord()
 			{
 				return {data_.DrawCoord.x() - data_.scene->GetDrawOffSet().width(), data_.DrawCoord.y() - data_.scene->GetDrawOffSet().height()};
-			}
-
-			//DRAW #####################################################################################
-
-			template<typename MODULES_T>
-			void Func<MODULES_T>::RunSDraw()//teszteés céljából hogy a conter mûködjön
-			{
-				drawCounter++;
-				drawAtOnceCounter++;
-				if (drawAtOnceCounter >= 2)
-				{
-					clog << "WARNING! An object has been drawned two times (" << data_.coord.x() << "," << data_.coord.y() << "):" << KIR4::eol;
-					Print();
-				}
-				drawCounterID = ++totalDrawCounter;
-				if (data_.drawnerFnc)
-				{
-					Stack stack;
-					stack.o = this;
-					stack.specific = specific;
-					data_.drawnerFnc(&stack, GetDrawCoord().x(), GetDrawCoord().y(), data_.scene->GetDrawSize().width(), data_.scene->GetDrawSize().height());
-				}
 			}
 		}
 	}
