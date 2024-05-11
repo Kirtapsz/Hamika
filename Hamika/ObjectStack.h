@@ -27,57 +27,9 @@ namespace Object
 	{
 		namespace Stack
 		{
-			template <typename OBJECT>
+			template<typename MODULES_T>
 			struct Data
 			{
-				struct Stack
-				{
-					OBJECT *o = nullptr;
-					unsigned char *specific = nullptr;
-					unsigned int pos = 0;
-
-					inline Stack(OBJECT *object):
-						o(object), specific(object->specific)
-					{
-
-					}
-
-					template <typename SPECIFIC>
-					inline operator SPECIFIC *()
-					{
-						return (SPECIFIC *)(&specific[pos]);
-					}
-
-					inline operator Stack *()
-					{
-						static_assert(false, "Stack specific cannot cast to itself.");
-						return nullptr;
-					}
-
-					template <typename SPECIFIC>
-					struct Handler
-					{
-						Stack *stack;
-						unsigned int pos;
-
-						inline Handler(Stack &_stack):
-							stack(&_stack), pos(_stack.pos)
-						{
-							stack->pos += sizeof(SPECIFIC);
-						}
-						inline Handler(Stack *_stack) :
-							stack(_stack), pos(_stack->pos)
-						{
-							stack->pos += sizeof(SPECIFIC);
-						}
-
-						inline operator SPECIFIC *()
-						{
-							return (SPECIFIC *)(&stack->specific[pos]);
-						}
-					};
-				};
-
 				//OBJECT SPECIFIC
 				union EntityData;
 				EntityData entity_data;
@@ -87,17 +39,22 @@ namespace Object
 #define OBJECT_PRINTER_PARAM Object::Brick &_brick
 #define OBJECT_PRINTER_CALL _brick
 #define OBJECT_PRINTER_RET Json
-				typedef Json(*PRINT)(OBJECT &_object);
+				typedef Json(*PRINT)(typename MODULES_T::BRICK_T &_brick);
 				PRINT printFnc = nullptr;
 
 				virtual ~Data();
 			};
-			template <typename DATA>
-			struct Func: virtual DATA
+
+			template<typename MODULES_T>
+			struct Func
 			{
-				virtual ~Func();
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
+
+				public: virtual ~Func();
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
 			};
 		}
 	}

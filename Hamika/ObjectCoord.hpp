@@ -9,29 +9,36 @@ namespace Object
 	{
 		namespace Coord
 		{
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				this->coord = coord;
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.coord = coord;
+			}
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["coord.x"] = coord.x();
-				json["coord.y"] = coord.y();
+				json["coord.x"] = data_.coord.x();
+				json["coord.y"] = data_.coord.y();
 
 				return json;
 			}
 
-			template <typename DATA>
-			Type::Coord Func<DATA>::GetCoord() const
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetCoord() const
 			{
-				return coord;
+				return data_.coord;
 			}
-			template <typename DATA>
-			Type::Coord Func<DATA>::GetCoord(Type::Direction _direction) const
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetCoord(Type::Direction _direction) const
 			{
 				switch (_direction)
 				{
@@ -39,28 +46,28 @@ namespace Object
 					case Type::Directions::right: return GetCoordRight();
 					case Type::Directions::down: return GetCoordDown();
 					case Type::Directions::left: return GetCoordLeft();
-					default: return coord;
+					default: return data_.coord;
 				}
 			}
-			template <typename DATA>
-			Type::Coord Func<DATA>::GetCoordLeft() const
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetCoordLeft() const
 			{
-				return{coord.x() - 1,coord.y()};
+				return{data_.coord.x() - 1, data_.coord.y()};
 			}
-			template <typename DATA>
-			Type::Coord Func<DATA>::GetCoordRight() const
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetCoordRight() const
 			{
-				return{coord.x() + 1,coord.y()};
+				return{data_.coord.x() + 1, data_.coord.y()};
 			}
-			template <typename DATA>
-			Type::Coord Func<DATA>::GetCoordUp() const
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetCoordUp() const
 			{
-				return{coord.x(),coord.y() - 1};
+				return{data_.coord.x(), data_.coord.y() - 1};
 			}
-			template <typename DATA>
-			Type::Coord Func<DATA>::GetCoordDown() const
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetCoordDown() const
 			{
-				return{coord.x(),coord.y() + 1};
+				return{data_.coord.x(), data_.coord.y() + 1};
 			}
 		}
 	}

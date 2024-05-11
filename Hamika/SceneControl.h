@@ -44,7 +44,7 @@ namespace UI::Scene::Module::Contol
 	class Func:
 		public virtual Panel,
 		public virtual LoopControllerInterface,
-		public virtual Object::Brick::Interface,
+		public virtual Object::SceneInterface,
 		public virtual DATA
 	{
 		protected: void initialize()
@@ -124,7 +124,7 @@ namespace UI::Scene::Module::Contol
 		template <typename DATA>
 		class Func:
 			public virtual LoopControllerInterface,
-			public virtual Object::Brick::Interface,
+			public virtual Object::SceneInterface,
 			public virtual DATA
 		{
 			protected: void initialize()

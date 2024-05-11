@@ -10,29 +10,35 @@ namespace Object
 	{
 		namespace Stack
 		{
-			template <typename OBJECT>
-			Data<OBJECT>::~Data()
+			template <typename MODULES_T>
+			Data<MODULES_T>::~Data()
 			{
 
 			}
 
-			template <typename DATA>
-			Func<DATA>::~Func()
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
 
 			}
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template <typename MODULES_T>
+			inline Func<MODULES_T>::~Func()
 			{
-				memset(specific, 0, sizeof(specific));
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+			template <typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
 			{
-				if (printFnc)
+				memset(data_.specific, 0, sizeof(data_.specific));
+			}
+			template <typename MODULES_T>
+			inline Json Func<MODULES_T>::print()
+			{
+				if (data_.printFnc)
 				{
-					typename DATA::OBJECT_T *object = dynamic_cast<typename DATA::OBJECT_T *>(this);
-					return printFnc(*object);
+					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
+					return data_.printFnc(*object);
 				}
 				else
 				{

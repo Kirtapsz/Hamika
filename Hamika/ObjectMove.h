@@ -6,6 +6,7 @@
 #include "IDreg.h"
 #include "Tools.h"
 
+#include "ObjectBase.h"
 #include "ObjectActions.h"
 #include "ObjectFlags.h"
 #include "ObjectCoord.h"
@@ -16,7 +17,6 @@ namespace Object
 	{
 		namespace Move
 		{
-			template <typename OBJECT>
 			struct Data
 			{
 				Type::Move move = {0,0};
@@ -25,70 +25,71 @@ namespace Object
 				Type::Speed limitSpeed_ = 0.f; // this speed cannot be stepped over, it is a fix speed
 				Type::Speed currentSpeed_ = 0.f; // this amout will be stepped down
 				Type::Speed carryMove_ = 0.f; // when a step does not cost currentSpeed_, it will be added to the next preiod
-
-				virtual void setOddDrawCoord() = 0;
 			};
-			template <typename DATA>
-			struct Func: virtual DATA,
-				virtual Flags::Func<DATA>,
-				virtual Coord::Func<DATA>
+
+			template<typename MODULES_T>
+			struct Func
 			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
-				// calling every time when starting/stopping a block move
-				void doMove(typename DATA::ACTION_T _action, Type::ID _remain);
-				void doMoveEx(typename DATA::ACTION_T _action, Type::ID _remain, Type::Coord _to, Type::Move _move);
-				void finishMove();
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
 
-				// physics is responsible to dynamic speed up
-				void enablePhysics();
-				void disablePhysics();
+					  // calling every time when starting/stopping a block move
+				public: void doMove(typename MODULES_T::ACTIONS_DATA_T::ACTION_T _action, Type::ID _remain);
+				public: void doMoveEx(typename MODULES_T::ACTIONS_DATA_T::ACTION_T _action, Type::ID _remain, Type::Coord _to, Type::Move _move);
+				public: void finishMove();
 
-				// regardles of the original speed or physics setting, this values will be used
-				void enableFixSpeed(Type::Speed _fixSpeed);
-				void disableFixSpeed();
-				void calculateSpeed(Type::Speed _baseSpeed);
+					  // physics is responsible to dynamic speed up
+				public: void enablePhysics();
+				public: void disablePhysics();
 
-				void StepUp();
-				void StepDown();
-				void StepLeft();
-				void StepRight();
-				void Step();
+					  // regardles of the original speed or physics setting, this values will be used
+				public: void enableFixSpeed(Type::Speed _fixSpeed);
+				public: void disableFixSpeed();
+				public: void calculateSpeed(Type::Speed _baseSpeed);
 
-				void carryStepUp();
-				void carryStepDown();
-				void carryStepLeft();
-				void carryStepRight();
-				void carryStep();
+				public: void StepUp();
+				public: void StepDown();
+				public: void StepLeft();
+				public: void StepRight();
+				public: void Step();
 
-				Type::Move GetMoveSpeed();
-				Type::Move::base GetMoveSpeedVertical();
-				Type::Move::base GetMoveSpeedHorizontal();
+				public: void carryStepUp();
+				public: void carryStepDown();
+				public: void carryStepLeft();
+				public: void carryStepRight();
+				public: void carryStep();
 
-				//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
-				void SetMoveSpeed(Type::Move::base speed);
-				//a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
-				void SetMoveSpeed(Type::Move speed);
+				public: Type::Move GetMoveSpeed();
+				public: Type::Move::base GetMoveSpeedVertical();
+				public: Type::Move::base GetMoveSpeedHorizontal();
 
-				void SetMoveUnsafe(Type::Move move_ = {0,0});
-				void SetMove(Type::Move move_ = {0,0});
-				Type::Move GetMove();
-				bool IsMove();
-				bool IsMoveHorizontal();
-				bool IsMoveVertical();
-				bool IsMoveLeft();
-				bool IsMoveRight();
-				bool IsMoveDown();
-				bool IsMoveUp();
-				Type::Direction getMoveDirection() const;
-				/*
-				beállítja autómatikusan a movet a rotation alapján
+					  //a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
+				public: void SetMoveSpeed(Type::Move::base speed);
+					  //a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
+				public: void SetMoveSpeed(Type::Move speed);
 
-				a move paraméter adja meg a move x vagy y-t, pozitív egész számnak kell lennie
-				*/
-				void SetMove(Type::Rotation rotation, Type::Move move = {1,1});
-				void SetMoveUnsafe(Type::Rotation rotation, Type::Move move = {1,1});
+				public: void SetMoveUnsafe(Type::Move move_ = {0,0});
+				public: void SetMove(Type::Move move_ = {0,0});
+				public: Type::Move GetMove();
+				public: bool IsMove();
+				public: bool IsMoveHorizontal();
+				public: bool IsMoveVertical();
+				public: bool IsMoveLeft();
+				public: bool IsMoveRight();
+				public: bool IsMoveDown();
+				public: bool IsMoveUp();
+				public: Type::Direction getMoveDirection() const;
+					  /*
+					  beállítja autómatikusan a movet a rotation alapján
+
+					  a move paraméter adja meg a move x vagy y-t, pozitív egész számnak kell lennie
+					  */
+				public: void SetMove(Type::Rotation rotation, Type::Move move = {1,1});
+				public: void SetMoveUnsafe(Type::Rotation rotation, Type::Move move = {1,1});
 			};
 		}
 	}

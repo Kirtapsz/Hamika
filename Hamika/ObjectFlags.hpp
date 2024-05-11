@@ -9,41 +9,47 @@ namespace Object
 	{
 		namespace Flags
 		{
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				flags = 0;
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.flags = 0;
+			}
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["flags"] = flags;
+				json["flags"] = data_.flags;
 
 				return json;
 			}
 
-
-			template <typename DATA>
-			void Func<DATA>::SetFlags(Type::Flags flags_)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetFlags(Type::Flags flags_)
 			{
-				flags = flags_;
+				data_.flags = flags_;
 			}
-			template <typename DATA>
-			Type::Flags Func<DATA>::GetFlags()
+			template<typename MODULES_T>
+			inline Type::Flags Func<MODULES_T>::GetFlags()
 			{
-				return flags;
+				return data_.flags;
 			}
-			template <typename DATA>
-			void Func<DATA>::AddFlags(Type::Flags flags_)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::AddFlags(Type::Flags flags_)
 			{
-				flags |= flags_;
+				data_.flags |= flags_;
 			}
-			template <typename DATA>
-			void Func<DATA>::RemoveFlags(Type::Flags flags_)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::RemoveFlags(Type::Flags flags_)
 			{
-				flags &= ~flags_;
+				data_.flags &= ~flags_;
 			}
 		}
 	}

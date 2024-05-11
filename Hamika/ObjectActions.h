@@ -12,7 +12,6 @@ namespace Object
 	{
 		namespace Actions
 		{
-			template <typename OBJECT>
 			struct Data
 			{
 				typedef std::uint16_t ACTION_T;
@@ -38,17 +37,22 @@ namespace Object
 
 				constexpr static ACTION_T ACTION_MOVE[4] = {MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT};
 			};
-			template <typename DATA>
-			struct Func: virtual DATA
+
+			template<typename MODULES_T>
+			struct Func
 			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
-				bool isAction(typename DATA::ACTION_T _action) const;
-				bool isAction() const;
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
 
-				bool isActionMove() const;
-				bool isActionRotate() const;
+				public: bool isAction(typename MODULES_T::DATA_T::ACTION_T _action) const;
+				public: bool isAction() const;
+
+				public: bool isActionMove() const;
+				public: bool isActionRotate() const;
 			};
 		}
 	}

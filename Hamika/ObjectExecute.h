@@ -15,12 +15,12 @@ namespace Object
 	{
 		namespace Execute
 		{
-			template <typename OBJECT>
-			struct Data: virtual Stack::Data<OBJECT>
+			template<typename MODULES_T>
+			struct Data
 			{
 				//LÉTRHOZÁS #####################################################################################
 
-				typedef void(*CREATER)(OBJECT &_object);
+				typedef void(*CREATER)(typename MODULES_T::BRICK_T &_brick);
 
 				//INICIALIZÁLÓ
 				typedef void(*INITIALIZER)(OBJECT_INITIALIZER_PARAM);
@@ -32,29 +32,33 @@ namespace Object
 					UPDATE_DESC = 1 << 1,
 					UPDATE_MURPHY = 1 << 2,
 				};
-				typedef void(*UPDATE)(OBJECT &_object, UpdateType);
+				typedef void(*UPDATE)(typename MODULES_T::BRICK_T &_brick, UpdateType);
 				UPDATE updaterFnc = nullptr;
 				unsigned long long updateNumber = 0;
 				static unsigned long long totalUpdateNumber;
 
 				//FINALIZE #####################################################################################
-				typedef void(*FINALIZE)(OBJECT &_object);
+				typedef void(*FINALIZE)(typename MODULES_T::BRICK_T &_brick);
 				FINALIZE finalizeFnc = nullptr;
 
 				//TIMER EVENT #####################################################################################
-				typedef void(*TIMER)(OBJECT &_object);
+				typedef void(*TIMER)(typename MODULES_T::BRICK_T &_brick);
 				TIMER timerFnc = nullptr;
 			};
 
-			template <typename DATA>
-			struct Func: virtual DATA
+			template<typename MODULES_T>
+			struct Func
 			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
-				void RunUpdate(typename DATA::UpdateType updateType);
-				void RunFinalize();
-				void RunTimer();
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
+
+				public: void RunUpdate(typename Data<MODULES_T>::UpdateType updateType);
+				public: void RunFinalize();
+				public: void RunTimer();
 			};
 		}
 	}

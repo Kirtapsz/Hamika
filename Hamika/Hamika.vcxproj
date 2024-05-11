@@ -373,7 +373,6 @@
     <ClCompile Include="ObjectEvents.hpp" />
     <ClCompile Include="ObjectExecute.hpp" />
     <ClCompile Include="ObjectFlags.hpp" />
-    <ClCompile Include="ObjectHitAction.hpp" />
     <ClCompile Include="ObjectMove.hpp" />
     <ClCompile Include="ObjectRequests.hpp" />
     <ClCompile Include="ObjectRotate.hpp" />
@@ -430,7 +429,6 @@
     <ClInclude Include="ObjectEvents.h" />
     <ClInclude Include="ObjectExecute.h" />
     <ClInclude Include="ObjectFlags.h" />
-    <ClInclude Include="ObjectHitAction.h" />
     <ClInclude Include="ObjectMove.h" />
     <ClInclude Include="ObjectRequests.h" />
     <ClInclude Include="ObjectRotate.h" />

@@ -22,7 +22,7 @@ void DrawObject(int id, int x, int y, int w, int h);
 const char *GetObjectName(int id);
 
 void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr);
-inline void ObjectCreate(Object::Brick::Interface *scene, Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr)
+inline void ObjectCreate(Object::SceneInterface *scene, Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr)
 {
 	object->setScene(scene);
 	ObjectCreate(object, id, coord, creater);
@@ -31,7 +31,7 @@ inline void ObjectCreate(Object::Brick::Interface *scene, Object::Brick *object,
 namespace Editor
 {
 	void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr);
-	inline void ObjectCreate(Object::Brick::Interface *scene, Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr)
+	inline void ObjectCreate(Object::SceneInterface *scene, Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater = nullptr)
 	{
 		object->setScene(scene);
 		ObjectCreate(object, id, coord, creater);

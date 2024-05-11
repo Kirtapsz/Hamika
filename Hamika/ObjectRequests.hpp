@@ -9,8 +9,7 @@ namespace Object
 	{
 		namespace Requests
 		{
-			template <typename OBJECT>
-			void Data<OBJECT>::Requests::clear()
+			inline void Data::Requests::clear()
 			{
 				timer = false;
 				tick = false;
@@ -19,21 +18,28 @@ namespace Object
 				remove = false;
 			}
 
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				requests.clear();
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.requests.clear();
+			}
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["requests.timer"] = requests.timer;
-				json["requests.tick"] = requests.tick;
-				json["requests.update"] = requests.update;
-				json["requests.draw"] = requests.draw;
-				json["requests.remove"] = requests.remove;
+				json["requests.timer"] = data_.requests.timer;
+				json["requests.tick"] = data_.requests.tick;
+				json["requests.update"] = data_.requests.update;
+				json["requests.draw"] = data_.requests.draw;
+				json["requests.remove"] = data_.requests.remove;
 
 				return json;
 			}

@@ -45,7 +45,7 @@ namespace Res::Log
 
 struct Validator
 {
-	struct Interface: public virtual Object::Brick::Interface
+	struct Interface: public virtual Object::SceneInterface
 	{
 		public: enum RESULT: std::uint8_t
 		{

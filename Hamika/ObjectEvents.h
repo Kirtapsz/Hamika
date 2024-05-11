@@ -12,7 +12,6 @@ namespace Object
 	{
 		namespace Events
 		{
-			template <typename OBJECT>
 			struct Data
 			{
 				struct Events
@@ -25,11 +24,16 @@ namespace Object
 
 				} events = {0};
 			};
-			template <typename DATA>
-			struct Func: virtual DATA
+
+			template<typename MODULES_T>
+			struct Func
 			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
+
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
 			};
 		}
 	}

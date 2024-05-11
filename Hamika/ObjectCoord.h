@@ -12,24 +12,27 @@ namespace Object
 	{
 		namespace Coord
 		{
-			template <typename OBJECT>
 			struct Data
 			{
 				Type::Coord coord = Type::Coord::Invalid;
 			};
-			template <typename DATA>
-			struct Func: virtual DATA
+
+			template<typename MODULES_T>
+			struct Func
 			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
 
-				Type::Coord GetCoord() const;
-				Type::Coord GetCoord(Type::Direction _direction) const;
-				Type::Coord GetCoordLeft() const;
-				Type::Coord GetCoordRight() const;
-				Type::Coord GetCoordUp() const;
-				Type::Coord GetCoordDown() const;
+				public: Type::Coord GetCoord() const;
+				public: Type::Coord GetCoord(Type::Direction _direction) const;
+				public: Type::Coord GetCoordLeft() const;
+				public: Type::Coord GetCoordRight() const;
+				public: Type::Coord GetCoordUp() const;
+				public: Type::Coord GetCoordDown() const;
 			};
 		}
 	}

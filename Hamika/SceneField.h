@@ -36,7 +36,7 @@ namespace UI::Scene::Module::Field
 	};
 
 	template <typename DATA>
-	class Func: public virtual Object::Brick::Interface, public virtual DATA
+	class Func: public virtual Object::SceneInterface, public virtual DATA
 	{
 		protected: void initialize(const std::shared_ptr<Res::BluePrint> &bluePrint_)
 		{

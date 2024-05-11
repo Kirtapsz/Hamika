@@ -262,9 +262,6 @@
     <ClCompile Include="ObjectBase.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectHitAction.hpp">
-      <Filter>Objects\Object\Module</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectStack.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
@@ -466,9 +463,6 @@
       <Filter>Objects\Object\Module</Filter>
     </ClInclude>
     <ClInclude Include="ObjectBase.h">
-      <Filter>Objects\Object\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectHitAction.h">
       <Filter>Objects\Object\Module</Filter>
     </ClInclude>
     <ClInclude Include="ObjectStack.h">

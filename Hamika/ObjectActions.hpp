@@ -9,40 +9,47 @@ namespace Object
 	{
 		namespace Actions
 		{
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				action = STEADY;
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.action = MODULES_T::DATA_T::STEADY;
+			}
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["action"] = action;
+				json["action"] = data_.action;
 
 				return json;
 			}
 
-			template <typename DATA>
-			bool Func<DATA>::isAction(typename DATA::ACTION_T _action) const
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::isAction(typename MODULES_T::DATA_T::ACTION_T _action) const
 			{
-				return action == _action;
+				return data_.action == _action;
 			}
-			template <typename DATA>
-			bool Func<DATA>::isAction() const
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::isAction() const
 			{
-				return action != STEADY;
+				return data_.action != MODULES_T::DATA_T::STEADY;
 			}
-			template <typename DATA>
-			bool Func<DATA>::isActionMove() const
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::isActionMove() const
 			{
-				return action & MOVE;
+				return data_.action & MODULES_T::DATA_T::MOVE;
 			}
-			template <typename DATA>
-			bool Func<DATA>::isActionRotate() const
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::isActionRotate() const
 			{
-				return action & ROTATE;
+				return data_.action & MODULES_T::DATA_T::ROTATE;
 			}
 		}
 	}

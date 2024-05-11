@@ -26,7 +26,7 @@ namespace UI::Scene
 			};
 
 			template <typename DATA>
-			class Func: public virtual Object::Brick::Interface,
+			class Func: public virtual Object::SceneInterface,
 				public virtual Module::Field::Func<DATA>,
 				public virtual Module::Murphy::Func<DATA>,
 				public virtual Module::Art::Func<DATA>,
@@ -60,7 +60,7 @@ namespace UI::Scene
 			};
 
 			template <typename DATA>
-			class Func: public virtual Object::Brick::Interface,
+			class Func: public virtual Object::SceneInterface,
 				public virtual Module::Field::Func<DATA>,
 				public virtual Module::Murphy::Func<DATA>,
 				public virtual Module::Art::Mock::Func<DATA>,

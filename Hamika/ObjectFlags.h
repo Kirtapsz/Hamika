@@ -12,7 +12,6 @@ namespace Object
 	{
 		namespace Flags
 		{
-			template <typename OBJECT>
 			struct Data
 			{
 				enum Flags:Type::Flags
@@ -54,16 +53,21 @@ namespace Object
 
 				Type::Flags flags = 0;
 			};
-			template <typename DATA>
-			struct Func: virtual DATA
-			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
 
-				void SetFlags(Type::Flags flags_);
-				Type::Flags GetFlags();
-				void AddFlags(Type::Flags flags_);
-				void RemoveFlags(Type::Flags flags_);
+			template<typename MODULES_T>
+			struct Func
+			{
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
+
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
+
+				public: void SetFlags(Type::Flags flags_);
+				public: Type::Flags GetFlags();
+				public: void AddFlags(Type::Flags flags_);
+				public: void RemoveFlags(Type::Flags flags_);
 			};
 		}
 	}

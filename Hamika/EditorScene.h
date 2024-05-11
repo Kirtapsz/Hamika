@@ -21,7 +21,7 @@ namespace Editor::UI::Scene
 {
 	using namespace ::UI;
 
-	class Edit:public Panel, public Object::Brick::Interface
+	class Edit:public Panel, public Object::SceneInterface
 	{
 		private: Type::Coord targetCoord;
 

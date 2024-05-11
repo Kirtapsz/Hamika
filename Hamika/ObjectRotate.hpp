@@ -9,167 +9,174 @@ namespace Object
 	{
 		namespace Rotate
 		{
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				rotation = Type::Rotations::_0;
-				straight_rotation = true;
-				rotationSpeed_ = 1.f;
-				carryRotation_ = 0.f;
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.rotation = Type::Rotations::_0;
+				data_.straight_rotation = true;
+				data_.rotationSpeed_ = 1.f;
+				data_.carryRotation_ = 0.f;
+			}
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["rotation"] = rotation;
-				json["rotationSpeed"] = rotationSpeed_;
+				json["rotation"] = data_.rotation;
+				json["rotationSpeed"] = data_.rotationSpeed_;
 
 				return json;
 			}
 
 			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 360 egy teljes k�rbefordul�s 1m�sodperc alatt...
-			template <typename DATA>
-			void Func<DATA>::SetRotationSpeed(Type::Speed speed)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetRotationSpeed(Type::Speed speed)
 			{
-				rotationSpeed_ = speed;
+				data_.rotationSpeed_ = speed;
 			}
-			template <typename DATA>
-			void Func<DATA>::doRotate(std::uint8_t _action)
+			template<typename MODULES_T>
+			void Func<MODULES_T>::doRotate(std::uint8_t _action)
 			{
-				straight_rotation = false;
+				data_.straight_rotation = false;
 
-				action = _action;
+				data_.action = _action;
 				switch (_action)
 				{
-					case ROTATE_LEFT:
+					case MODULES_T::DATA_T::ROTATE_LEFT:
 					{
 						break;
 					}
-					case ROTATE_RIGHT:
+					case MODULES_T::DATA_T::ROTATE_RIGHT:
 					{
 						break;
 					}
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::finishRotate()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::finishRotate()
 			{
-				carryRotation_ = 0.f;
-				_action = STEADY;
+				data_.carryRotation_ = 0.f;
+				data_.action = MODULES_T::DATA_T::STEADY;
 			}
 
-			template <typename DATA>
-			bool Func<DATA>::isRotate() const
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::isRotate() const
 			{
-				return !straight_rotation;
+				return !data_.straight_rotation;
 			}
 
-			template <typename DATA>
-			void Func<DATA>::RotationLeft()
+			template<typename MODULES_T>
+			void Func<MODULES_T>::RotationLeft()
 			{
-				if (rotation == Type::Rotations::_0)
-					rotation = Type::Rotations::_360;
-				if (rotation > Type::Rotations::_270)
+				if (data_.rotation == Type::Rotations::_0)
+					data_.rotation = Type::Rotations::_360;
+				if (data_.rotation > Type::Rotations::_270)
 				{
-					rotation -= rotationSpeed_ / CPS;
-					if (rotation <= Type::Rotations::_270)
+					data_.rotation -= data_.rotationSpeed_ / CPS;
+					if (data_.rotation <= Type::Rotations::_270)
 					{
-						carryRotation_ = Type::Rotations::_270 - rotation;
-						rotation = Type::Rotations::_270;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = Type::Rotations::_270 - data_.rotation;
+						data_.rotation = Type::Rotations::_270;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
-				else if (rotation > Type::Rotations::_180)
+				else if (data_.rotation > Type::Rotations::_180)
 				{
-					rotation -= rotationSpeed_ / CPS;
-					if (rotation <= Type::Rotations::_180)
+					data_.rotation -= data_.rotationSpeed_ / CPS;
+					if (data_.rotation <= Type::Rotations::_180)
 					{
-						carryRotation_ = Type::Rotations::_180 - rotation;
-						rotation = Type::Rotations::_180;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = Type::Rotations::_180 - data_.rotation;
+						data_.rotation = Type::Rotations::_180;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
-				else if (rotation > Type::Rotations::_90)
+				else if (data_.rotation > Type::Rotations::_90)
 				{
-					rotation -= rotationSpeed_ / CPS;
-					if (rotation <= Type::Rotations::_90)
+					data_.rotation -= data_.rotationSpeed_ / CPS;
+					if (data_.rotation <= Type::Rotations::_90)
 					{
-						carryRotation_ = Type::Rotations::_90 - rotation;
-						rotation = Type::Rotations::_90;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = Type::Rotations::_90 - data_.rotation;
+						data_.rotation = Type::Rotations::_90;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
 				else
 				{
-					rotation -= rotationSpeed_ / CPS;
-					if (rotation <= Type::Rotations::_0)
+					data_.rotation -= data_.rotationSpeed_ / CPS;
+					if (data_.rotation <= Type::Rotations::_0)
 					{
-						carryRotation_ = Type::Rotations::_0 - rotation;
-						rotation = Type::Rotations::_0;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = Type::Rotations::_0 - data_.rotation;
+						data_.rotation = Type::Rotations::_0;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::RotationRight()
+			template<typename MODULES_T>
+			void Func<MODULES_T>::RotationRight()
 			{
-				if (rotation < Type::Rotations::_90)
+				if (data_.rotation < Type::Rotations::_90)
 				{
-					rotation += rotationSpeed_ / CPS;
-					if (rotation >= Type::Rotations::_90)
+					data_.rotation += data_.rotationSpeed_ / CPS;
+					if (data_.rotation >= Type::Rotations::_90)
 					{
-						carryRotation_ = rotation - Type::Rotations::_90;
-						rotation = Type::Rotations::_90;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = data_.rotation - Type::Rotations::_90;
+						data_.rotation = Type::Rotations::_90;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
-				else if (rotation < Type::Rotations::_180)
+				else if (data_.rotation < Type::Rotations::_180)
 				{
-					rotation += rotationSpeed_ / CPS;
-					if (rotation >= Type::Rotations::_180)
+					data_.rotation += data_.rotationSpeed_ / CPS;
+					if (data_.rotation >= Type::Rotations::_180)
 					{
-						carryRotation_ = rotation - Type::Rotations::_180;
-						rotation = Type::Rotations::_180;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = data_.rotation - Type::Rotations::_180;
+						data_.rotation = Type::Rotations::_180;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
-				else if (rotation < Type::Rotations::_270)
+				else if (data_.rotation < Type::Rotations::_270)
 				{
-					rotation += rotationSpeed_ / CPS;
-					if (rotation >= Type::Rotations::_270)
+					data_.rotation += data_.rotationSpeed_ / CPS;
+					if (data_.rotation >= Type::Rotations::_270)
 					{
-						carryRotation_ = rotation - Type::Rotations::_270;
-						rotation = Type::Rotations::_270;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = data_.rotation - Type::Rotations::_270;
+						data_.rotation = Type::Rotations::_270;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
 				else
 				{
-					rotation += rotationSpeed_ / CPS;
-					if (rotation >= Type::Rotations::_360)
+					data_.rotation += data_.rotationSpeed_ / CPS;
+					if (data_.rotation >= Type::Rotations::_360)
 					{
-						carryRotation_ = rotation - Type::Rotations::_360;
-						rotation = Type::Rotations::_0;
-						straight_rotation = true;
-						scene->ObjectArrived(GetCoord());
+						data_.carryRotation_ = data_.rotation - Type::Rotations::_360;
+						data_.rotation = Type::Rotations::_0;
+						data_.straight_rotation = true;
+						data_.scene->ObjectArrived(func_.GetCoord());
 					}
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::SetRotation(Type::Rotation rotation)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetRotation(Type::Rotation rotation)
 			{
-				this->rotation = rotation;
+				data_.rotation = rotation;
 			}
-			template <typename DATA>
-			Type::Rotation Func<DATA>::GetRoundRotation(Type::Rotation rotation)
+			template<typename MODULES_T>
+			inline Type::Rotation Func<MODULES_T>::GetRoundRotation(Type::Rotation rotation)
 			{
 				rotation += 0.01f/*hibat�r�s*/;
 
@@ -184,14 +191,14 @@ namespace Object
 				else
 					return Type::Rotations::Up;
 			}
-			template <typename DATA>
-			Type::Rotation Func<DATA>::GetAngel()
+			template<typename MODULES_T>
+			inline Type::Rotation Func<MODULES_T>::GetAngel()
 			{
-				return rotation / Type::Rotations::_360;
+				return data_.rotation / Type::Rotations::_360;
 			}
 
-			template <typename DATA>
-			Type::Rotation Func<DATA>::GetRealRotation(Type::Rotation rotation)
+			template<typename MODULES_T>
+			inline Type::Rotation Func<MODULES_T>::GetRealRotation(Type::Rotation rotation)
 			{
 				if (rotation < 0)
 					rotation += (int)(rotation / Type::Rotations::_360) * Type::Rotations::_360 + Type::Rotations::_360;
@@ -199,10 +206,10 @@ namespace Object
 					rotation -= (int)(rotation / Type::Rotations::_360) * Type::Rotations::_360;
 				return rotation;
 			}
-			template <typename DATA>
-			Type::Rotation Func<DATA>::GetRotation() const
+			template<typename MODULES_T>
+			inline Type::Rotation Func<MODULES_T>::GetRotation() const
 			{
-				return rotation;
+				return data_.rotation;
 			}
 		}
 	}
