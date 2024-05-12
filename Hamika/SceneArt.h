@@ -37,7 +37,7 @@ namespace UI::Scene::Module::Art
 	};
 
 	template <typename DATA>
-	class Func: public virtual Object::Brick::Interface, public virtual DATA, public virtual Validator::Interface
+	class Func: public virtual Object::SceneInterface, public virtual DATA, public virtual Validator::Interface
 	{
 		protected: void initialize()
 		{
@@ -109,7 +109,7 @@ namespace UI::Scene::Module::Art
 		};
 
 		template <typename DATA>
-		class Func: public virtual Object::Brick::Interface, public virtual DATA, public virtual Validator::Interface
+		class Func: public virtual Object::SceneInterface, public virtual DATA, public virtual Validator::Interface
 		{
 			protected: void initialize()
 			{

@@ -1,7 +1,7 @@
 #include "Objects.h"
 #include "Murphy.h"
 
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 #include "EditorObjects.h"
 #include <KIR/KIR4_console.h>
 
@@ -13,6 +13,7 @@ namespace Objects
 	}
 
 	using namespace Object;
+	using namespace Object::Entity;
 	struct Container
 	{
 		const char *name;
@@ -22,7 +23,7 @@ namespace Objects
 		Brick::CREATER createrFnc;
 		Brick::TIMER timerFnc;
 		Brick::UPDATE updaterFnc;
-		SIMPLE_DRAWNER simpleDrawnerFnc;
+		Brick::SIMPLE_DRAWNER simpleDrawnerFnc;
 		Brick::FINALIZE finalizeFnc;
 	} objects[] = {
 		{Space_000::name, Space_000::Print, Space_000::Initializer, Space_000::Drawner, Space_000::Create, Space_000::Timer, Space_000::Update, Space_000::simpleDraw, Space_000::Finalize},
@@ -138,8 +139,7 @@ void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object:
 
 	if (creater)
 	{
-		Object::Brick::Stack stack(object);
-		creater(&stack);
+		creater(*object);
 	}
 	else
 	{
@@ -155,7 +155,7 @@ namespace Editor
 	{
 		object->id = id;
 		object->coord = coord;
-		memset(object->specific, 0, sizeof(object->specific));
+		memset(&object->entity_data, 0, sizeof(object->entity_data));
 
 		object->isExists = true;
 		if (id >= 0 && id < sizeof(Objects::objects) / sizeof(Objects::Container))

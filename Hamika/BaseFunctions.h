@@ -1,89 +1,64 @@
 #pragma once
 
-#include "Object.h"
+#include "Types.h"
+#include "Bitmap.h"
 
 #include <functional>
 
 namespace Object
 {
+	struct Brick;
+}
+
+#define OBJECT_CREATER_PARAM Object::Brick &_brick
+#define OBJECT_CREATER_CALL _brick
+
+#define OBJECT_INITIALIZER_PARAM
+
+#define OBJECT_UPDATE_PARAM Object::Brick &_brick, UpdateType updateType
+#define OBJECT_UPDATE_CALL _brick, updateType
+
+#define OBJECT_FINALIZE_PARAM Object::Brick &_brick
+#define OBJECT_FINALIZE_CALL _brick
+
+#define OBJECT_TIMER_PARAM Object::Brick &_brick
+#define OBJECT_TIMER_CALL _brick
+
+#define OBJECT_PRINTER_PARAM Object::Brick &_brick
+#define OBJECT_PRINTER_CALL _brick
+#define OBJECT_PRINTER_RET Json
+
+#define OBJECT_DRAWNER_PARAM Object::Brick &_brick, Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
+#define OBJECT_DRAWNER_CALL _brick, x, y, w, h
+
+#define OBJECT_SIMPLE_DRAWNER_PARAM Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
+#define OBJECT_SIMPLE_DRAWNER_CALL x, y, w, h
+
+namespace Object
+{
 	constexpr float ACTION_TIMER_START = -1.0f;
-	constexpr bool ACTION_TIMER(float &timer,
-								const float &duration,
-								Brick *obj,
-								const std::function<bool()> &triggerEvent,
-								const std::function<bool()> &timerStarted,
-								const std::function<bool()> &timerRunning,
-								const std::function<bool()> &timerExpired)
-	{
-		if (timer > 0)
-		{
-			timer -= CA;
-			if (timer <= 0)
-			{
-				timer = 0;
-				return timerExpired();
-			}
-			else
-			{
-				obj->requests.timer = true;
-				return timerRunning();
-			}
-		}
-		else
-		{
-			if (triggerEvent())
-			{
-				timer = duration;
-				obj->requests.timer = true;
-				return timerStarted();
-			}
-		}
-		return false;
-	}
+	bool ACTION_TIMER(float &timer,
+					  const float &duration,
+					  Brick &_brick,
+					  const std::function<bool()> &triggerEvent,
+					  const std::function<bool()> &timerStarted,
+					  const std::function<bool()> &timerRunning,
+					  const std::function<bool()> &timerExpired);
 
-	typedef std::uint8_t DRAW_NUMBER_T;
-
-	inline void DRAW_NUMBER_INVALIDATE(DRAW_NUMBER_T &_draw_number)
-	{
-		_draw_number = std::numeric_limits<DRAW_NUMBER_T>::max();
-	}
-	inline void DRAW_NUMBER_ASC_INIT(DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
-	{
-		_draw_number = 0;
-		obj->requests.draw = true;
-	}
-	inline void DRAW_NUMBER_ASC(float timer, const float duration, DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
-	{
-		DRAW_NUMBER_T draw_number = static_cast<DRAW_NUMBER_T>(bmp.getDrawNumber(1 - (timer / duration)));
-		if (_draw_number != draw_number)
-		{
-			obj->requests.draw = true;
-			_draw_number = draw_number;
-		}
-	}
-	inline void DRAW_NUMBER_DESC_INIT(DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
-	{
-		_draw_number = bmp.getCount() - 1;
-		obj->requests.draw = true;
-	}
-	inline void DRAW_NUMBER_DESC(float timer, const float duration, DRAW_NUMBER_T &_draw_number, Brick *obj, const Res::Slides &bmp)
-	{
-		DRAW_NUMBER_T draw_number = static_cast<DRAW_NUMBER_T>(bmp.getDrawNumber(timer / duration));
-		if (_draw_number != draw_number)
-		{
-			obj->requests.draw = true;
-			_draw_number = draw_number;
-		}
-	}
+	void DRAW_NUMBER_INVALIDATE(DrawNumber &_draw_number);
+	void DRAW_NUMBER_ASC_INIT(DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp);
+	void DRAW_NUMBER_ASC(float timer, const float duration, DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp);
+	void DRAW_NUMBER_DESC_INIT(DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp);
+	void DRAW_NUMBER_DESC(float timer, const float duration, DrawNumber &_draw_number, Brick &_brick, const Res::Slides &bmp);
 
 	namespace Animator
 	{
-		struct Specific
+		struct EntityData
 		{
 			std::float_t time;
 			std::float_t timer;
 			std::int8_t numberOfFrames;
-			DRAW_NUMBER_T draw_number_;
+			DrawNumber draw_number_;
 
 			void Initialize();
 			void SetAnimationTime(std::float_t AnimationTime);
@@ -93,40 +68,37 @@ namespace Object
 			void UpdateTimer();
 		};
 
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType);
 	}
 
 	namespace Fall
 	{
-		struct Specific
+		struct EntityData
 		{
 			bool heavy_object_;
+
+			void setHeavy(bool _heavy_object);
 		};
 
-		void setHeavy(Specific *spec, bool _heavy_object);
-
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType);
 	}
 	namespace FallAndRoll
 	{
-		struct Specific
+		struct EntityData: public Fall::EntityData
 		{
-			bool heavy_object_;
 			std::int8_t roll_preference_;
 		};
 
-		void setHeavy(Specific *spec, bool _heavy_object);
-
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType);
 	}
 
 	namespace MoveLeftWay
@@ -136,14 +108,14 @@ namespace Object
 		bool CanExlosive(Type::Coord coord, Brick *o);
 		bool CanTurnLeft(Brick *o);
 
-		struct Specific
+		struct EntityData
 		{
 			bool PriorityStep;
 		};
 
-		void Create(OBJECT_CREATER_PARAM);
-		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
-		void Timer(OBJECT_TIMER_PARAM);
-		void Update(OBJECT_UPDATE_PARAM);
+		void Create(Object::Brick &_brick, EntityData &_entity_data);
+		OBJECT_PRINTER_RET Print(Object::Brick &_brick, EntityData &_entity_data);
+		void Timer(Object::Brick &_brick, EntityData &_entity_data);
+		void Update(Object::Brick &_brick, EntityData &_entity_data, UpdateType _updateType);
 	}
 }

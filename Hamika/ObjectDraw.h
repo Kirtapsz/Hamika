@@ -6,19 +6,14 @@
 #include "IDreg.h"
 #include "Tools.h"
 
-#include "ObjectCoord.h"
-#include "ObjectMove.h"
-#include "ObjectRequests.h"
-#include "ObjectStack.h"
-
 namespace Object
 {
 	namespace Module
 	{
 		namespace Draw
 		{
-			template <typename OBJECT>
-			struct Data: virtual Stack::Data<OBJECT>
+			template<typename MODULES_T>
+			struct Data
 			{
 				unsigned long long int DrawNumber = 0;
 				static unsigned long long int SObjectDrawCounts;
@@ -33,9 +28,8 @@ namespace Object
 
 				Type::Coord DrawCoord = {0,0};
 
-#define OBJECT_DRAWNER_PARAM Object::Brick::Stack *stack, Type::Coord::base x,Type::Coord::base y,Type::Coord::base w,Type::Coord::base h
-#define OBJECT_DRAWNER_CALL stack, x, y, w, h
-				typedef void(*DRAWNER)(Stack *, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h);
+				typedef void(*SIMPLE_DRAWNER)(Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h);
+				typedef void(*DRAWNER)(typename MODULES_T::BRICK_T &_brick, Type::Coord::base x, Type::Coord::base y, Type::Coord::base w, Type::Coord::base h);
 				DRAWNER drawnerFnc = nullptr;
 				unsigned long long int drawCounter = 0;//ez az objektum hányszor lett eddig újrarajzolva
 				unsigned long long int drawAtOnceCounter = 0;//ez az objektum hányszor lett újrarajzolva egy ciklus alatt
@@ -43,24 +37,28 @@ namespace Object
 				static unsigned long long int totalDrawCounter;//az összes objektum eddigi újrarajzolása
 			};
 
-			template <typename DATA>
-			struct Func: virtual DATA
+			template<typename MODULES_T>
+			struct Func
 			{
-				void __init__(Type::ID id, Type::Coord coord);
-				Json print();
+				private: typename MODULES_T::DATA_T &data_;
+				private: typename MODULES_T::FUNC_T &func_;
+				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
-				void configureDrawOptions();
+				public: void __init__(Type::ID id, Type::Coord coord);
+				public: Json print();
+
+				public: void configureDrawOptions();
 
 
-				virtual void Draw();
-				virtual void SDraw();//teszteés céljából hogy a conter mûködjön
-				virtual void setOddDrawCoord();
-				virtual void setRoundDrawCoord();
-				Type::Coord GetDrawCoord();
+				public: virtual void Draw();
+				public: virtual void SDraw();//teszteés céljából hogy a conter mûködjön
+				public: void setOddDrawCoord();
+				public: virtual void setRoundDrawCoord();
+				public: Type::Coord GetDrawCoord();
 
 				//DRAW #####################################################################################
 
-				void RunSDraw();//teszteés céljából hogy a conter mûködjön
+				public: void RunSDraw();//teszteés céljából hogy a conter mûködjön
 			};
 		}
 	}

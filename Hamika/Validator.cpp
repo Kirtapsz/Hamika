@@ -81,7 +81,7 @@ void ValidatorReplay::validate()
 					if (!compareJson(loopControllerInterface, scene.GetObject({
 						oValidatorProperties["\\ObjectCoordModule"]["coord.x"].get<Type::Coord::base>(),
 						oValidatorProperties["\\ObjectCoordModule"]["coord.y"].get<Type::Coord::base>(),
-																			  })->print(),
+																			  }).print(),
 																			  oValidatorProperties))
 					{
 						loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay compare failed on object ", loopCounter, " (",
@@ -95,7 +95,7 @@ void ValidatorReplay::validate()
 					if (!compareJson(loopControllerInterface, scene.GetRemain({
 						oValidatorProperties["\\ObjectCoordModule"]["coord.x"].get<Type::Coord::base>(),
 						oValidatorProperties["\\ObjectCoordModule"]["coord.y"].get<Type::Coord::base>(),
-																			  })->print(),
+																			  }).print(),
 																			  oValidatorProperties))
 					{
 						loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay compare failed on remain ", loopCounter, " (",

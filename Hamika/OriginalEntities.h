@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Object.h"
+#include "BaseFunctions.h"
+#include "Tools.h"
 
 /*
 naming:
@@ -27,7 +28,7 @@ drawNumber
 
 */
 
-namespace Object
+namespace Object::Entity
 {
 	//Space 000
 	namespace Space_000
@@ -49,6 +50,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			FallAndRoll::EntityData fall_and_roll_;
+			DrawNumber draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -63,6 +70,12 @@ namespace Object
 	namespace BaseX_002
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			float disappearTimer;
+			DrawNumber draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -229,6 +242,14 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			float electricDelayTimer;
+			float electricTimer;
+			float disappearTimer;
+			DrawNumber draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -243,6 +264,13 @@ namespace Object
 	namespace Infotron_014
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			FallAndRoll::EntityData fall_and_roll_;
+			float disappearTimer;
+			DrawNumber draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -259,6 +287,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			DrawNumber draw_number_;
+			float animateTimer;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -268,7 +302,7 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 		void Finalize(OBJECT_FINALIZE_PARAM);
 
-		void Open(Brick *o);
+		void Open(Brick &_brick);
 	}
 
 	//CrossPort 016
@@ -426,6 +460,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			Animator::EntityData animator_;
+			MoveLeftWay::EntityData move_left_way_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -440,6 +480,12 @@ namespace Object
 	namespace SnikSnakMove_027
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			MoveLeftWay::EntityData move_left_way_;
+			DrawNumber draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -456,6 +502,11 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			Animator::EntityData animator_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -465,13 +516,19 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 		void Finalize(OBJECT_FINALIZE_PARAM);
 
-		void Pushed(Brick *o);
+		void Pushed(Brick &_brick);
 	}
 
 	//Utility1 029
 	namespace Utility1_029
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			FallAndRoll::EntityData fall_and_roll_;
+			bool active;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -488,6 +545,13 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			float activateTimer;
+			float disappearTimer;
+			DrawNumber draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -497,7 +561,7 @@ namespace Object
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 		void Finalize(OBJECT_FINALIZE_PARAM);
 
-		void Activate(Brick *o);
+		void Activate(Brick &_brick);
 	}
 
 	//Utility3 031
@@ -520,6 +584,12 @@ namespace Object
 	{
 		extern const char *name;
 
+		struct EntityData
+		{
+			float explosionTimer;
+			DrawNumber draw_number_;
+		};
+
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM);
@@ -534,6 +604,13 @@ namespace Object
 	namespace Explosion_033
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			float explosionTimer;
+			float blastingTimer;
+			DrawNumber draw_number_;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);

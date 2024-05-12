@@ -9,27 +9,32 @@ namespace Object
 	{
 		namespace Events
 		{
-			template <typename OBJECT>
-			inline void Data<OBJECT>::Events::clear()
+			inline void Data::Events::clear()
 			{
 				timer = false;
 				update = false;
 				topDraw = false;
 			}
 
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				events.clear();
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.events.clear();
+			}
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["events.timer"] = events.timer;
-				json["events.update"] = events.update;
-				json["events.topDraw"] = events.topDraw;
+				json["events.timer"] = data_.events.timer;
+				json["events.update"] = data_.events.update;
+				json["events.topDraw"] = data_.events.topDraw;
 
 				return json;
 			}

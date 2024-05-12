@@ -373,11 +373,10 @@
     <ClCompile Include="ObjectEvents.hpp" />
     <ClCompile Include="ObjectExecute.hpp" />
     <ClCompile Include="ObjectFlags.hpp" />
-    <ClCompile Include="ObjectHitAction.hpp" />
     <ClCompile Include="ObjectMove.hpp" />
     <ClCompile Include="ObjectRequests.hpp" />
     <ClCompile Include="ObjectRotate.hpp" />
-    <ClCompile Include="ObjectStack.hpp" />
+    <ClCompile Include="ObjectEntityData.hpp" />
     <ClCompile Include="SceneBackground.cpp" />
     <ClCompile Include="SceneConfiguration.cpp" />
     <ClCompile Include="BaseFunctions.cpp" />
@@ -415,7 +414,7 @@
     <ClCompile Include="SceneDrawer.hpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Objects.cpp" />
-    <ClCompile Include="OriginalObjects.cpp" />
+    <ClCompile Include="OriginalEntities.cpp" />
     <ClCompile Include="Murphy.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="StatusBar.cpp" />
@@ -429,11 +428,10 @@
     <ClInclude Include="ObjectEvents.h" />
     <ClInclude Include="ObjectExecute.h" />
     <ClInclude Include="ObjectFlags.h" />
-    <ClInclude Include="ObjectHitAction.h" />
     <ClInclude Include="ObjectMove.h" />
     <ClInclude Include="ObjectRequests.h" />
     <ClInclude Include="ObjectRotate.h" />
-    <ClInclude Include="ObjectStack.h" />
+    <ClInclude Include="ObjectEntityData.h" />
     <ClInclude Include="SceneBackground.h" />
     <ClInclude Include="SceneConfiguration.h" />
     <ClInclude Include="Cursor.h" />
@@ -481,7 +479,7 @@
     <ClInclude Include="SceneDrawer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Objects.h" />
-    <ClInclude Include="OriginalObjects.h" />
+    <ClInclude Include="OriginalEntities.h" />
     <ClInclude Include="Murphy.h" />
     <ClInclude Include="Space.h" />
     <ClInclude Include="StatusBar.h" />

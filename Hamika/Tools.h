@@ -4,6 +4,7 @@
 #include <KIR/stream/KIR5_dynamic_stream.h>
 #include <KIR/KIR4_algorithm.h>
 #include <KIR/KIR4_time.h>
+#include <KIR/KIR4_console.h>
 
 #include <map>
 #include <string>

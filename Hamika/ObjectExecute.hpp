@@ -9,57 +9,64 @@ namespace Object
 	{
 		namespace Execute
 		{
-			template<typename OBJECT>
-			unsigned long long Data<OBJECT>::totalUpdateNumber{0};
+			template<typename MODULES_T>
+			unsigned long long Data<MODULES_T>::totalUpdateNumber{0};
 
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				printFnc = nullptr;
-				updaterFnc = nullptr;
-				finalizeFnc = nullptr;
-				timerFnc = nullptr;
+
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template <typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.printFnc = nullptr;
+				data_.updaterFnc = nullptr;
+				data_.finalizeFnc = nullptr;
+				data_.timerFnc = nullptr;
+			}
+			template <typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
 				return json;
 			}
 
-			template <typename DATA>
-			void Func<DATA>::RunUpdate(typename DATA::UpdateType updateType)
+			template <typename MODULES_T>
+			inline void Func<MODULES_T>::RunUpdate(UpdateType updateType)
 			{
-				requests.update = false;
-				updateNumber = totalUpdateNumber++;
+				data_.requests.update = false;
+				data_.updateNumber = data_.totalUpdateNumber++;
 
-				if (updaterFnc)
+				if (data_.updaterFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					updaterFnc(&stack, updateType);
+					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
+					data_.updaterFnc(*object, updateType);
 				}
 			}
 
-			template <typename DATA>
-			void Func<DATA>::RunFinalize()
+			template <typename MODULES_T>
+			inline void Func<MODULES_T>::RunFinalize()
 			{
-				requests.finalize = false;
-				if (finalizeFnc)
+				data_.requests.finalize = false;
+				if (data_.finalizeFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					finalizeFnc(&stack);
+					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
+					data_.finalizeFnc(*object);
 				}
 			}
 
-			template <typename DATA>
-			void Func<DATA>::RunTimer()
+			template <typename MODULES_T>
+			inline void Func<MODULES_T>::RunTimer()
 			{
-				requests.timer = false;
-				if (timerFnc)
+				data_.requests.timer = false;
+				if (data_.timerFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					timerFnc(&stack);
+					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
+					data_.timerFnc(*object);
 				}
 			}
 		}

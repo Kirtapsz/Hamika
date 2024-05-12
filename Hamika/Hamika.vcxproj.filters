@@ -76,6 +76,9 @@
     <Filter Include="KIR\stream">
       <UniqueIdentifier>{efeb9280-4fcb-4ccf-ab0a-a6eed29b5f23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Entities">
+      <UniqueIdentifier>{24ec18a7-5647-418f-8e48-803e40a4d509}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SceneDrawer.hpp">
@@ -84,19 +87,7 @@
     <ClCompile Include="StatusBar.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="BaseFunctions.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Bedrock.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Space.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Objects.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Murphy.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="EditorMainEvent.cpp">
@@ -271,9 +262,6 @@
     <ClCompile Include="ObjectBase.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectHitAction.hpp">
-      <Filter>Objects\Object\Module</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectStack.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
@@ -295,9 +283,6 @@
     <ClCompile Include="ObjectDraw.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
-    <ClCompile Include="OriginalObjects.cpp">
-      <Filter>Objects</Filter>
-    </ClCompile>
     <ClCompile Include="SceneBackground.cpp">
       <Filter>Scene\background</Filter>
     </ClCompile>
@@ -310,17 +295,23 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\stream\KIR5_static_stream.cpp">
       <Filter>KIR\stream</Filter>
     </ClCompile>
+    <ClCompile Include="OriginalEntities.cpp">
+      <Filter>Objects\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Murphy.cpp">
+      <Filter>Objects\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Bedrock.cpp">
+      <Filter>Objects\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Space.cpp">
+      <Filter>Objects\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseFunctions.cpp">
+      <Filter>Objects\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bedrock.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Space.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Murphy.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="StatusBar.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -331,12 +322,6 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Objects.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseFunctions.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="OriginalObjects.h">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
@@ -480,9 +465,6 @@
     <ClInclude Include="ObjectBase.h">
       <Filter>Objects\Object\Module</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectHitAction.h">
-      <Filter>Objects\Object\Module</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectStack.h">
       <Filter>Objects\Object\Module</Filter>
     </ClInclude>
@@ -506,6 +488,24 @@
     </ClInclude>
     <ClInclude Include="SceneBackground.h">
       <Filter>Scene\background</Filter>
+    </ClInclude>
+    <ClInclude Include="OriginalEntities.h">
+      <Filter>Objects\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Murphy.h">
+      <Filter>Objects\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Bedrock.h">
+      <Filter>Objects\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Space.h">
+      <Filter>Objects\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityData.hpp">
+      <Filter>Objects\Object\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseFunctions.h">
+      <Filter>Objects\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

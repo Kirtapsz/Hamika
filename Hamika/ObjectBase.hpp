@@ -9,32 +9,36 @@ namespace Object
 	{
 		namespace Base
 		{
-			template <typename OBJECT>
-			inline Data<OBJECT>::~Data()
+			template<typename MODULES_T>
+			inline void Data<MODULES_T>::setScene(typename MODULES_T::SCENE_INTERFACE_T *scene_)
+			{
+				scene = scene_;
+			}
+
+
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
 
 			}
 
-			template <typename DATA>
-			Func<DATA>::~Func()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
 			{
+				data_.id = id;
+				data_.name = nullptr;
+				data_.isExists = false;
 			}
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
-			{
-				this->id = id;
-				name = nullptr;
-				isExists = false;
-			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["rootId"] = rootId;
-				json["id"] = id;
-				json["name"] = name == nullptr ? "nullptr" : name;
-				json["isExists"] = isExists;
+				json["rootId"] = data_.rootId;
+				json["id"] = data_.id;
+				json["name"] = data_.name == nullptr ? "nullptr" : data_.name;
+				json["isExists"] = data_.isExists;
 
 				return json;
 			}

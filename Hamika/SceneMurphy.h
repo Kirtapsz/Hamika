@@ -36,7 +36,7 @@ namespace UI::Scene::Module::Murphy
 	};
 
 	template <typename DATA>
-	class Func: public virtual Object::Brick::Interface, public virtual DATA, public virtual Validator::Interface
+	class Func: public virtual Object::SceneInterface, public virtual DATA, public virtual Validator::Interface
 	{
 		protected: void initialize(const std::shared_ptr<Res::Account> &account_)
 		{
@@ -54,7 +54,7 @@ namespace UI::Scene::Module::Murphy
 			Type::Coord spawn = spawns[rand() % spawns.size()];
 			ObjectCreate(reach(map)[spawn].object, ObjectID::Murphy, spawn);
 			murphy = reach(map)[spawn].object;
-			Object::Murphy::SetController(murphy, keyboardController.get());
+			Object::Entity::Murphy::SetController(*murphy, keyboardController.get());
 		}
 		public: virtual Json printResult() const
 		{

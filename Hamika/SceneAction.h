@@ -3,7 +3,7 @@
 #include "Types.h"
 #include "World.h"
 #include "Objects.h"
-#include "OriginalObjects.h"
+#include "OriginalEntities.h"
 
 #include <KIR\AL\KIR5_panel.h>
 #include <KIR\KIR4_time.h>
@@ -36,7 +36,7 @@ namespace UI::Scene::Module::Action
 	};
 
 	template <typename DATA>
-	class Func: public virtual Object::Brick::Interface, public virtual DATA
+	class Func: public virtual Object::SceneInterface, public virtual DATA
 	{
 		protected: void initialize()
 		{
@@ -57,20 +57,24 @@ namespace UI::Scene::Module::Action
 
 
 				 // gives back the remaining progress, 0 means it is just started, 1 means it is just finished
-		protected: float getMoveProgress(Object::Brick *_object) const
+		protected: float getMoveProgress(Object::Brick &_brick) const
 		{
-			if (_object->isExists)
+			if (_brick.isExists)
 			{
-				Type::Coord coord = _object->GetCoord();
+				Type::Coord coord = _brick.GetCoord();
 				Type::Coord from_coord = reach(map)[coord].ComeFrom;
 				if (coord != from_coord)
 				{
 					Type::Coord::base move_distance = std::abs((coord.x() - from_coord.x()) + (coord.y() - from_coord.y()));
-					Type::Move::base move = _object->GetAbsMove();
+					Type::Move::base move = _brick.GetAbsMove();
 					return 1.f - (move / (float)move_distance);
 				}
 			}
 			return 1.f;
+		}
+		protected: constexpr float getMoveProgress(Object::Brick *_brick) const
+		{
+			return getMoveProgress(*_brick);
 		}
 		protected: void blowup(Type::Coord coord, SceneBlock<Object::Brick> &block, Type::ID IDto)
 		{
@@ -103,8 +107,7 @@ namespace UI::Scene::Module::Action
 				if (block.remain->isExists && block.remain->id == ObjectID::Explosion)
 				{
 					block.remain->SetObjectIDremain(std::max(IDto, block.remain->GetObjectIDremain()));
-					Object::Brick::Stack stack(block.remain);
-					Object::Explosion_033::ReCreate(&stack);
+					Object::Entity::Explosion_033::ReCreate(*block.remain);
 				}
 				else
 				{
@@ -134,8 +137,7 @@ namespace UI::Scene::Module::Action
 						if (remain->isExists && remain->id == ObjectID::Explosion)
 						{
 							remain->SetObjectIDremain(std::max(IDto, remain->GetObjectIDremain()));
-							Object::Brick::Stack stack(remain);
-							Object::Explosion_033::ReCreate(&stack);
+							Object::Entity::Explosion_033::ReCreate(*remain);
 						}
 						else
 						{
@@ -149,25 +151,25 @@ namespace UI::Scene::Module::Action
 				Redrawn(coord);
 			}
 		}
-		protected: virtual void blowup(Object::Brick *_object)
+		protected: virtual void blowup(Object::Brick &_brick)
 		{
-			Type::Flags flags = _object->GetFlags();
+			Type::Flags flags = _brick.GetFlags();
 
 			if (flags & Object::Brick::Flags::ExplosionType)
 			{
-				Type::ID id_to = _object->GetTranslationTo();
-				Type::Coord coord = _object->GetCoord();
+				Type::ID id_to = _brick.GetTranslationTo();
+				Type::Coord coord = _brick.GetCoord();
 				Type::Coord center = coord;
-				if (_object->IsMove())
+				if (_brick.IsMove())
 				{
-					if (getMoveProgress(_object) <= 0.5f)
+					if (getMoveProgress(_brick) <= 0.5f)
 					{
 						center = reach(map)[coord].ComeFrom;
 					}
 				}
 
-				_object->RemoveFlags(Object::Brick::Flags::ExplosionType);
-				_object->SetTranslationID(ObjectID::Space);
+				_brick.RemoveFlags(Object::Brick::Flags::ExplosionType);
+				_brick.SetTranslationID(ObjectID::Space);
 
 				Type::Coord::base d = 0; // Object::Brick::Flags::ExplosionType1
 				if (flags & Object::Brick::Flags::ExplosionType3)
@@ -415,7 +417,7 @@ namespace UI::Scene::Module::Action
 			{
 				if (block.object->isExists && block.object->events.update && block.object->requests.update)
 				{
-					block.object->RunUpdate(Object::Brick::UPDATE_ASC);
+					block.object->RunUpdate(UpdateType::UPDATE_ASC);
 				}
 			});
 
@@ -423,17 +425,17 @@ namespace UI::Scene::Module::Action
 			{
 				if (block.object->isExists && block.object->events.update && block.object->requests.update)
 				{
-					block.object->RunUpdate(Object::Brick::UPDATE_DESC);
+					block.object->RunUpdate(UpdateType::UPDATE_DESC);
 				}
 				if (block.remain->isExists && block.remain->events.update && block.remain->requests.update)
 				{
-					block.remain->RunUpdate(Object::Brick::UPDATE_DESC);
+					block.remain->RunUpdate(UpdateType::UPDATE_DESC);
 				}
 			});
 
 			if (murphy)
 			{
-				murphy->RunUpdate(Object::Brick::UPDATE_MURPHY);
+				murphy->RunUpdate(UpdateType::UPDATE_MURPHY);
 			}
 		}
 
@@ -575,8 +577,7 @@ namespace UI::Scene::Module::Action
 			if (map->Test(coord) && reach(map)[coord].ComeFrom != coord)
 			{
 				Redrawn(coord);
-				Type::Coord
-					ComeFrom = reach(map)[coord].ComeFrom;
+				Type::Coord ComeFrom = reach(map)[coord].ComeFrom;
 
 				reach(map)[reach(map)[coord].ComeFrom].GoTo = reach(map)[coord].ComeFrom;
 				reach(map)[coord].ComeFrom = coord;
@@ -604,11 +605,8 @@ namespace UI::Scene::Module::Action
 			if (TestObject(coord) && !reach(map)[coord].object->isActionMove())
 			{
 				CopyObjectToRemain(coord, coord);
-				//(*reach(map)[coord].remain) = reach(map)[coord].object;
 				reach(map)[coord].remain->requests.remove = true;
-
 				ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetObjectIDremain(), coord);
-
 				UpdateSquare33(coord);
 			}
 		}

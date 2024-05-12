@@ -10,22 +10,18 @@ namespace Object
 {
 	namespace Module
 	{
-		namespace Requests
+		namespace EntityData
 		{
+			template<typename MODULES_T>
 			struct Data
 			{
-				struct Requests
-				{
-					bool timer;
-					bool tick;
-					bool update;
-					bool finalize;
-					bool draw;
-					bool remove;
+				union EntityData;
+				EntityData entity_data;
 
-					void clear();
+				typedef Json(*PRINT)(typename MODULES_T::BRICK_T &_brick);
+				PRINT printFnc = nullptr;
 
-				} requests = {0};
+				virtual ~Data();
 			};
 
 			template<typename MODULES_T>
@@ -35,6 +31,7 @@ namespace Object
 				private: typename MODULES_T::FUNC_T &func_;
 				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
+				public: virtual ~Func();
 				public: void __init__(Type::ID id, Type::Coord coord);
 				public: Json print();
 			};
@@ -42,4 +39,4 @@ namespace Object
 	}
 }
 
-#include "ObjectRequests.hpp"
+#include "ObjectEntityData.hpp"

@@ -106,29 +106,29 @@ namespace Object
 	{
 	}
 
-	bool Brick::CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation)
+	bool Brick::CanMovePosByRotationH(Type::Coord to, Type::Rotation rotation) const
 	{
-		Brick *out = scene->GetObjectOut(to);
+		const Brick &out_brick = scene->GetObjectOut(to);
 		return
-			((rotation == Type::Rotations::Up && out->GetCoord().y() < to.y())
+			((rotation == Type::Rotations::Up && out_brick.GetCoord().y() < to.y())
 			 ||
-			 (rotation == Type::Rotations::Down && out->GetCoord().y() > to.y())
+			 (rotation == Type::Rotations::Down && out_brick.GetCoord().y() > to.y())
 			 ||
-			 (rotation == Type::Rotations::Left && out->GetCoord().x() < to.x())
+			 (rotation == Type::Rotations::Left && out_brick.GetCoord().x() < to.x())
 			 ||
-			 (rotation == Type::Rotations::Right && out->GetCoord().x() > to.x())
+			 (rotation == Type::Rotations::Right && out_brick.GetCoord().x() > to.x())
 			 );
 	}
 
 	bool Brick::CanMovePos(Type::Coord to, Type::Rotation rotation)
 	{
 		return
-			scene->GetObject(to)->GetFlags() & StepOn
+			scene->GetObject(to).GetFlags() & StepOn
 			&&
-			scene->GetRemain(to)->GetFlags() & StepOn
+			scene->GetRemain(to).GetFlags() & StepOn
 			&&
 			(
-				scene->GetObjectOut(to)->GetFlags() & StepOn
+				scene->GetObjectOut(to).GetFlags() & StepOn
 				||
 				CanMovePosByRotationH(to, rotation)
 				);
@@ -136,53 +136,53 @@ namespace Object
 	bool Brick::CanMoveDown()
 	{
 		return
-			scene->GetObject(GetCoordDown())->GetFlags() & StepOn
+			scene->GetObject(GetCoordDown()).GetFlags() & StepOn
 			&&
-			scene->GetRemain(GetCoordDown())->GetFlags() & StepOn
+			scene->GetRemain(GetCoordDown()).GetFlags() & StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordDown())->GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordDown()).GetFlags() & StepOn
 				||
-				scene->GetObjectOut(GetCoordDown())->IsMoveDown()
+				scene->GetObjectOut(GetCoordDown()).IsMoveDown()
 				);
 	}
 	bool Brick::CanMoveUp()
 	{
 		return
-			scene->GetObject(GetCoordUp())->GetFlags() & StepOn
+			scene->GetObject(GetCoordUp()).GetFlags() & StepOn
 			&&
-			scene->GetRemain(GetCoordUp())->GetFlags() & StepOn
+			scene->GetRemain(GetCoordUp()).GetFlags() & StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordUp())->GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordUp()).GetFlags() & StepOn
 				||
-				scene->GetObjectOut(GetCoordUp())->IsMoveUp()
+				scene->GetObjectOut(GetCoordUp()).IsMoveUp()
 				);
 	}
 	bool Brick::CanMoveLeft()
 	{
 		return
-			scene->GetObject(GetCoordLeft())->GetFlags() & StepOn
+			scene->GetObject(GetCoordLeft()).GetFlags() & StepOn
 			&&
-			scene->GetRemain(GetCoordLeft())->GetFlags() & StepOn
+			scene->GetRemain(GetCoordLeft()).GetFlags() & StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordLeft())->GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordLeft()).GetFlags() & StepOn
 				||
-				scene->GetObjectOut(GetCoordLeft())->IsMoveLeft()
+				scene->GetObjectOut(GetCoordLeft()).IsMoveLeft()
 				);
 	}
 	bool Brick::CanMoveRight()
 	{
 		return
-			scene->GetObject(GetCoordRight())->GetFlags() & StepOn
+			scene->GetObject(GetCoordRight()).GetFlags() & StepOn
 			&&
-			scene->GetRemain(GetCoordRight())->GetFlags() & StepOn
+			scene->GetRemain(GetCoordRight()).GetFlags() & StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordRight())->GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordRight()).GetFlags() & StepOn
 				||
-				scene->GetObjectOut(GetCoordRight())->IsMoveRight()
+				scene->GetObjectOut(GetCoordRight()).IsMoveRight()
 				);
 	}
 }

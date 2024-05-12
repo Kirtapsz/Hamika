@@ -9,203 +9,218 @@ namespace Object
 	{
 		namespace Move
 		{
-			template <typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				move = {0,0};
-				MoveSpeed = {1,1};
 
-				accelaratePercent_ = 0.f;
-				limitSpeed_ = 0.f;
-				currentSpeed_ = 0.f;
-				carryMove_ = 0.f;
 			}
-			template <typename DATA>
-			Json Func<DATA>::print()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.move = {0,0};
+				data_.MoveSpeed = {1,1};
+
+				data_.accelaratePercent_ = 0.f;
+				data_.limitSpeed_ = 0.f;
+				data_.currentSpeed_ = 0.f;
+				data_.carryMove_ = 0.f;
+			}
+
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["move.x"] = move.x();
-				json["move.y"] = move.y();
+				json["move.x"] = data_.move.x();
+				json["move.y"] = data_.move.y();
 
-				json["MoveSpeed.x"] = MoveSpeed.x();
-				json["MoveSpeed.y"] = MoveSpeed.y();
+				json["MoveSpeed.x"] = data_.MoveSpeed.x();
+				json["MoveSpeed.y"] = data_.MoveSpeed.y();
 
-				json["accelaratePercent"] = accelaratePercent_;
-				json["limitSpeed"] = limitSpeed_;
-				json["currentSpeed"] = currentSpeed_;
+				json["accelaratePercent"] = data_.accelaratePercent_;
+				json["limitSpeed"] = data_.limitSpeed_;
+				json["currentSpeed"] = data_.currentSpeed_;
 
 				return json;
 			}
 
-
-			template <typename DATA>
-			void Func<DATA>::doMove(typename DATA::ACTION_T _action, Type::ID _remain)
+			template<typename MODULES_T>
+			void Func<MODULES_T>::doMove(typename MODULES_T::ACTIONS_DATA_T::ACTION_T _action, Type::ID _remain)
 			{
-				action = _action;
+				data_.action = _action;
 				switch (_action)
 				{
-					case MOVE_UP:
+					case MODULES_T::DATA_T::MOVE_UP:
 					{
-						scene->ObjectMove(GetCoord(), GetCoordUp(), _remain);
+						data_.scene->ObjectMove(func_.GetCoord(), func_.GetCoordUp(), _remain);
 						SetMove({0,1});
 						carryStepUp();
 						break;
 					}
-					case MOVE_RIGHT:
+					case MODULES_T::DATA_T::MOVE_RIGHT:
 					{
-						scene->ObjectMove(GetCoord(), GetCoordRight(), _remain);
+						data_.scene->ObjectMove(func_.GetCoord(), func_.GetCoordRight(), _remain);
 						SetMove({-1,0});
 						carryStepRight();
 						break;
 					}
-					case MOVE_DOWN:
+					case MODULES_T::DATA_T::MOVE_DOWN:
 					{
-						scene->ObjectMove(GetCoord(), GetCoordDown(), _remain);
+						data_.scene->ObjectMove(func_.GetCoord(), func_.GetCoordDown(), _remain);
 						SetMove({0,-1});
 						carryStepDown();
 						break;
 					}
-					case MOVE_LEFT:
+					case MODULES_T::DATA_T::MOVE_LEFT:
 					{
-						scene->ObjectMove(GetCoord(), GetCoordLeft(), _remain);
+						data_.scene->ObjectMove(func_.GetCoord(), func_.GetCoordLeft(), _remain);
 						SetMove({1,0});
 						carryStepLeft();
 						break;
 					}
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::doMoveEx(typename DATA::ACTION_T _action, Type::ID _remain, Type::Coord _to, Type::Move _move)
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::doMoveEx(typename MODULES_T::ACTIONS_DATA_T::ACTION_T _action, Type::ID _remain, Type::Coord _to, Type::Move _move)
 			{
-				action = _action;
-				scene->ObjectMove(GetCoord(), _to, _remain);
+				data_.action = _action;
+				data_.scene->ObjectMove(func_.GetCoord(), _to, _remain);
 				SetMove(_move);
 				carryStep();
 			}
-			template <typename DATA>
-			void Func<DATA>::finishMove()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::finishMove()
 			{
-				carryMove_ = 0.f;
-				accelaratePercent_ = 0.f;
-				action = STEADY;
+				data_.carryMove_ = 0.f;
+				data_.accelaratePercent_ = 0.f;
+				data_.action = MODULES_T::DATA_T::STEADY;
 			}
 
-			template <typename DATA>
-			void Func<DATA>::enablePhysics()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::enablePhysics()
 			{
-				AddFlags(PhysicsSpeed);
-			}
-			template <typename DATA>
-			void Func<DATA>::disablePhysics()
-			{
-				RemoveFlags(PhysicsSpeed);
+				func_.AddFlags(Flags::Data::PhysicsSpeed);
 			}
 
-			template <typename DATA>
-			void Func<DATA>::enableFixSpeed(Type::Speed _fixSpeed)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::disablePhysics()
 			{
-				AddFlags(LimitSpeed);
-				limitSpeed_ = _fixSpeed;
+				func_.RemoveFlags(Flags::Data::PhysicsSpeed);
 			}
-			template <typename DATA>
-			void Func<DATA>::disableFixSpeed()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::enableFixSpeed(Type::Speed _fixSpeed)
 			{
-				RemoveFlags(LimitSpeed);
+				func_.AddFlags(Flags::Data::LimitSpeed);
+				data_.limitSpeed_ = _fixSpeed;
 			}
-			template <typename DATA>
-			void Func<DATA>::calculateSpeed(Type::Speed _baseSpeed)
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::disableFixSpeed()
 			{
-				if (GetFlags() & LimitSpeed)
+				func_.RemoveFlags(Flags::Data::LimitSpeed);
+			}
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::calculateSpeed(Type::Speed _baseSpeed)
+			{
+				if (func_.GetFlags() & Flags::Data::LimitSpeed)
 				{
-					currentSpeed_ = limitSpeed_;
+					data_.currentSpeed_ = data_.limitSpeed_;
 				}
-				else if (GetFlags() & PhysicsSpeed)
+				else if (func_.GetFlags() & Flags::Data::PhysicsSpeed)
 				{
-					accelaratePercent_ = std::min(1.f, accelaratePercent_ + 0.15f);
-					currentSpeed_ = _baseSpeed * accelaratePercent_;
+					data_.accelaratePercent_ = std::min(1.f, data_.accelaratePercent_ + 0.15f);
+					data_.currentSpeed_ = _baseSpeed * data_.accelaratePercent_;
 				}
 				else
 				{
-					currentSpeed_ = _baseSpeed;
+					data_.currentSpeed_ = _baseSpeed;
 				}
 			}
 
-
-			template <typename DATA>
-			void Func<DATA>::StepUp()
+			template<typename MODULES_T>
+			void Func<MODULES_T>::StepUp()
 			{
 				calculateSpeed(GetMoveSpeed().y());
-				SetMove({GetMove().x(),GetMove().y() - Type::Move::base(currentSpeed_ / CPS)});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() > GetMove().y())
+				SetMove({GetMove().x(),GetMove().y() - Type::Move::base(data_.currentSpeed_ / CPS)});
+				if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y() > GetMove().y())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
-					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+					if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().y())
+						data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().y();
+					SetMove({GetMove().x(),data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y()});
 				}
 				if (GetMove().y() <= 0)
 				{
-					carryMove_ = std::abs(GetMove().y());
+					data_.carryMove_ = std::abs(GetMove().y());
 					SetMove({0,0});
-					scene->ObjectArrived(GetCoord());
+					data_.scene->ObjectArrived(func_.GetCoord());
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::StepDown()
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::StepDown()
 			{
 				calculateSpeed(GetMoveSpeed().y());
-				SetMove({GetMove().x(),GetMove().y() + Type::Move::base(currentSpeed_ / CPS)});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() < GetMove().y())
+				SetMove({GetMove().x(),GetMove().y() + Type::Move::base(data_.currentSpeed_ / CPS)});
+				if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y() < GetMove().y())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
-					SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+					if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().y())
+						data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().y();
+					SetMove({GetMove().x(),data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y()});
 				}
 				if (GetMove().y() >= 0)
 				{
-					carryMove_ = std::abs(GetMove().y());
+					data_.carryMove_ = std::abs(GetMove().y());
 					SetMove({0,0});
-					scene->ObjectArrived(GetCoord());
+					data_.scene->ObjectArrived(func_.GetCoord());
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::StepLeft()
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::StepLeft()
 			{
 				calculateSpeed(GetMoveSpeed().x());
-				SetMove({GetMove().x() - Type::Move::base(currentSpeed_ / CPS),GetMove().y()});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() > GetMove().x())
+				SetMove({GetMove().x() - Type::Move::base(data_.currentSpeed_ / CPS),GetMove().y()});
+				if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x() > GetMove().x())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+					if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x())
+						data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x();
+					SetMove({data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x(),GetMove().y()});
 				}
 				if (GetMove().x() <= 0)
 				{
-					carryMove_ = std::abs(GetMove().x());
+					data_.carryMove_ = std::abs(GetMove().x());
 					SetMove({0,0});
-					scene->ObjectArrived(GetCoord());
+					data_.scene->ObjectArrived(func_.GetCoord());
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::StepRight()
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::StepRight()
 			{
 				calculateSpeed(GetMoveSpeed().x());
-				SetMove({GetMove().x() + Type::Move::base(currentSpeed_ / CPS),GetMove().y()});
-				if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() < GetMove().x())
+				SetMove({GetMove().x() + Type::Move::base(data_.currentSpeed_ / CPS),GetMove().y()});
+				if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x() < GetMove().x())
 				{
-					if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-						currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-					SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+					if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x())
+						data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x();
+					SetMove({data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x(),GetMove().y()});
 				}
 				if (GetMove().x() >= 0)
 				{
-					carryMove_ = std::abs(GetMove().x());
+					data_.carryMove_ = std::abs(GetMove().x());
 					SetMove({0,0});
-					scene->ObjectArrived(GetCoord());
+					data_.scene->ObjectArrived(func_.GetCoord());
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::Step()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::Step()
 			{
 				if (GetMove().x() > 0)
 					StepLeft();
@@ -217,66 +232,70 @@ namespace Object
 					StepDown();
 			}
 
-			template <typename DATA>
-			void Func<DATA>::carryStepUp()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::carryStepUp()
 			{
-				if (carryMove_ > 0.f)
+				if (data_.carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x(),GetMove().y() - carryMove_});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() > GetMove().y())
+					SetMove({GetMove().x(),GetMove().y() - data_.carryMove_});
+					if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y() > GetMove().y())
 					{
-						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+						SetMove({GetMove().x(),data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y()});
 					}
-					carryMove_ = 0.f;
+					data_.carryMove_ = 0.f;
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::carryStepDown()
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::carryStepDown()
 			{
-				if (carryMove_ > 0.f)
+				if (data_.carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x(),GetMove().y() + carryMove_});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().y() < GetMove().y())
+					SetMove({GetMove().x(),GetMove().y() + data_.carryMove_});
+					if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y() < GetMove().y())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().y())
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().y();
-						SetMove({GetMove().x(),scene->GetObjectOut(GetCoord())->GetMove().y()});
+						if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().y())
+							data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().y();
+						SetMove({GetMove().x(),data_.scene->GetObjectOut(func_.GetCoord()).GetMove().y()});
 					}
-					carryMove_ = 0.f;
+					data_.carryMove_ = 0.f;
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::carryStepLeft()
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::carryStepLeft()
 			{
-				if (carryMove_ > 0.f)
+				if (data_.carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x() - carryMove_,GetMove().y()});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() > GetMove().x())
+					SetMove({GetMove().x() - data_.carryMove_,GetMove().y()});
+					if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x() > GetMove().x())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+						if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x())
+							data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x();
+						SetMove({data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x(),GetMove().y()});
 					}
-					carryMove_ = 0.f;
+					data_.carryMove_ = 0.f;
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::carryStepRight()
+
+			template<typename MODULES_T>
+			void Func<MODULES_T>::carryStepRight()
 			{
-				if (carryMove_ > 0.f)
+				if (data_.carryMove_ > 0.f)
 				{
-					SetMove({GetMove().x() + carryMove_,GetMove().y()});
-					if (scene->IsObjectOut(GetCoord()) && scene->GetObjectOut(GetCoord())->GetMove().x() < GetMove().x())
+					SetMove({GetMove().x() + data_.carryMove_,GetMove().y()});
+					if (data_.scene->IsObjectOut(func_.GetCoord()) && data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x() < GetMove().x())
 					{
-						if (currentSpeed_ > scene->GetObjectOut(GetCoord())->GetMoveSpeed().x())
-							currentSpeed_ = scene->GetObjectOut(GetCoord())->GetMoveSpeed().x();
-						SetMove({scene->GetObjectOut(GetCoord())->GetMove().x(),GetMove().y()});
+						if (data_.currentSpeed_ > data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x())
+							data_.currentSpeed_ = data_.scene->GetObjectOut(func_.GetCoord()).GetMoveSpeed().x();
+						SetMove({data_.scene->GetObjectOut(func_.GetCoord()).GetMove().x(),GetMove().y()});
 					}
-					carryMove_ = 0.f;
+					data_.carryMove_ = 0.f;
 				}
 			}
-			template <typename DATA>
-			void Func<DATA>::carryStep()
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::carryStep()
 			{
 				if (GetMove().x() > 0)
 					carryStepLeft();
@@ -288,127 +307,139 @@ namespace Object
 					carryStepDown();
 			}
 
+			template<typename MODULES_T>
+			inline Type::Move Func<MODULES_T>::GetMoveSpeed()
+			{
+				return data_.MoveSpeed;
+			}
 
-			template <typename DATA>
-			Type::Move Func<DATA>::GetMoveSpeed()
+			template<typename MODULES_T>
+			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedVertical()
 			{
-				return MoveSpeed;
+				return data_.MoveSpeed.y();
 			}
-			template <typename DATA>
-			Type::Move::base Func<DATA>::GetMoveSpeedVertical()
+
+			template<typename MODULES_T>
+			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedHorizontal()
 			{
-				return MoveSpeed.y();
-			}
-			template <typename DATA>
-			Type::Move::base Func<DATA>::GetMoveSpeedHorizontal()
-			{
-				return MoveSpeed.x();
+				return data_.MoveSpeed.x();
 			}
 
 			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
-			template <typename DATA>
-			void Func<DATA>::SetMoveSpeed(Type::Move::base speed)
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetMoveSpeed(Type::Move::base speed)
 			{
-				MoveSpeed = {speed,speed};
+				data_.MoveSpeed = {speed,speed};
 			}
 			//a m�rt�kegys�g hogy 1 m�sodperc alatt mennyit haladjon, 1 jelent egy teljes n�gyzetet, 2.5: k�t �s f�l n�gyzet m�sodpercenk�nt....
-			template <typename DATA>
-			void Func<DATA>::SetMoveSpeed(Type::Move speed)
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetMoveSpeed(Type::Move speed)
 			{
-				MoveSpeed = speed;
+				data_.MoveSpeed = speed;
 			}
 
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetMoveUnsafe(Type::Move move_)
+			{
+				data_.move = move_;
+			}
 
-			template <typename DATA>
-			void Func<DATA>::SetMoveUnsafe(Type::Move move_)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetMove(Type::Move move_)
 			{
-				move = move_;
+				data_.move = move_;
+				func_.setOddDrawCoord();
 			}
-			template <typename DATA>
-			void Func<DATA>::SetMove(Type::Move move_)
+
+			template<typename MODULES_T>
+			inline Type::Move Func<MODULES_T>::GetMove()
 			{
-				move = move_;
-				setOddDrawCoord();
+				return data_.move;
 			}
-			template <typename DATA>
-			Type::Move Func<DATA>::GetMove()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMove()
 			{
-				return move;
+				return data_.move.x() != 0 || data_.move.y() != 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMove()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMoveHorizontal()
 			{
-				return move.x() != 0 || move.y() != 0;
+				return data_.move.x() != 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMoveHorizontal()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMoveVertical()
 			{
-				return move.x() != 0;
+				return data_.move.y() != 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMoveVertical()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMoveLeft()
 			{
-				return move.y() != 0;
+				return data_.move.x() > 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMoveLeft()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMoveRight()
 			{
-				return move.x() > 0;
+				return data_.move.x() < 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMoveRight()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMoveDown()
 			{
-				return move.x() < 0;
+				return data_.move.y() < 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMoveDown()
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMoveUp()
 			{
-				return move.y() < 0;
+				return data_.move.y() > 0;
 			}
-			template <typename DATA>
-			bool Func<DATA>::IsMoveUp()
+
+			template<typename MODULES_T>
+			inline Type::Direction Func<MODULES_T>::getMoveDirection() const
 			{
-				return move.y() > 0;
-			}
-			template <typename DATA>
-			Type::Direction Func<DATA>::getMoveDirection() const
-			{
-				if (move.x() > 0)
+				if (data_.move.x() > 0)
 					return Type::Directions::left;
-				else if (move.x() < 0)
+				else if (data_.move.x() < 0)
 					return Type::Directions::right;
-				else if (move.y() > 0)
+				else if (data_.move.y() > 0)
 					return Type::Directions::up;
-				else if (move.y() < 0)
+				else if (data_.move.y() < 0)
 					return Type::Directions::down;
 				else
 					return Type::Directions::up;
 			}
 
-
-			template <typename DATA>
-			void Func<DATA>::SetMove(Type::Rotation rotation, Type::Move move)
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetMove(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMove({this->move.x(),move.y()});
+					SetMove({data_.move.x(),move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMove({this->move.x(),-move.y()});
+					SetMove({data_.move.x(),-move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMove({move.x(),this->move.y()});
+					SetMove({move.x(),data_.move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMove({-move.x(),this->move.y()});
+					SetMove({-move.x(),data_.move.y()});
 			}
-			template <typename DATA>
-			void Func<DATA>::SetMoveUnsafe(Type::Rotation rotation, Type::Move move)
+			
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SetMoveUnsafe(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMoveUnsafe({this->move.x(),move.y()});
+					SetMoveUnsafe({data_.move.x(),move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMoveUnsafe({this->move.x(),-move.y()});
+					SetMoveUnsafe({data_.move.x(),-move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMoveUnsafe({move.x(),this->move.y()});
+					SetMoveUnsafe({move.x(),data_.move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMoveUnsafe({-move.x(),this->move.y()});
+					SetMoveUnsafe({-move.x(),data_.move.y()});
 			}
 		}
 	}

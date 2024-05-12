@@ -9,118 +9,97 @@ namespace Object
 	{
 		namespace Draw
 		{
-			template<typename OBJECT>
-			unsigned long long int Data<OBJECT>::SObjectDrawCounts = 0;
+			template<typename MODULES_T>
+			unsigned long long int Data<MODULES_T>::SObjectDrawCounts = 0;
 
-			template<typename OBJECT>
-			unsigned long long int Data<OBJECT>::totalDrawCounter = 0;
+			template<typename MODULES_T>
+			unsigned long long int Data<MODULES_T>::totalDrawCounter = 0;
 
 
-			template<typename DATA>
-			void Func<DATA>::__init__(Type::ID id, Type::Coord coord)
+			template<typename MODULES_T>
+			inline Func<MODULES_T>::Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func):
+				data_(_data), func_(_func)
 			{
-				drawnerFnc = nullptr;
+
+			}
+
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
+			{
+				data_.drawnerFnc = nullptr;
 				configureDrawOptions();
 			}
 
-			template<typename DATA>
-			Json Func<DATA>::print()
+			template<typename MODULES_T>
+			Json Func<MODULES_T>::print()
 			{
 				Json json;
 
-				json["DrawCoord.x"] = DrawCoord.x();
-				json["DrawCoord.y"] = DrawCoord.y();
+				json["DrawCoord.x"] = data_.DrawCoord.x();
+				json["DrawCoord.y"] = data_.DrawCoord.y();
 
 				return json;
 			}
 
-			template<typename DATA>
-			void Func<DATA>::configureDrawOptions()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::configureDrawOptions()
 			{
-				DrawCoord.x() = coord.x() * scene->GetDrawSize().width();
-				DrawCoord.y() = coord.y() * scene->GetDrawSize().height();
+				data_.DrawCoord.x() = data_.coord.x() * data_.scene->GetDrawSize().width();
+				data_.DrawCoord.y() = data_.coord.y() * data_.scene->GetDrawSize().height();
 			}
 
 
-			template<typename DATA>
-			void Func<DATA>::Draw()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::Draw()
 			{
-				if (drawnerFnc)
+				if (data_.drawnerFnc)
 				{
-					Stack stack(dynamic_cast<typename DATA::OBJECT_T *>(this));
-					drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
+					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
+					data_.drawnerFnc(*object, GetDrawCoord().x(), GetDrawCoord().y(), data_.scene->GetDrawSize().width(), data_.scene->GetDrawSize().height());
 				}
 				else
 				{
-					static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
+					static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(GetDrawCoord().x(), GetDrawCoord().y(), data_.scene->GetDrawSize().width(), data_.scene->GetDrawSize().height());
 				}
 			}
-			template<typename DATA>
-			void Func<DATA>::SDraw()//teszteés céljából hogy a conter mûködjön
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::SDraw()//teszteés céljából hogy a conter mûködjön
 			{
-				DrawnedCount++;
-				if (DrawnedCount >= 2)
+				data_.DrawnedCount++;
+				if (data_.DrawnedCount >= 2)
 				{
-					clog << "WARNING! An object has been drawned two times (" << coord.x() << "," << coord.y() << "):" << KIR4::eol;
+					clog << "WARNING! An object has been drawned two times (" << data_.coord.x() << "," << data_.coord.y() << "):" << KIR4::eol;
 				}
-				SObjectDrawCounts++;
+				data_.SObjectDrawCounts++;
 				Draw();
 			}
-			template<typename DATA>
-			void Func<DATA>::setOddDrawCoord()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::setOddDrawCoord()
 			{
-				Type::Coord draw_coord = {
-					Type::Coord::base((coord.x() + move.x()) * Type::Move::base(scene->GetDrawSize().width())),
-					Type::Coord::base((coord.y() + move.y()) * Type::Move::base(scene->GetDrawSize().height()))
-				};
+				Type::Coord draw_coord = (data_.coord + data_.move) * data_.scene->GetDrawSize();
 
-				if (draw_coord != DrawCoord)
+				if (draw_coord != data_.DrawCoord)
 				{
-					DrawCoord = draw_coord;
-					requests.draw = true;
+					data_.DrawCoord = draw_coord;
+					data_.requests.draw = true;
 				}
 			}
-			template<typename DATA>
-			void Func<DATA>::setRoundDrawCoord()
+			template<typename MODULES_T>
+			inline void Func<MODULES_T>::setRoundDrawCoord()
 			{
-				Type::Coord draw_coord = {
-					coord.x() * scene->GetDrawSize().width(),
-					coord.y() * scene->GetDrawSize().height()
-				};
+				Type::Coord draw_coord = data_.coord * data_.scene->GetDrawSize();
 
-				if (draw_coord != DrawCoord)
+				if (draw_coord != data_.DrawCoord)
 				{
-					DrawCoord = draw_coord;
-					requests.draw = true;
+					data_.DrawCoord = draw_coord;
+					data_.requests.draw = true;
 				}
 			}
 
-			template<typename DATA>
-			Type::Coord Func<DATA>::GetDrawCoord()
+			template<typename MODULES_T>
+			inline Type::Coord Func<MODULES_T>::GetDrawCoord()
 			{
-				return {DrawCoord.x() - scene->GetDrawOffSet().width(), DrawCoord.y() - scene->GetDrawOffSet().height()};
-			}
-
-			//DRAW #####################################################################################
-
-			template<typename DATA>
-			void Func<DATA>::RunSDraw()//teszteés céljából hogy a conter mûködjön
-			{
-				drawCounter++;
-				drawAtOnceCounter++;
-				if (drawAtOnceCounter >= 2)
-				{
-					clog << "WARNING! An object has been drawned two times (" << coord.x() << "," << coord.y() << "):" << KIR4::eol;
-					Print();
-				}
-				drawCounterID = ++totalDrawCounter;
-				if (drawnerFnc)
-				{
-					Stack stack;
-					stack.o = this;
-					stack.specific = this->specific;
-					drawnerFnc(&stack, this->GetDrawCoord().x(), this->GetDrawCoord().y(), scene->GetDrawSize().width(), scene->GetDrawSize().height());
-				}
+				return {data_.DrawCoord.x() - data_.scene->GetDrawOffSet().width(), data_.DrawCoord.y() - data_.scene->GetDrawOffSet().height()};
 			}
 		}
 	}

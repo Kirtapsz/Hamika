@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Object.h"
+#include "BaseFunctions.h"
 
-namespace Object
+namespace Object::Entity
 {
 	//Bedrock
 	namespace Bedrock

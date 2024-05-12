@@ -19,7 +19,7 @@ class SceneDrawer
 {
 	private: std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> map;
 
-	private: static Object::Animator::Specific gravityAnimator;
+	private: static Object::Animator::EntityData gravityAnimator;
 	private: static Res::Slides gravitySlides;
 
 	private: unsigned long long TotalPointDrawCount;

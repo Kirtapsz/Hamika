@@ -1,13 +1,23 @@
 #pragma once
 
-#include "Object.h"
-#include "KeyboardController.h"
+#include "BaseFunctions.h"
 
-namespace Object
+struct KeyboardController;
+
+namespace Object::Entity
 {
 	namespace Murphy
 	{
 		extern const char *name;
+
+		struct EntityData
+		{
+			KeyboardController *controller;
+			DrawNumber draw_number_;
+
+			float _effect_timer;
+			Type::Flags _effect_type;
+		};
 
 		void Initializer(OBJECT_INITIALIZER_PARAM);
 		void Create(OBJECT_CREATER_PARAM);
@@ -24,6 +34,6 @@ namespace Object
 		void DrawnerCrawlTail(OBJECT_DRAWNER_PARAM);
 		void simpleDrawCrawlTail(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-		void SetController(Brick *o, KeyboardController *controller);
+		void SetController(Brick &o, KeyboardController *controller);
 	}
 }
