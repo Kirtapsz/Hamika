@@ -103,36 +103,36 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::enablePhysics()
 			{
-				func_.AddFlags(Flags::Data::PhysicsSpeed);
+				func_.AddFlags(MODULES_T::BRICK_T::Flags::PhysicsSpeed);
 			}
 
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::disablePhysics()
 			{
-				func_.RemoveFlags(Flags::Data::PhysicsSpeed);
+				func_.RemoveFlags(MODULES_T::BRICK_T::Flags::PhysicsSpeed);
 			}
 
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::enableFixSpeed(Type::Speed _fixSpeed)
 			{
-				func_.AddFlags(Flags::Data::LimitSpeed);
+				func_.AddFlags(MODULES_T::BRICK_T::Flags::LimitSpeed);
 				data_.limitSpeed_ = _fixSpeed;
 			}
 
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::disableFixSpeed()
 			{
-				func_.RemoveFlags(Flags::Data::LimitSpeed);
+				func_.RemoveFlags(MODULES_T::BRICK_T::Flags::LimitSpeed);
 			}
 
 			template<typename MODULES_T>
 			void Func<MODULES_T>::calculateSpeed(Type::Speed _baseSpeed)
 			{
-				if (func_.GetFlags() & Flags::Data::LimitSpeed)
+				if (func_.GetFlags() & MODULES_T::BRICK_T::Flags::LimitSpeed)
 				{
 					data_.currentSpeed_ = data_.limitSpeed_;
 				}
-				else if (func_.GetFlags() & Flags::Data::PhysicsSpeed)
+				else if (func_.GetFlags() & MODULES_T::BRICK_T::Flags::PhysicsSpeed)
 				{
 					data_.accelaratePercent_ = std::min(1.f, data_.accelaratePercent_ + 0.15f);
 					data_.currentSpeed_ = _baseSpeed * data_.accelaratePercent_;

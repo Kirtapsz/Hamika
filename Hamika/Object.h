@@ -289,10 +289,6 @@ namespace Object
 			return json;
 		}
 
-
-		public:
-
-		static void PrintFlags(Type::Flags flags);
 		public:
 		typedef void(*InitializeType)();
 		//scene easy

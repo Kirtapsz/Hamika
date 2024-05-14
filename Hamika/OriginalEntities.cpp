@@ -70,7 +70,7 @@ namespace Object::Entity
 			entity_data.draw_number_ = 0;
 
 			_brick.SetMoveSpeed({rollSpeed,moveSpeed});
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::CanPushLeft | Brick::CanPushRight);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff | Flags::CanPushLeft | Flags::CanPushRight);
 			_brick.enablePhysics();
 
 			FallAndRoll::Create(_brick, entity_data.fall_and_roll_);
@@ -150,7 +150,7 @@ namespace Object::Entity
 			entity_data.disappearTimer = 0;
 			entity_data.draw_number_ = 0;
 
-			_brick.SetFlags(Brick::CanBeExploded | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::MurphyStepOn | Flags::MurphyCanSuck | Flags::GiveGravityDelay);
 
 			_brick.events.update = true;
 		}
@@ -709,7 +709,7 @@ namespace Object::Entity
 			entity_data.electricTimer = ACTION_TIMER_START;
 			entity_data.disappearTimer = 0;
 			entity_data.draw_number_ = 0;
-			_brick.SetFlags(Brick::CanBeExploded | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::GiveGravityDelay | Brick::MurphyDies);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::MurphyStepOn | Flags::MurphyCanSuck | Flags::GiveGravityDelay | Flags::MurphyDies);
 
 			_brick.events.timer = true;
 			_brick.events.update = true;
@@ -803,7 +803,7 @@ namespace Object::Entity
 			{
 				entity_data.draw_number_ = 0;
 
-				_brick.AddFlags(Brick::Flags::MurphyDies);
+				_brick.AddFlags(Flags::MurphyDies);
 				_brick.requests.draw = true;
 				return true;
 			},
@@ -818,7 +818,7 @@ namespace Object::Entity
 				[&entity_data, &_brick]()->bool
 			{
 				entity_data.electricDelayTimer = ACTION_TIMER_START;
-				_brick.RemoveFlags(Brick::Flags::MurphyDies);
+				_brick.RemoveFlags(Flags::MurphyDies);
 				_brick.requests.draw = true;
 				return true;
 			}))
@@ -887,7 +887,7 @@ namespace Object::Entity
 			entity_data.disappearTimer = 0;
 			entity_data.draw_number_ = 0;
 			_brick.SetMoveSpeed({rollSpeed,moveSpeed});
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::MurphyStepOn | Brick::MurphyCanSuck | Brick::Give1Score);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff | Flags::MurphyStepOn | Flags::MurphyCanSuck | Flags::Give1Score);
 
 			FallAndRoll::Create(_brick, entity_data.fall_and_roll_);
 			entity_data.fall_and_roll_.setHeavy(true);
@@ -1024,7 +1024,7 @@ namespace Object::Entity
 			_brick.events.update = true;
 			_brick.requests.update = true;
 
-			_brick.SetFlags(Brick::CanBeExploded);
+			_brick.SetFlags(Flags::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1129,7 +1129,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::Passage);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::Passage);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1170,7 +1170,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::PassageHorizontal);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::PassageHorizontal);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1211,7 +1211,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::PassageVertical);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::PassageVertical);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1252,7 +1252,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::PassageFromTop);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::PassageFromTop);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1293,7 +1293,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::PassageFromRight);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::PassageFromRight);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1334,7 +1334,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::PassageFromLeft);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::PassageFromLeft);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1375,7 +1375,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::PassageFromBottom);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::PassageFromBottom);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1416,7 +1416,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1457,7 +1457,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1498,7 +1498,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1547,7 +1547,7 @@ namespace Object::Entity
 			_brick.SetRotationSpeed(rotateSpeed);
 			_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 			_brick.SetTranslationID(ObjectID::Infotron);
-			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::ExplosionType3);
 
 			Animator::Create(_brick, entity_data.animator_);
 			entity_data.animator_.SetNumberOfFrames(Electrons.getCount());
@@ -1623,7 +1623,7 @@ namespace Object::Entity
 
 			_brick.SetRotationSpeed(rotateSpeed);
 			_brick.SetMoveSpeed({moveSpeed,moveSpeed});
-			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::ExplosionType3);
 			_brick.SetTranslationID(ObjectID::Space);
 
 			MoveLeftWay::Create(_brick, entity_data.move_left_way_);
@@ -1707,7 +1707,7 @@ namespace Object::Entity
 			entity_data.animator_.SetNumberOfFrames(Terminal.getCount());
 			entity_data.animator_.SetAnimationTime(animateTime);
 
-			_brick.SetFlags(Brick::ButtonPush | Brick::CanBeExploded);
+			_brick.SetFlags(Flags::ButtonPush | Flags::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1799,7 +1799,7 @@ namespace Object::Entity
 			EntityData &entity_data = _brick.entity_data.utility1_029;
 
 			entity_data.active = false;
-			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3 | Brick::CanPushLeft | Brick::CanPushRight);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::ExplosionType3 | Flags::CanPushLeft | Flags::CanPushRight);
 			_brick.SetMoveSpeed({moveSpeed,moveSpeed});
 			_brick.SetTranslationID(ObjectID::Space);
 
@@ -1871,7 +1871,7 @@ namespace Object::Entity
 			entity_data.activateTimer = 0.f;
 			entity_data.disappearTimer = 0.f;
 			entity_data.draw_number_ = 0;
-			_brick.SetFlags(Brick::CanBeExploded | Brick::MurphyCanSuck | Brick::Give1Unity | Brick::MurphyStepOn);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::MurphyCanSuck | Flags::Give1Unity | Flags::MurphyStepOn);
 
 			_brick.events.update = true;
 		}
@@ -1933,7 +1933,7 @@ namespace Object::Entity
 							 [&entity_data, &_brick]()->bool
 			{
 				entity_data.draw_number_ = 0;
-				_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3);
+				_brick.SetFlags(Flags::CanBeExploded | Flags::ExplosionType3);
 				_brick.events.timer = true;
 				_brick.events.update = false;
 				_brick.requests.remove = false;
@@ -2013,7 +2013,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::ExplosionType3 | Brick::CanPush);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::ExplosionType3 | Flags::CanPush);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2067,7 +2067,7 @@ namespace Object::Entity
 
 			_brick.requests.finalize = true;
 
-			_brick.SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded | Brick::RollOff | Brick::MurphyDies | Brick::MurphyStepOn);
+			_brick.SetFlags(Flags::StepOn | Flags::MurphyStepOn | Flags::CanBeExploded | Flags::RollOff | Flags::MurphyDies | Flags::MurphyStepOn);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2152,7 +2152,7 @@ namespace Object::Entity
 
 			_brick.scene->GetObject(_brick.GetCoord()).events.clear();
 			_brick.scene->GetObject(_brick.GetCoord()).requests.clear();
-			_brick.scene->GetObject(_brick.GetCoord()).RemoveFlags(Brick::Flags::CanBeKilled);
+			_brick.scene->GetObject(_brick.GetCoord()).RemoveFlags(Flags::Flags::CanBeKilled);
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
@@ -2160,7 +2160,7 @@ namespace Object::Entity
 
 			_brick.requests.finalize = true;
 
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff | Brick::MurphyDies | Brick::MurphyStepOn);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff | Flags::MurphyDies | Flags::MurphyStepOn);
 		}
 		void ReCreate(OBJECT_CREATER_PARAM)
 		{
@@ -2174,7 +2174,7 @@ namespace Object::Entity
 
 				_brick.scene->GetObject(_brick.GetCoord()).events.clear();
 				_brick.scene->GetObject(_brick.GetCoord()).requests.clear();
-				_brick.scene->GetObject(_brick.GetCoord()).RemoveFlags(Brick::Flags::CanBeKilled);
+				_brick.scene->GetObject(_brick.GetCoord()).RemoveFlags(Flags::CanBeKilled);
 			}
 
 			_brick.events.update = true;
@@ -2214,7 +2214,7 @@ namespace Object::Entity
 				[&entity_data, &_brick]()->bool
 			{
 				Brick &brick = _brick.scene->GetObject(_brick.GetCoord());
-				if (brick.GetFlags() & Brick::ExplosionType)
+				if (brick.GetFlags() & Flags::ExplosionType)
 				{
 					_brick.scene->blowup(brick);
 				}
@@ -2289,7 +2289,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2330,7 +2330,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::CanBeExploded | Brick::RollOff);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2416,7 +2416,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromTop);
+			_brick.SetFlags(Flags::SwapsGravity | Flags::CanBeExploded | Flags::PassageFromTop);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2451,7 +2451,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromRight);
+			_brick.SetFlags(Flags::SwapsGravity | Flags::CanBeExploded | Flags::PassageFromRight);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2486,7 +2486,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromLeft);
+			_brick.SetFlags(Flags::SwapsGravity | Flags::CanBeExploded | Flags::PassageFromLeft);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -2521,7 +2521,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::SwapsGravity | Brick::CanBeExploded | Brick::PassageFromBottom);
+			_brick.SetFlags(Flags::SwapsGravity | Flags::CanBeExploded | Flags::PassageFromBottom);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{

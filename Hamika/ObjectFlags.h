@@ -6,51 +6,59 @@
 #include "IDreg.h"
 #include "Tools.h"
 
+#define FLAG(pos) std::uint64_t(1) << std::uint64_t(pos)
+
 namespace Object
 {
+	struct Flags
+	{
+		static constexpr Type::Flags StepOn = FLAG(0); // Anything can step on this object
+		static constexpr Type::Flags MurphyStepOn = FLAG(1); // Only murphy can step on this object
+		static constexpr Type::Flags CanPushUp = FLAG(2); // This object can be pushed up
+		static constexpr Type::Flags CanPushDown = FLAG(3); // This object can be pushed down
+		static constexpr Type::Flags CanPushRight = FLAG(4); // This object can be pushed right
+		static constexpr Type::Flags CanPushLeft = FLAG(5); // This object can be pushed left
+		static constexpr Type::Flags CanPush = CanPushUp | CanPushDown | CanPushRight | CanPushLeft; // This object can be pushed to any direction
+		static constexpr Type::Flags MurphyDies = FLAG(6); // Murphy dies if steps on this object
+		static constexpr Type::Flags RollOffTop = FLAG(7); // Objects can roll down from this object
+		static constexpr Type::Flags RollOffBottom = FLAG(8); // Objects can roll up from this object
+		static constexpr Type::Flags RollOff = RollOffTop | RollOffBottom; // Objects can roll up and down from this object
+		static constexpr Type::Flags PassageFromRight = FLAG(9); // Murphy can pass through it from the right to the left
+		static constexpr Type::Flags PassageFromLeft = FLAG(10); // Murphy can pass through it from the left to the right
+		static constexpr Type::Flags PassageFromTop = FLAG(11); // Murphy can pass through it from the top to the bottom
+		static constexpr Type::Flags PassageFromBottom = FLAG(12); // Murphy can pass through it from the bottom to the top
+		static constexpr Type::Flags PassageVertical = PassageFromTop | PassageFromBottom; // Murphy can pass through it vertically
+		static constexpr Type::Flags PassageHorizontal = PassageFromLeft | PassageFromRight; // Murphy can pass through it horizontally
+		static constexpr Type::Flags Passage = PassageVertical | PassageHorizontal; // Murphy can pass through it in any direction
+
+		static constexpr Type::Flags FallOnExplosion = FLAG(18); // This object explodes if something fall onto it
+		static constexpr Type::Flags ExplosionType1 = FLAG(19); // 1*1 Re-explode
+		static constexpr Type::Flags ExplosionType3 = FLAG(20) | ExplosionType1; // 3*3 Re-explode
+		static constexpr Type::Flags ExplosionType5 = FLAG(21) | ExplosionType3; // 5*5 Re-explode
+		static constexpr Type::Flags ExplosionType = ExplosionType1 | ExplosionType3 | ExplosionType5; // Re-explode
+		static constexpr Type::Flags CanBeExploded = FLAG(22); // This object can be destroyed via explosion
+		static constexpr Type::Flags LimitSpeed = FLAG(23); // This opbject has a limited fix speed regardles of other speed options, like a rock movement during a push action
+		static constexpr Type::Flags PhysicsSpeed = FLAG(24); // This object has a physics acceleration option
+
+		static constexpr Type::Flags MurphyCanSuck = FLAG(26); // Murphy can suck this object, so dont need to step on it to eat it
+		static constexpr Type::Flags CanBeKilled = FLAG(27); // This object can be killed (for example Murphy by other entities)
+		static constexpr Type::Flags GiveGravityDelay = FLAG(28); // When eating this object, gravity is delayed so Murphy can continue to climb up to the next object
+		static constexpr Type::Flags ButtonPush = FLAG(29); // This object can be pressed like the Terminal entity
+		static constexpr Type::Flags Give1Score = FLAG(30); // When eating this object, this one gives 1 score
+		static constexpr Type::Flags Give1Unity = FLAG(31); // When eating this object, this one give 1 unity for later use
+		static constexpr Type::Flags SwapsGravity = FLAG(32); // When passing through this object, the grivity option swaps (on <-> off)
+
+		static constexpr Type::Flags FallDownRule = FLAG(33); // It tells that the object tries to fall down if it possible, but this flag does not lead any logic
+		static constexpr Type::Flags RollHorizontalRule = FLAG(34);  // It tells that the object tries to roll right or left if it possible, but this flag does not lead any logic
+	};
+
 	namespace Module
 	{
 		namespace Flags
 		{
 			struct Data
 			{
-				enum Flags:Type::Flags
-				{
-					StepOn = 1 << 0, // Enything can step on this field
-					MurphyStepOn = 1 << 1, // Only murphy can step on this field
-					CanPushUp = 1 << 2, //el lehet felfelé tolni
-					CanPushDown = 1 << 3, //el lehet lefelé tolni
-					CanPushRight = 1 << 4, //el lehet jobbra tolni
-					CanPushLeft = 1 << 5, //el lehet balra tolni
-					CanPush = CanPushUp | CanPushDown | CanPushRight | CanPushLeft, //bármely irányba el lehet tolni
-					MurphyDies = 1 << 6, // Murphy dies if step on it
-					RollOffTop = 1 << 7, //a tetejérõl legurul
-					RollOffBottom = 1 << 8, //az aljáról legurul
-					RollOff = RollOffTop | RollOffBottom, //tetejérõl és aljáról is le lehet gurulni
-					PassageFromRight = 1 << 9, //átlehet rajta bújni jobbról
-					PassageFromLeft = 1 << 10, //átlehet rajta bújni balról
-					PassageFromTop = 1 << 11, //átlehet rajta bújni fentrõl
-					PassageFromBottom = 1 << 12, //átlehet rajta bújni lentrõl
-					PassageVertical = PassageFromTop | PassageFromBottom, //átlehet rajta bújni jobbról és balról
-					PassageHorizontal = PassageFromLeft | PassageFromRight, //átlehet rajta bújni fentrõl és lentrõl
-					Passage = PassageVertical | PassageHorizontal, //átlehet rajta bújni minden irányból
-					FallOnExplosion = 1 << 18, //ha ráesik valami felrobban
-					ExplosionType1 = 1 << 19, //1*1-es újrarobbanás
-					ExplosionType3 = 1 << 20 | ExplosionType1, //3*3-as újrarobbanás
-					ExplosionType5 = 1 << 21 | ExplosionType3, //5*5-ös újrarobbanás
-					ExplosionType = ExplosionType1 | ExplosionType3 | ExplosionType5,
-					CanBeExploded = 1 << 22, //fel lehet robbantani
-					LimitSpeed = 1 << 23, //limited fix speed regardles of other speed oprtions, like a rock movement during a push action
-					PhysicsSpeed = 1 << 24, //gyorsuló mozgás
-					MurphyCanSuck = 1 << 26, //a játékos fel tudja szedni rálépés nélkül "szippantással"
-					CanBeKilled = 1 << 27, //meg lehet ölni
-					GiveGravityDelay = 1 << 28, //nem esik vissza azonnal
-					ButtonPush = 1 << 29, //megnyomható, pl egy terminal, hozzá tartozó függvény: virtual void ButtonPushed()
-					Give1Score = 1 << 30, //a célhoz hozzátesz 1-et
-					Give1Unity = 1 << 31, //1 bombát ad
-					SwapsGravity = 1ll << 32ll, // when passing 
-				};
-
+				using Flags = Object::Flags;
 				Type::Flags flags = 0;
 			};
 

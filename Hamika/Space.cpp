@@ -13,7 +13,7 @@ namespace Object::Entity
 		}
 		void Create(OBJECT_CREATER_PARAM)
 		{
-			_brick.SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded);
+			_brick.SetFlags(Flags::StepOn | Flags::MurphyStepOn | Flags::CanBeExploded);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{

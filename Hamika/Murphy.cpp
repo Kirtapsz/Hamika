@@ -55,9 +55,9 @@ namespace Object::Entity
 			return
 				!_brick.GetObject(coord).isActionMove()
 				&&
-				_brick.GetObject(coord).GetFlags() & Brick::MurphyCanSuck
+				_brick.GetObject(coord).GetFlags() & Flags::MurphyCanSuck
 				&&
-				_brick.GetRemain(coord).GetFlags() & Brick::StepOn
+				_brick.GetRemain(coord).GetFlags() & Flags::StepOn
 				;
 		}
 
@@ -65,11 +65,11 @@ namespace Object::Entity
 		{
 			if (_brick.isExists)
 			{
-				if (_brick.GetFlags() & Brick::MurphyDies)
+				if (_brick.GetFlags() & Flags::MurphyDies)
 				{
 					murphy.scene->blowup(murphy);
 				}
-				if (_brick.GetFlags() & Brick::Give1Score)
+				if (_brick.GetFlags() & Flags::Give1Score)
 				{
 					if (murphy.scene->getScoreToCollect() > 0)
 					{
@@ -80,14 +80,14 @@ namespace Object::Entity
 						}
 					}
 				}
-				if (_brick.GetFlags() & Brick::Give1Unity)
+				if (_brick.GetFlags() & Flags::Give1Unity)
 				{
 					murphy.scene->addUnity(1);
 				}
 			}
 			if (remain.isExists)
 			{
-				if (remain.GetFlags() & Brick::MurphyDies)
+				if (remain.GetFlags() & Flags::MurphyDies)
 				{
 					murphy.scene->blowup(murphy);
 				}
@@ -111,7 +111,7 @@ namespace Object::Entity
 				_brick.GetRemain(to).GetFlags() & _step_flags
 				&&
 				(
-					_brick.GetObjectOut(to).GetFlags() & Brick::StepOn
+					_brick.GetObjectOut(to).GetFlags() & Flags::StepOn
 					||
 					(
 						(rotation == Type::Rotations::Up && _brick.GetObjectOut(to).GetCoord().y() < to.y())
@@ -126,7 +126,7 @@ namespace Object::Entity
 		}
 		inline bool MurphyCanMovePos(Brick &_brick, Type::Coord to, Type::Rotation rotation)
 		{
-			return CanMovePos(_brick, to, rotation, Brick::MurphyStepOn | Brick::StepOn);
+			return CanMovePos(_brick, to, rotation, Flags::MurphyStepOn | Flags::StepOn);
 		}
 		void timerCrawlTail(Brick &_tail, Brick &_head)
 		{
@@ -152,7 +152,7 @@ namespace Object::Entity
 			_brick.SetRotation(Type::Rotations::getRotationOfIndex(direction));
 			_brick.SetTranslationID(ObjectID::Infotron);
 
-			_brick.SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::CanBeKilled | Flags::ExplosionType3);
 			_brick.disablePhysics();
 			_brick.SetObjectIDremain(ObjectID::Space);
 
@@ -171,7 +171,7 @@ namespace Object::Entity
 			_tail.SetRotation(Type::Rotations::getRotationOfIndex(direction));
 			_tail.SetTranslationID(ObjectID::Space);
 
-			_tail.SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
+			_tail.SetFlags(Flags::CanBeExploded | Flags::CanBeKilled | Flags::ExplosionType3);
 			_tail.disablePhysics();
 			_tail.SetObjectIDremain(ObjectID::Space);
 
@@ -186,7 +186,7 @@ namespace Object::Entity
 		{
 			EntityData &entity_data = _brick.entity_data.murphy;
 
-			_brick.SetFlags(Brick::StepOn | Brick::MurphyStepOn | Brick::CanBeExploded);
+			_brick.SetFlags(Flags::StepOn | Flags::MurphyStepOn | Flags::CanBeExploded);
 			_brick.events.topDraw = true;
 		}
 		void TimerCrawlTail(OBJECT_TIMER_PARAM)
@@ -254,7 +254,7 @@ namespace Object::Entity
 					{
 						Type::Coord to = _brick.GetCoord(direction);
 
-						if (_brick.scene->GetSectionFlags(to) & Brick::StepOn)
+						if (_brick.scene->GetSectionFlags(to) & Flags::StepOn)
 						{
 							_brick.scene->addUnity(-1);
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
@@ -349,7 +349,7 @@ namespace Object::Entity
 		{
 			static constexpr Type::Rotation rotation = Type::Rotations::Down;
 			Type::Coord to = _brick.GetCoordDown();
-			return CanMovePos(_brick, to, rotation, Brick::StepOn);
+			return CanMovePos(_brick, to, rotation, Flags::StepOn);
 		}
 		bool ControllMove(Brick &_brick)
 		{
@@ -368,7 +368,7 @@ namespace Object::Entity
 					if (MurphyCanMovePos(_brick, to, rotation))
 					{
 						Brick &to_object = _brick.GetObject(to);
-						if (to_object.GetFlags() & Brick::GiveGravityDelay || !can_fall_down)
+						if (to_object.GetFlags() & Flags::GiveGravityDelay || !can_fall_down)
 						{
 							Eat(_brick, to_object, _brick.scene->GetRemain(to));
 							_brick.SetMoveSpeed({moveSpeed,moveSpeed});
@@ -408,7 +408,7 @@ namespace Object::Entity
 			EntityData &entity_data = _brick.entity_data.murphy;
 
 			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data.controller->actionUp, &entity_data.controller->actionRight, &entity_data.controller->actionDown, &entity_data.controller->actionLeft};
-			static constexpr std::array<Type::Flags, 4> move_push_flags{Brick::CanPushUp, Brick::CanPushRight, Brick::CanPushDown, Brick::CanPushLeft};
+			static constexpr std::array<Type::Flags, 4> move_push_flags{Flags::CanPushUp, Flags::CanPushRight, Flags::CanPushDown, Flags::CanPushLeft};
 
 			if (entity_data._effect_type == EFFECTS::PUSH_TRY)
 			{
@@ -455,7 +455,7 @@ namespace Object::Entity
 
 					if (to_object.GetFlags() & move_push_flags[direction] &&
 						!to_object.isActionMove() &&
-						CanMovePos(to_object, to_object_next, rotation, Brick::StepOn))
+						CanMovePos(to_object, to_object_next, rotation, Flags::StepOn))
 					{
 						to_object.SetRotation(rotation);
 
@@ -494,7 +494,7 @@ namespace Object::Entity
 					Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 					Type::Coord to = _brick.GetCoord(direction);
 
-					if (_brick.scene->GetUnionFlags(to) & Brick::ButtonPush)
+					if (_brick.scene->GetUnionFlags(to) & Flags::ButtonPush)
 					{
 						if (_brick.GetObject(to).id == ObjectID::Terminal)
 						{
@@ -542,7 +542,7 @@ namespace Object::Entity
 			EntityData &entity_data = _brick.entity_data.murphy;
 
 			const std::array<const KeyboardController::STATE *, 4> move_controllers{&entity_data.controller->actionUp, &entity_data.controller->actionRight, &entity_data.controller->actionDown, &entity_data.controller->actionLeft};
-			static constexpr std::array<Type::Flags, 4> move_crawl_flags{Brick::PassageFromBottom, Brick::PassageFromLeft, Brick::PassageFromTop, Brick::PassageFromRight};
+			static constexpr std::array<Type::Flags, 4> move_crawl_flags{Flags::PassageFromBottom, Flags::PassageFromLeft, Flags::PassageFromTop, Flags::PassageFromRight};
 
 			for (Type::Direction direction = 0; direction < 4; ++direction)
 			{
@@ -555,7 +555,7 @@ namespace Object::Entity
 					{
 						Type::Coord to = next_object.GetCoord(direction);
 
-						if (_brick.scene->GetSectionFlags(to) & Brick::StepOn)
+						if (_brick.scene->GetSectionFlags(to) & Flags::StepOn)
 						{
 							Brick &to_object = _brick.scene->GetObject(to);
 							Type::Coord coord = _brick.GetCoord();
@@ -563,7 +563,7 @@ namespace Object::Entity
 							Type::Rotation rotation = Type::Rotations::getRotationOfIndex(direction);
 							Eat(_brick, to_object, _brick.scene->GetRemain(to));
 
-							if (next_object.GetFlags() & Brick::SwapsGravity)
+							if (next_object.GetFlags() & Flags::SwapsGravity)
 							{
 								_brick.scene->switchGravity();
 							}
@@ -617,7 +617,7 @@ namespace Object::Entity
 		{
 			EntityData &entity_data = _brick.entity_data.murphy;
 
-			_brick.SetFlags(Brick::CanBeExploded | Brick::CanBeKilled | Brick::ExplosionType3);
+			_brick.SetFlags(Flags::CanBeExploded | Flags::CanBeKilled | Flags::ExplosionType3);
 			_brick.disablePhysics();
 
 			_brick.events.timer = false;
