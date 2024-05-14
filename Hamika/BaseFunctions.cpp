@@ -100,7 +100,7 @@ namespace Object
 		bool EntityData::UpdateDrawNumber()
 		{
 			DrawNumber _draw_number = limiter<std::int8_t>(0, numberOfFrames - 1,
-															  static_cast<std::int8_t>((timer / time) * numberOfFrames));
+														   static_cast<std::int8_t>((timer / time) * numberOfFrames));
 			if (draw_number_ != _draw_number)
 			{
 				draw_number_ = _draw_number;
@@ -183,6 +183,7 @@ namespace Object
 		{
 			_entity_data.heavy_object_ = false;
 			_brick.enablePhysics();
+			_brick.AddFlags(Brick::Flags::FallDownRule);
 
 			_brick.events.timer = true;
 			_brick.events.update = true;
@@ -251,39 +252,46 @@ namespace Object
 			Type::Coord coord_bottom = _brick.GetCoordDown();
 			Type::Coord coord_up = _brick.GetCoordUp();
 			Type::Coord coord_next = _brick.GetCoord(_direction);
-			Type::Coord coord_diagonal = _brick.scene->GetObject(coord_next).GetCoordDown();
+			Type::Coord coord_up_diagonal = _brick.scene->GetObject(coord_next).GetCoordUp();
+			Type::Coord coord_bottom_diagonal = _brick.scene->GetObject(coord_next).GetCoordDown();
 
 			return
 				(
-					_brick.scene->GetObject(coord_next).GetFlags() & Brick::StepOn // it can step to the next place (object)
+					_brick.scene->GetObject(coord_next).GetFlags() & Flags::StepOn // it can step to the next place (object)
 					&&
-					_brick.scene->GetRemain(coord_next).GetFlags() & Brick::StepOn // it can step to the next place (remain)
+					_brick.scene->GetRemain(coord_next).GetFlags() & Flags::StepOn // it can step to the next place (remain)
+					&&
+					(
+						!(_brick.scene->GetObject(coord_up_diagonal).GetFlags() & Flags::FallDownRule) // The object there will not fall down
+						||
+						_brick.scene->GetObject(coord_up_diagonal).GetAbsMove() >= 0.5f // If the object can fall down, but it is far away yet
+						)
 					&&
 					(
 						!_brick.scene->IsObjectOut(coord_next)
 						||
 						(
-							_brick.scene->GetObjectOut(coord_next).GetFlags() & Brick::StepOn // it can step to the next place (leaving)
+							_brick.scene->GetObjectOut(coord_next).GetFlags() & Flags::StepOn // it can step to the next place (leaving)
 							||
 							_brick.scene->GetObjectOut(coord_next).GetCoord().x() != coord_next.x() // the leaving one moving away on the X
 							)
 						)
 					&&
 					(
-						_brick.scene->GetObject(coord_diagonal).GetFlags() & Brick::StepOn // it can step to the diagonal place (object)
+						_brick.scene->GetObject(coord_bottom_diagonal).GetFlags() & Flags::StepOn // it can step to the diagonal place (object)
 						&&
-						_brick.scene->GetRemain(coord_diagonal).GetFlags() & Brick::StepOn // it can step to the diagonal place (remain)
+						_brick.scene->GetRemain(coord_bottom_diagonal).GetFlags() & Flags::StepOn // it can step to the diagonal place (remain)
 						&&
 						(
-							!_brick.scene->IsObjectOut(coord_diagonal) // there is no leaving object in the diagonal
+							!_brick.scene->IsObjectOut(coord_bottom_diagonal) // there is no leaving object in the diagonal
 							||
 							(
-								_brick.scene->GetObjectOut(coord_diagonal).GetFlags() & Brick::StepOn // it can step to the next place (leaving)
+								_brick.scene->GetObjectOut(coord_bottom_diagonal).GetFlags() & Flags::StepOn // it can step to the next place (leaving)
 								||
 								(
-									_brick.scene->GetObjectOut(coord_diagonal).isActionMove() // the leaving one moving away
+									_brick.scene->GetObjectOut(coord_bottom_diagonal).isActionMove() // the leaving one moving away
 									&&
-									_brick.scene->GetObjectOut(coord_diagonal).GetCoord().x() != coord.x() // the leaving one is not moving under it
+									_brick.scene->GetObjectOut(coord_bottom_diagonal).GetCoord().x() != coord.x() // the leaving one is not moving under it
 									)
 								)
 							)
@@ -304,7 +312,7 @@ namespace Object
 		bool CanRollOff(Brick &_brick)
 		{
 			return
-				_brick.scene->GetSectionFlags(_brick.GetCoordDown()) & Brick::RollOffTop;
+				_brick.scene->GetSectionFlags(_brick.GetCoordDown()) & Flags::RollOffTop;
 		}
 		void finishAction(Brick &_brick, EntityData &_entity_data)
 		{
@@ -327,6 +335,9 @@ namespace Object
 		{
 			_entity_data.heavy_object_ = false;
 			_brick.enablePhysics();
+			_brick.AddFlags(
+				Brick::Flags::FallDownRule |
+				Brick::Flags::RollHorizontalRule);
 
 			_brick.events.timer = true;
 			_brick.events.update = true;

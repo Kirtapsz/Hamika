@@ -2,32 +2,6 @@
 
 namespace Object
 {
-	void Brick::PrintFlags(Type::Flags flags_)
-	{
-		struct F
-		{
-			Type::Flags f;
-			const char *n;
-		} flags[] = {
-			{StepOn,"StepOn"},{MurphyDies,"MurphyDies"},{CanPushUp,"CanPushUp"},{CanPushDown,"CanPushDown"},{CanPushRight,"CanPushRight"},
-			{CanPushLeft,"CanPushLeft"},{CanPush,"CanPush"},{MurphyStepOn,"MurphyStepOn"},{RollOffTop,"RollOffTop"},
-			{RollOffBottom,"RollOffBottom"},{RollOff,"RollOff"},{PassageFromRight,"PassageFromRight"},{PassageFromLeft,"PassageFromLeft"},
-			{PassageFromTop,"PassageFromTop"},{PassageFromBottom,"PassageFromBottom"},{PassageVertical,"PassageVertical"},
-			{PassageHorizontal,"PassageHorizontal"},{Passage,"Passage"},{FallOnExplosion,"FallOnExplosion"},
-			{ExplosionType1,"ExplosionType1"},{ExplosionType3,"ExplosionType3"},{ExplosionType5,"ExplosionType5"},
-			{CanBeExploded,"CanBeExploded"},{LimitSpeed,"LimitSpeed"},{PhysicsSpeed,"PhysicsSpeed"},
-			{MurphyCanSuck,"MurphyCanSuck"},{CanBeKilled,"CanBeKilled"},{GiveGravityDelay,"GiveGravityDelay"},{ButtonPush,"ButtonPush"},
-			{Give1Score,"Give1Score"},{Give1Unity,"Give1Unity"},
-		};
-		for (int i = 0; i < sizeof(F) / sizeof(flags[0]); i++)
-		{
-			if (flags_ & flags[i].f)
-			{
-				clog << flags[i].n << ", ";
-			}
-		}
-	}
-
 	bool Brick::Roll(double PpM)
 	{
 		return rand() % 1000 <= PpM / CPS * 10.;
@@ -123,12 +97,12 @@ namespace Object
 	bool Brick::CanMovePos(Type::Coord to, Type::Rotation rotation)
 	{
 		return
-			scene->GetObject(to).GetFlags() & StepOn
+			scene->GetObject(to).GetFlags() & Flags::StepOn
 			&&
-			scene->GetRemain(to).GetFlags() & StepOn
+			scene->GetRemain(to).GetFlags() & Flags::StepOn
 			&&
 			(
-				scene->GetObjectOut(to).GetFlags() & StepOn
+				scene->GetObjectOut(to).GetFlags() & Flags::StepOn
 				||
 				CanMovePosByRotationH(to, rotation)
 				);
@@ -136,12 +110,12 @@ namespace Object
 	bool Brick::CanMoveDown()
 	{
 		return
-			scene->GetObject(GetCoordDown()).GetFlags() & StepOn
+			scene->GetObject(GetCoordDown()).GetFlags() & Flags::StepOn
 			&&
-			scene->GetRemain(GetCoordDown()).GetFlags() & StepOn
+			scene->GetRemain(GetCoordDown()).GetFlags() & Flags::StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordDown()).GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordDown()).GetFlags() & Flags::StepOn
 				||
 				scene->GetObjectOut(GetCoordDown()).IsMoveDown()
 				);
@@ -149,12 +123,12 @@ namespace Object
 	bool Brick::CanMoveUp()
 	{
 		return
-			scene->GetObject(GetCoordUp()).GetFlags() & StepOn
+			scene->GetObject(GetCoordUp()).GetFlags() & Flags::StepOn
 			&&
-			scene->GetRemain(GetCoordUp()).GetFlags() & StepOn
+			scene->GetRemain(GetCoordUp()).GetFlags() & Flags::StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordUp()).GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordUp()).GetFlags() & Flags::StepOn
 				||
 				scene->GetObjectOut(GetCoordUp()).IsMoveUp()
 				);
@@ -162,12 +136,12 @@ namespace Object
 	bool Brick::CanMoveLeft()
 	{
 		return
-			scene->GetObject(GetCoordLeft()).GetFlags() & StepOn
+			scene->GetObject(GetCoordLeft()).GetFlags() & Flags::StepOn
 			&&
-			scene->GetRemain(GetCoordLeft()).GetFlags() & StepOn
+			scene->GetRemain(GetCoordLeft()).GetFlags() & Flags::StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordLeft()).GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordLeft()).GetFlags() & Flags::StepOn
 				||
 				scene->GetObjectOut(GetCoordLeft()).IsMoveLeft()
 				);
@@ -175,12 +149,12 @@ namespace Object
 	bool Brick::CanMoveRight()
 	{
 		return
-			scene->GetObject(GetCoordRight()).GetFlags() & StepOn
+			scene->GetObject(GetCoordRight()).GetFlags() & Flags::StepOn
 			&&
-			scene->GetRemain(GetCoordRight()).GetFlags() & StepOn
+			scene->GetRemain(GetCoordRight()).GetFlags() & Flags::StepOn
 			&&
 			(
-				scene->GetObjectOut(GetCoordRight()).GetFlags() & StepOn
+				scene->GetObjectOut(GetCoordRight()).GetFlags() & Flags::StepOn
 				||
 				scene->GetObjectOut(GetCoordRight()).IsMoveRight()
 				);
