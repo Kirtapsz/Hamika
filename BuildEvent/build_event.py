@@ -81,9 +81,15 @@ if (POST_BUILD):
 if (POST_BUILD and (RELEASE_BUILD or MULTITEST_BUILD)):
     validators = "Hamika\\multitest\\validators"
     ext = ('.json')
+    failed = False
     for file in os.listdir(validators):
         if file.endswith(ext):
-            subprocess.run(["Hamika.exe", "--multitest", "-json", os.path.join(validators,file)], shell=True, check=True)
+            try:
+                subprocess.run(["Hamika.exe", "--multitest", "-json", os.path.join(validators,file)], shell=True, check=True)
+            except subprocess.CalledProcessError:
+                failed = True
+    if failed: raise subprocess.CalledProcessError(-1, "Some test failed")
+
 
 if (PRE_BUILD):
     f = open(os.path.join(project_dir, "versions.h"), "w")

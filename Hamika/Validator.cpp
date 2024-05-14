@@ -65,8 +65,8 @@ void ValidatorReplay::validate()
 		{
 			++it;
 			loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay loop was jumped at ", loopCounter, " (",
-														std::get<Res::Log::ObjectValidator::validateType>(**it), ", ",
-														std::get<Res::Log::ObjectValidator::objectProperties>(**it), ")"));
+															  std::get<Res::Log::ObjectValidator::validateType>(**it), ", ",
+															  std::get<Res::Log::ObjectValidator::objectProperties>(**it), ")"));
 		}
 		else if (loopCounter == loopControllerInterface.loopCounter)
 		{
@@ -85,8 +85,8 @@ void ValidatorReplay::validate()
 																			  oValidatorProperties))
 					{
 						loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay compare failed on object ", loopCounter, " (",
-																	oValidatorType, ", ",
-																	oValidatorProperties, ")"));
+																		  (std::uint32_t)oValidatorType, ", ",
+																		  oValidatorProperties, ")"));
 					}
 					break;
 				}
@@ -99,8 +99,8 @@ void ValidatorReplay::validate()
 																			  oValidatorProperties))
 					{
 						loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay compare failed on remain ", loopCounter, " (",
-																	oValidatorType, ", ",
-																	oValidatorProperties, ")"));
+																		  (std::uint32_t)oValidatorType, ", ",
+																		  oValidatorProperties, ")"));
 					}
 					break;
 				}
@@ -109,8 +109,8 @@ void ValidatorReplay::validate()
 					if (!compareJson(loopControllerInterface, scene.printStatusBar(), oValidatorProperties))
 					{
 						loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay compare failed on statusbar ", loopCounter, " (",
-																	oValidatorType, ", ",
-																	oValidatorProperties, ")"));
+																		  (std::uint32_t)oValidatorType, ", ",
+																		  oValidatorProperties, ")"));
 					}
 					break;
 				}
@@ -124,16 +124,16 @@ void ValidatorReplay::validate()
 					if (!compareJson(loopControllerInterface, scene.printResult(), oValidatorProperties))
 					{
 						loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay compare failed on result ", loopCounter, " (",
-																	oValidatorType, ", ",
-																	oValidatorProperties, ")"));
+																		  (std::uint32_t)oValidatorType, ", ",
+																		  oValidatorProperties, ")"));
 					}
 					break;
 				}
 				default:
 				{
 					loopControllerInterface.failure(KIR5::concatenate("ValidatorReplay invalid type at ", loopCounter, " (",
-																oValidatorType, ", ",
-																oValidatorProperties, ")"));
+																	  (std::uint32_t)oValidatorType, ", ",
+																	  oValidatorProperties, ")"));
 				}
 			}
 		}
