@@ -186,9 +186,6 @@
     <ClCompile Include="LoopControllInterface.cpp">
       <Filter>Resource\Containers\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>Resource\Containers\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="Account.cpp">
       <Filter>Resource\Containers</Filter>
     </ClCompile>
@@ -262,9 +259,6 @@
     <ClCompile Include="ObjectBase.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectStack.hpp">
-      <Filter>Objects\Object\Module</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectExecute.hpp">
       <Filter>Objects\Object\Module</Filter>
     </ClCompile>
@@ -309,6 +303,10 @@
     </ClCompile>
     <ClCompile Include="BaseFunctions.cpp">
       <Filter>Objects\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectEntityData.hpp" />
+    <ClCompile Include="Logger.cpp">
+      <Filter>Resource\Containers\Controller\Validator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -465,9 +463,6 @@
     <ClInclude Include="ObjectBase.h">
       <Filter>Objects\Object\Module</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectStack.h">
-      <Filter>Objects\Object\Module</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectExecute.h">
       <Filter>Objects\Object\Module</Filter>
     </ClInclude>
@@ -501,12 +496,10 @@
     <ClInclude Include="Space.h">
       <Filter>Objects\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="EntityData.hpp">
-      <Filter>Objects\Object\Module</Filter>
-    </ClInclude>
     <ClInclude Include="BaseFunctions.h">
       <Filter>Objects\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectEntityData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

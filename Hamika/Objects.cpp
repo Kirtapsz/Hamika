@@ -120,38 +120,41 @@ const char *GetObjectName(int id)
 		return Objects::objects[id].name;
 	return "";
 }
-void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater)
+
+void ObjectCreate(Object::Brick &object, Type::ID id, Type::Coord coord, std::function<void(Object::Brick &)> creater)
 {
-	object->__init__(id, coord);
+	object.__init__(id, coord);
 
 	if (id >= 0 && id < sizeof(Objects::objects) / sizeof(Objects::Container))
 	{
-		object->isExists = true;
+		object.isExists = true;
 		auto &object_t = Objects::objects[id];
-		object->name = object_t.name;
-		object->timerFnc = object_t.timerFnc;
-		object->updaterFnc = object_t.updaterFnc;
-		object->drawnerFnc = object_t.drawnerFnc;
-		object->printFnc = object_t.printFnc;
-		object->finalizeFnc = object_t.finalizeFnc;
-		creater = object_t.createrFnc;
-	}
-
-	if (creater)
-	{
-		creater(*object);
+		object.name = object_t.name;
+		object.timerFnc = object_t.timerFnc;
+		object.updaterFnc = object_t.updaterFnc;
+		object.drawnerFnc = object_t.drawnerFnc;
+		object.printFnc = object_t.printFnc;
+		object.finalizeFnc = object_t.finalizeFnc;
+		if (creater) creater(object);
+		if (object_t.createrFnc) object_t.createrFnc(object);
 	}
 	else
 	{
-		clog << "creater was nullptr at ID: " << id << KIR4::eol;
+		if (creater)
+		{
+			object.isExists = true;
+			creater(object);
+		}
+		else
+		{
+			clog << "Object could not created with ID: " << id << KIR4::eol;
+		}
 	}
 }
 
-
-
 namespace Editor
 {
-	void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, Object::Brick::CREATER creater)
+	void ObjectCreate(Object::Brick *object, Type::ID id, Type::Coord coord, std::function<void(Object::Brick &)> creater)
 	{
 		object->id = id;
 		object->coord = coord;
