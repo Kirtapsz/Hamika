@@ -451,7 +451,7 @@ namespace Object
 			{
 				if (_do_explosive)
 				{
-					_brick.scene->blowup(_brick);
+					_brick.scene->blowup(_target_out_brick);
 				}
 				return true;
 			}

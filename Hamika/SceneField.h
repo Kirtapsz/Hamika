@@ -50,27 +50,27 @@ namespace UI::Scene::Module::Field
 			map.reset(new Matrix<SceneBlock<Object::Brick>>(_bluePrint->blocks));
 			objects.resize(((Type::Size)*map).width() * ((Type::Size)*map).height());
 			remains.resize(objects.size());
+			Type::ID rootId = 1;
 			map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 			{
+				const Res::BluePrint::Block &blue_print_block = (*_bluePrint)[coord];
+
 				block.object = new Object::Brick;
-				ObjectCreate(this, block.object, (*_bluePrint)[coord].id, coord);
-				block.object->rotation = (*_bluePrint)[coord].rotation;
 				block.remain = new Object::Brick;
-				block.remain->isExists = false;
+
+				block.object->rootId = rootId++;
+				block.remain->rootId = rootId++;
 				block.remain->setScene(this);
 
 				block.GoTo = coord;
 				block.ComeFrom = coord;
 
-				block.grid = (*_bluePrint)[coord].flags;
+				block.grid = blue_print_block.flags;
 
-			});
-
-			Type::ID rootId = 1;
-			map->foreach([&](const Type::Coord &, SceneBlock<Object::Brick> &block)
-			{
-				block.object->rootId = rootId++;
-				block.remain->rootId = rootId++;
+				ObjectCreate(this, block.object, blue_print_block.id, coord, [&](Object::Brick &object)
+				{
+					object.rotation = blue_print_block.rotation;
+				});
 			});
 		}
 

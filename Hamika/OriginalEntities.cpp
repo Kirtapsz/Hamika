@@ -71,7 +71,6 @@ namespace Object::Entity
 
 			_brick.SetMoveSpeed({rollSpeed,moveSpeed});
 			_brick.SetFlags(Flags::CanBeExploded | Flags::RollOff | Flags::CanPushLeft | Flags::CanPushRight);
-			_brick.enablePhysics();
 
 			FallAndRoll::Create(_brick, entity_data.fall_and_roll_);
 			entity_data.fall_and_roll_.setHeavy(true);
@@ -128,7 +127,6 @@ namespace Object::Entity
 		}
 	}
 
-
 	//BaseX 002
 	namespace BaseX_002
 	{
@@ -138,7 +136,6 @@ namespace Object::Entity
 		Res::Slides BaseLineDisappear;
 
 		constexpr float disappearTime = 0.23f;
-
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -184,15 +181,15 @@ namespace Object::Entity
 				_brick.requests.remove = false;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.disappearTimer,
-				disappearTime,
-				entity_data.draw_number_,
-				_brick, BaseLineDisappear);
-			return true;
+								disappearTime,
+								entity_data.draw_number_,
+								_brick, BaseLineDisappear);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
 				_brick.requests.remove = true;
@@ -752,15 +749,15 @@ namespace Object::Entity
 				_brick.requests.remove = false;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.disappearTimer,
-				disappearTime,
-				entity_data.draw_number_,
-				_brick, BaseX_002::BaseLineDisappear);
-			return true;
+								disappearTime,
+								entity_data.draw_number_,
+								_brick, BaseX_002::BaseLineDisappear);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
 				_brick.requests.remove = true;
@@ -782,11 +779,11 @@ namespace Object::Entity
 			{
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				return true;
 			}))
@@ -809,15 +806,15 @@ namespace Object::Entity
 				_brick.requests.draw = true;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.electricTimer,
-				electricTime,
-				entity_data.draw_number_,
-				_brick, Bug);
-			return true;
+								electricTime,
+								entity_data.draw_number_,
+								_brick, Bug);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				entity_data.electricDelayTimer = ACTION_TIMER_START;
 				_brick.RemoveFlags(Flags::MurphyDies);
@@ -928,15 +925,15 @@ namespace Object::Entity
 				_brick.requests.remove = false;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.disappearTimer,
-				disappearTime,
-				entity_data.draw_number_,
-				_brick, InfotronDisappear);
-			return true;
+								disappearTime,
+								entity_data.draw_number_,
+								_brick, InfotronDisappear);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
 				_brick.requests.remove = true;
@@ -1058,15 +1055,15 @@ namespace Object::Entity
 				_brick.events.timer = true;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.animateTimer,
-				animateTime,
-				entity_data.draw_number_,
-				_brick, Exit);
-			return true;
+								animateTime,
+								entity_data.draw_number_,
+								_brick, Exit);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
 				_brick.requests.clear();
@@ -1612,6 +1609,21 @@ namespace Object::Entity
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
+		void UpdateDrawNumber(Brick &_brick)
+		{
+			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
+
+			if (_brick.isActionMove())
+			{
+				DRAW_NUMBER_ASC(_brick.GetAbsMove(), 1.f, entity_data.draw_number_, _brick, SnikSnakMove[_brick.getMoveDirection()]);
+			}
+			else
+			{
+				DRAW_NUMBER_DESC(Brick::GetRealRotation(
+					_brick.rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
+					Type::Rotations::_360, entity_data.draw_number_, _brick, SnikSnakRotate);
+			}
+		}
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1633,6 +1645,7 @@ namespace Object::Entity
 			_brick.SetTranslationID(ObjectID::Space);
 
 			MoveLeftWay::Create(_brick, entity_data.move_left_way_);
+			UpdateDrawNumber(_brick);
 		}
 		OBJECT_PRINTER_RET Print(OBJECT_PRINTER_PARAM)
 		{
@@ -1650,23 +1663,18 @@ namespace Object::Entity
 			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
 			MoveLeftWay::Timer(_brick, entity_data.move_left_way_);
-
-			if (_brick.isActionMove())
-			{
-				DRAW_NUMBER_ASC(_brick.GetAbsMove(), 1.f, entity_data.draw_number_, _brick, SnikSnakMove[_brick.getMoveDirection()]);
-			}
-			else
-			{
-				DRAW_NUMBER_DESC(Brick::GetRealRotation(
-					_brick.rotation + (Type::Rotations::_360 / (float)SnikSnakRotate.getCount()) / 2.f),
-					Type::Rotations::_360, entity_data.draw_number_, _brick, SnikSnakRotate);
-			}
+			UpdateDrawNumber(_brick);
 		}
 		void Update(OBJECT_UPDATE_PARAM)
 		{
 			EntityData &entity_data = _brick.entity_data.snik_snak_move_027;
 
+			Brick::ACTION_T prev_action = _brick.action;
 			MoveLeftWay::Update(_brick, entity_data.move_left_way_, updateType);
+			if (prev_action != _brick.action)
+			{
+				UpdateDrawNumber(_brick);
+			}
 		}
 		void Drawner(OBJECT_DRAWNER_PARAM)
 		{
@@ -1914,15 +1922,15 @@ namespace Object::Entity
 				_brick.requests.remove = false;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.disappearTimer,
-				disappearTime,
-				entity_data.draw_number_,
-				_brick, Utility2);
-			return true;
+								disappearTime,
+								entity_data.draw_number_,
+								_brick, Utility2);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
 				_brick.requests.remove = true;
@@ -1948,7 +1956,7 @@ namespace Object::Entity
 				_brick.requests.remove = false;
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DrawNumber draw_number = (DrawNumber(entity_data.activateTimer * 10)) % 2;
 				if (entity_data.draw_number_ != draw_number)
@@ -1958,7 +1966,7 @@ namespace Object::Entity
 				}
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.events.clear();
 				_brick.scene->blowup(_brick);
@@ -2105,15 +2113,15 @@ namespace Object::Entity
 			{
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.explosionTimer,
-				explosionTime,
-				entity_data.draw_number_,
-				_brick, ExplosionEffect_032::Blasting);
-			return true;
+								explosionTime,
+								entity_data.draw_number_,
+								_brick, ExplosionEffect_032::Blasting);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+							 [&entity_data, &_brick]()->bool
 			{
 				_brick.requests.remove = true;
 				return true;
@@ -2218,11 +2226,11 @@ namespace Object::Entity
 			{
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+						 [&entity_data, &_brick]()->bool
 			{
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+						 [&entity_data, &_brick]()->bool
 			{
 				Brick &brick = _brick.scene->GetObject(_brick.GetCoord());
 				if (brick.GetFlags() & Flags::ExplosionType)
@@ -2248,15 +2256,15 @@ namespace Object::Entity
 			{
 				return true;
 			},
-				[&entity_data, &_brick]()->bool
+						 [&entity_data, &_brick]()->bool
 			{
 				DRAW_NUMBER_ASC(entity_data.explosionTimer,
-				ExplosionEffect_032::explosionTime,
-				entity_data.draw_number_,
-				_brick, ExplosionEffect_032::Blasting);
-			return true;
+								ExplosionEffect_032::explosionTime,
+								entity_data.draw_number_,
+								_brick, ExplosionEffect_032::Blasting);
+				return true;
 			},
-				[&entity_data, &_brick]()->bool
+						 [&entity_data, &_brick]()->bool
 			{
 				_brick.requests.remove = true;
 				return true;

@@ -218,6 +218,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <PostBuildEvent>
       <Command>call python $(SolutionDir)BuildEvent\build_event.py post $(ProjectDir) $(Configuration) $(OutDir)</Command>
