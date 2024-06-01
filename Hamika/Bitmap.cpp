@@ -504,17 +504,29 @@ namespace Res
 		// 037
 		addBitmap(KIR5::Bitmap(KIR5::pathCombine(basePath, "Original\\037-HardwareSwitch.png")), _037_HardwareSwitch);
 
+		// 019
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 3, PortsBmp.width(), PortsBmp.width())), _019_OneWayPortDown);
+
+		// 020
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 1, PortsBmp.width(), PortsBmp.width())), _020_OneWayPortLeft);
+
+		// 021
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 0, PortsBmp.width(), PortsBmp.width())), _021_OneWayPortRight);
+
+		// 022
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 4, PortsBmp.width(), PortsBmp.width())), _022_OneWayPortUp);
+
 		// 038
-		addBitmap(KIR5::Bitmap(KIR5::pathCombine(basePath, "Original\\038-OneWayPortDownGrav.png")), _038_OneWayPortDownGrav);
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 3, PortsBmp.width(), PortsBmp.width())), _038_OneWayPortDownGrav);
 
 		// 039
-		addBitmap(KIR5::Bitmap(KIR5::pathCombine(basePath, "Original\\039-OneWayPortLeftGrav.png")), _039_OneWayPortLeftGrav);
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 1, PortsBmp.width(), PortsBmp.width())), _039_OneWayPortLeftGrav);
 
 		// 040
-		addBitmap(KIR5::Bitmap(KIR5::pathCombine(basePath, "Original\\040-OneWayPortRightGrav.png")), _040_OneWayPortRightGrav);
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 0, PortsBmp.width(), PortsBmp.width())), _040_OneWayPortRightGrav);
 
 		// 041
-		addBitmap(KIR5::Bitmap(KIR5::pathCombine(basePath, "Original\\041-OneWayPortUpGrav.png")), _041_OneWayPortUpGrav);
+		addBitmap(KIR5::Bitmap(al_create_sub_bitmap(PortsBmp, 0, PortsBmp.width() * 4, PortsBmp.width(), PortsBmp.width())), _041_OneWayPortUpGrav);
 
 
 		finalise(BitmapBox::generate(blockSizeInPixel, blockSizeInPixel, KIR5::Color(255, 0, 255)));
