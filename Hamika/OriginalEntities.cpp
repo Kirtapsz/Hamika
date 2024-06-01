@@ -137,7 +137,8 @@ namespace Object::Entity
 		KIR5::SubBitmap BaseX;
 		Res::Slides BaseLineDisappear;
 
-		constexpr float disappearTime = 0.23f;
+		constexpr float disappearTime = 0.23f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -695,7 +696,8 @@ namespace Object::Entity
 		constexpr float electricTime = 0.7f;      // duration in sec
 		constexpr float electricDelayTime = 3.0f; // duration in sec
 		constexpr float disappearTime = 0.23f;    // duration in sec
-		constexpr float triggerChance = 1 / 6.f;  // chance / sec
+		constexpr float triggerChance = 1 / 6.f;  // chance / sec
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -873,7 +875,8 @@ namespace Object::Entity
 
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rollSpeed = moveSpeed;
-		constexpr float disappearTime = 0.23f;
+		constexpr float disappearTime = 0.23f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1006,7 +1009,8 @@ namespace Object::Entity
 
 		Res::Slides Exit;
 
-		constexpr float animateTime = 0.5f;
+		constexpr float animateTime = 0.5f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1534,7 +1538,8 @@ namespace Object::Entity
 		constexpr float moveSpeed = CPS / 13.99f;
 		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
 
-		Res::Slides Electrons;
+		Res::Slides Electrons;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1605,7 +1610,8 @@ namespace Object::Entity
 		Res::Slides SnikSnakRotate;
 
 		constexpr float moveSpeed = CPS / 13.99f;
-		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
+		constexpr float rotateSpeed = Type::Rotations::_180 / (1 / moveSpeed);
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1693,7 +1699,8 @@ namespace Object::Entity
 		Res::Slides Terminal;
 
 		constexpr float activatedAnimateTime = 0.7f;
-		constexpr float animateTime = 3.f;
+		constexpr float animateTime = 3.f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1788,7 +1795,8 @@ namespace Object::Entity
 
 		KIR5::SubBitmap Utility1;
 
-		constexpr float moveSpeed = CPS / 13.99f;
+		constexpr float moveSpeed = CPS / 13.99f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -1858,7 +1866,8 @@ namespace Object::Entity
 		KIR5::SubBitmap Utility2Activated;
 
 		constexpr float activateTime = 1.8f;
-		constexpr float disappearTime = 0.23f;
+		constexpr float disappearTime = 0.23f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -2048,7 +2057,8 @@ namespace Object::Entity
 
 		Res::Slides Blasting;
 
-		constexpr float explosionTime = 0.745f;
+		constexpr float explosionTime = 0.745f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
@@ -2138,7 +2148,8 @@ namespace Object::Entity
 	{
 		const char *name = "033 - Explosion";
 
-		constexpr float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
+		constexpr float blastingTime = ExplosionEffect_032::explosionTime / 2.f;
+
 
 		void Initializer(OBJECT_INITIALIZER_PARAM)
 		{
