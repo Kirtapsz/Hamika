@@ -528,6 +528,39 @@ namespace UI::Scene
 		}
 		);
 
+		drawnerBar->fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
+		{
+			if (eventEngine->getTargetPanel().get() == drawnerBar.get())
+			{
+				Type::Coord coord = drawer.GetFromCursor(x_, y_);
+				if (map->Test(coord))
+				{
+					if (button_ == KIR5::MOUSE_BUTTON_LEFT)
+					{
+						Json json = reach(map)[coord].object->print();
+
+						std::cout << "::: OBJECT :::" << std::endl;
+						std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
+						std::cout << "- - - - - - - - - - - - - - -" << std::endl;
+
+						return true;
+					}
+					if (button_ == KIR5::MOUSE_BUTTON_RIGHT)
+					{
+						Json json = reach(map)[coord].remain->print();
+
+						std::cout << "::: REMAIN :::" << std::endl;
+						std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
+						std::cout << "- - - - - - - - - - - - - - -" << std::endl;
+
+						return true;
+					}
+				}
+			}
+
+			return false;
+		});
+
 		statusbar->hide();
 		callbackMove();
 	}

@@ -300,10 +300,6 @@ namespace Object
 		{
 			return scene->ObjectArrived(coord);
 		}
-		inline auto Disappear()
-		{
-			return scene->ObjectDisappear(coord);
-		}
 		inline auto &GetObject(Type::Coord coord)
 		{
 			return scene->GetObject(coord);

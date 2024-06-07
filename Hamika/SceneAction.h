@@ -606,7 +606,7 @@ namespace UI::Scene::Module::Action
 			{
 				CopyObjectToRemain(coord, coord);
 				reach(map)[coord].remain->requests.remove = true;
-				ObjectCreate(reach(map)[coord].object, reach(map)[coord].object->GetObjectIDremain(), coord);
+				ObjectCreate(reach(map)[coord].object, reach(map)[coord].remain->GetObjectIDremain(), coord);
 				UpdateSquare33(coord);
 			}
 		}
