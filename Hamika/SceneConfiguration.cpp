@@ -279,6 +279,7 @@ namespace UI::Scene
 			else if (key_ == 't')
 			{
 				murphyDead(murphy);
+				return true;
 			}
 			return false;
 		});
