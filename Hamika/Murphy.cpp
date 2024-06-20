@@ -30,7 +30,7 @@ namespace Object::Entity
 		constexpr float ExitEffectTime = 0.8f;
 		constexpr float pushSpeed = CPS / 21.99f;
 		constexpr float moveSpeed = CPS / 13.99f;
-		constexpr float passageSpeed = moveSpeed * 2.f;
+		constexpr float passageSpeed = moveSpeed * 3.f;
 
 		enum EFFECTS: Type::Flags
 		{

@@ -1,0 +1,614 @@
+{
+    "BlueprintHash": [
+        58,
+        183,
+        151,
+        36,
+        254,
+        152,
+        103,
+        206,
+        201,
+        158,
+        184,
+        117,
+        44,
+        20,
+        129,
+        85,
+        33,
+        4,
+        91,
+        222,
+        115,
+        177,
+        168,
+        230,
+        119,
+        63,
+        130,
+        243,
+        240,
+        91,
+        123,
+        83,
+        38,
+        182,
+        111,
+        98,
+        213,
+        45,
+        75,
+        121,
+        88,
+        43,
+        134,
+        162,
+        142,
+        239,
+        112,
+        106,
+        200,
+        112,
+        37,
+        32,
+        125,
+        49,
+        99,
+        1,
+        240,
+        239,
+        113,
+        225,
+        79,
+        60,
+        177,
+        82
+    ],
+    "Comment": "",
+    "Commit": "3ce94b0be4c97de0b877a762f7d9b80015fa4d93",
+    "Records": [
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 983,
+            "LoopCounter": 31,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 1117,
+            "LoopCounter": 39,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 1117,
+            "LoopCounter": 39,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 1234,
+            "LoopCounter": 46,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 1533,
+            "LoopCounter": 64,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 1650,
+            "LoopCounter": 71,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 1667,
+            "LoopCounter": 72,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 4386,
+            "LoopCounter": 235,
+            "ObjectType": 0,
+            "RootID": 1463,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": true,
+            "CurrentTimeMS": 4487,
+            "LoopCounter": 241,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 4487,
+            "LoopCounter": 241,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 4569,
+            "LoopCounter": 246,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": false,
+            "CurrentTimeMS": 4637,
+            "LoopCounter": 250,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 4637,
+            "LoopCounter": 250,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 4703,
+            "LoopCounter": 254,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 4953,
+            "LoopCounter": 269,
+            "ObjectType": 0,
+            "RootID": 1655,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 5004,
+            "LoopCounter": 272,
+            "ObjectType": 0,
+            "RootID": 647,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 5320,
+            "LoopCounter": 291,
+            "ObjectType": 0,
+            "RootID": 2407,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 5989,
+            "LoopCounter": 331,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": true,
+            "CurrentTimeMS": 6021,
+            "LoopCounter": 333,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 6122,
+            "LoopCounter": 339,
+            "ObjectType": 0,
+            "RootID": 1367,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 6305,
+            "LoopCounter": 350,
+            "ObjectType": 0,
+            "RootID": 599,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 6489,
+            "LoopCounter": 361,
+            "ObjectType": 0,
+            "RootID": 887,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 6672,
+            "LoopCounter": 372,
+            "ObjectType": 0,
+            "RootID": 311,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": false,
+            "CurrentTimeMS": 7056,
+            "LoopCounter": 395,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 7072,
+            "LoopCounter": 396,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 7322,
+            "LoopCounter": 411,
+            "ObjectType": 0,
+            "RootID": 503,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 7406,
+            "LoopCounter": 416,
+            "ObjectType": 0,
+            "RootID": 2475,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 7440,
+            "LoopCounter": 418,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 8224,
+            "LoopCounter": 465,
+            "ObjectType": 0,
+            "RootID": 2431,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 8657,
+            "LoopCounter": 491,
+            "ObjectType": 0,
+            "RootID": 1463,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 8874,
+            "LoopCounter": 504,
+            "ObjectType": 0,
+            "RootID": 2695,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 8907,
+            "LoopCounter": 506,
+            "ObjectType": 0,
+            "RootID": 647,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 8991,
+            "LoopCounter": 511,
+            "ObjectType": 0,
+            "RootID": 1271,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": true,
+            "CurrentTimeMS": 9809,
+            "LoopCounter": 560,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 10342,
+            "LoopCounter": 592,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 3,
+            "ActionState": false,
+            "CurrentTimeMS": 10426,
+            "LoopCounter": 597,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 10759,
+            "LoopCounter": 617,
+            "ObjectType": 0,
+            "RootID": 1367,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 10893,
+            "LoopCounter": 625,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 10926,
+            "LoopCounter": 627,
+            "ObjectType": 0,
+            "RootID": 1799,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": true,
+            "CurrentTimeMS": 10943,
+            "LoopCounter": 628,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": true,
+            "CurrentTimeMS": 11026,
+            "LoopCounter": 633,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 6,
+            "ActionState": false,
+            "CurrentTimeMS": 11109,
+            "LoopCounter": 638,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 2,
+            "ActionState": false,
+            "CurrentTimeMS": 11160,
+            "LoopCounter": 641,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 11160,
+            "LoopCounter": 641,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 11227,
+            "LoopCounter": 645,
+            "ObjectType": 0,
+            "RootID": 503,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": true,
+            "CurrentTimeMS": 11426,
+            "LoopCounter": 657,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": false,
+            "CurrentTimeMS": 11460,
+            "LoopCounter": 659,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 11777,
+            "LoopCounter": 678,
+            "ObjectType": 0,
+            "RootID": 1415,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 12628,
+            "LoopCounter": 729,
+            "ObjectType": 0,
+            "RootID": 599,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 13295,
+            "LoopCounter": 769,
+            "ObjectType": 0,
+            "RootID": 1319,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 13746,
+            "LoopCounter": 796,
+            "ObjectType": 0,
+            "RootID": 2431,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 14396,
+            "LoopCounter": 835,
+            "ObjectType": 0,
+            "RootID": 2215,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 15147,
+            "LoopCounter": 880,
+            "ObjectType": 0,
+            "RootID": 2695,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 15664,
+            "LoopCounter": 911,
+            "ObjectType": 0,
+            "RootID": 1799,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 15832,
+            "LoopCounter": 921,
+            "ObjectType": 0,
+            "RootID": 1223,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 1,
+            "ChancePerSec": 0.1666666716337204,
+            "CurrentTimeMS": 15881,
+            "LoopCounter": 924,
+            "ObjectType": 0,
+            "RootID": 1655,
+            "TypeID": 1300
+        },
+        {
+            "ActionKey": 4,
+            "ActionState": false,
+            "CurrentTimeMS": 16232,
+            "LoopCounter": 945,
+            "ObjectType": 1
+        },
+        {
+            "ActionKey": 5,
+            "ActionState": true,
+            "CurrentTimeMS": 16281,
+            "LoopCounter": 948,
+            "ObjectType": 1
+        },
+        {
+            "CurrentTimeMS": 16298,
+            "LoopCounter": 949,
+            "ObjectProperties": {
+                "victory": true
+            },
+            "ObjectType": 2,
+            "ValidateType": 5
+        },
+        {
+            "CurrentTimeMS": 16298,
+            "LoopCounter": 949,
+            "ObjectProperties": null,
+            "ObjectType": 2,
+            "ValidateType": 4
+        }
+    ],
+    "UserHash": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
+}
