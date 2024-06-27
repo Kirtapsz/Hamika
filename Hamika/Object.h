@@ -194,7 +194,7 @@ namespace Object
 
 		// action
 		virtual float getMoveProgress(Brick &_object) const = 0;
-		virtual void blowup(Brick &_object) = 0;
+		virtual void blowup(Brick &_object, Type::Coord center = Type::Coord::Invalid) = 0;
 		virtual void ObjectMove(Type::Coord, Type::Coord, Type::ID) = 0;
 		virtual void ObjectPut(Type::Coord, Type::ID) = 0;
 		virtual void RemainPut(Type::Coord, Type::ID) = 0;

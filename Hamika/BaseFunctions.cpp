@@ -162,13 +162,13 @@ namespace Object
 				{
 					Type::Coord coord_down = _brick.GetCoordDown();
 					Brick &_below_brick = _brick.scene->GetObject(coord_down);
-					_brick.scene->blowup(_below_brick);
+					_brick.scene->blowup(_below_brick, coord_down);
 					if (_brick.scene->IsObjectOut(coord_down))
 					{
 						Brick &_below_out_brick = _brick.scene->GetObjectOut(coord_down);
 						if (_brick.scene->getMoveProgress(_below_out_brick) < 0.5f)
 						{
-							_brick.scene->blowup(_below_out_brick);
+							_brick.scene->blowup(_below_out_brick, coord_down);
 						}
 					}
 				}
@@ -440,7 +440,7 @@ namespace Object
 			{
 				if (_do_explosive)
 				{
-					_brick.scene->blowup(_target_brick);
+					_brick.scene->blowup(_target_brick, coord);
 				}
 				return true;
 			}
@@ -451,7 +451,7 @@ namespace Object
 			{
 				if (_do_explosive)
 				{
-					_brick.scene->blowup(_target_out_brick);
+					_brick.scene->blowup(_target_out_brick, coord);
 				}
 				return true;
 			}
@@ -537,7 +537,7 @@ namespace Object
 				Type::Coord to = _brick.GetForwardCoord();
 				if (CanExlosive(to, _brick, true))
 				{
-					_brick.scene->blowup(_brick);
+					//_brick.scene->blowup(_brick);
 					return;
 				}
 				else if (CanMoveForward(to, _brick))
