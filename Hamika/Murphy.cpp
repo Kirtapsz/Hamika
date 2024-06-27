@@ -147,6 +147,7 @@ namespace Object::Entity
 
 			Type::Direction direction = (_direction + 2) % 4;
 
+			_brick.events.topDraw = true;
 			entity_data._effect_type = EFFECTS::EXIT;
 			entity_data._effect_timer = ExitEffectTime;
 			_brick.SetRotation(Type::Rotations::getRotationOfIndex(direction));
@@ -167,28 +168,18 @@ namespace Object::Entity
 
 			Type::Direction direction = (_head.getMoveDirection() + 2) % 4;
 
+			_tail.events.topDraw = true;
 			entity_data._effect_type = EFFECTS::CRAWL;
 			_tail.SetRotation(Type::Rotations::getRotationOfIndex(direction));
 			_tail.SetTranslationID(ObjectID::Space);
 
-			_tail.SetFlags(Flags::CanBeExploded | Flags::CanBeKilled | Flags::ExplosionType3);
+			_tail.SetFlags(Flags::CanBeExploded);
 			_tail.disablePhysics();
 			_tail.SetObjectIDremain(ObjectID::Space);
 
 			DRAW_NUMBER_ASC_INIT(entity_data.draw_number_, _tail, PassInSlides[_tail.getMoveDirection()]);
 		}
 
-		void InitializerCrawlTail(OBJECT_INITIALIZER_PARAM)
-		{
-
-		}
-		void CreateCrawlTail(OBJECT_CREATER_PARAM)
-		{
-			EntityData &entity_data = _brick.entity_data.murphy;
-
-			_brick.SetFlags(Flags::StepOn | Flags::MurphyStepOn | Flags::CanBeExploded);
-			_brick.events.topDraw = true;
-		}
 		void TimerCrawlTail(OBJECT_TIMER_PARAM)
 		{
 			EntityData &entity_data = _brick.entity_data.murphy;
