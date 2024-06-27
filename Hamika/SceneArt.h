@@ -59,7 +59,7 @@ namespace UI::Scene::Module::Art
 
 		protected: virtual void Redrawn(Type::Coord coord)
 		{
-			drawer.Redrawn(coord);
+			drawer.setRedrawnOfBlock(coord);
 		}
 		public: virtual Json printStatusBar() const
 		{

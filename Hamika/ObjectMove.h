@@ -58,9 +58,9 @@ namespace Object
 				public: void carryStepRight();
 				public: void carryStep();
 
-				public: Type::Move GetMoveSpeed();
-				public: Type::Move::base GetMoveSpeedVertical();
-				public: Type::Move::base GetMoveSpeedHorizontal();
+				public: Type::Move GetMoveSpeed() const;
+				public: Type::Move::base GetMoveSpeedVertical() const;
+				public: Type::Move::base GetMoveSpeedHorizontal() const;
 
 					  //a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
 				public: void SetMoveSpeed(Type::Move::base speed);
@@ -69,14 +69,15 @@ namespace Object
 
 				public: void SetMoveUnsafe(Type::Move move_ = {0,0});
 				public: void SetMove(Type::Move move_ = {0,0});
-				public: Type::Move GetMove();
-				public: bool IsMove();
-				public: bool IsMoveHorizontal();
-				public: bool IsMoveVertical();
-				public: bool IsMoveLeft();
-				public: bool IsMoveRight();
-				public: bool IsMoveDown();
-				public: bool IsMoveUp();
+				public: Type::Move GetMove() const;
+				public: Type::Move::base GetAbsMove() const;
+				public: bool IsMove() const;
+				public: bool IsMoveHorizontal() const;
+				public: bool IsMoveVertical() const;
+				public: bool IsMoveLeft() const;
+				public: bool IsMoveRight() const;
+				public: bool IsMoveDown() const;
+				public: bool IsMoveUp() const;
 				public: Type::Direction getMoveDirection() const;
 					  /*
 					  beállítja autómatikusan a movet a rotation alapján

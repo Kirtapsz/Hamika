@@ -321,6 +321,10 @@ namespace UI::Scene
 							std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
 							std::cout << "- - - - - - - - - - - - - - -" << std::endl;
 						}
+						else
+						{
+							std::cout << "::: OBJECT ::: - nullptr" << std::endl;
+						}
 						return true;
 					}
 					if (button_ == KIR5::MOUSE_BUTTON_RIGHT)
@@ -333,6 +337,10 @@ namespace UI::Scene
 							std::cout << "::: REMAIN :::" << std::endl;
 							std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
 							std::cout << "- - - - - - - - - - - - - - -" << std::endl;
+						}
+						else
+						{
+							std::cout << "::: REMAIN ::: - nullptr" << std::endl;
 						}
 						return true;
 					}

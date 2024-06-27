@@ -27,8 +27,6 @@ namespace Object::Entity
 		void Drawner(OBJECT_DRAWNER_PARAM);
 		void simpleDraw(OBJECT_SIMPLE_DRAWNER_PARAM);
 
-		void InitializerCrawlTail(OBJECT_INITIALIZER_PARAM);
-		void CreateCrawlTail(OBJECT_CREATER_PARAM);
 		void TimerCrawlTail(OBJECT_TIMER_PARAM);
 		void UpdateCrawlTail(OBJECT_UPDATE_PARAM);
 		void DrawnerCrawlTail(OBJECT_DRAWNER_PARAM);

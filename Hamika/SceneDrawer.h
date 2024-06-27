@@ -3,6 +3,7 @@
 
 #include <KIR\AL\KIR5_font.h>
 #include <KIR\AL\KIR5_bitmap.h>
+#include <KIR\AL\KIR5_bitmap_target.h>
 
 #include "Types.h"
 #include "Matrix.h"
@@ -67,8 +68,8 @@ class SceneDrawer
 	private: float CameraX2;
 	private: float CameraY1;
 	private: float CameraY2;
-	private: void RedrawnRow(Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end);
-	private: void RedrawnCol(Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end);
+	private: void setRedrawnOfRow(Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end);
+	private: void setRedrawnOfCol(Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end);
 
 	public: Type::Coord GetDrawBeginSource() const;
 	public: Type::Coord GetDrawBegin() const;
@@ -89,10 +90,16 @@ class SceneDrawer
 	public: void InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust);
 
 	public: SceneDrawer();
+	private: void drawCameraMove(KIR5::BitmapTarget &target);
+	private: void drawRefreshActivity(KIR5::BitmapTarget &target);
+	private: void drawGravityLayer(KIR5::BitmapTarget &target);
+	private: void clearRedrawBlocks();
+	private: void checkRedrawRequests();
+	private: void calculatePhysicalBox(int &x1, int &x2, int &y1, int &y2, ACTIVE_BLOCK_T &object);
 	public: void DrawBlocks(int x, int y);
 
 	public: void SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map);
-	public: void Redrawn(Type::Coord coord);
+	public: void setRedrawnOfBlock(Type::Coord coord);
 };
 
 #endif

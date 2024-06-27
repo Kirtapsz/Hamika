@@ -76,14 +76,15 @@ namespace UI::Scene::Module::Action
 		{
 			return getMoveProgress(*_brick);
 		}
-		protected: void blowup(Type::Coord coord, SceneBlock<Object::Brick> &block, Type::ID IDto)
+		protected: void murphyBlowup(Object::Brick *_brick)
 		{
-			if (murphy == block.object)
+			if (murphy == _brick)
 			{
 				murphyDead(murphy);
 			}
-
-
+		}
+		protected: void blowupBlock(Type::Coord coord, SceneBlock<Object::Brick> &block, Type::ID IDto)
+		{
 			if (block.object->flags & Object::Brick::Flags::CanBeExploded
 				&&
 				(
@@ -114,6 +115,8 @@ namespace UI::Scene::Module::Action
 					DeleteRemain(coord);
 					ObjectCreate(block.remain, ObjectID::Explosion, coord);
 					block.remain->SetObjectIDremain(IDto);
+					murphyBlowup(block.object);
+					block.object->events.clear();
 				}
 
 				if (block.ComeFrom != coord)
@@ -121,7 +124,14 @@ namespace UI::Scene::Module::Action
 					if (getMoveProgress(block.object) <= 0.7f)
 					{
 						Object::Brick *remain = reach(map)[block.ComeFrom].remain;
-						if (!remain->isExists || remain->id == ObjectID::ExplosionEffect)
+						if (!remain->isExists
+							||
+							(
+								remain->id != ObjectID::ExplosionEffect
+								&&
+								remain->id != ObjectID::Explosion
+								)
+							)
 						{
 							DeleteRemain(block.ComeFrom);
 							ObjectCreate(remain, ObjectID::ExplosionEffect, block.ComeFrom);
@@ -130,28 +140,43 @@ namespace UI::Scene::Module::Action
 				}
 				if (block.GoTo != coord)
 				{
-					if (getMoveProgress(reach(map)[block.GoTo].object) <= 0.5f)
-					{
-						Object::Brick *remain = reach(map)[block.GoTo].remain;
+					const SceneBlock<Object::Brick> &goto_block = reach(map)[block.GoTo];
 
-						if (remain->isExists && remain->id == ObjectID::Explosion)
+					if (getMoveProgress(goto_block.object) <= 0.5f)
+					{
+						Object::Brick *remain = goto_block.remain;
+
+						if (remain->isExists && remain->id != ObjectID::Explosion)
 						{
-							remain->SetObjectIDremain(std::max(IDto, remain->GetObjectIDremain()));
-							Object::Entity::Explosion_033::ReCreate(*remain);
-						}
-						else
-						{
-							Type::ID id_to = reach(map)[block.GoTo].object->GetTranslationTo();
+							Type::ID id_to = goto_block.object->GetTranslationTo();
 							DeleteRemain(block.GoTo);
 							ObjectCreate(remain, ObjectID::Explosion, block.GoTo);
 							remain->SetObjectIDremain(std::max(id_to, remain->GetObjectIDremain()));
+							murphyBlowup(goto_block.object);
+							goto_block.object->events.clear();
 						}
 					}
 				}
 				Redrawn(coord);
 			}
 		}
-		protected: virtual void blowup(Object::Brick &_brick)
+				 //private: void smokeBrick(Object::Brick &_brick)
+				 //{
+				 //	Type::Coord coord = _brick.GetCoord();
+				 //	Object::Brick *remain = reach(map)[coord].remain;
+				 //	if (!remain->isExists || remain->id != ObjectID::Explosion)
+				 //	{
+				 //		if (murphy == &_brick)
+				 //		{
+				 //			murphyDead(murphy);
+				 //		}
+
+				 //		DeleteRemain(coord);
+				 //		ObjectCreate(remain, ObjectID::ExplosionEffect, coord);
+				 //		remain->SetObjectIDremain(std::max((Type::ID)ObjectID::Space, remain->GetObjectIDremain()));
+				 //	}
+				 //}
+		protected: virtual void blowup(Object::Brick &_brick, Type::Coord center)
 		{
 			Type::Flags flags = _brick.GetFlags();
 
@@ -159,12 +184,16 @@ namespace UI::Scene::Module::Action
 			{
 				Type::ID id_to = _brick.GetTranslationTo();
 				Type::Coord coord = _brick.GetCoord();
-				Type::Coord center = coord;
-				if (_brick.IsMove())
+				Type::Coord coord_come_from = reach(map)[coord].ComeFrom;
+				if (center == Type::Coord::Invalid)
 				{
-					if (getMoveProgress(_brick) <= 0.5f)
+					center = coord;
+					if (_brick.IsMove())
 					{
-						center = reach(map)[coord].ComeFrom;
+						if (getMoveProgress(_brick) <= 0.5f)
+						{
+							center = coord_come_from;
+						}
 					}
 				}
 
@@ -187,27 +216,14 @@ namespace UI::Scene::Module::Action
 				begin_of_center.limiter({0,0}, map->size());
 				end_of_center.limiter({0,0}, map->size());
 
-				if (center != coord)
-				{
-					Type::Coord begin_of_coord = coord - d;
-					Type::Coord end_of_coord = coord + 1 + d;
-
-					begin_of_coord.limiter({0,0}, map->size());
-					end_of_coord.limiter({0,0}, map->size());
-
-					map->forrange(begin_of_coord, end_of_coord, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
-					{
-						if (!coord.isInside(begin_of_center, end_of_center))
-						{
-							blowup(coord, block, ObjectID::Space);
-						}
-					});
-				}
-
 				map->forrange(begin_of_center, end_of_center, [&](Type::Coord &coord, SceneBlock<Object::Brick> &block)
 				{
-					blowup(coord, block, id_to);
+					blowupBlock(coord, block, id_to);
 				});
+				if (!coord.isInside(begin_of_center, end_of_center))
+				{
+					blowupBlock(coord, reach(map)[coord], ObjectID::Space);
+				}
 			}
 		}
 		protected: void actionRun()
@@ -291,71 +307,6 @@ namespace UI::Scene::Module::Action
 			}
 		}
 
-		protected: void Blasting(Type::Coord coord)
-		{
-			if (map->Test(coord) && reach(map)[coord].object->isExists)
-			{
-				Type::Flags flag = reach(map)[coord].object->GetFlags();
-				Type::ID IDto = reach(map)[coord].object->GetTranslationTo();
-				Type::Coord center = reach(map)[coord].object->GetHitCoord();
-
-				reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType1);
-				reach(map)[coord].object->SetTranslationID(ObjectID::Space);
-
-				//bool
-				//	exploseNow = reach(map)[coord].remain && (reach(map)[coord].remain->ID() == ObjectID::Explosion || reach(map)[coord].remain->ID() == ObjectID::ExplosionExpansive);
-
-				ExplosionPut(center, IDto);
-
-				//if (exploseNow)
-				//{
-				//	Type::ID
-				// 
-				//		remainID = reach(map)[coord].object->GetTranslationTo();
-				//	ObjectPut(coord, ObjectSpace::Create);
-				//	reach(map)[coord].object->SetTranslationID(remainID);
-				//}
-
-				if (flag & Object::Brick::ExplosionType3)
-				{
-					reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType3);
-					ExplosionPut({center.x() + 1,center.y() + 1}, IDto);
-					ExplosionPut({center.x(),center.y() + 1}, IDto);
-					ExplosionPut({center.x() - 1,center.y() + 1}, IDto);
-
-					ExplosionPut({center.x() + 1,center.y()}, IDto);
-					ExplosionPut({center.x() - 1,center.y()}, IDto);
-
-					ExplosionPut({center.x() + 1,center.y() - 1}, IDto);
-					ExplosionPut({center.x(),center.y() - 1}, IDto);
-					ExplosionPut({center.x() - 1,center.y() - 1}, IDto);
-				}
-				if (flag & Object::Brick::ExplosionType5)
-				{
-					reach(map)[coord].object->RemoveFlags(Object::Brick::Flags::ExplosionType5);
-				}
-
-				if (reach(map)[coord].remain->id != ObjectID::Explosion &&
-					reach(map)[coord].remain->id != ObjectID::ExplosionEffect &&
-					reach(map)[coord].remain->id != ObjectID::ExplosionExpansive)
-				{
-					if (murphy == reach(map)[coord].object)
-					{
-						murphyDead(murphy);
-					}
-
-					DeleteRemain(coord);
-					ObjectCreate(reach(map)[coord].remain, ObjectID::Explosion, coord);
-					reach(map)[coord].object->SetObjectIDremain(ObjectID::Space);
-					Redrawn(coord);
-				}
-
-				UpdateSquare33({center.x() + 1,center.y() + 1});
-				UpdateSquare33({center.x() - 1,center.y() + 1});
-				UpdateSquare33({center.x() + 1,center.y() - 1});
-				UpdateSquare33({center.x() - 1,center.y() - 1});
-			}
-		}
 		protected: void StepDisappear(Type::Coord coord)
 		{
 			if (TestObject(coord))
@@ -505,34 +456,6 @@ namespace UI::Scene::Module::Action
 
 				 // OBJECT INTERFACE
 
-		//public: virtual void BlowUpBlock(Type::Coord coord)
-		//{
-		//	auto object = GetObject(coord);
-		//	if (object->GetFlags() & Object::Brick::Flags::ExplosionType1)
-		//	{
-		//		if (object->GetAbsMove() > 0.5f)
-		//		{
-		//			object->blowUp(GetComefrom(coord));
-		//		}
-		//		else
-		//		{
-		//			object->blowUp(coord);
-		//		}
-		//	}
-
-		//	object = GetObjectOut(coord);
-		//	if (object->GetFlags() & Object::Brick::Flags::ExplosionType1)
-		//	{
-		//		if (object->GetAbsMove() < 0.5f)
-		//		{
-		//			object->blowUp(GetGoto(coord));
-		//		}
-		//		else
-		//		{
-		//			object->blowUp(coord);
-		//		}
-		//	}
-		//}
 		public: virtual void ObjectMove(Type::Coord from, Type::Coord to, Type::ID remain)
 		{
 			if (from != to && TestObject(from) && map->Test(to))
