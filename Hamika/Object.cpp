@@ -23,24 +23,10 @@ namespace Object
 		setOddDrawCoord();
 	}
 
-	//GET
-	//1 m�sik oldalon m�g teljesen  0 nyugalmi �llapot
-	float Brick::GetAbsMove()
-	{
-		float
-			maxX = std::abs(move.x()),
-			maxY = std::abs(move.y());
-		if (maxX > maxY)
-			return maxX;
-		else
-			return maxY;
-	}
-
-
 	Type::Coord Brick::GetForwardCoord()
 	{
 		Type::Rotation
-			rotation = this->rotation + 0.01f/*hibat�r�s*/;
+			rotation = this->rotation + 0.01f; // treashold
 
 		if (rotation >= Type::Rotations::_315)
 			return GetCoordUp();
@@ -55,7 +41,7 @@ namespace Object
 	}
 	Type::Coord Brick::GetForwardCoord(Type::Rotation rotation)
 	{
-		rotation += 0.01f/*hibat�r�s*/;
+		rotation += 0.01f; // treashold
 
 		if (rotation >= Type::Rotations::_315)
 			return GetCoordUp();

@@ -69,7 +69,7 @@ namespace Objects
 		{OneWayPortRightGrav_040::name, OneWayPortRightGrav_040::Print, OneWayPortRightGrav_040::Initializer, OneWayPortRightGrav_040::Drawner, OneWayPortRightGrav_040::Create, OneWayPortRight_021::Timer, OneWayPortRight_021::Update, OneWayPortRightGrav_040::simpleDraw, OneWayPortRightGrav_040::Finalize},
 		{OneWayPortUpGrav_041::name, OneWayPortUpGrav_041::Print, OneWayPortUpGrav_041::Initializer, OneWayPortUpGrav_041::Drawner, OneWayPortUpGrav_041::Create, OneWayPortUp_022::Timer, OneWayPortUp_022::Update, OneWayPortUpGrav_041::simpleDraw, OneWayPortUpGrav_041::Finalize},
 		{Murphy::name, Murphy::Print, Murphy::Initializer, Murphy::Drawner, Murphy::Create, Murphy::Timer, Murphy::Update, Murphy::simpleDraw, nullptr},
-		{Murphy::name, Murphy::Print, Murphy::InitializerCrawlTail, Murphy::DrawnerCrawlTail, Murphy::CreateCrawlTail, Murphy::TimerCrawlTail, Murphy::UpdateCrawlTail, Murphy::simpleDrawCrawlTail, nullptr},
+		{Murphy::name, Murphy::Print, nullptr, Murphy::DrawnerCrawlTail, nullptr, Murphy::TimerCrawlTail, Murphy::UpdateCrawlTail, Murphy::simpleDrawCrawlTail, nullptr},
 	};
 
 

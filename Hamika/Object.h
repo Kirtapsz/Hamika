@@ -323,12 +323,6 @@ namespace Object
 
 		bool Roll(double PpM);
 		public:
-		public:
-		/*
-		csakis külsõ hívás szabad! rekurzív nem
-
-		visszatérési érték, sikeres lefutás true
-		*/
 
 
 		void SetTranslationID(Type::ID id);
@@ -339,8 +333,6 @@ namespace Object
 
 
 		//GET
-		//1 másik oldalon még teljesen  0 nyugalmi állapot
-		float GetAbsMove();
 		Type::Coord GetForwardCoord();
 		Type::Coord GetForwardCoord(Type::Rotation rotation);
 

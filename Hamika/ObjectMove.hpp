@@ -308,19 +308,19 @@ namespace Object
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move Func<MODULES_T>::GetMoveSpeed()
+			inline Type::Move Func<MODULES_T>::GetMoveSpeed() const
 			{
 				return data_.MoveSpeed;
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedVertical()
+			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedVertical()const
 			{
 				return data_.MoveSpeed.y();
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedHorizontal()
+			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedHorizontal()const
 			{
 				return data_.MoveSpeed.x();
 			}
@@ -354,49 +354,56 @@ namespace Object
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move Func<MODULES_T>::GetMove()
+			inline Type::Move Func<MODULES_T>::GetMove() const
 			{
 				return data_.move;
 			}
 
+			// 1 means it is on the other side completely, 0 means it is in state of rest
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMove()
+			Type::Move::base Func<MODULES_T>::GetAbsMove() const
+			{
+				return (std::max)(std::abs(data_.move.x()), std::abs(data_.move.y()));
+			}
+
+			template<typename MODULES_T>
+			inline bool Func<MODULES_T>::IsMove() const
 			{
 				return data_.move.x() != 0 || data_.move.y() != 0;
 			}
 
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMoveHorizontal()
+			inline bool Func<MODULES_T>::IsMoveHorizontal() const
 			{
 				return data_.move.x() != 0;
 			}
 
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMoveVertical()
+			inline bool Func<MODULES_T>::IsMoveVertical() const
 			{
 				return data_.move.y() != 0;
 			}
 
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMoveLeft()
+			inline bool Func<MODULES_T>::IsMoveLeft() const
 			{
 				return data_.move.x() > 0;
 			}
 
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMoveRight()
+			inline bool Func<MODULES_T>::IsMoveRight() const
 			{
 				return data_.move.x() < 0;
 			}
 
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMoveDown()
+			inline bool Func<MODULES_T>::IsMoveDown() const
 			{
 				return data_.move.y() < 0;
 			}
 
 			template<typename MODULES_T>
-			inline bool Func<MODULES_T>::IsMoveUp()
+			inline bool Func<MODULES_T>::IsMoveUp() const
 			{
 				return data_.move.y() > 0;
 			}
@@ -420,26 +427,26 @@ namespace Object
 			inline void Func<MODULES_T>::SetMove(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMove({data_.move.x(),move.y()});
+					SetMove({data_.move.x(), move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMove({data_.move.x(),-move.y()});
+					SetMove({data_.move.x(), -move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMove({move.x(),data_.move.y()});
+					SetMove({move.x(), data_.move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMove({-move.x(),data_.move.y()});
+					SetMove({-move.x(), data_.move.y()});
 			}
 			
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::SetMoveUnsafe(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMoveUnsafe({data_.move.x(),move.y()});
+					SetMoveUnsafe({data_.move.x(), move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMoveUnsafe({data_.move.x(),-move.y()});
+					SetMoveUnsafe({data_.move.x(), -move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMoveUnsafe({move.x(),data_.move.y()});
+					SetMoveUnsafe({move.x(), data_.move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMoveUnsafe({-move.x(),data_.move.y()});
+					SetMoveUnsafe({-move.x(), data_.move.y()});
 			}
 		}
 	}
