@@ -1,4 +1,4 @@
-﻿#ifndef OBJECT_MOVE_HPP
+#ifndef OBJECT_MOVE_HPP
 #define OBJECT_MOVE_HPP
 
 #include "ObjectMove.h"
@@ -314,13 +314,13 @@ namespace Object
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedVertical()const
+			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedVertical() const
 			{
 				return data_.MoveSpeed.y();
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedHorizontal()const
+			inline Type::Move::base Func<MODULES_T>::GetMoveSpeedHorizontal() const
 			{
 				return data_.MoveSpeed.x();
 			}

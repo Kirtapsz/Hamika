@@ -2081,6 +2081,7 @@ namespace Object::Entity
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
+			//_brick.events.topDraw = true;
 
 			_brick.requests.finalize = true;
 
@@ -2174,6 +2175,7 @@ namespace Object::Entity
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
+			//_brick.events.topDraw = true;
 
 			_brick.requests.finalize = true;
 

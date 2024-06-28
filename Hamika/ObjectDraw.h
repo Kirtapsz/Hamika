@@ -18,7 +18,6 @@ namespace Object
 				unsigned long long int DrawNumber = 0;
 				static unsigned long long int SObjectDrawCounts;
 				unsigned long long int DrawnedCount = 0;
-				typedef void(*StatisDrawType)(int, int, int, int);
 
 				struct Interface
 				{
