@@ -23,9 +23,6 @@ namespace Object
 		setOddDrawCoord();
 	}
 
-	//GET
-
-
 	Type::Coord Brick::GetForwardCoord()
 	{
 		Type::Rotation

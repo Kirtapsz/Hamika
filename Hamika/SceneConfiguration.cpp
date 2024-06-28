@@ -331,7 +331,6 @@ namespace UI::Scene
 					{
 						Json json = reach(map)[coord].remain->print();
 						validator->validate(Res::Log::ObjectValidator::REMAIN_T, json);
-
 						if (reach(map)[coord].remain->isExists)
 						{
 							std::cout << "::: REMAIN :::" << std::endl;

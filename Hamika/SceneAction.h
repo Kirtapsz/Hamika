@@ -104,7 +104,6 @@ namespace UI::Scene::Module::Action
 					)
 				)
 			{
-
 				if (block.remain->isExists && block.remain->id == ObjectID::Explosion)
 				{
 					block.remain->SetObjectIDremain(std::max(IDto, block.remain->GetObjectIDremain()));
@@ -160,22 +159,6 @@ namespace UI::Scene::Module::Action
 				Redrawn(coord);
 			}
 		}
-				 //private: void smokeBrick(Object::Brick &_brick)
-				 //{
-				 //	Type::Coord coord = _brick.GetCoord();
-				 //	Object::Brick *remain = reach(map)[coord].remain;
-				 //	if (!remain->isExists || remain->id != ObjectID::Explosion)
-				 //	{
-				 //		if (murphy == &_brick)
-				 //		{
-				 //			murphyDead(murphy);
-				 //		}
-
-				 //		DeleteRemain(coord);
-				 //		ObjectCreate(remain, ObjectID::ExplosionEffect, coord);
-				 //		remain->SetObjectIDremain(std::max((Type::ID)ObjectID::Space, remain->GetObjectIDremain()));
-				 //	}
-				 //}
 		protected: virtual void blowup(Object::Brick &_brick, Type::Coord center)
 		{
 			Type::Flags flags = _brick.GetFlags();
@@ -199,7 +182,6 @@ namespace UI::Scene::Module::Action
 
 				_brick.RemoveFlags(Object::Brick::Flags::ExplosionType);
 				_brick.SetTranslationID(ObjectID::Space);
-
 				Type::Coord::base d = 0; // Object::Brick::Flags::ExplosionType1
 				if (flags & Object::Brick::Flags::ExplosionType3)
 				{
@@ -209,10 +191,8 @@ namespace UI::Scene::Module::Action
 				{
 					d = 2;
 				}
-
 				Type::Coord begin_of_center = center - d;
 				Type::Coord end_of_center = center + 1 + d;
-
 				begin_of_center.limiter({0,0}, map->size());
 				end_of_center.limiter({0,0}, map->size());
 

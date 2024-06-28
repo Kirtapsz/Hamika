@@ -62,9 +62,9 @@ namespace Object
 				public: Type::Move::base GetMoveSpeedVertical() const;
 				public: Type::Move::base GetMoveSpeedHorizontal() const;
 
-					  //a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
+					  //a mï¿½rtï¿½kegysï¿½g hogy 1 mï¿½sodperc alatt mennyit haladjon, 1 jelent egy teljes nï¿½gyzetet, 2.5: kï¿½t ï¿½s fï¿½l nï¿½gyzet mï¿½sodpercenkï¿½nt....
 				public: void SetMoveSpeed(Type::Move::base speed);
-					  //a mértékegység hogy 1 másodperc alatt mennyit haladjon, 1 jelent egy teljes négyzetet, 2.5: két és fél négyzet másodpercenként....
+					  //a mï¿½rtï¿½kegysï¿½g hogy 1 mï¿½sodperc alatt mennyit haladjon, 1 jelent egy teljes nï¿½gyzetet, 2.5: kï¿½t ï¿½s fï¿½l nï¿½gyzet mï¿½sodpercenkï¿½nt....
 				public: void SetMoveSpeed(Type::Move speed);
 
 				public: void SetMoveUnsafe(Type::Move move_ = {0,0});
@@ -80,9 +80,9 @@ namespace Object
 				public: bool IsMoveUp() const;
 				public: Type::Direction getMoveDirection() const;
 					  /*
-					  beállítja autómatikusan a movet a rotation alapján
+					  beï¿½llï¿½tja autï¿½matikusan a movet a rotation alapjï¿½n
 
-					  a move paraméter adja meg a move x vagy y-t, pozitív egész számnak kell lennie
+					  a move paramï¿½ter adja meg a move x vagy y-t, pozitï¿½v egï¿½sz szï¿½mnak kell lennie
 					  */
 				public: void SetMove(Type::Rotation rotation, Type::Move move = {1,1});
 				public: void SetMoveUnsafe(Type::Rotation rotation, Type::Move move = {1,1});

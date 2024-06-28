@@ -1,4 +1,4 @@
-﻿#ifndef OBJECT_MOVE_HPP
+#ifndef OBJECT_MOVE_HPP
 #define OBJECT_MOVE_HPP
 
 #include "ObjectMove.h"
@@ -440,13 +440,13 @@ namespace Object
 			inline void Func<MODULES_T>::SetMoveUnsafe(Type::Rotation rotation, Type::Move move)
 			{
 				if (rotation == Type::Rotations::Up)
-					SetMoveUnsafe({data_.move.x(),move.y()});
+					SetMoveUnsafe({data_.move.x(), move.y()});
 				else if (rotation == Type::Rotations::Down)
-					SetMoveUnsafe({data_.move.x(),-move.y()});
+					SetMoveUnsafe({data_.move.x(), -move.y()});
 				else if (rotation == Type::Rotations::Left)
-					SetMoveUnsafe({move.x(),data_.move.y()});
+					SetMoveUnsafe({move.x(), data_.move.y()});
 				else if (rotation == Type::Rotations::Right)
-					SetMoveUnsafe({-move.x(),data_.move.y()});
+					SetMoveUnsafe({-move.x(), data_.move.y()});
 			}
 		}
 	}

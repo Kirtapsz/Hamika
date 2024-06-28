@@ -323,12 +323,6 @@ namespace Object
 
 		bool Roll(double PpM);
 		public:
-		public:
-		/*
-		csakis külsõ hívás szabad! rekurzív nem
-
-		visszatérési érték, sikeres lefutás true
-		*/
 
 
 		void SetTranslationID(Type::ID id);
