@@ -29,11 +29,16 @@ namespace UI::Scene::Module::Art
 {
 	class Data
 	{
-		protected: SceneDrawer<SceneBlock<Object::Brick>> drawer;
+		protected: SceneDrawer_T<SceneBlock<Object::Brick>> drawer;
 		protected: std::shared_ptr<BackgoundInterface> background;
 		protected: KIR5::Shared<StatusBar> statusbar;
 		protected: KIR5::Shared<Panel> drawnerBar;
 		protected: Type::CameraSize cameraSize;
+
+		protected: inline void setGlobalGravity(bool _global_gravity)
+		{
+			drawer.setGlobalGravity(_global_gravity);
+		}
 	};
 
 	template <typename DATA>
@@ -45,21 +50,25 @@ namespace UI::Scene::Module::Art
 
 			statusbar->SetMap(_bluePrint);
 
-			drawer.blockRefreshActive = false;
-			drawer.layerActive = true;
-			drawer.SetMap(map);
-			drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
-			drawer.setGlobalGravity(&globalGravity);
+			drawer.enableLayer(SceneLayer::blocks, true);
+			drawer.enableLayer(SceneLayer::erases, false);
+			drawer.enableLayer(SceneLayer::refresh, false);
+			drawer.enableLayer(SceneLayer::gravity, true);
+			drawer.enableLayer(SceneLayer::coord, false);
+
+			drawer.setMap(map);
+			drawer.updateConfiguration({drawnerBar->width(), drawnerBar->height()}, cameraSize);
+			drawer.setGlobalGravity(global_gravity_);
 
 			std::shared_ptr<SingleSeamlessBackground> single_seamless_background = std::shared_ptr<SingleSeamlessBackground>(new SingleSeamlessBackground());
 			single_seamless_background->setBitmap(Res::uielements[Res::UIElements::GameBackground]);
 			background = single_seamless_background;
-			background->setCameraScale(-drawer.GetDrawSize().width() / 4.f);
+			background->setCameraScale(-drawer.getBlockSize().width() / 4.f);
 		}
 
 		protected: virtual void Redrawn(Type::Coord coord)
 		{
-			drawer.Redrawn(coord);
+			drawer.setRedrawOnBlock(coord);
 		}
 		public: virtual Json printStatusBar() const
 		{
@@ -72,13 +81,9 @@ namespace UI::Scene::Module::Art
 
 			  // OBJECT INTERFACE
 
-		public: virtual Type::Size GetDrawSize() const
+		public: virtual Type::Pixels getBlockSize() const
 		{
-			return drawer.GetDrawSize();
-		}
-		public: virtual Type::Size GetDrawOffSet() const
-		{
-			return drawer.GetDrawOffSet();
+			return drawer.getBlockSize();
 		}
 		public: virtual void addUnity(int collect)
 		{
@@ -106,6 +111,11 @@ namespace UI::Scene::Module::Art
 			protected: int unityCount = 0;
 			protected: int scoreToReach = 0;
 			protected: int scoreCount = 0;
+
+			protected: inline void setGlobalGravity(bool _global_gravity)
+			{
+
+			}
 		};
 
 		template <typename DATA>
@@ -133,13 +143,9 @@ namespace UI::Scene::Module::Art
 
 				  // OBJECT INTERFACE
 
-			public: virtual Type::Size GetDrawSize() const
+			public: virtual Type::Pixels getBlockSize() const
 			{
 				return {blockSizeInPixel, blockSizeInPixel};
-			}
-			public: virtual Type::Size GetDrawOffSet() const
-			{
-				return {0,0};
 			}
 			public: virtual void addUnity(int collect)
 			{

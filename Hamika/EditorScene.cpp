@@ -7,8 +7,8 @@ namespace Editor::UI::Scene
 {
 	Edit::Edit()
 	{
-		drawer.blockRefreshActive = false;
-		drawer.layerActive = false;
+		drawer.enableLayer(SceneLayer::blocks, true);
+		drawer.enableLayer(SceneLayer::coord, true);
 
 		fncMouseButtonDown.push_back([&](FNC_MOUSE_BUTTON_DOWN_PARAMS) -> FNC_MOUSE_BUTTON_DOWN_RET
 		{
@@ -16,7 +16,7 @@ namespace Editor::UI::Scene
 			{
 				if (this->onPanel(x_, y_))
 				{
-					MainEvent::s_object->controlPanel->pickID(reach(map)[drawer.GetFromCursor(x_ - x(), y_ - y())].object->id);
+					MainEvent::s_object->controlPanel->pickID(reach(map)[drawer.getTargetOfCursor({x_ - x(), y_ - y()})].object->id);
 
 					return true;
 				}
@@ -28,7 +28,7 @@ namespace Editor::UI::Scene
 		{
 			if (key_ == ALLEGRO_KEY_LEFT)
 			{
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
 				if (targetCoord.x() == 0)
 				{
@@ -38,14 +38,14 @@ namespace Editor::UI::Scene
 				{
 					targetCoord.x() -= 1;
 				}
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
-				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
+				drawer.moveCamera({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_RIGHT)
 			{
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
 				if (targetCoord.x() == map->size().width() - 1)
 				{
@@ -55,14 +55,14 @@ namespace Editor::UI::Scene
 				{
 					targetCoord.x() += 1;
 				}
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
-				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
+				drawer.moveCamera({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_UP)
 			{
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
 				if (targetCoord.y() == 0)
 				{
@@ -72,14 +72,14 @@ namespace Editor::UI::Scene
 				{
 					targetCoord.y() -= 1;
 				}
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
-				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
+				drawer.moveCamera({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 			if (key_ == ALLEGRO_KEY_DOWN)
 			{
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
 				if (targetCoord.y() == map->size().height() - 1)
 				{
@@ -89,9 +89,9 @@ namespace Editor::UI::Scene
 				{
 					targetCoord.y() += 1;
 				}
-				reach(map)[targetCoord].Redrawn = true;
+				reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 
-				drawer.MoveCameraTo({(float)targetCoord.x(),(float)targetCoord.y()});
+				drawer.moveCamera({(float)targetCoord.x(),(float)targetCoord.y()});
 				return true;
 			}
 
@@ -106,12 +106,12 @@ namespace Editor::UI::Scene
 					if (block.selectTmp1)
 					{
 						block.selectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 					if (block.deselectTmp1)
 					{
 						block.deselectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 			}
@@ -125,12 +125,12 @@ namespace Editor::UI::Scene
 					if (block.selectTmp1)
 					{
 						block.selectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 					if (block.deselectTmp1)
 					{
 						block.deselectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 			}
@@ -150,12 +150,12 @@ namespace Editor::UI::Scene
 					if (block.selectTmp1)
 					{
 						block.selectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 					if (block.deselectTmp1)
 					{
 						block.deselectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 			}
@@ -169,12 +169,12 @@ namespace Editor::UI::Scene
 					if (block.selectTmp1)
 					{
 						block.selectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 					if (block.deselectTmp1)
 					{
 						block.deselectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 			}
@@ -189,13 +189,13 @@ namespace Editor::UI::Scene
 				{
 					mouseSelectHold = true;
 					mouseMoveHold = false;
-					holdCoordBegin = drawer.GetFromCursor(x_ - x(), y_ - y());
+					holdCoordBegin = drawer.getTargetOfCursor({x_ - x(), y_ - y()});
 				}
 				else
 				{
 					mouseMoveHold = true;
 					mouseSelectHold = false;
-					holdCamera = drawer.GetCamera();
+					holdCamera = drawer.getCameraCenter();
 					mouseHoldx = x_;
 					mouseHoldy = y_;
 				}
@@ -208,7 +208,7 @@ namespace Editor::UI::Scene
 			{
 				if (mouseSelectHold)
 				{
-					holdCoordEnd = drawer.GetFromCursor(x_ - x(), y_ - y());
+					holdCoordEnd = drawer.getTargetOfCursor({x_ - x(), y_ - y()});
 					Type::Coord lu = {(std::min)(holdCoordBegin.x(),holdCoordEnd.x()),(std::min)(holdCoordBegin.y(),holdCoordEnd.y())};
 					Type::Coord rd = {(std::max)(holdCoordBegin.x(),holdCoordEnd.x()) + 1,(std::max)(holdCoordBegin.y(),holdCoordEnd.y()) + 1};
 
@@ -237,14 +237,14 @@ namespace Editor::UI::Scene
 						{
 							if (block.selectTmp1 != block.selectTmp2)
 							{
-								block.Redrawn = true;
+								block.redrawn_type_ = RedrawType::All;
 							}
 						}
 						else if (isRCtrl)
 						{
 							if (block.deselectTmp1 != block.selectTmp2)
 							{
-								block.Redrawn = true;
+								block.redrawn_type_ = RedrawType::All;
 							}
 						}
 					});
@@ -256,8 +256,8 @@ namespace Editor::UI::Scene
 				{
 					mouseAxe = true;
 					Type::Move camera = {
-						holdCamera.x() + ((mouseHoldx - x_) / (Type::Move::base)drawer.GetDrawSize().width()),
-						holdCamera.y() + ((mouseHoldy - y_) / (Type::Move::base)drawer.GetDrawSize().height())
+						holdCamera.x() + ((mouseHoldx - x_) / (Type::Move::base)drawer.getBlockSize().width()),
+						holdCamera.y() + ((mouseHoldy - y_) / (Type::Move::base)drawer.getBlockSize().height())
 					};
 					setTarget(camera);
 				}
@@ -275,13 +275,13 @@ namespace Editor::UI::Scene
 					{
 						block.selected = true;
 						block.selectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 					if (block.deselectTmp1)
 					{
 						block.selected = false;
 						block.deselectTmp1 = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 				MainEvent::s_object->miniMap->updateBlocks();
@@ -295,9 +295,9 @@ namespace Editor::UI::Scene
 				}
 				else
 				{
-					reach(map)[targetCoord].Redrawn = true;
-					targetCoord = drawer.GetFromCursor(x_ - x(), y_ - y());
-					reach(map)[targetCoord].Redrawn = true;
+					reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
+					targetCoord = drawer.getTargetOfCursor({x_ - x(), y_ - y()});
+					reach(map)[targetCoord].redrawn_type_ = RedrawType::All;
 				}
 			}
 		});
@@ -306,7 +306,8 @@ namespace Editor::UI::Scene
 		{
 			if (map->Exists())
 			{
-				drawer.DrawBlocks(x_, y_);
+				drawer.updateBitmap();
+				drawer.drawBitmaps({x_, y_});
 			}
 		}));
 
@@ -314,8 +315,8 @@ namespace Editor::UI::Scene
 		{
 			if (map->Exists())
 			{
-				Type::Move camera = drawer.GetCamera();
-				drawer.InitializeDrawOptions({width(), height()}, Type::CameraSize::Invalid);
+				Type::Move camera = drawer.getCameraCenter();
+				drawer.updateConfiguration({width(), height()}, Type::CameraSize::Invalid);
 				setTarget(camera);
 			}
 		});
@@ -328,8 +329,8 @@ namespace Editor::UI::Scene
 	{
 		if (map->Exists())
 		{
-			drawer.MoveCameraTo(camera);
-			MainEvent::s_object->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
+			drawer.moveCamera(camera);
+			MainEvent::s_object->miniMap->updatePosition(drawer.getCameraCenter(), drawer.getCameraSizeInBlocks());
 		}
 	}
 
@@ -376,13 +377,13 @@ namespace Editor::UI::Scene
 
 			block.GoTo = coord;
 			block.ComeFrom = coord;
-			block.Redrawn = true;
+			block.redrawn_type_ = RedrawType::All;
 		});
-		drawer.SetMap(map);
-		drawer.InitializeDrawOptions({width(), height()}, Type::CameraSize::Invalid);
-		drawer.MoveCameraTo({0,0});
+		drawer.setMap(map);
+		drawer.updateConfiguration({width(), height()}, Type::CameraSize::Invalid);
+		drawer.moveCamera({0,0});
 		MainEvent::s_object->miniMap->SetMap(map);
-		MainEvent::s_object->miniMap->updatePosition(drawer.GetCamera(), drawer.GetCameraSize());
+		MainEvent::s_object->miniMap->updatePosition(drawer.getCameraCenter(), drawer.getCameraSizeInBlocks());
 	}
 	void Edit::SetMap(std::shared_ptr<Res::BluePrint> &bluePrint)
 	{
@@ -404,13 +405,9 @@ namespace Editor::UI::Scene
 		MainEvent::s_object->controlPanel->SetMap(bluePrint, map);
 	}
 
-	Type::Size Edit::GetDrawSize() const
+	Type::Pixels Edit::getBlockSize() const
 	{
-		return drawer.GetDrawSize();
-	}
-	Type::Size Edit::GetDrawOffSet() const
-	{
-		return drawer.GetDrawOffSet();
+		return drawer.getBlockSize();
 	}
 	Object::Brick *Edit::GetObject(Type::Coord coord)
 	{

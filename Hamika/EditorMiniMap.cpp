@@ -95,7 +95,7 @@ namespace Editor::UI
 	}
 	void MiniMap::updateBlocks()
 	{
-		KIR5::BitmapTarget bt(bitmap);
+		auto target_lock = bitmap.target();
 		al_clear_to_color(KIR5::Color(0, 0, 0));
 		map->foreach([&](const Type::Coord &coord, SceneBlock<Object::Brick> &block)
 		{

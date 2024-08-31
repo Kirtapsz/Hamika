@@ -4,7 +4,6 @@
 #include "OriginalEntities.h"
 #include "Worlds.h"
 
-#include <KIR\AL\KIR5_bitmap_target.h>
 #include <KIR\AL\KIR5_event_engine.h>
 #include <KIR\sys\KIR5_files.h>
 

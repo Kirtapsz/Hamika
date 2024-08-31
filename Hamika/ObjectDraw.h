@@ -15,15 +15,21 @@ namespace Object
 			template<typename MODULES_T>
 			struct Data
 			{
+				enum DrawType: std::uint8_t
+				{
+					Standard,
+					Top, // Force to draw it to the top
+
+				};
+				DrawType _draw_type = DrawType::Standard;
+
 				unsigned long long int DrawNumber = 0;
 				static unsigned long long int SObjectDrawCounts;
 				unsigned long long int DrawnedCount = 0;
-				typedef void(*StatisDrawType)(int, int, int, int);
 
 				struct Interface
 				{
-					virtual Type::Size GetDrawSize() const = 0;
-					virtual Type::Size GetDrawOffSet() const = 0;
+					virtual Type::Pixels getBlockSize() const = 0;
 				} *drawIef;
 
 				Type::Coord DrawCoord = {0,0};
@@ -45,20 +51,13 @@ namespace Object
 				public: Func(typename MODULES_T::DATA_T &_data, typename MODULES_T::FUNC_T &_func);
 
 				public: void __init__(Type::ID id, Type::Coord coord);
-				public: Json print();
+				public: Json print() const;
 
 				public: void configureDrawOptions();
 
-
-				public: virtual void Draw();
-				public: virtual void SDraw();//teszteés céljából hogy a conter mûködjön
+				public: void Draw(const Type::Coord &_coord, const Type::Coord &_size);
 				public: void setOddDrawCoord();
-				public: virtual void setRoundDrawCoord();
-				public: Type::Coord GetDrawCoord();
-
-				//DRAW #####################################################################################
-
-				public: void RunSDraw();//teszteés céljából hogy a conter mûködjön
+				public: void setRoundDrawCoord();
 			};
 		}
 	}

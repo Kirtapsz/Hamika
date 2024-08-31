@@ -39,7 +39,7 @@ namespace Editor::UI::Scene
 		private: bool mouseAxe;
 
 		private: std::shared_ptr<Matrix<SceneBlock<Object::Brick>>> map = std::shared_ptr<Matrix<SceneBlock<Object::Brick>>>(new Matrix<SceneBlock<Object::Brick>>());
-		private: SceneDrawer<SceneBlock<Object::Brick>> drawer;
+		private: SceneDrawer_T<SceneBlock<Object::Brick>> drawer;
 
 		public: Edit();
 		public: ~Edit();
@@ -52,8 +52,7 @@ namespace Editor::UI::Scene
 		public: bool isOperationModeAll() const;
 		public: Type::Coord getTarget() const;
 
-		public: virtual Type::Size GetDrawSize() const;
-		public: virtual Type::Size GetDrawOffSet() const;
+		public: virtual Type::Pixels getBlockSize() const;
 		public: virtual Object::Brick *GetObject(Type::Coord);
 		public: virtual Type::Flags GetBlockFlags(Type::Coord) const;
 		public: virtual int selectStatus(Type::Coord) const;

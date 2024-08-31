@@ -18,7 +18,6 @@ namespace Object
 				{
 					bool timer;
 					bool update;
-					bool topDraw;
 
 					void clear();
 

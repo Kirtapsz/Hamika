@@ -4,6 +4,8 @@
 #include <sstream>
 #include <limits>
 
+#undef None
+
 namespace Type
 {
 	typedef unsigned __int8 Flags8;
@@ -108,7 +110,7 @@ namespace Type
 	{
 		using ADDITION = decltype(std::declval<T>() + std::declval<U>());
 		using SUBTRACTION = decltype(std::declval<T>() - std::declval<U>());
-		using MULTIPLICATION = decltype(std::declval<T>() * std::declval<U>());
+		using MULTIPLICATION = decltype(std::declval<T>() *std::declval<U>());
 		using DIVISION = decltype(std::declval<T>() / std::declval<U>());
 
 		using MODULO = decltype(std::declval<typename ModuloType<T>::TYPE>() % std::declval<typename ModuloType<U>::TYPE>());
@@ -117,7 +119,7 @@ namespace Type
 	template<typename T>
 	struct var2D
 	{
-		typedef typename T base;
+		using base = T;
 
 		base valuel;
 		base valuer;
@@ -138,6 +140,14 @@ namespace Type
 		{
 			return valuer;
 		}
+		constexpr base &w()
+		{
+			return valuel;
+		}
+		constexpr base &h()
+		{
+			return valuer;
+		}
 
 		constexpr const base &x() const
 		{
@@ -155,6 +165,14 @@ namespace Type
 		{
 			return valuer;
 		}
+		constexpr const base &w() const
+		{
+			return valuel;
+		}
+		constexpr const base &h() const
+		{
+			return valuer;
+		}
 
 		constexpr var2D()
 		{
@@ -167,6 +185,14 @@ namespace Type
 		{
 
 		}
+		template<typename F>
+		constexpr var2D<T> &operator=(F _b)
+		{
+			valuel = _b;
+			valuer = _b;
+			return *this;
+		}
+
 		template<typename F>
 		constexpr auto operator+(F _b) const
 		{
@@ -269,6 +295,14 @@ namespace Type
 		{
 
 		}
+
+		template<typename F>
+		constexpr var2D<T> &operator=(const var2D<F> &_val)
+		{
+			valuel = _val.valuel;
+			valuer = _val.valuer;
+			return *this;
+		}
 		template<typename F>
 		constexpr auto operator+(const var2D<F> &_val) const
 		{
@@ -368,14 +402,76 @@ namespace Type
 		template<typename F>
 		constexpr void limiter(const var2D<F> &_min, const var2D<F> &_max)
 		{
-			valuel = std::max((T)_min.valuel, std::min((T)_max.valuel, valuel));
-			valuer = std::max((T)_min.valuer, std::min((T)_max.valuer, valuer));
+			valuel = (std::max)((T)_min.valuel, (std::min)((T)_max.valuel, valuel));
+			valuer = (std::max)((T)_min.valuer, (std::min)((T)_max.valuer, valuer));
 		}
 
 		template<typename F>
 		constexpr void limit(const var2D<F> &_min, const var2D<F> &_max)
 		{
 			return limiter<F>(_min, _max);
+		}
+
+		constexpr base(max)() const
+		{
+			return (std::max)(valuel, valuer);
+		}
+
+		constexpr base(min)() const
+		{
+			return (std::min)(valuel, valuer);
+		}
+
+		template<typename F = T>
+		constexpr var2D<F> ceil() const
+		{
+			return var2D<F>(std::ceil(valuel), std::ceil(valuer));
+		}
+
+		template<typename F = T>
+		constexpr var2D<F> floor() const
+		{
+			return var2D<F>(std::floor(valuel), std::floor(valuer));
+		}
+
+		template<typename F = T>
+		constexpr var2D<F> abs() const
+		{
+			return var2D<F>(std::abs(valuel), std::abs(valuer));
+		}
+
+		template<typename F = T>
+		constexpr var2D<F> modf() const
+		{
+			var2D<F> i_part;
+			var2D<F> f_part{
+				std::modf(valuel, &i_part.valuel),
+				std::modf(valuer, &i_part.valuer)};
+			return f_part;
+		}
+
+		constexpr void wholeUp()
+		{
+			if (valuel % 2 == 0) ++valuel;
+			if (valuer % 2 == 0) ++valuer;
+		}
+
+		constexpr void wholeDown()
+		{
+			if (valuel % 2 == 0) --valuel;
+			if (valuer % 2 == 0) --valuer;
+		}
+
+		constexpr void oddUp()
+		{
+			if (valuel % 2 != 0) ++valuel;
+			if (valuer % 2 != 0) ++valuer;
+		}
+
+		constexpr void oddDown()
+		{
+			if (valuel % 2 != 0) --valuel;
+			if (valuer % 2 != 0) --valuer;
 		}
 
 
@@ -399,19 +495,135 @@ namespace Type
 
 		constexpr std::string str() const
 		{
-			std::ostringstream os;
-			os << "( " << valuel << " ; " << valuer << " )";
-			return os.str();
+			return std::ostringstream(*this).str();
+		}
+
+		template <typename Func, typename... Args>
+		static auto ref(Func algorithm, Args... values) -> decltype(algorithm(values...))
+		{
+			return algorithm(values...);
+		}
+
+		template <typename F, typename... A>
+		static var2D<T> apply(F algorithm, const A&... a)
+		{
+			return {
+				var2D<T>::ref(algorithm, a.valuel...),
+				var2D<T>::ref(algorithm, a.valuer...)
+			};
+		}
+
+		template <typename F, typename... A>
+		static void exec(F algorithm, const A&... a)
+		{
+			var2D<T>::ref(algorithm, a.valuel...);
+			var2D<T>::ref(algorithm, a.valuer...);
+		}
+
+		template<typename F, typename G>
+		static var2D<T>(max)(const var2D<F> &_p, G v)
+		{
+			return {
+				std::max<T>(_p.valuel, v),
+				std::max<T>(_p.valuer, v),
+			};
+		}
+		template<typename F, typename G>
+		static var2D<T>(max)(const var2D<F> &_p1, const var2D<G> &_p2)
+		{
+			return {
+				std::max<T>(_p1.valuel, _p2.valuel),
+				std::max<T>(_p1.valuer, _p2.valuer),
+			};
+		}
+
+		template<typename F, typename G>
+		static var2D<T>(min)(const var2D<F> &_p, G v)
+		{
+			return {
+				std::min<T>(_p.valuel, v),
+				std::min<T>(_p.valuer, v),
+			};
+		}
+		template<typename F, typename G>
+		static var2D<T>(min)(const var2D<F> &_p1, const var2D<G> &_p2)
+		{
+			return {
+				std::min<T>(_p1.valuel, _p2.valuel),
+				std::min<T>(_p1.valuer, _p2.valuer),
+			};
 		}
 	};
 	template<typename T>
 	const var2D<T> var2D<T>::Invalid = {std::numeric_limits<T>::lowest(), std::numeric_limits<T>::lowest()};
 
 	typedef var2D<__int32> Size;
+	typedef var2D<__int32> Pixels;
 	typedef var2D<__int32> Coord;
 	typedef var2D<float> Move;
 	typedef var2D<float> Camera;
 	typedef var2D<float> CameraSize;
+
+	template<typename T>
+	struct rec2D
+	{
+		T p1;
+		T p2;
+
+		inline bool hasArea() const
+		{
+			return p2 - p1 > 0;
+		}
+
+		template<typename F>
+		inline bool isSubset(const rec2D<F> &_rec) const
+		{
+			return _rec.p1 <= p1 && _rec.p2 >= p2;
+		}
+		template<typename F>
+		inline bool isInside(const var2D<F> &_p) const
+		{
+			return p1 <= _p && p2 > _p;
+		}
+
+		constexpr const typename T::base &x() const
+		{
+			return p1.valuel;
+		}
+		constexpr const typename T::base &y() const
+		{
+			return p1.valuer;
+		}
+		inline typename T::base width() const
+		{
+			return p2.valuel - p1.valuel;
+		}
+		inline typename T::base height() const
+		{
+			return p2.valuer - p1.valuer;
+		}
+		inline typename T::base w() const
+		{
+			return p2.valuel - p1.valuel;
+		}
+		inline typename T::base h() const
+		{
+			return p2.valuer - p1.valuer;
+		}
+
+		static const var2D<T> Invalid;
+		constexpr operator std::ostringstream() const
+		{
+			std::ostringstream os;
+			os << "[ " << p1.str() << " - " << p2.str() << " ; " << (p2 - p1).str();
+			return os;
+		}
+
+		constexpr std::string str() const
+		{
+			return std::ostringstream(*this).str();
+		}
+	};
 }
 
 typedef std::uint8_t DrawNumber;
@@ -429,3 +641,28 @@ enum GridFlags: Type::Flags8
 	Detonate = 1 << 1,
 	SpawnPoint = 1 << 2,
 };
+
+namespace RedrawType
+{
+	constexpr Type::Flags None = 0;
+
+	constexpr Type::Flags Object = 1 << 0;
+	constexpr Type::Flags Shift = 1 << 1;
+
+	constexpr Type::Flags All = Object | Shift;
+}
+
+namespace DrawnedType
+{
+	constexpr Type::Flags None = 0;
+
+	constexpr Type::Flags Cleared = 1 << 0;
+
+	constexpr Type::Flags TopStand = 1 << 1;
+	constexpr Type::Flags TopRemain = 1 << 2;
+	constexpr Type::Flags StandardMove = 1 << 3;
+	constexpr Type::Flags StandardRemain = 1 << 4;
+	constexpr Type::Flags StandardGoTo = 1 << 5;
+
+	constexpr Type::Flags Drawned = TopStand | TopRemain | StandardMove | StandardRemain | StandardGoTo;
+}

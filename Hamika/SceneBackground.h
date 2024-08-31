@@ -3,7 +3,6 @@
 
 #include <KIR\AL\KIR5_font.h>
 #include <KIR\AL\KIR5_bitmap.h>
-#include <KIR/AL/KIR5_bitmap_target.h>
 
 #include "UItools.h"
 #include "Types.h"

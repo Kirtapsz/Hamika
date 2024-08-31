@@ -109,7 +109,7 @@ namespace UI
 		public: inline Panel()
 		{
 			show();
-			/*setBackgroundColor(KIR5::Color(rand() % 255, rand() % 255, rand() % 255));*/
+			//setBackgroundColor(KIR5::Color(rand() % 255, rand() % 255, rand() % 255));
 		}
 	};
 

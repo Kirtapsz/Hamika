@@ -90,6 +90,15 @@ namespace Res
 		public: static constexpr char *Unset = "Unset";
 		public: static constexpr char *Settings = "Settings";
 		public: static constexpr char *GameBackground = "GameBackground";
+		public: static constexpr char *MenuBackground = "MenuBackground";
+
+		public: static constexpr char *LayersBlocks = "Layers-Blocks";
+		public: static constexpr char *LayersGravity = "Layers-Gravity";
+		public: static constexpr char *LayersErases = "Layers-Erases";
+		public: static constexpr char *LayersRefresh = "Layers-Refresh";
+		public: static constexpr char *LayersCoords = "Layers-Coords";
+
+		public: static constexpr std::array<const char *, 5> Layers{LayersBlocks, LayersErases, LayersRefresh, LayersGravity, LayersCoords};
 	};
 
 	class BitmapPool: public Base

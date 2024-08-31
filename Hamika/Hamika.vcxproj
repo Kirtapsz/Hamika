@@ -348,8 +348,6 @@
     <ClCompile Include="$(KIRLIB)\KIR4\source\KIR4_time.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_base.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap.cpp" />
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap_target.cpp" />
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_clipping_rectangle.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_color.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_display.cpp" />
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_event.cpp" />

@@ -110,19 +110,6 @@ namespace Editor::Object
 
 				}
 			}
-
-			char buffer[32];
-
-			sprintf_s(buffer, "(%03d;%03d)", _brick.GetCoord().x(), _brick.GetCoord().y());
-
-			KIR5::Font font = Res::Consolas[_brick.scene->GetDrawSize().height() / 6];
-
-			font.draw(x + 1, y + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			font.draw(x, y, buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
-
-			sprintf_s(buffer, "(%03d)", _brick.id);
-			font.draw(x + 1, y + 1 + (_brick.scene->GetDrawSize().height() / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
-			font.draw(x, y + (_brick.scene->GetDrawSize().height() / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
 		}
 	}
 }

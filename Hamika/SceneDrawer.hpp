@@ -9,611 +9,860 @@
 
 #include <KIR\AL\KIR5_color.h>
 #include <KIR\AL\KIR5_blender.h>
-#include <KIR\AL\KIR5_bitmap_target.h>
 #include <KIR\KIR4_console.h>
 
+
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool *globalGravity)
+void BlocksDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool _global_gravity)
 {
-	this->globalGravity = globalGravity;
+	global_gravity_ = _global_gravity;
+	global_gravity_updated_ = true;
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::setMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &_map)
+{
+	map_ = _map;
 }
 
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnRow(Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end)
+Type::Pixels BlocksDrawer<ACTIVE_BLOCK_T>::getBlockSize() const
 {
-	for (; begin < end; begin++)
-		Redrawn({begin,row});
+	return block_size_;
 }
 template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::RedrawnCol(Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end)
+void BlocksDrawer<ACTIVE_BLOCK_T>::setBlockSize(Type::Size _camera_size, Type::CameraSize _block_size_adjust)
 {
-	for (; begin < end; begin++)
-		Redrawn({col,begin});
-}
-
-template <typename ACTIVE_BLOCK_T>
-Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawBeginSource() const
-{
-	return DrawBeginSource;
-}
-template <typename ACTIVE_BLOCK_T>
-Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawBegin() const
-{
-	return DrawBegin;
-}
-template <typename ACTIVE_BLOCK_T>
-Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetDrawEnd() const
-{
-	return DrawEnd;
-}
-template <typename ACTIVE_BLOCK_T>
-Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetBitmapDrawOffset() const
-{
-	return {-BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), -BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height()};
-}
-template <typename ACTIVE_BLOCK_T>
-Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetBitmapSize() const
-{
-	return {BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height()};
-}
-
-template <typename ACTIVE_BLOCK_T>
-Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetDrawSize() const
-{
-	return DrawSize;
-}
-template <typename ACTIVE_BLOCK_T>
-Type::Size SceneDrawer<ACTIVE_BLOCK_T>::GetDrawOffSet() const
-{
-	return DrawOffset;
-}
-
-template <typename ACTIVE_BLOCK_T>
-Type::Move SceneDrawer<ACTIVE_BLOCK_T>::GetCameraSize() const
-{
-	return CameraSize;
-}
-
-template <typename ACTIVE_BLOCK_T>
-Type::Move SceneDrawer<ACTIVE_BLOCK_T>::GetCamera() const
-{
-	return CameraLast;
-}
-
-template <typename ACTIVE_BLOCK_T>
-Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::GetFromCursor(int x, int y)
-{
-	float x_ = (CameraHcenter ? (x) : (x + BlocksBitmapBufferSize * DrawSize.width() + BlocksBitmapDrawOffset.width())) / (float)DrawSize.width();
-	float y_ = (CameraVcenter ? (y) : (y + BlocksBitmapBufferSize * DrawSize.height() + BlocksBitmapDrawOffset.height())) / (float)DrawSize.height();
-
-	return {
-		limiter<Type::Coord::base>(0,((Type::Size)reach(map)).width() - 1,CameraBegin.x() + x_),
-		limiter<Type::Coord::base>(0,((Type::Size)reach(map)).height() - 1,CameraBegin.y() + y_)
-	};
-}
-
-//kamera k�z�pen van
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::MoveCameraTo(Type::Move camera)
-{
-	if (CameraLast == camera)
-		return;
-	if (CameraHcenter)
+	if (_block_size_adjust > 0.f)
 	{
-		if (camera.x() < CameraX1)
-			camera.x() = CameraX1;
-		if (camera.x() > CameraX2)
-			camera.x() = CameraX2;
-
-		if (CameraLast.x() != camera.x())
-		{
-			CameraLast.x() = camera.x();
-
-			CameraBegin.x() = camera.x() - CameraCounts.x() + 0.5f;
-
-			if (BlocksBitmapHcenter)
-			{
-				CameraEnd.x() = CameraBegin.x() + CameraSize.x() + 1;
-
-				if ((int)CameraBegin.x()<DrawBegin.x() || (int)CameraEnd.x()>DrawEnd.x())
-				{
-					DrawBeginSource.x() = (int)(BlocksBitmapBufferSize + camera.x() - BlocksBitmapCounts.width() + 0.5f) - BlocksBitmapBufferSize;//BlocksBitmapBufferSize az�rt kel hozz�adni hogy ne mennyek �t negatv�ba, mert akkor m�sk�pp v�gja le a tizedees jegyet
-
-					DrawBegin.x() = DrawBeginSource.x();
-					DrawEnd.x() = DrawBegin.x() + BlocksBitmapSize.width();
-
-					DrawOffset.width() = DrawBegin.x() * DrawSize.width();
-
-					if (DrawBegin.x() < 0)
-						DrawBegin.x() = 0;
-					if (DrawEnd.x() > ((Type::Size)reach(map)).width())
-						DrawEnd.x() = ((Type::Size)reach(map)).width();
-				}
-			}
-
-			BlocksBitmapDrawOffset.width() = (CameraBegin.x() - (DrawBeginSource.x() + BlocksBitmapBufferSize)) * DrawSize.width();
-		}
-	}
-
-	if (CameraVcenter)
-	{
-		if (camera.y() < CameraY1)
-			camera.y() = CameraY1;
-		if (camera.y() > CameraY2)
-			camera.y() = CameraY2;
-
-		if (CameraLast.y() != camera.y())
-		{
-			CameraLast.y() = camera.y();
-
-			CameraBegin.y() = camera.y() - CameraCounts.y() + 0.5f;
-
-			if (BlocksBitmapVcenter)
-			{
-				CameraEnd.y() = CameraBegin.y() + CameraSize.y() + 1;
-
-				if ((int)CameraBegin.y()<DrawBegin.y() || (int)CameraEnd.y()>DrawEnd.y())
-				{
-					DrawBeginSource.y() = (int)(BlocksBitmapBufferSize + camera.y() - BlocksBitmapCounts.height() + 0.5f) - BlocksBitmapBufferSize;//BlocksBitmapBufferSize az�rt kel hozz�adni hogy ne mennyek �t negatv�ba, mert akkor m�sk�pp v�gja le a tizedees jegyet
-
-					DrawBegin.y() = DrawBeginSource.y();
-					DrawEnd.y() = DrawBegin.y() + BlocksBitmapSize.height();
-
-					DrawOffset.height() = DrawBegin.y() * DrawSize.height();
-
-					if (DrawBegin.y() < 0)
-						DrawBegin.y() = 0;
-					if (DrawEnd.y() > ((Type::Size)reach(map)).height())
-						DrawEnd.y() = ((Type::Size)reach(map)).height();
-				}
-			}
-
-			BlocksBitmapDrawOffset.height() = (CameraBegin.y() - (DrawBeginSource.y() + BlocksBitmapBufferSize)) * DrawSize.height();
-		}
-	}
-}
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::InitializeDrawOptions(Type::Size cameraPhySize, Type::CameraSize cameraSizeAdjust)
-{
-	if (cameraSizeAdjust.width() > 0.f && cameraSizeAdjust.height() > 0.f)
-	{
-		Type::CameraSize sizeDim = {cameraPhySize.width() / cameraSizeAdjust.width(), cameraPhySize.height() / cameraSizeAdjust.height()};
-		Type::CameraSize::base sizeAdjust = (std::max)(sizeDim.width(), sizeDim.height());
-		DrawSize = {(Type::Size::base)sizeAdjust,(Type::Size::base)sizeAdjust};
+		Type::CameraSize ratio = _camera_size / _block_size_adjust;
+		Type::CameraSize::base new_size = ratio.max();
+		block_size_ = new_size;
 	}
 	else
 	{
-		DrawSize = {blockSizeInPixel, blockSizeInPixel};
+		block_size_ = blockSizeInPixel;
 	}
+}
 
-	TotalPointDrawCount = 0;
-	TotalObjectDrawCount = 0;
+template <typename ACTIVE_BLOCK_T>
+Type::Pixels BlocksDrawer<ACTIVE_BLOCK_T>::getBitmapSize() const
+{
+	return bitmap_size_;
+}
 
-	BlocksBitmapDrawOffset = {0,0};
-	CameraBegin = {0,0};
+template <typename ACTIVE_BLOCK_T>
+Type::Pixels BlocksDrawer<ACTIVE_BLOCK_T>::getDrawBoxOffset() const
+{
+	return draw_box_offset_;
+}
+template <typename ACTIVE_BLOCK_T>
+Type::rec2D<Type::Coord> BlocksDrawer<ACTIVE_BLOCK_T>::getDrawBox() const
+{
+	return draw_box_;
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::enableLayer(unsigned int _layer_id, bool _enabled)
+{
+	layers_[_layer_id].enable_ = _enabled;
+}
+template <typename ACTIVE_BLOCK_T>
+bool BlocksDrawer<ACTIVE_BLOCK_T>::isLayerEnabled(unsigned int _layer_id) const
+{
+	return layers_[_layer_id].enable_;
+}
 
-	CameraSize.x() = cameraPhySize.width() / (float)DrawSize.width();
-	CameraSize.y() = cameraPhySize.height() / (float)DrawSize.height();
+template <typename ACTIVE_BLOCK_T>
+BlocksDrawer<ACTIVE_BLOCK_T>::BlocksDrawer()
+{
+	gravity_slides_.initialize(Res::tiles[Res::Tiles::_Gravitation], Res::tiles[Res::BitmapPool::Fallback]);
+	gravity_animator_.Initialize();
+	gravity_animator_.SetNumberOfFrames(gravity_slides_.getCount());
+	gravity_animator_.SetAnimationTime(1.0f);
+}
 
-	CameraCounts.x() = CameraSize.x() / 2.f;
-	CameraCounts.y() = CameraSize.y() / 2.f;
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::updateConfiguration(Type::Size _number_of_blocks)
+{
+	draw_box_ = {{0,0},{0,0}};
 
-	BlocksBitmapSize.width() = (cameraPhySize.width() + DrawSize.width() - 1) / DrawSize.width() + BlocksBitmapBufferSize * 2;
-	if (BlocksBitmapSize.width() % 2 == 0)
-		BlocksBitmapSize.width()++;
-	BlocksBitmapSize.height() = (cameraPhySize.height() + DrawSize.height() - 1) / DrawSize.height() + BlocksBitmapBufferSize * 2;
-	if (BlocksBitmapSize.height() % 2 == 0)
-		BlocksBitmapSize.height()++;
+	block_count_ = _number_of_blocks;
+	block_count_.limit({0,0}, map_->size());
+	bitmap_size_ = block_count_ * block_size_;
 
-	CameraX1 = (cameraPhySize.width() / (float)DrawSize.width()) / 2.f - 0.5f;
-	CameraY1 = (cameraPhySize.height() / (float)DrawSize.height()) / 2.f - 0.5f;
-	CameraX2 = ((Type::Size)reach(map)).width() - CameraX1 - 1;
-	CameraY2 = ((Type::Size)reach(map)).height() - CameraY1 - 1;
-
-	DrawBegin = Type::Coord::Invalid;
-	DrawEnd = Type::Coord::Invalid;
-	CameraLast = Type::Move::Invalid;
-
-	if (((Type::Size)reach(map)).width() <= BlocksBitmapSize.width())
+	for (auto &layer : layers_)
 	{
-		BlocksBitmapSize.width() = ((Type::Size)reach(map)).width();
-		DrawBegin.x() = 0;
-		DrawEnd.x() = ((Type::Size)reach(map)).width();
-		DrawOffset.width() = 0;
-		DrawBeginSource.x() = 0;
-		BlocksBitmapHcenter = false;
-		if (((Type::Size)reach(map)).width() <= CameraSize.x())
-		{
-			BlocksBitmapDrawOffset.width() = -(cameraPhySize.width() - ((Type::Size)reach(map)).width() * DrawSize.width()) / 2 - BlocksBitmapBufferSize * DrawSize.width();
-			CameraHcenter = false;
-		}
-		else
-			CameraHcenter = true;
+		layer.bitmap_.resize(bitmap_size_.w(), bitmap_size_.h());
 	}
-	else
-	{
-		BlocksBitmapHcenter = true;
-		CameraHcenter = true;
-	}
+	bitmap_temp.resize(bitmap_size_.w(), bitmap_size_.h());
 
-	if (((Type::Size)reach(map)).height() <= BlocksBitmapSize.height())
-	{
-		BlocksBitmapSize.height() = ((Type::Size)reach(map)).height();
-		DrawBegin.y() = 0;
-		DrawEnd.y() = ((Type::Size)reach(map)).height();
-		DrawOffset.height() = 0;
-		DrawBeginSource.y() = 0;
-		BlocksBitmapVcenter = false;
-		if (((Type::Size)reach(map)).height() <= CameraSize.y())
-		{
-			BlocksBitmapDrawOffset.height() = -(cameraPhySize.height() - ((Type::Size)reach(map)).height() * DrawSize.height()) / 2 - BlocksBitmapBufferSize * DrawSize.height();
-			CameraVcenter = false;
-		}
-		else
-			CameraVcenter = true;
-	}
-	else
-	{
-		BlocksBitmapVcenter = true;
-		CameraVcenter = true;
-	}
-
-	LastDrawOffset = DrawOffset;
-
-	BlocksBitmapCounts.width() = (BlocksBitmapSize.width() - 1) / 2;
-	BlocksBitmapCounts.height() = (BlocksBitmapSize.height() - 1) / 2;
-
-	BlocksBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
-	LayerBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
-	RedrawnedBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
-	TempBitmap = al_create_bitmap(BlocksBitmapSize.width() * DrawSize.width(), BlocksBitmapSize.height() * DrawSize.height());
-
-	DrawBeginLast = {0,0};
-	DrawEndLast = {0,0};
-
-	map->foreach([&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	map_->foreach([&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 	{
 		block.object->configureDrawOptions();
 		block.remain->configureDrawOptions();
-		block.Redrawn = true;
+		block.redrawn_type_ = RedrawType::All;
+	});
+}
+
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::shiftBlocks(Type::Coord box_shift)
+{
+	Type::Pixels draw_offset = box_shift * block_size_;
+
+	for (auto &layer : layers_)
+	{
+		auto target_lock = bitmap_temp.target();
+		al_clear_to_color(KIR5::Color::_transparent);
+		layer.bitmap_.draw(draw_offset.x(), draw_offset.y());
+		layer.bitmap_.swap(bitmap_temp);
+	}
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::checkForDrawRequests()
+{
+	map_->forrange(draw_box_edges_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		if (
+			(block.object->isExists && block.object->requests.draw) ||
+			(block.remain->isExists && block.remain->requests.draw)
+			)
+		{
+			block.object->requests.draw = false;
+			block.remain->requests.draw = false;
+			setRedrawOnBlock(coord);
+		}
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::fadeBitmap(KIR5::Bitmap &_bitmap)
+{
+	auto target_lock = _bitmap.target();
+	KIR5::Blender blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ONE, ALLEGRO_ONE);
+	al_draw_filled_rectangle(0, 0, _bitmap.width(), _bitmap.height(), KIR5::Color(10, 10, 10, 10));
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::clearBlocks()
+{
+	auto target_lock = layers_[SceneLayer::blocks].bitmap_.clippingTarget();
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		block.drawned_type_ = DrawnedType::None;
+		if (block.redrawn_type_ == RedrawType::Object)
+		{
+			block.drawned_cycle_ = total_draw_cycle_++;
+			block.drawned_type_ |= DrawnedType::Cleared;
+			Type::Pixels draw_point = (coord - draw_box_.p1) * block_size_;
+			target_lock.target.clipping.lock(draw_point.x(), draw_point.y(), block_size_.w(), block_size_.h());
+			al_clear_to_color(KIR5::Color::_transparent);
+		}
 	});
 
-	//drawStatistics.clear();
-}
-template <typename ACTIVE_BLOCK_T>
-SceneDrawer<ACTIVE_BLOCK_T>::SceneDrawer()
-{
-	gravitySlides.initialize(Res::tiles[Res::Tiles::_Gravitation], Res::tiles[Res::BitmapPool::Fallback]);
-	gravityAnimator.Initialize();
-	gravityAnimator.SetNumberOfFrames(gravitySlides.getCount());
-	gravityAnimator.SetAnimationTime(1.0f);
-}
-
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::DrawBlocks(int x, int y)
-{
-	Object::Brick::SObjectDrawCounts = 0;
-	//drawStatistics.start();
-
-	int cx, cy, cw, ch;
-	int x1, x2, y1, y2;
-	al_get_clipping_rectangle(&cx, &cy, &cw, &ch);
-
+	fadeBitmap(layers_[SceneLayer::erases].bitmap_);
+	target_lock.target.lock(layers_[SceneLayer::erases].bitmap_);
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 	{
-		al_reset_clipping_rectangle();
-
-		KIR5::BitmapTarget target;
-
-		int offsetw = LastDrawOffset.width() - DrawOffset.width();
-		int offseth = LastDrawOffset.height() - DrawOffset.height();
-
-		if (offsetw != 0 || offseth != 0)
+		if (block.drawned_type_ & DrawnedType::Cleared)
 		{
-			target.lock(TempBitmap);
-			al_clear_to_color(KIR5::Color::_transparent);
-			LayerBitmap.draw(0, 0);
-			target.lock(LayerBitmap);
-			al_clear_to_color(KIR5::Color::_transparent);
-			TempBitmap.draw(offsetw, offseth);
-
-			target.lock(TempBitmap);
-			al_clear_to_color(KIR5::Color::_transparent);
-			RedrawnedBitmap.draw(0, 0);
-			target.lock(RedrawnedBitmap);
-			al_clear_to_color(KIR5::Color::_transparent);
-			TempBitmap.draw(offsetw, offseth);
-
-			target.lock(TempBitmap);
-			al_clear_to_color(KIR5::Color::_transparent);
-			BlocksBitmap.draw(0, 0);
-			target.lock(BlocksBitmap);
-			al_clear_to_color(KIR5::Color::_transparent);
-			TempBitmap.draw(offsetw, offseth);
-
-			if (DrawBegin.x() < DrawBeginLast.x())
-				for (DrawBeginLast.x()--; DrawBeginLast.x() >= DrawBegin.x(); DrawBeginLast.x()--)
-					RedrawnCol(DrawBeginLast.x(), DrawBegin.y(), DrawEnd.y());
-			else if (DrawEnd.x() > DrawEndLast.x())
-				for (; DrawEndLast.x() < DrawEnd.x(); DrawEndLast.x()++)
-					RedrawnCol(DrawEndLast.x(), DrawBegin.y(), DrawEnd.y());
-
-			if (DrawBegin.y() < DrawBeginLast.y())
-				for (DrawBeginLast.y()--; DrawBeginLast.y() >= DrawBegin.y(); DrawBeginLast.y()--)
-					RedrawnRow(DrawBeginLast.y(), DrawBegin.x(), DrawEnd.x());
-			else if (DrawEnd.y() > DrawEndLast.y())
-				for (; DrawEndLast.y() < DrawEnd.y(); DrawEndLast.y()++)
-					RedrawnRow(DrawEndLast.y(), DrawBegin.x(), DrawEnd.x());
-
-			LastDrawOffset = DrawOffset;
-			DrawBeginLast = DrawBegin;
-			DrawEndLast = DrawEnd;
+			Type::rec2D<Type::Pixels> draw_rec;
+			draw_rec.p1 = (coord - draw_box_.p1) * block_size_;
+			draw_rec.p2 = draw_rec.p1 + block_size_;
+			al_draw_filled_rectangle(draw_rec.p1.x(), draw_rec.p1.y(), draw_rec.p2.x(), draw_rec.p2.y(), KIR5::Color(0, 255, 0, 20));
 		}
-		else
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::clearRedrawIndicator()
+{
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		if (block.redrawn_type_)
 		{
-			target.lock(BlocksBitmap);
+			block.redrawn_type_ = RedrawType::None;
 		}
-
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::clearDrawnedIndicator()
+{
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		if (block.drawned_type_)
 		{
-			if (block.object->requests.draw || (block.remain->isExists && block.remain->requests.draw))
-			{
-				block.object->requests.draw = false;
-				block.remain->requests.draw = false;
-				Redrawn(coord);
-			}
-		});
-
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		{
-			if (block.Redrawn)
-				block.DrawType = ACTIVE_BLOCK_T::DrawType::LastDrawned;
-			else if (block.DrawType & ACTIVE_BLOCK_T::DrawType::LastDrawned)
-				block.DrawType -= ACTIVE_BLOCK_T::DrawType::LastDrawned;
-		});
-
-		if (blockRefreshActive)
-		{
-			target.lock(RedrawnedBitmap);
-			al_reset_clipping_rectangle();
-
-			{
-				KIR5::Blender blender(ALLEGRO_DEST_MINUS_SRC, ALLEGRO_ONE, ALLEGRO_ONE);
-				al_draw_filled_rectangle(0, 0, RedrawnedBitmap.width(), RedrawnedBitmap.height(), KIR5::Color(10, 10, 10, 10));
-			}
-			int PurpleDraw = 0;
-			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-			{
-				if (block.Redrawn)
-				{
-					//if (
-					//	coord.x()*DrawSize.width() - DrawOffset.width() >= bitmap.width() + MapBitmapBufferSize + DrawSize.width()
-					//	||
-					//	coord.y()*DrawSize.height() - DrawOffset.height() >= bitmap.height() + MapBitmapBufferSize + DrawSize.height()
-					//	||
-					//	coord.x()*DrawSize.width() - DrawOffset.width() + DrawSize.width() <-DrawSize.width()
-					//	||
-					//	coord.y()*DrawSize.height() - DrawOffset.height() + DrawSize.height() <-+DrawSize.height()
-					//	)
-					//	clog <<KIR4::LRED <<"NON VISIBLE BLOCK DRAWNED! " <<coord <<KIR4::eol;
-
-					PurpleDraw++;
-					al_draw_filled_rectangle(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), coord.x() * DrawSize.width() - DrawOffset.width() + DrawSize.width(), coord.y() * DrawSize.height() - DrawOffset.height() + DrawSize.height(), KIR5::Color(255, 0, 255, 20));
-
-				}
-			});
-		}
-
-		target.lock(BlocksBitmap);
-
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		{
-			if (block.Redrawn)
-			{
-				block.DrawNumber = TotalPointDrawCount++;
-				block.DrawType |= ACTIVE_BLOCK_T::DrawType::Cleared;
-				al_set_clipping_rectangle(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), DrawSize.width(), DrawSize.height());
-				al_clear_to_color(KIR5::Color::_transparent);
-				//al_draw_filled_rectangle(coord.x()*DrawSize.width(), coord.y()*DrawSize.height(), (coord.x() + 1)*DrawSize.width(), (coord.y() + 1)*DrawSize.height(), KIR5::Color::invisible());
-			}
-		});
-
-		al_reset_clipping_rectangle();
-
-		//al_hold_bitmap_drawing(true);
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		{
-			if (block.Redrawn
-				&&
-				((/*block.object->isExists && */block.ComeFrom == coord && !block.object->events.topDraw)
-				 ||
-				 (block.remain->isExists && !block.remain->events.topDraw)))
-			{
-				x1 = coord.x() * DrawSize.width();
-				y1 = coord.y() * DrawSize.height();
-				x2 = x1 + DrawSize.width();
-				y2 = y1 + DrawSize.height();
-
-				if (block.ComeFrom != coord && block.object->isExists)
-				{
-					if (block.object->IsMoveRight())
-						x1 += DrawSize.width() * (block.object->GetMove().x() + 1);
-					else if (block.object->IsMoveLeft())
-						x2 += DrawSize.width() * (block.object->GetMove().x() - 1);
-
-					if (block.object->IsMoveDown())
-						y1 += DrawSize.height() * (block.object->GetMove().y() + 1);
-					else if (block.object->IsMoveUp())
-						y2 += DrawSize.height() * (block.object->GetMove().y() - 1);
-				}
-
-				if (block.GoTo != coord && reach(map)[block.GoTo].object->isExists)
-				{
-					if (reach(map)[block.GoTo].object->IsMoveRight())
-						x2 += DrawSize.width() * reach(map)[block.GoTo].object->GetMove().x();
-					else if (reach(map)[block.GoTo].object->IsMoveLeft())
-						x1 += DrawSize.width() * reach(map)[block.GoTo].object->GetMove().x();
-
-					if (reach(map)[block.GoTo].object->IsMoveDown())
-						y2 += DrawSize.height() * reach(map)[block.GoTo].object->GetMove().y();
-					else if (reach(map)[block.GoTo].object->IsMoveUp())
-						y1 += DrawSize.height() * reach(map)[block.GoTo].object->GetMove().y();
-				}
-
-				if (x2 - x1 > 0 && y2 - y1 > 0)
-				{
-					al_set_clipping_rectangle(x1 - DrawOffset.width(), y1 - DrawOffset.height(), x2 - x1, y2 - y1);
-
-					if (block.ComeFrom == coord && !block.object->events.topDraw)
-					{
-						block.object->SDraw();
-						block.object->DrawNumber = TotalObjectDrawCount++;
-						block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsNotMovingObjectDrawned;
-					}
-					if (block.remain->isExists && !block.remain->events.topDraw)
-					{
-						block.remain->SDraw();
-						block.remain->DrawNumber = TotalObjectDrawCount++;
-						block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsNotMovingRemainDrawned;
-					}
-				}
-			}
-		});
-		//al_hold_bitmap_drawing(false);
-
-		al_reset_clipping_rectangle();
-
-		{
-			//KIR5::Blender blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
-			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-			{
-				if (block.Redrawn && (block.ComeFrom != coord || block.object->events.topDraw))
-				{
-					//if (block.object->isExists && block.object->IsMoving())
-					{
-						block.object->SDraw();
-						block.object->DrawNumber = TotalObjectDrawCount++;
-						block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsMovingObjectDrawned;
-					}
-				}
-			});
-			map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-			{
-				if (block.Redrawn && block.remain->isExists && block.remain->events.topDraw)
-				{
-					block.remain->SDraw();
-					block.remain->DrawNumber = TotalObjectDrawCount++;
-					block.DrawType |= ACTIVE_BLOCK_T::DrawType::IsMovingObjectDrawned;
-				}
-			});
-		}
-
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		{
-			if (block.Redrawn)
-			{
-				block.Redrawn = false;
-			}
-		});
-
-		map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-		{
+			if (block.drawned_type_ & DrawnedType::Drawned)
 			{
 				block.object->DrawnedCount = 0;
 				if (block.remain->isExists)
-					block.remain->DrawnedCount = 0;
-			}
-		});
-
-
-		//al_reset_clipping_rectangle();
-
-		if (layerActive)
-		{
-			gravityAnimator.UpdateTimer();
-			if (gravityAnimator.UpdateDrawNumber())
-			{
-				target.lock(LayerBitmap);
-
-				al_clear_to_color(KIR5::Color::_transparent);
-				al_hold_bitmap_drawing(true);
-				if (*globalGravity)
 				{
-					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+					block.remain->DrawnedCount = 0;
+				}
+			}
+			block.drawned_type_ = DrawnedType::None;
+		}
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::clearDrawCountIndicator()
+{
+	map_->forrange(draw_box_edges_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		if (block.redrawn_type_)
+		{
+			block.object->DrawnedCount = 0;
+			if (block.remain->isExists)
+			{
+				block.remain->DrawnedCount = 0;
+			}
+		}
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::drawBitmapOfRefresh()
+{
+	fadeBitmap(layers_[SceneLayer::refresh].bitmap_);
+	auto target_lock = layers_[SceneLayer::refresh].bitmap_.target();
+
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		if (block.drawned_type_ & DrawnedType::Drawned)
+		{
+			Type::rec2D<Type::Pixels> draw_rec;
+			draw_rec.p1 = (coord - draw_box_.p1) * block_size_;
+			draw_rec.p2 = draw_rec.p1 + block_size_;
+			al_draw_filled_rectangle(draw_rec.p1.x(), draw_rec.p1.y(), draw_rec.p2.x(), draw_rec.p2.y(), KIR5::Color(255, 0, 0, 20));
+		}
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::drawBitmapOfCoords()
+{
+	char buffer[32];
+
+	KIR5::Font font = Res::Consolas[block_size_.height() / 6];
+
+	auto target_lock = layers_[SceneLayer::coord].bitmap_.target();
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+	{
+		if (block.redrawn_type_ & RedrawType::Shift)
+		{
+			Type::Pixels p = (coord - draw_box_.p1) * block_size_;
+
+			sprintf_s(buffer, "(%03d;%03d)", coord.x(), coord.y());
+
+			font.draw(p.x() + 1, p.y() + 1, buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(p.x(), p.y(), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+
+			sprintf_s(buffer, "(%03d / %03d)", block.object->id, block.remain->id);
+			font.draw(p.x() + 1, p.y() + 1 + (block_size_.height() / 6), buffer, al_map_rgb(0, 0, 0), KIR5::LEFT);
+			font.draw(p.x(), p.y() + (block_size_.height() / 6), buffer, al_map_rgb(255, 255, 255), KIR5::LEFT);
+		}
+	});
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::drawGravity()
+{
+	auto clear_wrapper = [&](std::function<void()> _fnc)
+	{
+		auto target_lock = layers_[SceneLayer::gravity].bitmap_.target();
+		al_clear_to_color(KIR5::Color::_transparent);
+		al_hold_bitmap_drawing(true);
+		_fnc();
+		al_hold_bitmap_drawing(false);
+	};
+	auto update_wrapper = [&](std::function<void()> _fnc)
+	{
+		auto target_lock = layers_[SceneLayer::gravity].bitmap_.target();
+		al_hold_bitmap_drawing(true);
+		_fnc();
+		al_hold_bitmap_drawing(false);
+	};
+
+	gravity_animator_.UpdateTimer();
+	if (global_gravity_)
+	{
+		if (gravity_animator_.UpdateDrawNumber() || global_gravity_updated_)
+		{
+			clear_wrapper([&]()
+			{
+				map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+				{
+					Type::Pixels p = (coord - draw_box_.p1) * block_size_;
+					gravity_slides_[gravity_animator_.GetDrawNumber()].drawScaled(p.x(), p.y(), block_size_.w(), block_size_.h());
+				});
+			});
+		}
+		else
+		{
+			update_wrapper([&]()
+			{
+				map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+				{
+					if (block.redrawn_type_ & RedrawType::Shift)
 					{
-						gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), DrawSize.width(), DrawSize.height());
-					});
+						Type::Pixels p = (coord - draw_box_.p1) * block_size_;
+						gravity_slides_[gravity_animator_.GetDrawNumber()].drawScaled(p.x(), p.y(), block_size_.w(), block_size_.h());
+					}
+				});
+			});
+		}
+	}
+	else
+	{
+		if (gravity_animator_.UpdateDrawNumber() || global_gravity_updated_)
+		{
+			clear_wrapper([&]()
+			{
+				map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+				{
+					if (block.grid & GridFlags::Gravity)
+					{
+						Type::Pixels p = (coord - draw_box_.p1) * block_size_;
+						gravity_slides_[gravity_animator_.GetDrawNumber()].drawScaled(p.x(), p.y(), block_size_.w(), block_size_.h());
+					}
+				});
+			});
+		}
+		else
+		{
+			update_wrapper([&]()
+			{
+				map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
+				{
+					if (block.grid & GridFlags::Gravity && block.redrawn_type_ & RedrawType::Shift)
+					{
+						Type::Pixels p = (coord - draw_box_.p1) * block_size_;
+
+						gravity_slides_[gravity_animator_.GetDrawNumber()].drawScaled(p.x(), p.y(), block_size_.w(), block_size_.h());
+					}
+				});
+			});
+		}
+	}
+
+	if (global_gravity_updated_)
+	{
+		global_gravity_updated_ = false;
+	}
+}
+
+template <typename ACTIVE_BLOCK_T>
+template <int DRAW_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::drawObjects()
+{
+	using TL = KIR5::Bitmap::TargetLock<KIR5::Bitmap::ClippingTarget<KIR5::Bitmap::Target, KIR5::Bitmap::Clipping>>;
+	TL target_lock = layers_[SceneLayer::blocks].bitmap_.clippingTarget();
+
+	struct ClippingRect
+	{
+		Type::rec2D<Type::Pixels> _rec;
+		bool requested_;
+		const Type::Coord &coord_;
+		const ACTIVE_BLOCK_T &block_;
+		const BlocksDrawer<ACTIVE_BLOCK_T> &sceen_drawer_;
+		TL &target_lock_;
+		ClippingRect(TL &_target_lock, const BlocksDrawer<ACTIVE_BLOCK_T> &_sceen_drawer, const Type::Coord &_coord, const ACTIVE_BLOCK_T &_block):
+			target_lock_(_target_lock), sceen_drawer_(_sceen_drawer), requested_(false), coord_(_coord), block_(_block)
+		{
+
+		}
+		~ClippingRect()
+		{
+			reset();
+		}
+
+		bool clip()
+		{
+			if (!target_lock_.target.clipping.isLocked())
+			{
+				if (!requested_)
+				{
+					requested_ = true;
+					_rec = sceen_drawer_.getObjectRect(coord_, block_);
+				}
+				if (_rec.hasArea())
+				{
+					target_lock_.target.clipping.lock(_rec.x() - sceen_drawer_.draw_box_offset_.width(), _rec.y() - sceen_drawer_.draw_box_offset_.height(), _rec.width(), _rec.height());
+					return true;
+				}
+			}
+			return false;
+		}
+		void reset()
+		{
+			target_lock_.target.clipping.unlock();
+		}
+	};
+
+	struct DrawConfig
+	{
+		ACTIVE_BLOCK_T::OBJECT_T *obj_;
+		bool draw_;
+		bool clipping_;
+		int draw_type_;
+	};
+
+	auto do_draw_configs = [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block, const auto &draw_configs)
+	{
+		ClippingRect clipping_rect{target_lock, *this, coord, block};
+
+		for (auto &draw_config : draw_configs)
+		{
+			if (draw_config.draw_ && draw_config.obj_->isExists)
+			{
+				if (draw_config.clipping_)
+				{
+					if (!clipping_rect.clip()) continue;
 				}
 				else
 				{
-					map->forrange(DrawBegin, DrawEnd, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
-					{
-						if (block.grid & GridFlags::Gravity)
-							gravitySlides[gravityAnimator.GetDrawNumber()].drawScaled(coord.x() * DrawSize.width() - DrawOffset.width(), coord.y() * DrawSize.height() - DrawOffset.height(), DrawSize.width(), DrawSize.height());
-					});
+					clipping_rect.reset();
 				}
-				al_hold_bitmap_drawing(false);
+
+				Type::Coord draw_coord = draw_config.obj_->DrawCoord - draw_box_offset_;
+				draw_config.obj_->Draw(draw_coord, block_size_);
+				draw_config.obj_->DrawNumber = total_object_draw_count_++;
+				block.drawned_type_ |= draw_config.draw_type_;
 			}
 		}
-		target.unlock();
-	}
+	};
 
-	al_set_clipping_rectangle(cx, cy, cw, ch);
-	//al_reset_clipping_rectangle();
-	BlocksBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height());
-	if (layerActive)
+	map_->forrange(draw_box_, [&](const Type::Coord &coord, ACTIVE_BLOCK_T &block)
 	{
-		LayerBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height());
-	}
-	if (blockRefreshActive)
-	{
-		RedrawnedBitmap.draw(x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(), y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height());
-	}
-
-	al_draw_rectangle(
-		x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width(),
-		y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height(),
-		x - BlocksBitmapBufferSize * DrawSize.width() - BlocksBitmapDrawOffset.width() + BlocksBitmap.width() + 1,
-		y - BlocksBitmapBufferSize * DrawSize.height() - BlocksBitmapDrawOffset.height() + BlocksBitmap.height() + 1,
-		KIR5::Color(255, 0, 255), 1);
-
-	//al_set_clipping_rectangle(cx, cy, cw, ch);
-}
-
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::SetMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &map_)
-{
-	map = map_;
-}
-
-template <typename ACTIVE_BLOCK_T>
-void SceneDrawer<ACTIVE_BLOCK_T>::Redrawn(Type::Coord coord)
-{
-	if (!reach(map)[coord].Redrawn)
-	{
-		reach(map)[coord].Redrawn = true;
-		if (reach(map)[coord].ComeFrom != coord)
-			Redrawn(reach(map)[coord].ComeFrom);
-		else if (/*reach(map)[coord].object->isExists &&*/ reach(map)[coord].object->isActionMove())
+		if (block.redrawn_type_ & RedrawType::Object)
 		{
-			if (reach(map)[coord].object->IsMoveLeft())
-				Redrawn({coord.x() + 1,coord.y()});
-			else if (reach(map)[coord].object->IsMoveRight())
-				Redrawn({coord.x() - 1,coord.y()});
-			else if (reach(map)[coord].object->IsMoveUp())
-				Redrawn({coord.x(),coord.y() + 1});
-			else if (reach(map)[coord].object->IsMoveDown())
-				Redrawn({coord.x(),coord.y() - 1});
+			if constexpr (DRAW_T == TOP_DRAW)
+			{
+				const std::array<DrawConfig, 2> draw_configs{{
+					{
+						block.object,
+						block.ComeFrom == coord,
+						true,
+						DrawnedType::TopStand
+					},
+					{
+						block.remain,
+						block.remain->_draw_type == ACTIVE_BLOCK_T::OBJECT_T::DrawType::Top,
+						false,
+						DrawnedType::TopRemain
+					}
+				}};
+
+				do_draw_configs(coord, block, draw_configs);
+			}
+			if constexpr (DRAW_T == STANDARD_DRAW)
+			{
+				const std::array<DrawConfig, 3> draw_configs{{
+					{
+						block.remain,
+						block.remain->_draw_type != ACTIVE_BLOCK_T::OBJECT_T::DrawType::Top,
+						true,
+						DrawnedType::StandardRemain
+					},
+					{
+						block.object,
+						block.ComeFrom != coord,
+						false,
+						DrawnedType::StandardMove
+					},
+					{
+						reach(map_)[block.GoTo].object,
+						block.GoTo != coord && !draw_box_.isInside(block.GoTo),
+						false,
+						DrawnedType::StandardGoTo
+					}
+				}};
+
+				do_draw_configs(coord, block, draw_configs);
+			}
 		}
-		if (reach(map)[coord].GoTo != coord)
-			Redrawn(reach(map)[coord].GoTo);
+	});
+}
+
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::updateBitmap()
+{
+	clearDrawnedIndicator();
+
+	checkForDrawRequests();
+	clearDrawCountIndicator();
+
+	clearBlocks();
+	drawObjects<STANDARD_DRAW>();
+	drawObjects<TOP_DRAW>();
+	drawBitmapOfRefresh();
+	drawBitmapOfCoords();
+	drawGravity();
+
+	clearRedrawIndicator(); // Redraw indication can be set on tha timer loop, so it can be only cleared right wafter everything was drawned
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::updateDrawBox(Type::Coord _corner)
+{
+	Type::rec2D<Type::Coord> draw_box_tmp = draw_box_;
+	draw_box_.p1 = _corner;
+	draw_box_.p1.limit({0,0}, map_->size());
+
+	draw_box_.p2 = draw_box_.p1 + block_count_;
+	draw_box_.p2.limit({0,0}, map_->size());
+
+	draw_box_edges_.p1 = draw_box_.p1 - 1;
+	draw_box_edges_.p2 = draw_box_.p2 + 1;
+
+	draw_box_edges_.p1.limit({0,0}, map_->size());
+	draw_box_edges_.p2.limit({0,0}, map_->size());
+
+	Type::Coord box_shift = draw_box_tmp.p1 - draw_box_.p1;
+
+	auto iterateOverRowOfBlocks = [&](Type::Coord::base row, Type::Coord::base begin, Type::Coord::base end)
+	{
+		for (; begin < end; begin++)
+		{
+			Type::Coord coord{begin,row};
+			auto &block = reach(map_)[coord];
+			block.redrawn_type_ |= RedrawType::Shift;
+			setRedrawOnBlock(coord);
+		}
+	};
+	auto iterateOverColOfBlocks = [&](Type::Coord::base col, Type::Coord::base begin, Type::Coord::base end)
+	{
+		for (; begin < end; begin++)
+		{
+			Type::Coord coord{col,begin};
+			auto &block = reach(map_)[coord];
+			block.redrawn_type_ |= RedrawType::Shift;
+			setRedrawOnBlock(coord);
+		}
+	};
+
+
+	if (box_shift != 0)
+	{
+		if (box_shift.x() > 0)
+		{
+			for (Type::Coord::base col = draw_box_.p1.x(); col < draw_box_tmp.p1.x(); ++col)
+			{
+				iterateOverColOfBlocks(col, draw_box_.p1.y(), draw_box_.p2.y());
+			}
+		}
+		else if (box_shift.x() < 0)
+		{
+			for (Type::Coord::base col = draw_box_tmp.p2.x(); col < draw_box_.p2.x(); ++col)
+			{
+				iterateOverColOfBlocks(col, draw_box_.p1.y(), draw_box_.p2.y());
+			}
+		}
+
+		if (box_shift.y() > 0)
+		{
+			for (Type::Coord::base row = draw_box_.p1.y(); row < draw_box_tmp.p1.y(); ++row)
+			{
+				iterateOverRowOfBlocks(row, draw_box_.p1.x(), draw_box_.p2.x());
+			}
+		}
+		else if (box_shift.y() < 0)
+		{
+			for (Type::Coord::base row = draw_box_tmp.p2.y(); row < draw_box_.p2.y(); ++row)
+			{
+				iterateOverRowOfBlocks(row, draw_box_.p1.x(), draw_box_.p2.x());
+			}
+		}
+
+		shiftBlocks(box_shift);
 	}
+
+	draw_box_offset_ = draw_box_.p1 * getBlockSize();
+}
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::drawBitmaps(Type::Pixels _target)
+{
+	for (auto &layer : layers_)
+	{
+		if (layer.enable_)
+		{
+			layer.bitmap_.draw(_target.x(), _target.y());
+		}
+	}
+
+	Type::rec2D<Type::Pixels> d;
+	d.p1 = _target;
+	d.p2 = d.p1 + bitmap_size_ - 1;
+	al_draw_rectangle(d.p1.x(), d.p1.y(), d.p2.x(), d.p2.y(), KIR5::Color(255, 0, 0), 1.f);
+}
+template <typename ACTIVE_BLOCK_T>
+Type::Coord BlocksDrawer<ACTIVE_BLOCK_T>::getTargetOfCursor(Type::Pixels _cur) const
+{
+	Type::Coord click_point = _cur / block_size_;
+	click_point += draw_box_.p1;
+	click_point.limiter({0,0}, (Type::Size)reach(map_) - 1);
+	return click_point;
+}
+
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::setRedrawOnBlockRepeat(Type::Coord coord)
+{
+	auto &block = reach(map_)[coord];
+	if (!(block.redrawn_type_ & RedrawType::Object))
+	{
+		block.redrawn_type_ |= RedrawType::Object;
+		if (block.ComeFrom != coord) setRedrawOnBlockRepeat(block.ComeFrom);
+		if (block.GoTo != coord) setRedrawOnBlockRepeat(block.GoTo);
+	}
+}
+
+template <typename ACTIVE_BLOCK_T>
+void BlocksDrawer<ACTIVE_BLOCK_T>::setRedrawOnBlock(Type::Coord coord)
+{
+	auto &block = reach(map_)[coord];
+	block.redrawn_type_ |= RedrawType::Object;
+	if (block.ComeFrom != coord) setRedrawOnBlockRepeat(block.ComeFrom);
+	if (block.GoTo != coord) setRedrawOnBlockRepeat(block.GoTo);
+}
+
+template <typename ACTIVE_BLOCK_T>
+Type::rec2D<Type::Pixels> BlocksDrawer<ACTIVE_BLOCK_T>::getObjectRect(const Type::Coord &coord, const ACTIVE_BLOCK_T &block) const
+{
+	Type::rec2D<Type::Pixels> rec;
+	rec.p1 = coord * block_size_;
+	rec.p2 = rec.p1 + block_size_;
+
+	const ACTIVE_BLOCK_T::OBJECT_T *object = block.object;
+	if (block.ComeFrom != coord && object->isExists)
+	{
+		const Type::Move &move = object->GetMove();
+
+		if (object->IsMoveRight() && move.x() >= -1.f)
+			rec.p1.x() += block_size_.width() * (move.x() + 1);
+		else if (object->IsMoveLeft() && move.x() <= 1.f)
+			rec.p2.x() += block_size_.width() * (move.x() - 1);
+
+		if (object->IsMoveDown() && move.y() >= -1.f)
+			rec.p1.y() += block_size_.height() * (move.y() + 1);
+		else if (object->IsMoveUp() && move.y() <= 1.f)
+			rec.p2.y() += block_size_.height() * (move.y() - 1);
+	}
+
+	object = reach(map_)[block.GoTo].object;
+	if (block.GoTo != coord && object->isExists)
+	{
+		const Type::Move &move = object->GetMove();
+
+		if (object->IsMoveRight() && move.x() <= -1.f)
+			rec.p2.x() += block_size_.width() * move.x();
+		else if (object->IsMoveLeft() && move.x() >= 1.f)
+			rec.p1.x() += block_size_.width() * move.x();
+
+		if (object->IsMoveDown() && move.y() <= -1.f)
+			rec.p2.y() += block_size_.height() * move.y();
+		else if (object->IsMoveUp() && move.y() >= 1.f)
+			rec.p1.y() += block_size_.height() * move.y();
+	}
+	return rec;
+}
+
+template <typename ACTIVE_BLOCK_T>
+inline Type::Pixels MoveDrawer<ACTIVE_BLOCK_T>::getBlockSize() const
+{
+	return blocks_drawer_.getBlockSize();
+}
+template <typename ACTIVE_BLOCK_T>
+inline void MoveDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool _global_gravity)
+{
+	blocks_drawer_.setGlobalGravity(_global_gravity);
+}
+template <typename ACTIVE_BLOCK_T>
+inline void MoveDrawer<ACTIVE_BLOCK_T>::setRedrawOnBlock(Type::Coord coord)
+{
+	blocks_drawer_.setRedrawOnBlock(coord);
+}
+template <typename ACTIVE_BLOCK_T>
+inline void MoveDrawer<ACTIVE_BLOCK_T>::enableLayer(unsigned int _layer_id, bool _enabled)
+{
+	blocks_drawer_.enableLayer(_layer_id, _enabled);
+}
+template <typename ACTIVE_BLOCK_T>
+inline bool MoveDrawer<ACTIVE_BLOCK_T>::isLayerEnabled(unsigned int _layer_id) const
+{
+	return blocks_drawer_.isLayerEnabled(_layer_id);
+}
+template <typename ACTIVE_BLOCK_T>
+inline Type::Pixels MoveDrawer<ACTIVE_BLOCK_T>::getBitmapSize() const
+{
+	return blocks_drawer_.getBitmapSize();
+}
+
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::setMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &_map)
+{
+	map_ = _map;
+	blocks_drawer_.setMap(_map);
+}
+
+template <typename ACTIVE_BLOCK_T>
+Type::Move MoveDrawer<ACTIVE_BLOCK_T>::getCameraSizeInBlocks() const
+{
+	return camera_count_;
+}
+
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::updateConfiguration(Type::Size _camera_size, Type::CameraSize _block_size_adjust, int _bufferred_blocks_count)
+{
+	bufferred_blocks_count_ = _bufferred_blocks_count;
+
+	blocks_drawer_.setBlockSize(_camera_size, _block_size_adjust);
+
+	camera_size_ = _camera_size;
+	camera_radius_size_ = _camera_size / 2.f;
+
+	camera_count_ = camera_size_ / (Type::Move)getBlockSize();
+	camera_radius_count_ = camera_count_ / 2.f;
+
+	camera_cage_.p1 = camera_radius_count_;
+	camera_cage_.p2 = map_->size() - camera_radius_count_;
+
+	blocks_drawer_.updateConfiguration(
+		(camera_size_ / Type::Move(getBlockSize())).ceil<Type::Coord::base>() + 1 + bufferred_blocks_count_ * 2
+	);
+	updateCameraBox(true);
+}
+
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::updateCameraBox(bool _force_update_draw_box)
+{
+	camera_move_box_.p1 = camera_center_ - camera_radius_count_;
+	camera_move_box_.p2 = camera_center_ + camera_radius_count_;
+
+	camera_box_.p1 = camera_move_box_.p1.floor<Type::Coord::base>();
+	camera_box_.p2 = camera_move_box_.p2.ceil<Type::Coord::base>();
+
+	if (_force_update_draw_box || !camera_box_.isSubset(blocks_drawer_.getDrawBox()))
+	{
+		blocks_drawer_.updateDrawBox(camera_box_.p1 - bufferred_blocks_count_);
+	}
+
+	block_offset_ = (camera_move_box_.p1 * getBlockSize()) - blocks_drawer_.getDrawBoxOffset();
+}
+
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::moveCamera(Type::Move camera)
+{
+	update_camera_ = camera;
+}
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::updateCamera()
+{
+	camera_center_ = update_camera_ + 0.5f;
+	camera_center_.limiter(camera_cage_.p1, camera_cage_.p2);
+}
+template <typename ACTIVE_BLOCK_T>
+Type::Move MoveDrawer<ACTIVE_BLOCK_T>::getCameraCenter() const
+{
+	return camera_center_;
+}
+
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::updateBitmap()
+{
+	updateCamera();
+	updateCameraBox(false);
+	blocks_drawer_.updateBitmap();
+}
+template <typename ACTIVE_BLOCK_T>
+void MoveDrawer<ACTIVE_BLOCK_T>::drawBitmaps(Type::Pixels _target)
+{
+	blocks_drawer_.drawBitmaps(_target - block_offset_);
+	al_draw_rectangle(_target.x(), _target.y(), _target.x() + camera_size_.w() - 1, _target.y() + camera_size_.h() - 1, KIR5::Color(255, 255, 0), 1.f);
+}
+
+template <typename ACTIVE_BLOCK_T>
+Type::Coord MoveDrawer<ACTIVE_BLOCK_T>::getTargetOfCursor(Type::Pixels _cur) const
+{
+	return blocks_drawer_.getTargetOfCursor(_cur + block_offset_);
+}
+
+template <typename ACTIVE_BLOCK_T>
+inline Type::Pixels SceneDrawer<ACTIVE_BLOCK_T>::getBlockSize() const
+{
+	return move_drawer_.getBlockSize();
+}
+template <typename ACTIVE_BLOCK_T>
+inline void SceneDrawer<ACTIVE_BLOCK_T>::setGlobalGravity(bool _global_gravity)
+{
+	move_drawer_.setGlobalGravity(_global_gravity);
+}
+template <typename ACTIVE_BLOCK_T>
+inline void SceneDrawer<ACTIVE_BLOCK_T>::setRedrawOnBlock(Type::Coord coord)
+{
+	move_drawer_.setRedrawOnBlock(coord);
+}
+template <typename ACTIVE_BLOCK_T>
+inline void SceneDrawer<ACTIVE_BLOCK_T>::enableLayer(unsigned int _layer_id, bool _enabled)
+{
+	move_drawer_.enableLayer(_layer_id, _enabled);
+}
+template <typename ACTIVE_BLOCK_T>
+inline bool SceneDrawer<ACTIVE_BLOCK_T>::isLayerEnabled(unsigned int _layer_id) const
+{
+	return move_drawer_.isLayerEnabled(_layer_id);
+}
+template <typename ACTIVE_BLOCK_T>
+inline void SceneDrawer<ACTIVE_BLOCK_T>::moveCamera(Type::Move camera)
+{
+	move_drawer_.moveCamera(camera);
+}
+template <typename ACTIVE_BLOCK_T>
+inline Type::Move SceneDrawer<ACTIVE_BLOCK_T>::getCameraCenter() const
+{
+	return move_drawer_.getCameraCenter();
+}
+template <typename ACTIVE_BLOCK_T>
+inline void SceneDrawer<ACTIVE_BLOCK_T>::updateBitmap()
+{
+	move_drawer_.updateBitmap();
+}
+template <typename ACTIVE_BLOCK_T>
+inline void SceneDrawer<ACTIVE_BLOCK_T>::setMap(std::shared_ptr<Matrix<ACTIVE_BLOCK_T>> &_map)
+{
+	move_drawer_.setMap(_map);
+}
+template <typename ACTIVE_BLOCK_T>
+inline Type::Move SceneDrawer<ACTIVE_BLOCK_T>::getCameraSizeInBlocks() const
+{
+	return move_drawer_.getCameraSizeInBlocks();
+}
+
+template <typename ACTIVE_BLOCK_T>
+void SceneDrawer<ACTIVE_BLOCK_T>::updateConfiguration(Type::Size _camera_size, Type::CameraSize _block_size_adjust, int _bufferred_blocks_count)
+{
+	_camera_size = _camera_size;
+	//_camera_size = Type::Pixels::max(_camera_size+280, 0);
+	move_drawer_.updateConfiguration(_camera_size, _block_size_adjust, _bufferred_blocks_count);
+	panel_shift_ = Type::Pixels::apply([](const Type::Pixels::base &bitmap_size, const Type::Pixels::base &_camera_size)
+	{
+		if (bitmap_size < _camera_size)
+		{
+			return (_camera_size - bitmap_size) / 2;
+		}
+		else
+		{
+			return 0;
+		}
+	}, move_drawer_.getBitmapSize(), _camera_size);
+	//panel_shift_ += 140;
+}
+template <typename ACTIVE_BLOCK_T>
+void SceneDrawer<ACTIVE_BLOCK_T>::drawBitmaps(Type::Pixels _target)
+{
+	move_drawer_.drawBitmaps(_target + panel_shift_);
+}
+template <typename ACTIVE_BLOCK_T>
+Type::Coord SceneDrawer<ACTIVE_BLOCK_T>::getTargetOfCursor(Type::Pixels _cur) const
+{
+	return move_drawer_.getTargetOfCursor(_cur - panel_shift_);
 }
 
 
 template <typename ACTIVE_BLOCK_T>
-Object::Animator::EntityData SceneDrawer<ACTIVE_BLOCK_T>::gravityAnimator;
+Object::Animator::EntityData BlocksDrawer<ACTIVE_BLOCK_T>::gravity_animator_;
 
 template <typename ACTIVE_BLOCK_T>
-Res::Slides SceneDrawer<ACTIVE_BLOCK_T>::gravitySlides;
+Res::Slides BlocksDrawer<ACTIVE_BLOCK_T>::gravity_slides_;
 
 #endif

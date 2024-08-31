@@ -354,7 +354,7 @@ namespace Object
 			}
 
 			template<typename MODULES_T>
-			inline Type::Move Func<MODULES_T>::GetMove() const
+			inline Type::Move &Func<MODULES_T>::GetMove() const
 			{
 				return data_.move;
 			}

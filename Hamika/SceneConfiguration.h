@@ -86,6 +86,122 @@ namespace UI::Scene
 
 	constexpr std::size_t ACTIVE_MAP_FINISHED = 0x400;
 
+	class KeyboardPanel: public AdjusterPanel<Panel, 96, 96>
+	{
+		private: class Icon: public virtual Panel
+		{
+			friend class InteractiveMultitest;
+
+			private: bool is_active_ = false;
+			private: KIR5::Bitmap bitmap_;
+
+			public: Icon();
+
+			public: void setActive(bool _is_active);
+			public: void setBitmap(const KIR5::Bitmap &bitmap);
+		};
+
+		private: std::array<std::array<std::shared_ptr<Icon>, 3>, 3> keyboard_state{{
+			{
+				KIR5::Shared<AdjustablePanel<Icon, 0, 0, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 0, 32, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 0, 64, 32, 32>>(),
+			},
+			{
+				KIR5::Shared<AdjustablePanel<Icon, 32, 0, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 32, 32, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 32, 64, 32, 32>>(),
+			},
+			{
+				KIR5::Shared<AdjustablePanel<Icon, 64, 0, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 64, 32, 32, 32>>(),
+				KIR5::Shared<AdjustablePanel<Icon, 64, 64, 32, 32>>(),
+			},
+		}};
+
+		public: KeyboardPanel();
+		public: void updateKeyboardState(const std::shared_ptr<KeyboardController> &_keyboard_controller);
+	};
+	class LayerPanel: public AdjusterPanel<Panel, 32 * SceneLayer::number_of_layers, 32>
+	{
+		private: class Icon: public virtual AdjusterPanel<KIR5::FramedRectangleButton<>, 32, 32>, public virtual AdjustParam
+		{
+			friend class InteractiveMultitest;
+
+			private: SceneDrawer_T<SceneBlock<Object::Brick>> *drawner_;
+			private: std::size_t id_;
+			private: bool is_active_ = false;
+			private: KIR5::Button<>::Group button_group_;
+			private: KIR5::Shared<AdjustablePanel<BmpButton, 2, 2, 32 - 4, 32 - 4>> bmp_button_;
+
+			public: Icon(std::size_t _id, SceneDrawer_T<SceneBlock<Object::Brick>> *_drawner):
+				AdjustParam(_id * 32, 0, 32, 32), drawner_(_drawner), id_(_id)
+			{
+				*this << bmp_button_;
+				bmp_button_->show();
+				bmp_button_->setBitmap(Res::uielements[Res::UIElements::Layers[_id]]);
+
+				button_group_.fncPress = FNC_PRESS([&](FNC_PRESS_PARAMS)->FNC_PRESS_RET
+				{
+					setActive(!is_active_);
+					drawner_->enableLayer(id_, is_active_);
+				});
+				button_group_.group(*this);
+				button_group_.group(*bmp_button_);
+
+				fncMoved.push_back(FNC_MOVED([&](FNC_MOVED_PARAMS)->FNC_MOVED_RET
+				{
+					setFrameSize(std::ceil(width() / 16.f));
+				}));
+				setColor(KIR5::Color(30, 30, 30));
+
+				setActive(drawner_->isLayerEnabled(_id));
+			}
+
+			public: void setActive(bool _is_active)
+			{
+				is_active_ = _is_active;
+				if (is_active_)
+				{
+					setColorFrame(KIR5::Color(30, 200, 30));
+				}
+				else
+				{
+					setColorFrame(KIR5::Color(200, 30, 30));
+				}
+			}
+		};
+		private:
+		template<std::size_t I>
+		constexpr std::shared_ptr<Icon> createIcon(SceneDrawer_T<SceneBlock<Object::Brick>> *_drawner)
+		{
+			return KIR5::Shared<Icon>(I, _drawner);
+		}
+
+		private:
+		template<std::size_t... Is>
+		constexpr std::array<std::shared_ptr<Icon>, sizeof...(Is)> createlayerStat(SceneDrawer_T<SceneBlock<Object::Brick>> *_drawner, std::index_sequence<Is...>)
+		{
+			return {createIcon<Is>(_drawner)...};
+		}
+
+		public: std::array<std::shared_ptr<Icon>, SceneLayer::number_of_layers> layer_states;
+
+		public: LayerPanel(SceneDrawer_T<SceneBlock<Object::Brick>> *_drawner):
+			layer_states(createlayerStat(_drawner, std::make_index_sequence<SceneLayer::number_of_layers>{}))
+		{
+			for (auto &icon : layer_states)
+			{
+				*this << icon;
+			}
+		}
+	};
+	class LoopCounter: public Label<Res::Consolas>
+	{
+		public: LoopCounter();
+		public: void updateLoopcounter(unsigned long long _loop_counter);
+	};
+
 	class Replay: public Base::Standard::Type
 	{
 		private: unsigned long long delayLoop;
@@ -135,10 +251,15 @@ namespace UI::Scene
 		private: KIR5::Event::FNC_TIMER delayTimerStart;
 		private: KIR5::Event::FNC_TIMER delayTimerStop;
 		private: KIR5::Event::FNC_DRAW delayDraw;
+		private: KIR5::Event::FNC_TIMER coreTimer;
 		private: std::uint8_t delayAlpha;
 
 		private: std::shared_ptr<Res::Logger> logger;
 		protected: std::shared_ptr<ValidatorRecord> validator;
+
+		private: KIR5::Shared<KeyboardPanel> keyboard_Panel;
+		private: std::shared_ptr<LayerPanel> layer_Panel;
+		private: KIR5::Shared<LoopCounter> loopcounter_Label;
 
 		public: Developer(const std::shared_ptr<Res::BluePrint> &bluePrint_);
 
@@ -150,41 +271,8 @@ namespace UI::Scene
 
 	class InteractiveMultitest: public Base::Standard::Type
 	{
-		private: class Icon: public virtual Panel
-		{
-			friend class InteractiveMultitest;
-
-			private: bool is_active_ = false;
-			private: KIR5::Bitmap bitmap_;
-
-			public: Icon();
-
-			public: void setActive(bool _is_active);
-			public: void setBitmap(const KIR5::Bitmap &bitmap);
-		};
-
-		private: KIR5::Shared<AdjusterPanel<Panel, 96, 96>> keyboard_Panel;
-		private: std::array<std::array<std::shared_ptr<Icon>, 3>, 3> keyboard_state{{
-			{
-				KIR5::Shared<AdjustablePanel<Icon, 0, 0, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 0, 32, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 0, 64, 32, 32>>(),
-			},
-			{
-				KIR5::Shared<AdjustablePanel<Icon, 32, 0, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 32, 32, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 32, 64, 32, 32>>(),
-			},
-			{
-				KIR5::Shared<AdjustablePanel<Icon, 64, 0, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 64, 32, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 64, 64, 32, 32>>(),
-			},
-		}};
-		private: void updateKeyboardState();
-
-		private: KIR5::Shared<Label<Res::Consolas>> loopcounter_Label;
-		private: void updateLoopcounter();
+		private: KIR5::Shared<KeyboardPanel> keyboard_Panel;
+		private: KIR5::Shared<LoopCounter> loopcounter_Label;
 
 		private: bool paused = false;
 		private: KIR5::Event::FNC_TIMER coreTimer;

@@ -13,7 +13,6 @@ namespace Object
 			{
 				timer = false;
 				update = false;
-				topDraw = false;
 			}
 
 			template<typename MODULES_T>
@@ -34,7 +33,6 @@ namespace Object
 
 				json["events.timer"] = data_.events.timer;
 				json["events.update"] = data_.events.update;
-				json["events.topDraw"] = data_.events.topDraw;
 
 				return json;
 			}
