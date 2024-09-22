@@ -3,7 +3,6 @@
 
 #include <KIR/KIR4_console.h>
 #include <KIR/AL/KIR5_bitmap.h>
-#include <KIR/AL/KIR5_bitmap_target.h>
 
 namespace Res
 {
@@ -73,7 +72,7 @@ namespace Res
 	KIR5::Bitmap BitmapBox::generate(int width, int height, KIR5::Color color)
 	{
 		KIR5::Bitmap bmp(width, height);
-		KIR5::BitmapTarget target(bmp);
+		auto target_lock = bmp.target();
 		drawMissingObject(0, 0, width, height, color);
 		return bmp;
 	}
@@ -220,7 +219,7 @@ namespace Res
 		layout.clear();
 
 		poolBitmap = al_create_bitmap(bmp.width(), bmp.height());
-		KIR5::BitmapTarget target(poolBitmap);
+		auto target_lock = poolBitmap.target();
 		al_clear_to_color({0,0,0,0});
 		bmp.draw(0, 0);
 
@@ -256,7 +255,7 @@ namespace Res
 				{
 					KIR5::Bitmap newPoolBitmap = al_create_bitmap(poolBitmap.width(), paramTmp.y + paramTmp.h + h);
 					{
-						KIR5::BitmapTarget target(newPoolBitmap);
+						auto target_lock = newPoolBitmap.target();
 						al_clear_to_color({0,0,0,0});
 						poolBitmap.draw(0, 0);
 					}
@@ -271,7 +270,7 @@ namespace Res
 
 		KIR5::Bitmap newPoolBitmap = al_create_bitmap(paramTmp.x + paramTmp.w + w, (std::max)(poolBitmap.height(), h));
 		{
-			KIR5::BitmapTarget target(newPoolBitmap);
+			auto target_lock = newPoolBitmap.target();
 			al_clear_to_color({0,0,0,0});
 			poolBitmap.draw(0, 0);
 		}
@@ -306,7 +305,7 @@ namespace Res
 	void BitmapPool::addBitmap(const KIR5::Bitmap &bmp, const char *name)
 	{
 		Param param = getParamForBitmap(bmp, name);
-		KIR5::BitmapTarget target(poolBitmap);
+		auto target_lock = poolBitmap.target();
 		bmp.draw(param.x, param.y);
 	}
 

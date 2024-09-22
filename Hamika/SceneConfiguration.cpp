@@ -44,7 +44,7 @@ namespace UI::Scene
 		{
 			background->move(0, 0, width(), height());
 			drawnerBar->move(0, 0, width(), height());
-			drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
+			drawer.updateConfiguration({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 		};
 
 		fncMoved.push_back(activeMoved);
@@ -195,9 +195,6 @@ namespace UI::Scene
 	}
 
 
-
-
-
 	Developer::Developer(const std::shared_ptr<Res::BluePrint> &bluePrint_)
 	{
 		logger = std::shared_ptr<Res::Logger>(new Res::Logger(*this, bluePrint_, nullptr));
@@ -207,9 +204,36 @@ namespace UI::Scene
 
 		initialize(bluePrint_, nullptr);
 
+		layer_Panel = std::make_shared<LayerPanel>(&drawer);
+
 		fncMoved.push_back(activeMoved);
 		fncKeyDown.push_back(activeKeyDown);
 		fncKeyUp.push_back(activeKeyUp);
+
+		*this << layer_Panel << keyboard_Panel << loopcounter_Label;
+
+		fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
+		{
+			keyboard_Panel->bringTop();
+			keyboard_Panel->move(
+				width() - decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, 0,
+				decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, decltype(keyboard_Panel)::element_type::ADJUSTER_HEIGHT
+			);
+			loopcounter_Label->bringTop();
+			loopcounter_Label->move(keyboard_Panel->x(), keyboard_Panel->y2(), keyboard_Panel->width(), 28);
+			layer_Panel->bringTop();
+			layer_Panel->move(
+				width() - decltype(layer_Panel)::element_type::ADJUSTER_WIDTH, loopcounter_Label->y2(),
+				decltype(layer_Panel)::element_type::ADJUSTER_WIDTH, decltype(layer_Panel)::element_type::ADJUSTER_HEIGHT
+			);
+		});
+
+		*coreTimer = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
+		{
+			(*activeTimer)(obj_, cps_);
+			loopcounter_Label->updateLoopcounter(loopCounter);
+			keyboard_Panel->updateKeyboardState(keyboardController);
+		};
 
 		*delayTimerStart = [&](FNC_TIMER_PARAMS) -> FNC_TIMER_RET
 		{
@@ -219,7 +243,7 @@ namespace UI::Scene
 				fncTimer.remove(delayTimerStart);
 				if (!paused)
 				{
-					fncTimer.push_back(activeTimer);
+					fncTimer.push_back(coreTimer);
 				}
 			}
 			else
@@ -259,11 +283,11 @@ namespace UI::Scene
 			{
 				if (paused)
 				{
-					fncTimer.push_back(activeTimer);
+					fncTimer.push_back(coreTimer);
 				}
 				else
 				{
-					fncTimer.remove(activeTimer);
+					fncTimer.remove(coreTimer);
 				}
 				paused = !paused;
 				return true;
@@ -273,6 +297,8 @@ namespace UI::Scene
 				if (paused)
 				{
 					(*activeTimer)(nullptr, 0.);
+					loopcounter_Label->updateLoopcounter(loopCounter);
+					keyboard_Panel->updateKeyboardState(keyboardController);
 					return true;
 				}
 			}
@@ -307,16 +333,19 @@ namespace UI::Scene
 		{
 			if (eventEngine->getTargetPanel().get() == drawnerBar.get())
 			{
-				Type::Coord coord = drawer.GetFromCursor(x_, y_);
+				Type::Coord coord = drawer.getTargetOfCursor({x_, y_});
 				if (map->Test(coord))
 				{
 					if (button_ == KIR5::MOUSE_BUTTON_LEFT)
 					{
-						Json json = reach(map)[coord].object->print();
+						auto &block = reach(map)[coord];
+						Json json = block.object->print();
 						validator->validate(Res::Log::ObjectValidator::OBJECT_T, json);
 
-						if (reach(map)[coord].object->isExists)
+						if (block.object->isExists)
 						{
+							std::cout << "::: BLOCK :::" << std::endl;
+							std::cout << std::setw(4) << std::setprecision(3) << block.print() << std::endl;
 							std::cout << "::: OBJECT :::" << std::endl;
 							std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
 							std::cout << "- - - - - - - - - - - - - - -" << std::endl;
@@ -329,10 +358,13 @@ namespace UI::Scene
 					}
 					if (button_ == KIR5::MOUSE_BUTTON_RIGHT)
 					{
-						Json json = reach(map)[coord].remain->print();
+						auto &block = reach(map)[coord];
+						Json json = block.remain->print();
 						validator->validate(Res::Log::ObjectValidator::REMAIN_T, json);
-						if (reach(map)[coord].remain->isExists)
+						if (block.remain->isExists)
 						{
+							std::cout << "::: BLOCK :::" << std::endl;
+							std::cout << std::setw(4) << std::setprecision(3) << block.print() << std::endl;
 							std::cout << "::: REMAIN :::" << std::endl;
 							std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
 							std::cout << "- - - - - - - - - - - - - - -" << std::endl;
@@ -377,7 +409,7 @@ namespace UI::Scene
 
 
 
-	InteractiveMultitest::Icon::Icon()
+	KeyboardPanel::Icon::Icon()
 	{
 		fncDraw.push_back(FNC_DRAW([&](FNC_DRAW_PARAMS)->FNC_DRAW_RET
 		{
@@ -390,29 +422,16 @@ namespace UI::Scene
 		}));
 	}
 
-	void InteractiveMultitest::Icon::setActive(bool _is_active)
+	void KeyboardPanel::Icon::setActive(bool _is_active)
 	{
 		is_active_ = _is_active;
 	}
-	void InteractiveMultitest::Icon::setBitmap(const KIR5::Bitmap &bitmap)
+	void KeyboardPanel::Icon::setBitmap(const KIR5::Bitmap &bitmap)
 	{
 		bitmap_ = bitmap;
 	}
 
-	void InteractiveMultitest::updateKeyboardState()
-	{
-		keyboard_state[1][0]->setActive(keyboardController->actionUp.isLocked());
-		keyboard_state[0][1]->setActive(keyboardController->actionLeft.isLocked());
-		keyboard_state[1][1]->setActive(keyboardController->actionSpecial.isLocked());
-		keyboard_state[2][1]->setActive(keyboardController->actionRight.isLocked());
-		keyboard_state[1][2]->setActive(keyboardController->actionDown.isLocked());
-	}
-	void InteractiveMultitest::updateLoopcounter()
-	{
-		loopcounter_Label->setText(std::to_string(loopCounter));
-	}
-	InteractiveMultitest::InteractiveMultitest(const std::string &replayPath, std::int8_t speed_):
-		speed(speed_)
+	KeyboardPanel::KeyboardPanel()
 	{
 		keyboard_state[1][0]->setBitmap(Res::uielements[Res::UIElements::StickUp]);
 		keyboard_state[0][1]->setBitmap(Res::uielements[Res::UIElements::StickLeft]);
@@ -425,7 +444,7 @@ namespace UI::Scene
 			for (int y = 0; y < 3; ++y)
 			{
 				keyboard_state[x][y]->show();
-				*keyboard_Panel << keyboard_state[x][y];
+				*this << keyboard_state[x][y];
 			}
 		}
 
@@ -433,9 +452,31 @@ namespace UI::Scene
 		keyboard_state[0][2]->hide();
 		keyboard_state[2][0]->hide();
 		keyboard_state[2][2]->hide();
+	}
 
-		loopcounter_Label->setTextColor(KIR5::Color(230, 230, 230));
+	void KeyboardPanel::updateKeyboardState(const std::shared_ptr<KeyboardController> &_keyboard_controller)
+	{
+		keyboard_state[1][0]->setActive(_keyboard_controller->actionUp.isLocked());
+		keyboard_state[0][1]->setActive(_keyboard_controller->actionLeft.isLocked());
+		keyboard_state[1][1]->setActive(_keyboard_controller->actionSpecial.isLocked());
+		keyboard_state[2][1]->setActive(_keyboard_controller->actionRight.isLocked());
+		keyboard_state[1][2]->setActive(_keyboard_controller->actionDown.isLocked());
+	}
 
+
+
+	LoopCounter::LoopCounter()
+	{
+		setTextColor(KIR5::Color(230, 230, 230));
+	}
+	void LoopCounter::updateLoopcounter(unsigned long long _loop_counter)
+	{
+		setText(std::to_string(_loop_counter));
+	}
+
+	InteractiveMultitest::InteractiveMultitest(const std::string &replayPath, std::int8_t speed_):
+		speed(speed_)
+	{
 		*this << keyboard_Panel << loopcounter_Label;
 
 		fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
@@ -477,7 +518,7 @@ namespace UI::Scene
 		{
 			background->move(0, 0, width(), height());
 			drawnerBar->move(0, 0, width(), height());
-			drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
+			drawer.updateConfiguration({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 		};
 
 		fncMoved.push_back(activeMoved);
@@ -489,8 +530,8 @@ namespace UI::Scene
 				validator->validate();
 				(*activeTimer)(obj_, cps_);
 			}
-			updateLoopcounter();
-			updateKeyboardState();
+			loopcounter_Label->updateLoopcounter(loopCounter);
+			keyboard_Panel->updateKeyboardState(keyboardController);
 		};
 
 		fncTimer.push_back(coreTimer);
@@ -515,8 +556,8 @@ namespace UI::Scene
 				if (paused)
 				{
 					(*activeTimer)(nullptr, 0.);
-					updateLoopcounter();
-					updateKeyboardState();
+					loopcounter_Label->updateLoopcounter(loopCounter);
+					keyboard_Panel->updateKeyboardState(keyboardController);
 					return true;
 				}
 			}
@@ -539,13 +580,16 @@ namespace UI::Scene
 		{
 			if (eventEngine->getTargetPanel().get() == drawnerBar.get())
 			{
-				Type::Coord coord = drawer.GetFromCursor(x_, y_);
+				Type::Coord coord = drawer.getTargetOfCursor({x_, y_});
 				if (map->Test(coord))
 				{
 					if (button_ == KIR5::MOUSE_BUTTON_LEFT)
 					{
-						Json json = reach(map)[coord].object->print();
+						auto &block = reach(map)[coord];
+						Json json = block.object->print();
 
+						std::cout << "::: BLOCK :::" << std::endl;
+						std::cout << std::setw(4) << std::setprecision(3) << block.print() << std::endl;
 						std::cout << "::: OBJECT :::" << std::endl;
 						std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
 						std::cout << "- - - - - - - - - - - - - - -" << std::endl;
@@ -554,8 +598,11 @@ namespace UI::Scene
 					}
 					if (button_ == KIR5::MOUSE_BUTTON_RIGHT)
 					{
-						Json json = reach(map)[coord].remain->print();
+						auto &block = reach(map)[coord];
+						Json json = block.remain->print();
 
+						std::cout << "::: BLOCK :::" << std::endl;
+						std::cout << std::setw(4) << std::setprecision(3) << block.print() << std::endl;
 						std::cout << "::: REMAIN :::" << std::endl;
 						std::cout << std::setw(4) << std::setprecision(3) << json << std::endl;
 						std::cout << "- - - - - - - - - - - - - - -" << std::endl;

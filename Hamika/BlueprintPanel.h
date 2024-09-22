@@ -1,7 +1,6 @@
 #pragma once
 
 #include <KIR\AL\KIR5_panel.h>
-#include <KIR\AL\KIR5_bitmap_target.h>
 
 #include <memory>
 

@@ -32,7 +32,7 @@ namespace UI::Scene::Module::Field
 		protected: KIR5::Shared<Matrix<SceneBlock<Object::Brick>>> map;
 		protected: Object::Brick bedrock;
 		protected: Object::Brick space;
-		protected: bool globalGravity;
+		protected: bool global_gravity_;
 	};
 
 	template <typename DATA>
@@ -45,7 +45,7 @@ namespace UI::Scene::Module::Field
 			ObjectCreate(this, &bedrock, ObjectID::FullBedrock, Type::Coord::Invalid, Object::Entity::Bedrock::Create);
 			ObjectCreate(this, &space, ObjectID::FullSpace, Type::Coord::Invalid, Object::Entity::Space::Create);
 
-			globalGravity = _bluePrint->globalGravity;
+			global_gravity_ = _bluePrint->globalGravity;
 
 			map.reset(new Matrix<SceneBlock<Object::Brick>>(_bluePrint->blocks));
 			objects.resize(((Type::Size)*map).width() * ((Type::Size)*map).height());
@@ -159,11 +159,12 @@ namespace UI::Scene::Module::Field
 		}
 		public: virtual bool IsGlobalGravity() const
 		{
-			return globalGravity;
+			return global_gravity_;
 		}
 		public: virtual void switchGravity()
 		{
-			globalGravity = !globalGravity;
+			global_gravity_ = !global_gravity_;
+			setGlobalGravity(global_gravity_);
 		}
 		public: virtual bool IamRemain(const Object::Brick &_brick)
 		{

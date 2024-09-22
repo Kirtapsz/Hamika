@@ -69,7 +69,7 @@ namespace Object
 
 				public: void SetMoveUnsafe(Type::Move move_ = {0,0});
 				public: void SetMove(Type::Move move_ = {0,0});
-				public: Type::Move GetMove() const;
+				public: Type::Move &GetMove() const;
 				public: Type::Move::base GetAbsMove() const;
 				public: bool IsMove() const;
 				public: bool IsMoveHorizontal() const;

@@ -28,8 +28,10 @@ namespace UI
 			public: WorldButton(const std::shared_ptr<Res::World> &_world);
 		};
 
-		private: struct Menu: KIR5::Shared<AdjusterPanel<Panel, 500, 252>>
+		private: struct Menu: public KIR5::Shared<AdjusterPanel<Panel, 500, 252>>
 		{
+			KIR5::Bitmap background;
+
 			struct Worlds: KIR5::Shared<AdjustablePanel<KIR5::Row<Panel, WorldButton>, 0, 0, 296, 44>>
 			{
 				Worlds();
@@ -132,9 +134,15 @@ namespace UI
 
 			inline Menu()
 			{
+				background = Res::uielements[Res::UIElements::MenuBackground];
 				(*get()) << worlds << settings
 					<< bluePrints << worldTitle << openSettings
 					<< accounts << blueprintInfo << currentAccount << createAccount;
+
+				get()->fncDraw.push_back([&](FNC_DRAW_PARAMS)
+				{
+					background.drawScaled(x_, y_, w_, h_);
+				});
 			}
 		} menu;
 

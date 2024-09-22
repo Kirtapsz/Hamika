@@ -61,7 +61,8 @@ namespace UI::Scene
 					__int32(std::ceil((buffer_dim.width() + hangs_dim.width()) / (float)source_dim.width())),
 					__int32(std::ceil((buffer_dim.height() + hangs_dim.height()) / (float)source_dim.height()))};
 
-				KIR5::BitmapTarget target(buffer);
+
+				auto target_lock = buffer.target();
 				al_hold_bitmap_drawing(true);
 				for (int x = 0; x < count.x(); ++x)
 				{

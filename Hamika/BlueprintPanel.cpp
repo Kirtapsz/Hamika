@@ -31,10 +31,8 @@ namespace UI
 
 				_disp_bmp = al_create_bitmap(_drawSize.width() * ((Type::Size)(_bluePrint->blocks)).width(), _drawSize.height() * ((Type::Size)(_bluePrint->blocks)).height());
 
-				KIR5::BitmapTarget target(_disp_bmp);
-
+				auto target_lock = _disp_bmp.target();
 				al_clear_to_color(KIR5::Color::_transparent);
-
 				_bluePrint->blocks.foreach([&](const Type::Coord &coord, Res::BluePrint::Block &object)
 				{
 					DrawObject(object.id, coord.x() * _drawSize.width(), coord.y() * _drawSize.height(), _drawSize.width(), _drawSize.height());

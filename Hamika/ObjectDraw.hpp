@@ -26,15 +26,17 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
 			{
+				data_._draw_type = typename MODULES_T::DATA_T::DrawType::Standard;
 				data_.drawnerFnc = nullptr;
 				configureDrawOptions();
 			}
 
 			template<typename MODULES_T>
-			Json Func<MODULES_T>::print()
+			Json Func<MODULES_T>::print() const
 			{
 				Json json;
 
+				json["_draw_type"] = data_._draw_type;
 				json["DrawCoord.x"] = data_.DrawCoord.x();
 				json["DrawCoord.y"] = data_.DrawCoord.y();
 
@@ -44,39 +46,33 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::configureDrawOptions()
 			{
-				data_.DrawCoord.x() = data_.coord.x() * data_.scene->GetDrawSize().width();
-				data_.DrawCoord.y() = data_.coord.y() * data_.scene->GetDrawSize().height();
+				data_.DrawCoord = data_.coord * data_.scene->getBlockSize();
 			}
 
-
 			template<typename MODULES_T>
-			inline void Func<MODULES_T>::Draw()
+			inline void Func<MODULES_T>::Draw(const Type::Coord &_coord, const Type::Coord &_size)
 			{
-				if (data_.drawnerFnc)
-				{
-					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
-					data_.drawnerFnc(*object, GetDrawCoord().x(), GetDrawCoord().y(), data_.scene->GetDrawSize().width(), data_.scene->GetDrawSize().height());
-				}
-				else
-				{
-					static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(GetDrawCoord().x(), GetDrawCoord().y(), data_.scene->GetDrawSize().width(), data_.scene->GetDrawSize().height());
-				}
-			}
-			template<typename MODULES_T>
-			inline void Func<MODULES_T>::SDraw()//teszteés céljából hogy a conter mûködjön
-			{
+				data_.SObjectDrawCounts++;
 				data_.DrawnedCount++;
 				if (data_.DrawnedCount >= 2)
 				{
 					clog << "WARNING! An object has been drawned two times (" << data_.coord.x() << "," << data_.coord.y() << "):" << KIR4::eol;
 				}
-				data_.SObjectDrawCounts++;
-				Draw();
+
+				if (data_.drawnerFnc)
+				{
+					typename MODULES_T::BRICK_T *object = static_cast<typename MODULES_T::BRICK_T *>(this);
+					data_.drawnerFnc(*object, _coord.x(), _coord.y(), _size.w(), _size.h());
+				}
+				else
+				{
+					static_cast<KIR5::SubBitmap &>(Res::bitmapBox).drawScaled(_coord.x(), _coord.y(), _size.w(), _size.h());
+				}
 			}
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::setOddDrawCoord()
 			{
-				Type::Coord draw_coord = (data_.coord + data_.move) * data_.scene->GetDrawSize();
+				Type::Coord draw_coord = (data_.coord + data_.move) * data_.scene->getBlockSize();
 
 				if (draw_coord != data_.DrawCoord)
 				{
@@ -87,19 +83,13 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::setRoundDrawCoord()
 			{
-				Type::Coord draw_coord = data_.coord * data_.scene->GetDrawSize();
+				Type::Coord draw_coord = data_.coord * data_.scene->getBlockSize();
 
 				if (draw_coord != data_.DrawCoord)
 				{
 					data_.DrawCoord = draw_coord;
 					data_.requests.draw = true;
 				}
-			}
-
-			template<typename MODULES_T>
-			inline Type::Coord Func<MODULES_T>::GetDrawCoord()
-			{
-				return {data_.DrawCoord.x() - data_.scene->GetDrawOffSet().width(), data_.DrawCoord.y() - data_.scene->GetDrawOffSet().height()};
 			}
 		}
 	}

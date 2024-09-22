@@ -123,12 +123,6 @@
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_bitmap_target.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
-    <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_clipping_rectangle.cpp">
-      <Filter>KIR\AL</Filter>
-    </ClCompile>
     <ClCompile Include="$(KIRLIB)\KIR5\source\AL\KIR5_color.cpp">
       <Filter>KIR\AL</Filter>
     </ClCompile>

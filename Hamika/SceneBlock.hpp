@@ -3,8 +3,8 @@
 
 #include "SceneBlock.h"
 
-template <typename OBJECT_T>
-SceneBlock<OBJECT_T>::~SceneBlock()
+template <typename OBJECT_T_>
+SceneBlock<OBJECT_T_>::~SceneBlock()
 {
 	if (object) delete object;
 	if (remain) delete remain;

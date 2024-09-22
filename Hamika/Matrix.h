@@ -135,7 +135,7 @@ class Matrix
 			}
 		}
 	}
-	public: template<typename F> constexpr void forrange(Type::Coord start, Type::Coord end, F &f)
+	public: template<typename F> constexpr void forrange(const Type::Coord &start, const Type::Coord &end, F &f)
 	{
 		Type::Coord coord;
 		auto x_ = &data.front() + start.x();
@@ -147,5 +147,9 @@ class Matrix
 				f(coord, *y_);
 			}
 		}
+	}
+	public: template<typename F> constexpr void forrange(const Type::rec2D<Type::Coord> &area, F &f)
+	{
+		forrange(area.p1, area.p2, f);
 	}
 };

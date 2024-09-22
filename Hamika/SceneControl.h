@@ -33,6 +33,7 @@ namespace UI::Scene::Module::Contol
 		protected: KIR5::Event::FNC_KEY_UP activeKeyUp;
 		protected: KIR5::Event::FNC_TIMER activeTimer;
 		protected: KIR5::Event::FNC_DRAW drawnerBarDraw;
+		protected: bool timerRunned = true;
 
 		protected: std::shared_ptr<KeyboardController> keyboardController;
 		protected: std::shared_ptr<RngController> rngController;
@@ -60,7 +61,7 @@ namespace UI::Scene::Module::Contol
 			{
 				background->move(0, 0, width(), height());
 				drawnerBar->move(0, 0, width(), height() - statusbar->Height());
-				drawer.InitializeDrawOptions({drawnerBar->width(), drawnerBar->height()}, cameraSize);
+				drawer.updateConfiguration({drawnerBar->width(), drawnerBar->height()}, cameraSize);
 				statusbar->Align();
 			};
 
@@ -78,6 +79,7 @@ namespace UI::Scene::Module::Contol
 
 			*activeTimer = [&](FNC_TIMER_PARAMS)
 			{
+				timerRunned = true;
 				loopRoll();
 				keyboardController->loop();
 				actionRun();
@@ -90,20 +92,24 @@ namespace UI::Scene::Module::Contol
 				if (murphy)
 				{
 					Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
-					drawer.MoveCameraTo(camera);
-					background->setCamera(drawer.GetCamera());
+					drawer.moveCamera(camera);
+					background->setCamera(drawer.getCameraCenter());
 				}
 			});
 
 			*drawnerBarDraw = [&](FNC_DRAW_PARAMS) -> FNC_DRAW_RET
 			{
-				if (murphy)
+				if (timerRunned)
 				{
-					Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
-					drawer.MoveCameraTo(camera);
-					background->setCamera(drawer.GetCamera());
+					if (murphy)
+					{
+						Type::Camera camera = {murphy->GetCoord().x() + murphy->GetMove().x(), murphy->GetCoord().y() + murphy->GetMove().y()};
+						drawer.moveCamera(camera);
+						background->setCamera(drawer.getCameraCenter());
+					}
+					drawer.updateBitmap();
 				}
-				drawer.DrawBlocks(x_, y_);
+				drawer.drawBitmaps({x_, y_});
 			};
 			drawnerBar->fncDraw.push_back(drawnerBarDraw);
 		}

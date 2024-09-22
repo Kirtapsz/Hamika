@@ -17,7 +17,6 @@ std::random_device rd;
 std::default_random_engine generator(rd());
 int processRet = 0;
 
-
 int main(int argc, char *argv[])
 {
 	if (argc >= 2 && strcmp("--info", argv[1]) == 0)

@@ -127,14 +127,14 @@ namespace Editor::UI
 						if (block.selected)
 						{
 							block.object->rotation = r;
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					});
 				}
 				else
 				{
 					reach(map)[MainEvent::s_object->scene->getTarget()].object->rotation = r;
-					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].redrawn_type_ = RedrawType::All;
 				}
 				MainEvent::s_object->scene->blocksUpdated();
 			});
@@ -360,14 +360,14 @@ namespace Editor::UI
 						if (block.selected)
 						{
 							ObjectCreate(block.object, s_objectID_Panel->id, coord);
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					});
 				}
 				else
 				{
 					ObjectCreate(reach(map)[MainEvent::s_object->scene->getTarget()].object, s_objectID_Panel->id, MainEvent::s_object->scene->getTarget());
-					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].redrawn_type_ = RedrawType::All;
 				}
 				MainEvent::s_object->scene->blocksUpdated();
 
@@ -399,7 +399,7 @@ namespace Editor::UI
 					if (block.selected && rand() % 1000 < chance)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 				MainEvent::s_object->scene->blocksUpdated();
@@ -423,7 +423,7 @@ namespace Editor::UI
 					if (coord.x() == 0 || coord.y() == 0 || coord.x() == ((Type::Size)reach(map)).width() - 1 || coord.y() == ((Type::Size)reach(map)).height() - 1)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 				MainEvent::s_object->scene->blocksUpdated();
@@ -439,7 +439,7 @@ namespace Editor::UI
 					if (coord.x() != 0 && coord.y() != 0 && coord.x() != ((Type::Size)reach(map)).width() - 1 && coord.y() != ((Type::Size)reach(map)).height() - 1)
 					{
 						ObjectCreate(block.object, s_objectID_Panel->id, coord);
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 				MainEvent::s_object->scene->blocksUpdated();
@@ -457,7 +457,7 @@ namespace Editor::UI
 						if (!block.selected)
 						{
 							block.selected = true;
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					}
 					else
@@ -465,7 +465,7 @@ namespace Editor::UI
 						if (block.selected)
 						{
 							block.selected = false;
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					}
 				});
@@ -542,7 +542,7 @@ namespace Editor::UI
 						if (!block.selected)
 						{
 							block.selected = true;
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					});
 				}
@@ -553,7 +553,7 @@ namespace Editor::UI
 						if (block.selected)
 						{
 							block.selected = false;
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					});
 				}
@@ -574,7 +574,7 @@ namespace Editor::UI
 					{
 						reach(map)[MainEvent::s_object->scene->getTarget()].grid |= GridFlags::Gravity;
 					}
-					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].redrawn_type_ = RedrawType::All;
 				}
 				else
 				{
@@ -599,7 +599,7 @@ namespace Editor::UI
 								if (!(block.grid & GridFlags::Gravity))
 								{
 									block.grid |= GridFlags::Gravity;
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						});
@@ -613,7 +613,7 @@ namespace Editor::UI
 								if (block.grid & GridFlags::Gravity)
 								{
 									block.grid &= ~GridFlags::Gravity;
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						});
@@ -637,7 +637,7 @@ namespace Editor::UI
 					{
 						reach(map)[MainEvent::s_object->scene->getTarget()].grid |= GridFlags::Detonate;
 					}
-					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].redrawn_type_ = RedrawType::All;
 				}
 				else
 				{
@@ -662,7 +662,7 @@ namespace Editor::UI
 								if (!(block.grid & GridFlags::Detonate))
 								{
 									block.grid |= GridFlags::Detonate;
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						});
@@ -676,7 +676,7 @@ namespace Editor::UI
 								if (block.grid & GridFlags::Detonate)
 								{
 									block.grid &= ~GridFlags::Detonate;
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						});
@@ -695,7 +695,7 @@ namespace Editor::UI
 					if (block.selected)
 					{
 						block.selected = false;
-						block.Redrawn = true;
+						block.redrawn_type_ = RedrawType::All;
 					}
 				});
 
@@ -724,7 +724,7 @@ namespace Editor::UI
 							)
 						{
 							block.selected = true;
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 							isNewSelected = true;
 						}
 					});
@@ -773,7 +773,7 @@ namespace Editor::UI
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
 										ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-										block.Redrawn = true;
+										block.redrawn_type_ = RedrawType::All;
 									}
 								}
 							}
@@ -784,7 +784,7 @@ namespace Editor::UI
 									while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 									{
 										ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-										block.Redrawn = true;
+										block.redrawn_type_ = RedrawType::All;
 									}
 								}
 							}
@@ -794,12 +794,12 @@ namespace Editor::UI
 								if (map->Test({coord.x() + 1,coord.y()}) && reach(map)[{coord.x() + 1, coord.y()}].selected &&isRam(reach(map)[{coord.x() + 1, coord.y()}].object->id))
 								{
 									ObjectCreate(reach(map)[{coord.x() + 1, coord.y()}].object, ObjectID::RAMChipsRight, {coord.x() + 1,coord.y()});
-									reach(map)[{coord.x() + 1, coord.y()}].Redrawn = true;
+									reach(map)[{coord.x() + 1, coord.y()}].redrawn_type_ = RedrawType::All;
 								}
 								else
 								{
 									ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 							if (block.object->id == ObjectID::RAMChipsTop)
@@ -807,12 +807,12 @@ namespace Editor::UI
 								if (map->Test({coord.x(),coord.y() + 1}) && reach(map)[{coord.x(), coord.y() + 1}].selected &&isRam(reach(map)[{coord.x(), coord.y() + 1}].object->id))
 								{
 									ObjectCreate(reach(map)[{coord.x(), coord.y() + 1}].object, ObjectID::RAMChipsBottom, {coord.x(),coord.y() + 1});
-									reach(map)[{coord.x(), coord.y() + 1}].Redrawn = true;
+									reach(map)[{coord.x(), coord.y() + 1}].redrawn_type_ = RedrawType::All;
 								}
 								else
 								{
 									ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						}
@@ -829,7 +829,7 @@ namespace Editor::UI
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
 									ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						}
@@ -840,7 +840,7 @@ namespace Editor::UI
 								while (block.object->id == ObjectID::RAMChipsBottom || block.object->id == ObjectID::RAMChipsRight)
 								{
 									ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						}
@@ -850,12 +850,12 @@ namespace Editor::UI
 							if (map->Test({coord.x() + 1,coord.y()}) && isRam(reach(map)[{coord.x() + 1, coord.y()}].object->id))
 							{
 								ObjectCreate(reach(map)[{coord.x() + 1, coord.y()}].object, ObjectID::RAMChipsRight, {coord.x() + 1,coord.y()});
-								reach(map)[{coord.x() + 1, coord.y()}].Redrawn = true;
+								reach(map)[{coord.x() + 1, coord.y()}].redrawn_type_ = RedrawType::All;
 							}
 							else
 							{
 								ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
-								block.Redrawn = true;
+								block.redrawn_type_ = RedrawType::All;
 							}
 						}
 						if (block.object->id == ObjectID::RAMChipsTop)
@@ -863,12 +863,12 @@ namespace Editor::UI
 							if (map->Test({coord.x(),coord.y() + 1}) && isRam(reach(map)[{coord.x(), coord.y() + 1}].object->id))
 							{
 								ObjectCreate(reach(map)[{coord.x(), coord.y() + 1}].object, ObjectID::RAMChipsBottom, {coord.x(),coord.y() + 1});
-								reach(map)[{coord.x(), coord.y() + 1}].Redrawn = true;
+								reach(map)[{coord.x(), coord.y() + 1}].redrawn_type_ = RedrawType::All;
 							}
 							else
 							{
 								ObjectCreate(block.object, ObjectID::RAMChipsMini, coord);
-								block.Redrawn = true;
+								block.redrawn_type_ = RedrawType::All;
 							}
 						}
 					});
@@ -888,7 +888,7 @@ namespace Editor::UI
 						if (block.selected && isRam(block.object->id))
 						{
 							ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					});
 				}
@@ -899,7 +899,7 @@ namespace Editor::UI
 						if (isRam(block.object->id))
 						{
 							ObjectCreate(block.object, ramIDs[rand() % NUMBER_OF_RAMS], coord);
-							block.Redrawn = true;
+							block.redrawn_type_ = RedrawType::All;
 						}
 					});
 				}
@@ -921,7 +921,7 @@ namespace Editor::UI
 					{
 						reach(map)[MainEvent::s_object->scene->getTarget()].grid |= GridFlags::SpawnPoint;
 					}
-					reach(map)[MainEvent::s_object->scene->getTarget()].Redrawn = true;
+					reach(map)[MainEvent::s_object->scene->getTarget()].redrawn_type_ = RedrawType::All;
 				}
 				else
 				{
@@ -946,7 +946,7 @@ namespace Editor::UI
 								if (!(block.grid & GridFlags::SpawnPoint))
 								{
 									block.grid |= GridFlags::SpawnPoint;
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						});
@@ -960,7 +960,7 @@ namespace Editor::UI
 								if (block.grid & GridFlags::SpawnPoint)
 								{
 									block.grid &= ~GridFlags::SpawnPoint;
-									block.Redrawn = true;
+									block.redrawn_type_ = RedrawType::All;
 								}
 							}
 						});
