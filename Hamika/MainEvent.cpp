@@ -311,8 +311,8 @@ namespace UI
 
 		parent->fncMoved.push_back([&](FNC_MOVED_PARAMS)
 		{
-			static constexpr float rw = decltype(menu)::element_type::ADJUSTER_WIDTH;
-			static constexpr float rh = decltype(menu)::element_type::ADJUSTER_HEIGHT;
+			static constexpr float rw = decltype(menu)::element_type::FLEXIBLE_REF_WIDTH;
+			static constexpr float rh = decltype(menu)::element_type::FLEXIBLE_REF_HEIGHT;
 			float rate = (std::min)(parent->width() / rw, parent->height() / rh) * 0.95f;
 			menu->resize(rw * rate, rh * rate);
 			menu->align(KIR5::CENTER);

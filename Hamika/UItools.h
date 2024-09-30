@@ -10,95 +10,37 @@
 
 namespace UI
 {
-	class AdjustParam
-	{
-		template<typename T, int W, int H>
-		friend class AdjusterPanel;
-
-		private: int _x;
-		private: int _y;
-		private: int _w;
-		private: int _h;
-
-		public: AdjustParam():
-			_x(0), _y(0), _w(0), _h(0)
-		{
-
-		}
-		public: AdjustParam(int x_, int y_, int w_, int h_):
-			_x(x_), _y(y_), _w(w_), _h(h_)
-		{
-
-		}
-
-		public: void setAdjustParams(int x_, int y_, int w_, int h_)
-		{
-			_x = x_;
-			_y = y_;
-			_w = w_;
-			_h = h_;
-		}
-	};
-
 	template<typename T = KIR5::Panel, int X = 0, int Y = 0, int W = 0, int H = 0>
-	class AdjustablePanel: public virtual T, public AdjustParam
+	class FlexiblePanel: public virtual T, public KIR5::FlexiblePanel::Base
 	{
-		public: AdjustablePanel(int x_, int y_, int w_, int h_):
-			AdjustParam(x_, y_, w_, h_)
+		public: FlexiblePanel(int x_, int y_, int w_, int h_):
+			KIR5::FlexiblePanel::Base(std::make_shared<KIR5::FlexiblePanel::LinkedSize>(x_, y_, w_, h_))
 		{
 
 		}
 
-		public: AdjustablePanel():
-			AdjustParam(X, Y, W, H)
+		public: FlexiblePanel():
+			KIR5::FlexiblePanel::Base(std::make_shared<KIR5::FlexiblePanel::LinkedSize>(X, Y, W, H))
 		{
 
 		}
 	};
 
 	template<typename T, int W, int H>
-	class AdjusterPanel: public virtual T
+	class FlexiblePanelManager: public virtual T, public virtual KIR5::FlexiblePanel::Manager<W, H>
 	{
-		public: static constexpr int ADJUSTER_WIDTH = W;
-		public: static constexpr int ADJUSTER_HEIGHT = H;
-
-		public: inline AdjusterPanel()
-		{
-			resize(W, H);
-			fncMoved.push_back([&](FNC_MOVED_PARAMS) -> FNC_MOVED_RET
-			{
-				float wr = width() / (float)W;
-				float hr = height() / (float)H;
-				float r = std::min(wr, hr);
-
-				for (auto &it : getChildrens())
-				{
-					AdjustParam *aParam = dynamic_cast<AdjustParam *>(it.get());
-					if (aParam)
-					{
-						KIR5::Panel *panel = dynamic_cast<KIR5::Panel *>(it.get());
-						panel->move(
-							(int)(aParam->_x * r),
-							(int)(aParam->_y * r),
-							(int)(aParam->_w * r),
-							(int)(aParam->_h * r)
-						);
-					}
-				}
-			});
-		}
 	};
 
 	template<typename T, int X, int Y, int W, int H>
-	class AdjustPanel: public virtual AdjustablePanel<T, X, Y, W, H>, public virtual AdjusterPanel<T, W, H>
+	class FlexiblePanelAndManager: public virtual FlexiblePanel<T, X, Y, W, H>, public virtual FlexiblePanelManager<T, W, H>
 	{
-		public: AdjustPanel(int x_, int y_):
-			AdjustablePanel(x_, y_, W, H)
+		public: FlexiblePanelAndManager(int x_, int y_):
+			FlexiblePanel(x_, y_, W, H)
 		{
 
 		}
 
-		public: AdjustPanel()
+		public: FlexiblePanelAndManager()
 		{
 
 		}

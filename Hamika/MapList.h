@@ -27,13 +27,13 @@ namespace UI
 			Unavailable
 		};
 
-		private: struct S_BlueprintPanel: public virtual AdjusterPanel<KIR5::Button<BlueprintPanel>, 178, 95>
+		private: struct S_BlueprintPanel: public virtual FlexiblePanelManager<KIR5::Button<BlueprintPanel>, 178, 95>
 		{
 			std::int32_t index_ = -1;
 			std::float_t fra = 0.f;
 			std::float_t alpha = 255.f;
 			bool setColor = true;
-			KIR5::Shared<AdjustablePanel<BmpoButton, 89, 32, 30, 30>> button;
+			KIR5::Shared<FlexiblePanel<BmpoButton, 89, 32, 30, 30>> button;
 		};
 
 		private: std::float_t currentTransition_ = 0.f;

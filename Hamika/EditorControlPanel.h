@@ -24,7 +24,7 @@ namespace Editor::UI
 {
 	using namespace ::UI;
 
-	class ControlPanel: public AdjusterPanel<Panel, 647, 270>
+	class ControlPanel: public FlexiblePanelManager<Panel, 647, 270>
 	{
 		private: static const std::string GLOBAL_GRAVITY_ON;
 		private: static const std::string GLOBAL_GRAVITY_OFF;
@@ -48,85 +48,85 @@ namespace Editor::UI
 			public: BlockIDPanel();
 		};
 
-		private: KIR5::Shared<AdjusterPanel<Window, 108, 94>> info_Panel;
+		private: KIR5::Shared<FlexiblePanelManager<Window, 108, 94>> info_Panel;
 
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 229, 0, 67, 19>> titleOfBluePrint_Label;
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 298, 0, 238, 19 >> titleOfBluePrint_TextBox;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 229, 0, 67, 19>> titleOfBluePrint_Label;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 298, 0, 238, 19 >> titleOfBluePrint_TextBox;
 
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 229, 22, 67, 19 >> sizeOfCamera_Label;
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 298, 22, 238, 19 >> sizeOfCamera_TextBox;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 229, 22, 67, 19 >> sizeOfCamera_Label;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 298, 22, 238, 19 >> sizeOfCamera_TextBox;
 
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 229, 44, 67, 19 >> murphySpeed_Label;
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 298, 44, 238, 19 >> murphySpeed_TextBox;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 229, 44, 67, 19 >> murphySpeed_Label;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 298, 44, 238, 19 >> murphySpeed_TextBox;
 
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas, 20>, 0, 200, 85, 70>>  saveBluePrint_Button;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas, 20>, 0, 200, 85, 70>>  saveBluePrint_Button;
 
-		private: KIR5::Shared<AdjustPanel<Window, 480, 72, 60, 74>> rotation_Panel;
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 3, 3, 64, 14>> rotation_Label;
+		private: KIR5::Shared<FlexiblePanelAndManager<Window, 480, 72, 60, 74>> rotation_Panel;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 3, 3, 64, 14>> rotation_Label;
 		private: std::array<std::shared_ptr<ResizeButtonClass>, 4> rotation_Navigation_Buttons{{
-			KIR5::Shared<AdjustablePanel<ResizeButtonClass, 22, 17, 16, 16>>(),
-			KIR5::Shared<AdjustablePanel<ResizeButtonClass, 41, 36, 16, 16>>(),
-			KIR5::Shared<AdjustablePanel<ResizeButtonClass, 22, 55, 16, 16>>(),
-			KIR5::Shared<AdjustablePanel<ResizeButtonClass, 3, 36, 16, 16>>()
+			KIR5::Shared<FlexiblePanel<ResizeButtonClass, 22, 17, 16, 16>>(),
+			KIR5::Shared<FlexiblePanel<ResizeButtonClass, 41, 36, 16, 16>>(),
+			KIR5::Shared<FlexiblePanel<ResizeButtonClass, 22, 55, 16, 16>>(),
+			KIR5::Shared<FlexiblePanel<ResizeButtonClass, 3, 36, 16, 16>>()
 		}};
-		private: KIR5::Shared<AdjustablePanel<BmpButton, 22, 36, 16, 16>> rotation_Apply_Button;
+		private: KIR5::Shared<FlexiblePanel<BmpButton, 22, 36, 16, 16>> rotation_Apply_Button;
 
-		private: KIR5::Shared<AdjustPanel<Window, 539, 0, 108, 145>> bluePrintResize_Panel;
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 3, 3, 106, 18>> bluePrintResize_Label;
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 3, 24, 81, 18>> bluePrintResize_Size_TextBox;
-		private: KIR5::Shared<AdjustablePanel<BmpButton, 87, 24, 18, 18>> bluePrintResize_Apply_Button;
+		private: KIR5::Shared<FlexiblePanelAndManager<Window, 539, 0, 108, 145>> bluePrintResize_Panel;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 3, 3, 106, 18>> bluePrintResize_Label;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 3, 24, 81, 18>> bluePrintResize_Size_TextBox;
+		private: KIR5::Shared<FlexiblePanel<BmpButton, 87, 24, 18, 18>> bluePrintResize_Apply_Button;
 		private: std::array<std::array<std::shared_ptr<ResizeButtonClass>, 3>, 3> bluePrintResize_Navigation_Buttons{{
 			{
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 3, 45, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 3, 78, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 3, 111, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 3, 45, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 3, 78, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 3, 111, 32, 32>>(),
 			},
 			{
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 38, 45, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 38, 78, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 38, 111, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 38, 45, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 38, 78, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 38, 111, 32, 32>>(),
 			},
 			{
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 73, 45, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 73, 78, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<ResizeButtonClass, 73, 111, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 73, 45, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 73, 78, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<ResizeButtonClass, 73, 111, 32, 32>>(),
 			},
 		}};
 
-		private: KIR5::Shared<AdjustPanel<Window, 229, 97, 249, 101>> s_objectPanel;
+		private: KIR5::Shared<FlexiblePanelAndManager<Window, 229, 97, 249, 101>> s_objectPanel;
 
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 3, 3, 243, 18>> s_objectLabel;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 3, 3, 243, 18>> s_objectLabel;
 
-		private: KIR5::Shared<AdjustablePanel<BlockIDPanel, 3, 24, 32, 32>> s_objectID_Panel;
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 38, 31, 67, 18>> s_objectID_TextBox;
-		private: KIR5::Shared<AdjustablePanel<BmpButton, 108, 31, 18, 18>> s_objectApply_Button;
+		private: KIR5::Shared<FlexiblePanel<BlockIDPanel, 3, 24, 32, 32>> s_objectID_Panel;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 38, 31, 67, 18>> s_objectID_TextBox;
+		private: KIR5::Shared<FlexiblePanel<BmpButton, 108, 31, 18, 18>> s_objectApply_Button;
 
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 129, 31, 57, 18>> s_objectRate_TextBox;
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 188, 31, 18, 18>> s_objectRandomFill_Label;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 129, 31, 57, 18>> s_objectRate_TextBox;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 188, 31, 18, 18>> s_objectRandomFill_Label;
 
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 59, 120, 18>> s_objectRandomFill_Button;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 80, 120, 18>> s_objectFillFrame_Button;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 126, 59, 120, 18>> s_objectFillContent_Button;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 126, 80, 120, 18>> s_objectselectAllOfThisType_Button;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 59, 120, 18>> s_objectRandomFill_Button;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 80, 120, 18>> s_objectFillFrame_Button;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 126, 59, 120, 18>> s_objectFillContent_Button;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 126, 80, 120, 18>> s_objectselectAllOfThisType_Button;
 
-		private: KIR5::Shared<AdjustPanel<Window, 481, 149, 166, 121>> infotron_Panel;
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 3, 3, 158, 18>> infotron_Label;
-		private: KIR5::Shared<AdjustablePanel<TextBox<Res::Consolas>, 3, 24, 64, 27>> infotron_ToCollect_TextBox;
-		private: KIR5::Shared<AdjustablePanel<Label<Res::Consolas>, 68, 24, 64, 27>> infotron_Capacity_Label;
-		private: std::vector<KIR5::Shared<AdjustablePanel<BlockIDPanel>>> infotron_Pickers_Buttons;
+		private: KIR5::Shared<FlexiblePanelAndManager<Window, 481, 149, 166, 121>> infotron_Panel;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 3, 3, 158, 18>> infotron_Label;
+		private: KIR5::Shared<FlexiblePanel<TextBox<Res::Consolas>, 3, 24, 64, 27>> infotron_ToCollect_TextBox;
+		private: KIR5::Shared<FlexiblePanel<Label<Res::Consolas>, 68, 24, 64, 27>> infotron_Capacity_Label;
+		private: std::vector<KIR5::Shared<FlexiblePanel<BlockIDPanel>>> infotron_Pickers_Buttons;
 
-		private: KIR5::Shared<AdjustPanel<Window, 0, 0, 226, 197>> special_Panel;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 3, 220, 21>> selectAllButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 27, 220, 21>> gravityTurnOnOffButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 51, 220, 21>> initExplodeButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 75, 220, 21>> selectFriendlyButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 99, 220, 21>> ramRepairButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 124, 220, 21>> randomizeRamsButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 149, 220, 21>> spawnPointButton;
-		private: KIR5::Shared<AdjustablePanel<Button<Res::Consolas>, 3, 173, 220, 21>> globalGravityOnOffButton;
+		private: KIR5::Shared<FlexiblePanelAndManager<Window, 0, 0, 226, 197>> special_Panel;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 3, 220, 21>> selectAllButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 27, 220, 21>> gravityTurnOnOffButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 51, 220, 21>> initExplodeButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 75, 220, 21>> selectFriendlyButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 99, 220, 21>> ramRepairButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 124, 220, 21>> randomizeRamsButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 149, 220, 21>> spawnPointButton;
+		private: KIR5::Shared<FlexiblePanel<Button<Res::Consolas>, 3, 173, 220, 21>> globalGravityOnOffButton;
 
-		private: KIR5::Shared<AdjustPanel<Window, 88, 200, 390, 70>> prevBlockPickers_Panel;
-		private: std::array<KIR5::Shared<AdjustablePanel<BlockIDPanel>>, 24> prevBlockPickers;
+		private: KIR5::Shared<FlexiblePanelAndManager<Window, 88, 200, 390, 70>> prevBlockPickers_Panel;
+		private: std::array<KIR5::Shared<FlexiblePanel<BlockIDPanel>>, 24> prevBlockPickers;
 
 
 		public: void pickID(Type::ID id);

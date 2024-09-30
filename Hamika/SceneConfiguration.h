@@ -86,7 +86,7 @@ namespace UI::Scene
 
 	constexpr std::size_t ACTIVE_MAP_FINISHED = 0x400;
 
-	class KeyboardPanel: public AdjusterPanel<Panel, 96, 96>
+	class KeyboardPanel: public FlexiblePanelManager<Panel, 96, 96>
 	{
 		private: class Icon: public virtual Panel
 		{
@@ -103,28 +103,28 @@ namespace UI::Scene
 
 		private: std::array<std::array<std::shared_ptr<Icon>, 3>, 3> keyboard_state{{
 			{
-				KIR5::Shared<AdjustablePanel<Icon, 0, 0, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 0, 32, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 0, 64, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 0, 0, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 0, 32, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 0, 64, 32, 32>>(),
 			},
 			{
-				KIR5::Shared<AdjustablePanel<Icon, 32, 0, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 32, 32, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 32, 64, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 32, 0, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 32, 32, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 32, 64, 32, 32>>(),
 			},
 			{
-				KIR5::Shared<AdjustablePanel<Icon, 64, 0, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 64, 32, 32, 32>>(),
-				KIR5::Shared<AdjustablePanel<Icon, 64, 64, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 64, 0, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 64, 32, 32, 32>>(),
+				KIR5::Shared<FlexiblePanel<Icon, 64, 64, 32, 32>>(),
 			},
 		}};
 
 		public: KeyboardPanel();
 		public: void updateKeyboardState(const std::shared_ptr<KeyboardController> &_keyboard_controller);
 	};
-	class LayerPanel: public AdjusterPanel<Panel, 32 * SceneLayer::number_of_layers, 32>
+	class LayerPanel: public FlexiblePanelManager<Panel, 32 * SceneLayer::number_of_layers, 32>
 	{
-		private: class Icon: public virtual AdjusterPanel<KIR5::FramedRectangleButton<>, 32, 32>, public virtual AdjustParam
+		private: class Icon: public virtual FlexiblePanelManager<KIR5::FramedRectangleButton<>, 32, 32>, public virtual KIR5::FlexiblePanel::Base
 		{
 			friend class InteractiveMultitest;
 
@@ -132,10 +132,10 @@ namespace UI::Scene
 			private: std::size_t id_;
 			private: bool is_active_ = false;
 			private: KIR5::Button<>::Group button_group_;
-			private: KIR5::Shared<AdjustablePanel<BmpButton, 2, 2, 32 - 4, 32 - 4>> bmp_button_;
+			private: KIR5::Shared<FlexiblePanel<BmpButton, 2, 2, 32 - 4, 32 - 4>> bmp_button_;
 
 			public: Icon(std::size_t _id, SceneDrawer_T<SceneBlock<Object::Brick>> *_drawner):
-				AdjustParam(_id * 32, 0, 32, 32), drawner_(_drawner), id_(_id)
+				KIR5::FlexiblePanel::Base(std::make_shared<KIR5::FlexiblePanel::LinkedSize>(_id * 32, 0, 32, 32)), drawner_(_drawner), id_(_id)
 			{
 				*this << bmp_button_;
 				bmp_button_->show();

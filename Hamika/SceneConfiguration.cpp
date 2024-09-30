@@ -216,15 +216,15 @@ namespace UI::Scene
 		{
 			keyboard_Panel->bringTop();
 			keyboard_Panel->move(
-				width() - decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, 0,
-				decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, decltype(keyboard_Panel)::element_type::ADJUSTER_HEIGHT
+				width() - decltype(keyboard_Panel)::element_type::FLEXIBLE_REF_WIDTH, 0,
+				decltype(keyboard_Panel)::element_type::FLEXIBLE_REF_WIDTH, decltype(keyboard_Panel)::element_type::FLEXIBLE_REF_HEIGHT
 			);
 			loopcounter_Label->bringTop();
 			loopcounter_Label->move(keyboard_Panel->x(), keyboard_Panel->y2(), keyboard_Panel->width(), 28);
 			layer_Panel->bringTop();
 			layer_Panel->move(
-				width() - decltype(layer_Panel)::element_type::ADJUSTER_WIDTH, loopcounter_Label->y2(),
-				decltype(layer_Panel)::element_type::ADJUSTER_WIDTH, decltype(layer_Panel)::element_type::ADJUSTER_HEIGHT
+				width() - decltype(layer_Panel)::element_type::FLEXIBLE_REF_WIDTH, loopcounter_Label->y2(),
+				decltype(layer_Panel)::element_type::FLEXIBLE_REF_WIDTH, decltype(layer_Panel)::element_type::FLEXIBLE_REF_HEIGHT
 			);
 		});
 
@@ -483,8 +483,8 @@ namespace UI::Scene
 		{
 			keyboard_Panel->bringTop();
 			keyboard_Panel->move(
-				width() - decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, 0,
-				decltype(keyboard_Panel)::element_type::ADJUSTER_WIDTH, decltype(keyboard_Panel)::element_type::ADJUSTER_HEIGHT
+				width() - decltype(keyboard_Panel)::element_type::FLEXIBLE_REF_WIDTH, 0,
+				decltype(keyboard_Panel)::element_type::FLEXIBLE_REF_WIDTH, decltype(keyboard_Panel)::element_type::FLEXIBLE_REF_HEIGHT
 			);
 			loopcounter_Label->bringTop();
 			loopcounter_Label->move(keyboard_Panel->x(), keyboard_Panel->y2(), keyboard_Panel->width(), 28);

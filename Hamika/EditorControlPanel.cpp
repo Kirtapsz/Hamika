@@ -481,7 +481,7 @@ namespace Editor::UI
 				Type::ID id;
 				int multiplier;
 			};
-			std::array<INF_, 2> infotrons{{
+			constexpr std::array<INF_, 2> infotrons{{
 				{ObjectID::Infotron,1},
 				{ObjectID::Electrons,9}
 				}};
@@ -506,7 +506,7 @@ namespace Editor::UI
 				for (size_t i = 0; i < infotrons.size(); ++i)
 				{
 					*infotron_Panel << infotron_Pickers_Buttons[i];
-					infotron_Pickers_Buttons[i]->setAdjustParams(3 + i * 32 - (i / 5) * 5 * 32, 54 + (i / 5) * 32, 32, 32);
+					infotron_Pickers_Buttons[i]->flexible_param_ = std::make_shared<KIR5::FlexiblePanel::LinkedSize>(3 + i * 32 - (i / 5) * 5 * 32, 54 + (i / 5) * 32, 32, 32);
 					infotron_Pickers_Buttons[i]->id = infotrons[i].id;
 					infotron_Pickers_Buttons[i]->multiplier = infotrons[i].multiplier;
 					infotron_Pickers_Buttons[i]->fncPress.push_back([&](FNC_PRESS_PARAMS) -> FNC_PRESS_RET
@@ -996,7 +996,7 @@ namespace Editor::UI
 					s_objectID_TextBox->setText(std::to_string(s_objectID_Panel->id));
 				});
 				*prevBlockPickers_Panel << prevBlockPickers[i];
-				prevBlockPickers[i]->setAdjustParams(3 + i * 32 - (i / 12) * 12 * 32, 3 + (i / 12) * 32, 32, 32);
+				prevBlockPickers[i]->flexible_param_ = std::make_shared<KIR5::FlexiblePanel::LinkedSize>(3 + i * 32 - (i / 12) * 12 * 32, 3 + (i / 12) * 32, 32, 32);
 			}
 
 			*this << prevBlockPickers_Panel;
