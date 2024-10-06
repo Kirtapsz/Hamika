@@ -2081,7 +2081,7 @@ namespace Object::Entity
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
-			_brick._draw_type = Brick::DrawType::Top;
+			_brick._draw_type = DrawType::Top;
 
 			_brick.requests.finalize = true;
 
@@ -2175,7 +2175,7 @@ namespace Object::Entity
 
 			_brick.events.timer = false;
 			_brick.events.update = true;
-			_brick._draw_type = Brick::DrawType::Top;
+			_brick._draw_type = DrawType::Top;
 
 			_brick.requests.finalize = true;
 

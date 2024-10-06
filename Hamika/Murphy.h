@@ -9,6 +9,7 @@ namespace Object::Entity
 	namespace Murphy
 	{
 		extern const char *name;
+		extern const char *name_tail;
 
 		struct EntityData
 		{

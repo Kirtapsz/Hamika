@@ -644,25 +644,35 @@ enum GridFlags: Type::Flags8
 
 namespace RedrawType
 {
-	constexpr Type::Flags None = 0;
+	typedef Type::Flags8 base;
 
-	constexpr Type::Flags Object = 1 << 0;
-	constexpr Type::Flags Shift = 1 << 1;
+	constexpr base None = 0;
 
-	constexpr Type::Flags All = Object | Shift;
+	constexpr base Object = 1 << 0;
+	constexpr base Shift = 1 << 1;
+
+	constexpr base All = Object | Shift;
 }
+
+enum DrawType:Type::Flags8
+{
+	Standard = 0,
+	Top = 1
+};
 
 namespace DrawnedType
 {
-	constexpr Type::Flags None = 0;
+	typedef Type::Flags8 base;
 
-	constexpr Type::Flags Cleared = 1 << 0;
+	constexpr base None = 0;
 
-	constexpr Type::Flags TopStand = 1 << 1;
-	constexpr Type::Flags TopRemain = 1 << 2;
-	constexpr Type::Flags StandardMove = 1 << 3;
-	constexpr Type::Flags StandardRemain = 1 << 4;
-	constexpr Type::Flags StandardGoTo = 1 << 5;
+	constexpr base Cleared = 1 << 0;
 
-	constexpr Type::Flags Drawned = TopStand | TopRemain | StandardMove | StandardRemain | StandardGoTo;
+	constexpr base TopStand = 1 << 1;
+	constexpr base TopRemain = 1 << 2;
+	constexpr base StandardMove = 1 << 3;
+	constexpr base StandardRemain = 1 << 4;
+	constexpr base StandardGoTo = 1 << 5;
+
+	constexpr base Drawned = TopStand | TopRemain | StandardMove | StandardRemain | StandardGoTo;
 }

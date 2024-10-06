@@ -26,7 +26,7 @@ namespace Object
 			template<typename MODULES_T>
 			inline void Func<MODULES_T>::__init__(Type::ID id, Type::Coord coord)
 			{
-				data_._draw_type = typename MODULES_T::DATA_T::DrawType::Standard;
+				data_._draw_type = DrawType::Standard;
 				data_.drawnerFnc = nullptr;
 				configureDrawOptions();
 			}

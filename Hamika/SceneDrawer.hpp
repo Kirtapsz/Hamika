@@ -434,12 +434,12 @@ void BlocksDrawer<ACTIVE_BLOCK_T>::drawObjects()
 					{
 						block.object,
 						block.ComeFrom == coord,
-						true,
+						block.object->_draw_type == DrawType::Top ? false : true,
 						DrawnedType::TopStand
 					},
 					{
 						block.remain,
-						block.remain->_draw_type == ACTIVE_BLOCK_T::OBJECT_T::DrawType::Top,
+						block.remain->_draw_type == DrawType::Top,
 						false,
 						DrawnedType::TopRemain
 					}
@@ -452,7 +452,7 @@ void BlocksDrawer<ACTIVE_BLOCK_T>::drawObjects()
 				const std::array<DrawConfig, 3> draw_configs{{
 					{
 						block.remain,
-						block.remain->_draw_type != ACTIVE_BLOCK_T::OBJECT_T::DrawType::Top,
+						block.remain->_draw_type != DrawType::Top,
 						true,
 						DrawnedType::StandardRemain
 					},

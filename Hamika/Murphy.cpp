@@ -14,6 +14,7 @@ namespace Object::Entity
 	namespace Murphy
 	{
 		const char *name = "*** - Murphy";
+		const char *name_tail = "*** - Murphy tail";
 
 		KIR5::SubBitmap Base;
 		KIR5::SubBitmap PlaceBase;
@@ -147,7 +148,7 @@ namespace Object::Entity
 
 			Type::Direction direction = (_direction + 2) % 4;
 
-			_brick._draw_type = Brick::DrawType::Top;
+			_brick._draw_type = DrawType::Top;
 			entity_data._effect_type = EFFECTS::EXIT;
 			entity_data._effect_timer = ExitEffectTime;
 			_brick.SetRotation(Type::Rotations::getRotationOfIndex(direction));
@@ -168,7 +169,7 @@ namespace Object::Entity
 
 			Type::Direction direction = (_head.getMoveDirection() + 2) % 4;
 
-			_tail._draw_type = Brick::DrawType::Top;
+			_tail._draw_type = DrawType::Top;
 			entity_data._effect_type = EFFECTS::CRAWL;
 			_tail.SetRotation(Type::Rotations::getRotationOfIndex(direction));
 			_tail.SetTranslationID(ObjectID::Space);
@@ -276,7 +277,7 @@ namespace Object::Entity
 				if (_brick.GetRemain(coord).id == ObjectID::Utility2)
 				{
 					Utility2_030::Activate(_brick.GetRemain(coord));
-					_brick.scene->GetRemain(coord)._draw_type = Brick::DrawType::Top;
+					_brick.scene->GetRemain(coord)._draw_type = DrawType::Top;
 				}
 
 				entity_data._effect_type = EFFECTS::NONE;

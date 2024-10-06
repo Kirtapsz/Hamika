@@ -15,12 +15,6 @@ namespace Object
 			template<typename MODULES_T>
 			struct Data
 			{
-				enum DrawType: std::uint8_t
-				{
-					Standard,
-					Top, // Force to draw it to the top
-
-				};
 				DrawType _draw_type = DrawType::Standard;
 
 				unsigned long long int DrawNumber = 0;
